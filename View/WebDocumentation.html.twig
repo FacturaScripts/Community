@@ -1,0 +1,19 @@
+{% extends "Master/PortalTemplate.html.twig" %}
+
+{% block body %}
+    <div class="body-section">
+        <br/>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="text-capitalize">
+                        <i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ fsc.webPage.title }}
+                    </h1>
+                    {% for project in fsc.getProjects() %}
+                        <a href="{{ project.url() }}" class="btn btn-primary">{{ project.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

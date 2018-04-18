@@ -63,4 +63,9 @@ class Project extends Base\ModelClass
     {
         return 'comm_projects';
     }
+
+    public function url(string $type = 'auto', string $list = 'List')
+    {
+        return 'doc/' . $this->name;
+    }
 }

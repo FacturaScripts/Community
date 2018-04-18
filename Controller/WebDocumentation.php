@@ -18,31 +18,42 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Dinamic\Lib\ExtendedController;
+use FacturaScripts\Plugins\Community\Model\Project;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 
 /**
- * Description of ListProject
+ * Description of WebDocumentation
  *
  * @author Carlos García Gómez
  */
-class ListProject extends ExtendedController\ListController
+class WebDocumentation extends PortalController
 {
 
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['title'] = 'projects';
+        $pageData['title'] = 'documentation';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-folder';
+        $pageData['icon'] = 'fa-book';
 
         return $pageData;
     }
 
-    protected function createViews()
+    public function getProjects(): array
     {
-        $this->addView('ListProject', 'Project');
-        $this->addSearchFields('ListProject', ['name']);
-        $this->addOrderBy('ListProject', 'name');
-        $this->addOrderBy('ListProject', 'creationdate', 'date');
+        $project = new Project();
+        return $project->all([], ['name' => 'ASC'], 0, 0);
+    }
+
+    public function privateCore(&$response, $user, $permissions)
+    {
+        parent::privateCore($response, $user, $permissions);
+        $this->setTemplate('WebDocumentation');
+    }
+
+    public function publicCore(&$response)
+    {
+        parent::publicCore($response);
+        $this->setTemplate('WebDocumentation');
     }
 }
