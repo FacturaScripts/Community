@@ -21,11 +21,11 @@ namespace FacturaScripts\Plugins\Community\Model;
 use FacturaScripts\Core\Model\Base;
 
 /**
- * Description of Project
+ * Description of WebProject model.
  *
  * @author Carlos García Gómez
  */
-class Project extends Base\ModelClass
+class WebProject extends Base\ModelClass
 {
 
     use Base\ModelTrait;
@@ -61,11 +61,6 @@ class Project extends Base\ModelClass
 
     public static function tableName()
     {
-        return 'comm_projects';
-    }
-
-    public function url(string $type = 'auto', string $list = 'List')
-    {
-        return 'doc/' . $this->name;
+        return 'webprojects';
     }
 }

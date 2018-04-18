@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Document   : comm_projects.xml
+    Document   : webprojects.xml
     Author     : Carlos Garcia Gomez
     Description:
-        Structure for the comm_projects table.
+        Structure for the webprojects table.
 -->
 <table>
     <column>
         <name>idproject</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('comm_projects_idproject_seq'::regclass)</default>
+        <default>nextval('webprojects_idproject_seq'::regclass)</default>
     </column>
     <column>
         <name>name</name>
@@ -21,7 +21,7 @@
         <type>date</type>
     </column>
     <constraint>
-        <name>comm_projects_pkey</name>
+        <name>webprojects_pkey</name>
         <type>PRIMARY KEY (idproject)</type>
     </constraint>
 </table>

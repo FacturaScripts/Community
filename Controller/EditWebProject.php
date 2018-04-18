@@ -21,11 +21,11 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Dinamic\Lib\ExtendedController;
 
 /**
- * Description of EditProject
+ * Description of EditWebProject controller.
  *
  * @author Carlos García Gómez
  */
-class EditProject extends ExtendedController\PanelController
+class EditWebProject extends ExtendedController\PanelController
 {
 
     public function getPageData()
@@ -41,13 +41,13 @@ class EditProject extends ExtendedController\PanelController
 
     protected function createViews()
     {
-        $this->addEditView('EditProject', 'Project', 'project', 'fa-folder');
+        $this->addEditView('EditWebProject', 'WebProject', 'project', 'fa-folder');
     }
 
     protected function loadData($viewName, $view)
     {
         switch ($viewName) {
-            case 'EditProject':
+            case 'EditWebProject':
                 $code = $this->request->get('code');
                 $view->loadData($code);
                 break;

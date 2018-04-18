@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * This file is part of webportal plugin for FacturaScripts.
+ * This file is part of Community plugin for FacturaScripts.
  * Copyright (C) 2018  Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,15 +21,14 @@
 
 <view>
     <columns>
-        <group name="data" numcolumns="12">
-            <column name="code" display="none" order="100">
-                <widget type="text" fieldname="idproject" required="true" />
+        <group name="default" numcolumns="12">
+            <column name="name" display="none" order="0">
+                <widget type="text" fieldname="name" readonly="true" required="true" />
             </column>
-            <column name="name" numcolumns="8" order="110">
-                <widget type="text" fieldname="name" required="true" />
-            </column>
-            <column name="date" numcolumns="4" order="120">
-                <widget type="datepicker" fieldname="creationdate" />
+            <column name="idproject" title="default-project" numcolumns="3" order="120">
+                <widget type="select" fieldname="idproject" required="true">
+                    <values source="webprojects" fieldcode="idproject" fieldtitle="name"/>
+                </widget>
             </column>
         </group>
     </columns>

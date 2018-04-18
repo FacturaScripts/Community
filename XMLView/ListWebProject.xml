@@ -1,5 +1,5 @@
-<?php
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * This file is part of Community plugin for FacturaScripts.
  * Copyright (C) 2018  Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
@@ -15,34 +15,20 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-namespace FacturaScripts\Plugins\Community\Controller;
-
-use FacturaScripts\Dinamic\Lib\ExtendedController;
-
-/**
- * Description of ListProject
  *
- * @author Carlos García Gómez
- */
-class ListProject extends ExtendedController\ListController
-{
+ * @author Carlos García Gómez <carlos@facturascripts.com>  
+-->
 
-    public function getPageData()
-    {
-        $pageData = parent::getPageData();
-        $pageData['title'] = 'projects';
-        $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-folder';
-
-        return $pageData;
-    }
-
-    protected function createViews()
-    {
-        $this->addView('ListProject', 'Project');
-        $this->addSearchFields('ListProject', ['name']);
-        $this->addOrderBy('ListProject', 'name');
-        $this->addOrderBy('ListProject', 'creationdate', 'date');
-    }
-}
+<view>
+    <columns>
+        <column name="code" display="none" order="100">
+            <widget type="text" fieldname="idproject" onclick="EditWebProject" />
+        </column>
+        <column name="name" order="110">
+            <widget type="text" fieldname="name" />
+        </column>
+        <column name="creationdate" display="right" order="120">
+            <widget type="date" fieldname="creationdate" />
+        </column>
+    </columns>
+</view>
