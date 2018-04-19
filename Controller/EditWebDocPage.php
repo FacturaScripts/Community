@@ -65,14 +65,16 @@ class EditWebDocPage extends PortalController
         $body = $this->request->request->get('body', '');
         $code = $this->request->get('code');
         $idproject = $this->request->get('idproject');
+        $langcode = $this->request->get('langcode');
         $title = $this->request->request->get('title', '');
 
         $this->webDocPage = new WebDocPage();
 
         /// loads doc page
         if (!$this->webDocPage->loadFromCode($code)) {
-            /// if it's a new doc page, then use the idproject
+            /// if it's a new doc page, then use the idproject and langcode
             $this->webDocPage->idproject = $idproject;
+            $this->webDocPage->langcode = $langcode;
         }
 
         if ('' !== $title) {

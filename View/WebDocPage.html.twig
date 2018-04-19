@@ -1,0 +1,32 @@
+{% extends "Master/PortalTemplate.html.twig" %}
+
+{% block body %}
+    <div class="body-section body-padding">
+        <div class="container">
+            <div class="columns">
+                <div class="col-9">
+                    <h1 class="text-capitalize">
+                        <i class="fa {{ fsc.webPage.icon }}" aria-hidden="true"></i> {{ fsc.docPage.title }}
+                    </h1>
+                    {{ fsc.parsedown(fsc.docPage.body) | raw }}
+                </div>
+                <div class="col-3">
+                    <ul class="menu">
+                        <li class="divider" data-content="Actions">
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ asset('EditWebDocPage?idproject=' ~ fsc.currentProject.idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
+                                <i class="fa fa-plus fa-fw" aria-hidden="true"></i> {{ i18n.trans('new') }}
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ asset(fsc.docPage.url()) }}">
+                                <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

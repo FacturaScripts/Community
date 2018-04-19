@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 
 /**
@@ -62,5 +63,12 @@ class WebProject extends Base\ModelClass
     public static function tableName()
     {
         return 'webprojects';
+    }
+
+    public function test()
+    {
+        $this->name = Utils::noHtml($this->name);
+
+        return (strlen($this->name) > 1);
     }
 }

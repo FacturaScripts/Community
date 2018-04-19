@@ -1,0 +1,13 @@
+{
+    "name": "vendor/community",
+    "description": "Description of project Community.",
+    "authors": [
+        {
+            "name": "carlos",
+            "email": "your@email.here"
+        }
+    ],
+    "require": {
+        "erusev/parsedown": "dev-master"
+    }
+}

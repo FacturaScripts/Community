@@ -18,7 +18,9 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
 
 /**
  * Description of WebDocPage model.
@@ -58,6 +60,19 @@ class WebDocPage extends Base\ModelClass
     public $idproject;
 
     /**
+     * Language code.
+     *
+     * @var string
+     */
+    public $langcode;
+
+    /**
+     *
+     * @var string
+     */
+    public $permalink;
+
+    /**
      * Title of the document page.
      *
      * @var string
@@ -68,6 +83,7 @@ class WebDocPage extends Base\ModelClass
     {
         parent::clear();
         $this->creationdate = date('d-m-Y');
+        $this->langcode = substr(FS_LANG, 0, 2);
     }
 
     public static function primaryColumn()
@@ -78,5 +94,14 @@ class WebDocPage extends Base\ModelClass
     public static function tableName()
     {
         return 'webdocpages';
+    }
+
+    public function test()
+    {
+        $this->body = Utils::noHtml($this->body);
+        $this->title = Utils::noHtml($this->title);
+        $this->permalink = is_null($this->permalink) ? Permalink::get($this->title, 150) : $this->permalink;
+
+        return (strlen($this->title) > 1);
     }
 }

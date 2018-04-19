@@ -18,11 +18,14 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
+use Parsedown;
 
 /**
  * Description of WebDocumentation
@@ -40,6 +43,18 @@ class WebDocumentation extends PortalController
 
     /**
      *
+     * @var mixed
+     */
+    public $defaultIdproject;
+
+    /**
+     *
+     * @var WebDocPage
+     */
+    public $docPage;
+
+    /**
+     *
      * @var WebDocPage[]
      */
     public $docPages;
@@ -49,6 +64,17 @@ class WebDocumentation extends PortalController
      * @var WebProject[]
      */
     public $projects;
+
+    /**
+     *
+     * @var string
+     */
+    public $urlPrefix;
+
+    public function getDocPageUrl(WebDocPage $page): string
+    {
+        return $this->urlPrefix . '/' . $page->idproject . '/' . $page->permalink;
+    }
 
     public function getPageData()
     {
@@ -60,41 +86,68 @@ class WebDocumentation extends PortalController
         return $pageData;
     }
 
-    public function getProjectUrl(WebProject $project)
+    public function getProjectUrl(WebProject $project): string
     {
-        if ('*' === substr($this->webPage->permalink, -1)) {
-            return substr($this->webPage->permalink, 1, -1) . $project->idproject;
+        if ($project->idproject == $this->defaultIdproject) {
+            return $this->urlPrefix;
         }
 
-        return substr($this->webPage->permalink, 1) . '/' . $project->idproject;
+        return $this->urlPrefix . '/' . $project->idproject;
+    }
+
+    public function parsedown(string $txt): string
+    {
+        $parser = new Parsedown();
+        return $parser->text($txt);
     }
 
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
-        $this->loadProject();
+        $this->loadData();
     }
 
     public function publicCore(&$response)
     {
         parent::publicCore($response);
-        $this->loadProject();
+        $this->loadData();
     }
 
-    private function loadProject()
+    private function loadData()
     {
         $this->setTemplate('WebDocumentation');
+        $this->defaultIdproject = AppSettings::get('community', 'idproject', '');
+
+        /// get url prefix
+        $this->urlPrefix = substr($this->webPage->permalink, 1);
+        if ('*' === substr($this->webPage->permalink, -1)) {
+            $this->urlPrefix = substr($this->webPage->permalink, 1, -2);
+        }
+
+        $url = explode('/', $this->uri);
+        $idproject = isset($url[2]) ? $url[2] : $this->defaultIdproject;
+        $docPermalink = isset($url[3]) ? $url[3] : null;
 
         /// current project
         $this->currentProject = new WebProject();
-        $this->currentProject->loadFromCode(AppSettings::get('community', 'idproject', ''));
+        $this->currentProject->loadFromCode($idproject);
 
         /// all projects
         $this->projects = $this->currentProject->all([], ['name' => 'ASC'], 0, 0);
 
-        /// Doc pages for this project
-        $webDocPage = new WebDocPage();
-        $where = [new DataBaseWhere('idproject', $this->currentProject->idproject)];
-        $this->docPages = $webDocPage->all($where, [], 0, 0);
+        /// doc pages for this project
+        $this->docPage = new WebDocPage();
+        $where = [
+            new DataBaseWhere('idproject', $this->currentProject->idproject),
+            new DataBaseWhere('langcode', $this->webPage->langcode)
+        ];
+        $this->docPages = $this->docPage->all($where, [], 0, 0);
+
+        /// doc page permalink?
+        if (null !== $docPermalink) {
+            if ($this->docPage->loadFromCode('', [new DataBaseWhere('permalink', $docPermalink)])) {
+                $this->setTemplate('WebDocPage');
+            }
+        }
     }
 }

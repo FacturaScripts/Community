@@ -4,18 +4,14 @@
     <div class="body-section body-padding">
         <div class="container">
             <div class="columns">
-                <div class="col-12">
-                    <h1 class="text-capitalize">
-                        <i class="fa fa-book" aria-hidden="true"></i> {{ fsc.webPage.title }}
-                    </h1>
-                </div>
-            </div>
-            <div class="columns">
                 <div class="col-9">
+                    <h1 class="text-capitalize">
+                        <i class="fa {{ fsc.webPage.icon }}" aria-hidden="true"></i> {{ fsc.webPage.title }}
+                    </h1>
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
-                                <a href="{{ asset(docPage.url()) }}">{{ docPage.title }}</a>
+                                <a href="{{ asset(fsc.getDocPageUrl(docPage)) }}">{{ docPage.title }}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -25,16 +21,20 @@
                         <li class="divider" data-content="Actions">
                         </li>
                         <li class="menu-item">
-                            <a href="{{ asset('EditWebDocPage?idproject=' ~ fsc.currentProject.idproject) }}">{{ i18n.trans('new') }}</a>
+                            <a href="{{ asset('EditWebDocPage?idproject=' ~ fsc.currentProject.idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
+                                <i class="fa fa-plus fa-fw" aria-hidden="true"></i> {{ i18n.trans('new') }}
+                            </a>
                         </li>
                         <li class="divider" data-content="Projects">
                         </li>
                         {% for project in fsc.projects %}
                             <li class="menu-item">
                                 {% if project.idproject == fsc.currentProject.idproject %}
-                                    <b>{{ project.name }}</b>
+                                    <i class="fa fa-folder fa-fw" aria-hidden="true"></i> <b>{{ project.name }}</b>
                                 {% else %}
-                                    <a href="{{ asset(fsc.getProjectUrl(project)) }}">{{ project.name }}</a>
+                                    <a href="{{ asset(fsc.getProjectUrl(project)) }}">
+                                        <i class="fa fa-folder fa-fw" aria-hidden="true"></i> {{ project.name }}
+                                    </a>
                                 {% endif %}
                             </li>
                         {% endfor %}
