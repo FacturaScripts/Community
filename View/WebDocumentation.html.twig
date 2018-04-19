@@ -1,17 +1,44 @@
 {% extends "Master/PortalTemplate.html.twig" %}
 
 {% block body %}
-    <div class="body-section">
-        <br/>
+    <div class="body-section body-padding">
         <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
+            <div class="columns">
+                <div class="col-12">
                     <h1 class="text-capitalize">
-                        <i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ fsc.webPage.title }}
+                        <i class="fa fa-book" aria-hidden="true"></i> {{ fsc.webPage.title }}
                     </h1>
-                    {% for project in fsc.getProjects() %}
-                        <a href="{{ project.url() }}" class="btn btn-primary">{{ project.name }}</a>
-                    {% endfor %}
+                </div>
+            </div>
+            <div class="columns">
+                <div class="col-9">
+                    <ul>
+                        {% for docPage in fsc.docPages %}
+                            <li>
+                                <a href="{{ asset(docPage.url()) }}">{{ docPage.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-3">
+                    <ul class="menu">
+                        <li class="divider" data-content="Actions">
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ asset('EditWebDocPage?idproject=' ~ fsc.currentProject.idproject) }}">{{ i18n.trans('new') }}</a>
+                        </li>
+                        <li class="divider" data-content="Projects">
+                        </li>
+                        {% for project in fsc.projects %}
+                            <li class="menu-item">
+                                {% if project.idproject == fsc.currentProject.idproject %}
+                                    <b>{{ project.name }}</b>
+                                {% else %}
+                                    <a href="{{ asset(fsc.getProjectUrl(project)) }}">{{ project.name }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>

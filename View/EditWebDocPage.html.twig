@@ -1,0 +1,46 @@
+{% extends "Master/PortalTemplate.html.twig" %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('Plugins/Community/node_modules/simplemde/dist/simplemde.min.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('Plugins/Community/node_modules/simplemde/dist/simplemde.min.js') }}"></script>
+    <script>
+        var simplemde = new SimpleMDE();
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="body-section body-padding">
+        <div class="container">
+            <div class="columns">
+                <div class="col-12">
+                    <h1 class="text-capitalize">
+                        <i class="fa fa-edit" aria-hidden="true"></i> {{ i18n.trans('web-doc-page') }}
+                    </h1>
+                </div>
+            </div>
+            <form action="{{ fsc.url() }}" method="post">
+                <input type="hidden" name="code" value="{{ fsc.webDocPage.primaryColumnValue() }}"/>
+                <input type="hidden" name="idproject" value="{{ fsc.webDocPage.idproject }}"/>
+                <div class="columns">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ i18n.trans('title') }}</span>
+                                <input type="text" name="title" value="{{ fsc.webDocPage.title }}" class="form-input" autocomplete="off" autofocus=""/>
+                                <button class="btn btn-primary input-group-btn">{{ i18n.trans('save') }}</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="body" class="form-input">{{ fsc.webDocPage.body }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

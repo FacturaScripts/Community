@@ -18,83 +18,71 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
-use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 
 /**
- * Description of WebDocumentation
+ * Description of EditWebDocPage controller.
  *
  * @author Carlos García Gómez
  */
-class WebDocumentation extends PortalController
+class EditWebDocPage extends PortalController
 {
 
     /**
      *
-     * @var WebProject
+     * @var WebDocPage
      */
-    public $currentProject;
-
-    /**
-     *
-     * @var WebDocPage[]
-     */
-    public $docPages;
-
-    /**
-     *
-     * @var WebProject[]
-     */
-    public $projects;
+    public $webDocPage;
 
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['title'] = 'documentation';
+        $pageData['title'] = 'web-doc-page';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-book';
+        $pageData['icon'] = 'fa-folder';
+        $pageData['showonmenu'] = false;
 
         return $pageData;
-    }
-
-    public function getProjectUrl(WebProject $project)
-    {
-        if ('*' === substr($this->webPage->permalink, -1)) {
-            return substr($this->webPage->permalink, 1, -1) . $project->idproject;
-        }
-
-        return substr($this->webPage->permalink, 1) . '/' . $project->idproject;
     }
 
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
-        $this->loadProject();
+        $this->loadWebDocPage();
     }
 
     public function publicCore(&$response)
     {
         parent::publicCore($response);
-        $this->loadProject();
+        $this->loadWebDocPage();
     }
 
-    private function loadProject()
+    private function loadWebDocPage()
     {
-        $this->setTemplate('WebDocumentation');
+        $this->setTemplate('EditWebDocPage');
 
-        /// current project
-        $this->currentProject = new WebProject();
-        $this->currentProject->loadFromCode(AppSettings::get('community', 'idproject', ''));
+        $body = $this->request->request->get('body', '');
+        $code = $this->request->get('code');
+        $idproject = $this->request->get('idproject');
+        $title = $this->request->request->get('title', '');
 
-        /// all projects
-        $this->projects = $this->currentProject->all([], ['name' => 'ASC'], 0, 0);
+        $this->webDocPage = new WebDocPage();
 
-        /// Doc pages for this project
-        $webDocPage = new WebDocPage();
-        $where = [new DataBaseWhere('idproject', $this->currentProject->idproject)];
-        $this->docPages = $webDocPage->all($where, [], 0, 0);
+        /// loads doc page
+        if (!$this->webDocPage->loadFromCode($code)) {
+            /// if it's a new doc page, then use the idproject
+            $this->webDocPage->idproject = $idproject;
+        }
+
+        if ('' !== $title) {
+            $this->webDocPage->title = $title;
+            $this->webDocPage->body = $body;
+            if ($this->webDocPage->save()) {
+                $this->miniLog->info($this->i18n->trans('save-ok'));
+            } else {
+                $this->miniLog->alert($this->i18n->trans('save-error'));
+            }
+        }
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : webdocpages.xml
+    Author     : Carlos Garcia Gomez
+    Description:
+        Structure for the webdocpages table.
+-->
+<table>
+    <column>
+        <name>iddoc</name>
+        <type>serial</type>
+        <null>NO</null>
+        <default>nextval('webdocpages_idproject_seq'::regclass)</default>
+    </column>
+    <column>
+        <name>idproject</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>title</name>
+        <type>character varying(250)</type>
+    </column>
+    <column>
+        <name>body</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>creationdate</name>
+        <type>date</type>
+    </column>
+    <constraint>
+        <name>webdocpages_pkey</name>
+        <type>PRIMARY KEY (iddoc)</type>
+    </constraint>
+    <constraint>
+        <name>ca_webdocpages_webprojects</name>
+        <type>FOREIGN KEY (idproject) REFERENCES webprojects (idproject) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+</table>
