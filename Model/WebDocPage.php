@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
@@ -53,6 +54,13 @@ class WebDocPage extends Base\ModelClass
     public $iddoc;
 
     /**
+     * Parent doc page.
+     *
+     * @var int
+     */
+    public $idparent;
+
+    /**
      * Related project key.
      *
      * @var int
@@ -84,6 +92,31 @@ class WebDocPage extends Base\ModelClass
         parent::clear();
         $this->creationdate = date('d-m-Y');
         $this->langcode = substr(FS_LANG, 0, 2);
+    }
+
+    public function getChildrenPages()
+    {
+        $where = [
+            new DataBaseWhere('idparent', $this->iddoc),
+            new DataBaseWhere('langcode', $this->langcode)
+        ];
+        return $this->all($where, [], 0, 0);
+    }
+
+    public function getParentPage()
+    {
+        return $this->get($this->idparent);
+    }
+
+    public function getSisterPages()
+    {
+        $operator = is_null($this->idparent) ? 'IS' : '=';
+        $where = [
+            new DataBaseWhere('idparent', $this->idparent, $operator),
+            new DataBaseWhere('idproject', $this->idproject),
+            new DataBaseWhere('langcode', $this->langcode)
+        ];
+        return $this->all($where, [], 0, 0);
     }
 
     public static function primaryColumn()

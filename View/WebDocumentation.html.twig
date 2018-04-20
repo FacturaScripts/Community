@@ -4,7 +4,7 @@
     <div class="body-section body-padding">
         <div class="container">
             <div class="columns">
-                <div class="col-9">
+                <div class="column col-9">
                     <h1 class="text-capitalize">
                         <i class="fa {{ fsc.webPage.icon }}" aria-hidden="true"></i> {{ fsc.webPage.title }}
                     </h1>
@@ -12,11 +12,18 @@
                         {% for docPage in fsc.docPages %}
                             <li>
                                 <a href="{{ asset(fsc.getDocPageUrl(docPage)) }}">{{ docPage.title }}</a>
+                                {% for childrenPage in docPage.getChildrenPages() %}
+                                    <ul>
+                                        <li>
+                                            <a href="{{ asset(fsc.getDocPageUrl(childrenPage)) }}">{{ childrenPage.title }}</a>
+                                        </li>
+                                    </ul>
+                                {% endfor %}
                             </li>
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="col-3">
+                <div class="column col-3">
                     <ul class="menu">
                         <li class="divider" data-content="Actions">
                         </li>

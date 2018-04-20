@@ -77,6 +77,7 @@ class EditWebDocPage extends PortalController
 
         $body = $this->request->request->get('body', '');
         $code = $this->request->get('code');
+        $idparent = $this->request->get('idparent');
         $idproject = $this->request->get('idproject');
         $langcode = $this->request->get('langcode');
         $title = $this->request->request->get('title', '');
@@ -88,9 +89,14 @@ class EditWebDocPage extends PortalController
             /// if it's a new doc page, then use the idproject and langcode
             $this->webDocPage->idproject = $idproject;
             $this->webDocPage->langcode = $langcode;
+
+            if (!empty($idparent)) {
+                $this->newChildrenPage($idparent);
+            }
         }
 
         if ('' !== $title) {
+            $this->webDocPage->idparent = empty($idparent) ? null : $idparent;
             $this->webDocPage->title = $title;
             $this->webDocPage->body = $body;
             if ($this->webDocPage->save()) {
@@ -98,6 +104,16 @@ class EditWebDocPage extends PortalController
             } else {
                 $this->miniLog->alert($this->i18n->trans('save-error'));
             }
+        }
+    }
+
+    private function newChildrenPage(int $idparent)
+    {
+        $parentDocPage = $this->webDocPage->get($idparent);
+        if ($parentDocPage) {
+            $this->webDocPage->idparent = $idparent;
+            $this->webDocPage->idproject = $parentDocPage->idproject;
+            $this->webDocPage->langcode = $parentDocPage->langcode;
         }
     }
 }

@@ -139,19 +139,19 @@ class WebDocumentation extends PortalController
         /// all projects
         $this->projects = $this->currentProject->all([], ['name' => 'ASC'], 0, 0);
 
-        /// doc pages for this project
         $this->docPage = new WebDocPage();
-        $where = [
-            new DataBaseWhere('idproject', $this->currentProject->idproject),
-            new DataBaseWhere('langcode', $this->webPage->langcode)
-        ];
-        $this->docPages = $this->docPage->all($where, [], 0, 0);
 
         /// doc page permalink?
-        if (null !== $docPermalink) {
-            if ($this->docPage->loadFromCode('', [new DataBaseWhere('permalink', $docPermalink)])) {
-                $this->setTemplate('WebDocPage');
-            }
+        if (null === $docPermalink) {
+            $where = [
+                new DataBaseWhere('idparent', null, 'IS'),
+                new DataBaseWhere('idproject', $this->currentProject->idproject),
+                new DataBaseWhere('langcode', $this->webPage->langcode)
+            ];
+            $this->docPages = $this->docPage->all($where, [], 0, 0);
+        } elseif ($this->docPage->loadFromCode('', [new DataBaseWhere('permalink', $docPermalink)])) {
+            $this->docPages = $this->docPage->getChildrenPages();
+            $this->setTemplate('WebDocPage');
         }
     }
 }

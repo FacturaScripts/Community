@@ -21,6 +21,10 @@
         <default>nextval('webdocpages_idproject_seq'::regclass)</default>
     </column>
     <column>
+        <name>idparent</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>idproject</name>
         <type>integer</type>
         <null>NO</null>

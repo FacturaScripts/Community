@@ -4,18 +4,32 @@
     <div class="body-section body-padding">
         <div class="container">
             <div class="columns">
-                <div class="col-9">
+                <div class="column col-9">
                     <h1 class="text-capitalize">
                         <i class="fa {{ fsc.webPage.icon }}" aria-hidden="true"></i> {{ fsc.docPage.title }}
                     </h1>
                     {{ fsc.parsedown(fsc.docPage.body) | raw }}
+                    <ul>
+                        {% for docPage in fsc.docPages %}
+                            <li>
+                                <a href="{{ asset(fsc.getDocPageUrl(docPage)) }}">{{ docPage.title }}</a>
+                                {% for childrenPage in docPage.getChildrenPages() %}
+                                    <ul>
+                                        <li>
+                                            <a href="{{ asset(fsc.getDocPageUrl(childrenPage)) }}">{{ childrenPage.title }}</a>
+                                        </li>
+                                    </ul>
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-                <div class="col-3">
+                <div class="column col-3">
                     <ul class="menu">
                         <li class="divider" data-content="Actions">
                         </li>
                         <li class="menu-item">
-                            <a href="{{ asset('EditWebDocPage?idproject=' ~ fsc.currentProject.idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
+                            <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}">
                                 <i class="fa fa-plus fa-fw" aria-hidden="true"></i> {{ i18n.trans('new') }}
                             </a>
                         </li>
@@ -24,6 +38,29 @@
                                 <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                             </a>
                         </li>
+                        {% if fsc.docPage.idparent %}
+                            <li class="divider" data-content="Parent">
+                            </li>
+                            {% set parentPage = fsc.docPage.getParentPage() %}
+                            <li class="menu-item">
+                                <a href="{{ asset(parentPage.url()) }}">
+                                    <i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ parentPage.title }}
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="divider" data-content="More">
+                        </li>
+                        {% for sisterPage in fsc.docPage.getSisterPages() %}
+                            <li class="menu-item">
+                                {% if sisterPage.iddoc == fsc.docPage.iddoc %}
+                                    <i class="fa fa-book fa-fw" aria-hidden="true"></i> <b>{{ sisterPage.title }}</b>
+                                {% else %}
+                                    <a href="{{ asset(fsc.getDocPageUrl(sisterPage)) }}">
+                                        <i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ sisterPage.title }}
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
