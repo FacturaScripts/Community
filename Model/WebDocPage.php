@@ -154,7 +154,7 @@ class WebDocPage extends Base\ModelClass
                 if ('/' === substr($url, -1)) {
                     $url = substr($url, 1, -1);
                 }
-                return $url . '/' . $this->permalink;
+                return empty($this->permalink) ? $url : $url . '/' . $this->permalink;
 
             default:
                 return parent::url($type, $list);

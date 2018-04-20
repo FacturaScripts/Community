@@ -26,7 +26,7 @@
                 </div>
                 <div class="column col-3">
                     <ul class="menu">
-                        <li class="divider" data-content="Actions">
+                        <li class="divider" data-content="{{ i18n.trans('actions') }}">
                         </li>
                         <li class="menu-item">
                             <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}">
@@ -38,7 +38,7 @@
                                 <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                             </a>
                         </li>
-                        <li class="divider" data-content="Project">
+                        <li class="divider" data-content="{{ i18n.trans('project') }}">
                         </li>
                         <li class="menu-item">
                             <a href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">
@@ -53,7 +53,7 @@
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="divider" data-content="More">
+                        <li class="divider" data-content="{{ i18n.trans('more') }}">
                         </li>
                         {% for sisterPage in fsc.docPage.getSisterPages() %}
                             <li class="menu-item">
