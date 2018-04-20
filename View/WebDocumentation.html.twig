@@ -18,6 +18,10 @@
                                     </ul>
                                 {% endfor %}
                             </li>
+                        {% else %}
+                            <li>
+                                {{ i18n.trans('no-data') }}
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -35,12 +39,16 @@
                         {% for project in fsc.projects %}
                             <li class="menu-item">
                                 {% if project.idproject == fsc.currentProject.idproject %}
-                                    <i class="fa fa-folder fa-fw" aria-hidden="true"></i> <b>{{ project.name }}</b>
+                                    <i class="fa fa-folder-open fa-fw" aria-hidden="true"></i> <b>{{ project.name }}</b>
                                 {% else %}
                                     <a href="{{ asset(fsc.getProjectUrl(project)) }}">
                                         <i class="fa fa-folder fa-fw" aria-hidden="true"></i> {{ project.name }}
                                     </a>
                                 {% endif %}
+                            </li>
+                        {% else %}
+                            <li class="menu-item">
+                                {{ i18n.trans('no-data') }}
                             </li>
                         {% endfor %}
                     </ul>

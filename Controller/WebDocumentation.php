@@ -108,10 +108,29 @@ class WebDocumentation extends PortalController
         $this->loadData();
     }
 
+    private function getUrlExtraParams()
+    {
+        $params = explode('/', substr($this->uri, strlen($this->webPage->permalink)));
+        return empty($params[0]) ? [] : $params;
+    }
+
+    private function getUrlPrefix()
+    {
+        $urlPrefix = substr($this->webPage->permalink, 1);
+        if ('*' === substr($this->webPage->permalink, -1)) {
+            $urlPrefix = substr($this->webPage->permalink, 1, -1);
+        }
+        if ('/' === substr($urlPrefix, -1)) {
+            $urlPrefix = substr($urlPrefix, 0, -1);
+        }
+
+        return $urlPrefix;
+    }
+
     protected function getWebPage()
     {
         $webPage = parent::getWebPage();
-        if ($webPage->idpage === AppSettings::get('community', 'docpage')) {
+        if ($webPage->customcontroller === $this->getClassName()) {
             return $webPage;
         }
 
@@ -124,19 +143,11 @@ class WebDocumentation extends PortalController
     {
         $this->setTemplate('WebDocumentation');
         $this->defaultIdproject = AppSettings::get('community', 'idproject', '');
+        $this->urlPrefix = $this->getUrlPrefix();
 
-        /// get url prefix
-        $this->urlPrefix = substr($this->webPage->permalink, 1);
-        if ('*' === substr($this->webPage->permalink, -1)) {
-            $this->urlPrefix = substr($this->webPage->permalink, 1, -1);
-        }
-        if ('/' === substr($this->urlPrefix, -1)) {
-            $this->urlPrefix = substr($this->urlPrefix, 1, -1);
-        }
-
-        $url = explode('/', $this->uri);
-        $idproject = isset($url[2]) ? $url[2] : $this->defaultIdproject;
-        $docPermalink = isset($url[3]) ? $url[2] . '/' . $url[3] : null;
+        $urlParams = $this->getUrlExtraParams();
+        $idproject = isset($urlParams[0]) ? $urlParams[0] : $this->defaultIdproject;
+        $docPermalink = isset($urlParams[1]) ? $urlParams[0] . '/' . $urlParams[1] : null;
 
         /// current project
         $this->currentProject = new WebProject();

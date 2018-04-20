@@ -22,6 +22,7 @@ use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
@@ -47,6 +48,12 @@ class WebDocPage extends Base\ModelClass
      * @var string
      */
     public $creationdate;
+    
+    /**
+     *
+     * @var int
+     */
+    public $idcontacto;
 
     /**
      * Primary key.
@@ -119,6 +126,14 @@ class WebDocPage extends Base\ModelClass
             new DataBaseWhere('langcode', $this->langcode)
         ];
         return $this->all($where, [], 0, 0);
+    }
+    
+    public function install()
+    {
+        /// needed as dependency
+        new Contacto();
+        
+        return parent::install();
     }
 
     public static function primaryColumn()

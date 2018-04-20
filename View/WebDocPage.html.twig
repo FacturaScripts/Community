@@ -5,6 +5,17 @@
         <div class="container">
             <div class="columns">
                 <div class="column col-9 col-xs-12">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">{{ fsc.currentProject.name }}</a>
+                        </li>
+                        {% if fsc.docPage.idparent %}
+                            {% set parentPage = fsc.docPage.getParentPage() %}
+                            <li class="breadcrumb-item">
+                                <a href="{{ asset(parentPage.url('link')) }}">{{ parentPage.title }}</a>
+                            </li>
+                        {% endif %}
+                    </ul>
                     <h1 class="text-capitalize">{{ fsc.docPage.title }}</h1>
                     {{ fsc.parsedown(fsc.docPage.body) | raw }}
                     <ul>
@@ -36,27 +47,12 @@
                                 <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                             </a>
                         </li>
-                        <li class="divider" data-content="{{ i18n.trans('project') }}">
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">
-                                <i class="fa fa-folder fa-fw" aria-hidden="true"></i> {{ fsc.currentProject.name }}
-                            </a>
-                        </li>
-                        {% if fsc.docPage.idparent %}
-                            {% set parentPage = fsc.docPage.getParentPage() %}
-                            <li class="menu-item">
-                                <a href="{{ asset(parentPage.url('link')) }}">
-                                    <i class="fa fa-caret-right fa-fw" aria-hidden="true"></i> {{ parentPage.title }}
-                                </a>
-                            </li>
-                        {% endif %}
                         <li class="divider" data-content="{{ i18n.trans('more') }}">
                         </li>
                         {% for sisterPage in fsc.docPage.getSisterPages() %}
                             <li class="menu-item">
                                 {% if sisterPage.iddoc == fsc.docPage.iddoc %}
-                                    <i class="fa fa-book fa-fw" aria-hidden="true"></i> <b>{{ sisterPage.title }}</b>
+                                    <i class="fa fa-eye fa-fw" aria-hidden="true"></i> <b>{{ sisterPage.title }}</b>
                                 {% else %}
                                     <a href="{{ asset(sisterPage.url('link')) }}">
                                         <i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ sisterPage.title }}
@@ -64,6 +60,12 @@
                                 {% endif %}
                             </li>
                         {% endfor %}
+                        <li class="divider" data-content="{{ i18n.trans('properties') }}">
+                        </li>
+                        <li class="menu-item">
+                            <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('created') }}:
+                            {{ fsc.docPage.creationdate }}
+                        </li>
                     </ul>
                 </div>
             </div>

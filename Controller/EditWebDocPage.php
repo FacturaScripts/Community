@@ -55,7 +55,11 @@ class EditWebDocPage extends PortalController
     public function publicCore(&$response)
     {
         parent::publicCore($response);
-        $this->loadWebDocPage();
+        if (null === $this->contact) {
+            $this->setTemplate('Master/LoginToContinue');
+        } else {
+            $this->loadWebDocPage();
+        }
     }
 
     private function loadWebDocPage()
@@ -80,6 +84,8 @@ class EditWebDocPage extends PortalController
             if (!empty($idparent)) {
                 $this->newChildrenPage($idparent);
             }
+
+            $this->webDocPage->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
         }
 
         if ('' !== $title) {
