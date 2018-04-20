@@ -11,11 +11,11 @@
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
-                                <a href="{{ asset(fsc.getDocPageUrl(docPage)) }}">{{ docPage.title }}</a>
+                                <a href="{{ asset(docPage.url('link')) }}">{{ docPage.title }}</a>
                                 {% for childrenPage in docPage.getChildrenPages() %}
                                     <ul>
                                         <li>
-                                            <a href="{{ asset(fsc.getDocPageUrl(childrenPage)) }}">{{ childrenPage.title }}</a>
+                                            <a href="{{ asset(childrenPage.url('link')) }}">{{ childrenPage.title }}</a>
                                         </li>
                                     </ul>
                                 {% endfor %}

@@ -18,10 +18,12 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
+use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of WebDocPage model.
@@ -132,8 +134,30 @@ class WebDocPage extends Base\ModelClass
     public function test()
     {
         $this->title = Utils::noHtml($this->title);
-        $this->permalink = is_null($this->permalink) ? Permalink::get($this->title, 150) : $this->permalink;
+        $this->permalink = is_null($this->permalink) ? $this->idproject . '/' . Permalink::get($this->title, 150) : $this->permalink;
 
         return (strlen($this->title) > 1);
+    }
+
+    public function url(string $type = 'auto', string $list = 'List')
+    {
+        switch ($type) {
+            case 'link':
+                $url = '#';
+                $webPage = new WebPage();
+                if ($webPage->loadFromCode(AppSettings::get('community', 'docpage'))) {
+                    $url = $webPage->permalink;
+                }
+                if ('*' === substr($url, -1)) {
+                    $url = substr($url, 1, -1);
+                }
+                if ('/' === substr($url, -1)) {
+                    $url = substr($url, 1, -1);
+                }
+                return $url . '/' . $this->permalink;
+
+            default:
+                return parent::url($type, $list);
+        }
     }
 }

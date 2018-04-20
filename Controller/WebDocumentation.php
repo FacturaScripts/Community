@@ -22,7 +22,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
@@ -72,11 +71,6 @@ class WebDocumentation extends PortalController
      */
     public $urlPrefix;
 
-    public function getDocPageUrl(WebDocPage $page): string
-    {
-        return $this->urlPrefix . '/' . $page->idproject . '/' . $page->permalink;
-    }
-
     public function getPageData()
     {
         $pageData = parent::getPageData();
@@ -114,6 +108,18 @@ class WebDocumentation extends PortalController
         $this->loadData();
     }
 
+    protected function getWebPage()
+    {
+        $webPage = parent::getWebPage();
+        if ($webPage->idpage === AppSettings::get('community', 'docpage')) {
+            return $webPage;
+        }
+
+        $webPage->loadFromCode(AppSettings::get('community', 'docpage'));
+        $webPage->noindex = true;
+        return $webPage;
+    }
+
     private function loadData()
     {
         $this->setTemplate('WebDocumentation');
@@ -130,7 +136,7 @@ class WebDocumentation extends PortalController
 
         $url = explode('/', $this->uri);
         $idproject = isset($url[2]) ? $url[2] : $this->defaultIdproject;
-        $docPermalink = isset($url[3]) ? $url[3] : null;
+        $docPermalink = isset($url[3]) ? $url[2] . '/' . $url[3] : null;
 
         /// current project
         $this->currentProject = new WebProject();

@@ -25,6 +25,11 @@
             <column name="name" display="none" order="0">
                 <widget type="text" fieldname="name" readonly="true" required="true" />
             </column>
+            <column name="docpage" numcolumns="3" order="120">
+                <widget type="select" fieldname="docpage" required="true">
+                    <values source="webpages" fieldcode="idpage" fieldtitle="permalink"></values>
+                </widget>
+            </column>
             <column name="idproject" title="default-project" numcolumns="3" order="120">
                 <widget type="select" fieldname="idproject" required="true">
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"/>

@@ -12,11 +12,11 @@
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
-                                <a href="{{ asset(fsc.getDocPageUrl(docPage)) }}">{{ docPage.title }}</a>
+                                <a href="{{ asset(docPage.url('link')) }}">{{ docPage.title }}</a>
                                 {% for childrenPage in docPage.getChildrenPages() %}
                                     <ul>
                                         <li>
-                                            <a href="{{ asset(fsc.getDocPageUrl(childrenPage)) }}">{{ childrenPage.title }}</a>
+                                            <a href="{{ asset(childrenPage.url('link')) }}">{{ childrenPage.title }}</a>
                                         </li>
                                     </ul>
                                 {% endfor %}
@@ -38,13 +38,18 @@
                                 <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                             </a>
                         </li>
+                        <li class="divider" data-content="Project">
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">
+                                <i class="fa fa-folder fa-fw" aria-hidden="true"></i> {{ fsc.currentProject.name }}
+                            </a>
+                        </li>
                         {% if fsc.docPage.idparent %}
-                            <li class="divider" data-content="Parent">
-                            </li>
                             {% set parentPage = fsc.docPage.getParentPage() %}
                             <li class="menu-item">
-                                <a href="{{ asset(parentPage.url()) }}">
-                                    <i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ parentPage.title }}
+                                <a href="{{ asset(parentPage.url('link')) }}">
+                                    <i class="fa fa-caret-right fa-fw" aria-hidden="true"></i> {{ parentPage.title }}
                                 </a>
                             </li>
                         {% endif %}
@@ -55,7 +60,7 @@
                                 {% if sisterPage.iddoc == fsc.docPage.iddoc %}
                                     <i class="fa fa-book fa-fw" aria-hidden="true"></i> <b>{{ sisterPage.title }}</b>
                                 {% else %}
-                                    <a href="{{ asset(fsc.getDocPageUrl(sisterPage)) }}">
+                                    <a href="{{ asset(sisterPage.url('link')) }}">
                                         <i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ sisterPage.title }}
                                     </a>
                                 {% endif %}

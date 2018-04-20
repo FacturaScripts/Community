@@ -18,10 +18,8 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
-use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of EditWebDocPage controller.
@@ -36,17 +34,6 @@ class EditWebDocPage extends PortalController
      * @var WebDocPage
      */
     public $webDocPage;
-
-    public function goBackUrl()
-    {
-        $where = [new DataBaseWhere('customcontroller', 'WebDocumentation')];
-        $frontDocPage = new WebPage();
-        if ($frontDocPage->loadFromCode('', $where)) {
-            return $frontDocPage->link();
-        }
-
-        return '#';
-    }
 
     public function getPageData()
     {
