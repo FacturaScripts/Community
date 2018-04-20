@@ -98,7 +98,6 @@ class WebDocPage extends Base\ModelClass
 
     public function test()
     {
-        $this->body = Utils::noHtml($this->body);
         $this->title = Utils::noHtml($this->title);
         $this->permalink = is_null($this->permalink) ? Permalink::get($this->title, 150) : $this->permalink;
 

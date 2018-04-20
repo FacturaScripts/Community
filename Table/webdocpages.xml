@@ -23,6 +23,7 @@
     <column>
         <name>idproject</name>
         <type>integer</type>
+        <null>NO</null>
     </column>
     <column>
         <name>langcode</name>

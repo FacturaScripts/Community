@@ -22,6 +22,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
@@ -121,7 +122,10 @@ class WebDocumentation extends PortalController
         /// get url prefix
         $this->urlPrefix = substr($this->webPage->permalink, 1);
         if ('*' === substr($this->webPage->permalink, -1)) {
-            $this->urlPrefix = substr($this->webPage->permalink, 1, -2);
+            $this->urlPrefix = substr($this->webPage->permalink, 1, -1);
+        }
+        if ('/' === substr($this->urlPrefix, -1)) {
+            $this->urlPrefix = substr($this->urlPrefix, 1, -1);
         }
 
         $url = explode('/', $this->uri);
