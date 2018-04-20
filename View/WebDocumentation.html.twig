@@ -4,10 +4,8 @@
     <div class="body-section body-padding">
         <div class="container">
             <div class="columns">
-                <div class="column col-9">
-                    <h1 class="text-capitalize">
-                        <i class="fa {{ fsc.webPage.icon }}" aria-hidden="true"></i> {{ fsc.webPage.title }}
-                    </h1>
+                <div class="column col-9 col-xs-12">
+                    <h1 class="text-capitalize">{{ fsc.webPage.title }}</h1>
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
@@ -23,7 +21,7 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="column col-3">
+                <div class="column col-3 col-xs-12">
                     <ul class="menu">
                         <li class="divider" data-content="{{ i18n.trans('actions') }}">
                         </li>
