@@ -18,11 +18,9 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
-use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
@@ -36,6 +34,8 @@ class WebDocPage extends Base\ModelClass
 
     use Base\ModelTrait;
 
+    const CUSTOM_CONTROLLER = 'WebDocumentation';
+
     /**
      * Page text.
      * 
@@ -48,12 +48,6 @@ class WebDocPage extends Base\ModelClass
      * @var string
      */
     public $creationdate;
-    
-    /**
-     *
-     * @var int
-     */
-    public $idcontacto;
 
     /**
      * Primary key.
@@ -96,11 +90,19 @@ class WebDocPage extends Base\ModelClass
      */
     public $title;
 
+    /**
+     * Visit counter.
+     *
+     * @var int
+     */
+    public $visitcount;
+
     public function clear()
     {
         parent::clear();
         $this->creationdate = date('d-m-Y');
         $this->langcode = substr(FS_LANG, 0, 2);
+        $this->visitcount = 0;
     }
 
     public function getChildrenPages()
@@ -127,13 +129,19 @@ class WebDocPage extends Base\ModelClass
         ];
         return $this->all($where, [], 0, 0);
     }
-    
-    public function install()
+
+    /**
+     * Increase visit counter and save. To improve performancem this will only happen every 2 or 10 times.
+     */
+    public function increaseVisitCount()
     {
-        /// needed as dependency
-        new Contacto();
-        
-        return parent::install();
+        if ($this->visitcount < 100 && mt_rand(0, 1) == 0) {
+            $this->visitcount += 2;
+            $this->save();
+        } elseif ($this->visitcount > 100 && mt_rand(0, 9) === 0) {
+            $this->visitcount += 10;
+            $this->save();
+        }
     }
 
     public static function primaryColumn()
@@ -160,7 +168,11 @@ class WebDocPage extends Base\ModelClass
             case 'link':
                 $url = '#';
                 $webPage = new WebPage();
-                if ($webPage->loadFromCode(AppSettings::get('community', 'docpage'))) {
+                $where = [
+                    new DataBaseWhere('customcontroller', self::CUSTOM_CONTROLLER),
+                    new DataBaseWhere('langcode', $this->langcode)
+                ];
+                if ($webPage->loadFromCode('', $where)) {
                     $url = $webPage->permalink;
                 }
                 if ('*' === substr($url, -1)) {

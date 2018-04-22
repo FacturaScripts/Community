@@ -40,9 +40,20 @@ class ListWebProject extends ExtendedController\ListController
 
     protected function createViews()
     {
-        $this->addView('ListWebProject', 'WebProject');
+        /// projects
+        $this->addView('ListWebProject', 'WebProject', 'projects', 'fa-folder');
         $this->addSearchFields('ListWebProject', ['name']);
         $this->addOrderBy('ListWebProject', 'name');
         $this->addOrderBy('ListWebProject', 'creationdate', 'date');
+        
+        /// doc pages
+        $this->addView('ListWebDocPage', 'WebDocPage', 'documentation', 'fa-book');
+        $this->addSearchFields('ListWebDocPage', ['title', 'body']);
+        $this->addOrderBy('ListWebDocPage', 'title');
+        $this->addOrderBy('ListWebDocPage', 'creationdate', 'date');
+        $this->addOrderBy('ListWebDocPage', 'visitcount');
+        
+        $langValues = $this->codeModel->all('webdocpages', 'langcode', 'langcode');
+        $this->addFilterSelect('ListWebDocPage', 'langcode', 'language', 'langcode', $langValues);
     }
 }

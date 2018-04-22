@@ -84,8 +84,6 @@ class EditWebDocPage extends PortalController
             if (!empty($idparent)) {
                 $this->newChildrenPage($idparent);
             }
-
-            $this->webDocPage->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
         }
 
         if ('' !== $title) {
@@ -93,9 +91,9 @@ class EditWebDocPage extends PortalController
             $this->webDocPage->title = $title;
             $this->webDocPage->body = $body;
             if ($this->webDocPage->save()) {
-                $this->miniLog->info($this->i18n->trans('save-ok'));
+                $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
             } else {
-                $this->miniLog->alert($this->i18n->trans('save-error'));
+                $this->miniLog->alert($this->i18n->trans('record-save-error'));
             }
         }
     }

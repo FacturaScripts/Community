@@ -15,10 +15,6 @@
         <type>date</type>
     </column>
     <column>
-        <name>idcontacto</name>
-        <type>integer</type>
-    </column>
-    <column>
         <name>iddoc</name>
         <type>serial</type>
         <null>NO</null>
@@ -46,13 +42,14 @@
         <name>title</name>
         <type>character varying(250)</type>
     </column>
+    <column>
+        <name>visitcount</name>
+        <type>integer</type>
+        <default>0</default>
+    </column>
     <constraint>
         <name>webdocpages_pkey</name>
         <type>PRIMARY KEY (iddoc)</type>
-    </constraint>
-    <constraint>
-        <name>ca_webdocpages_contactos</name>
-        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
         <name>ca_webdocpages_webdocpages</name>

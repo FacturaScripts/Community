@@ -110,6 +110,10 @@ class WebDocumentation extends PortalController
 
     private function getUrlExtraParams()
     {
+        if ($this->uri === '/' . $this->getClassName()) {
+            return [];
+        }
+
         $params = explode('/', substr($this->uri, strlen($this->webPage->permalink)));
         return empty($params[0]) ? [] : $params;
     }
@@ -134,7 +138,7 @@ class WebDocumentation extends PortalController
             return $webPage;
         }
 
-        $webPage->loadFromCode(AppSettings::get('community', 'docpage'));
+        $webPage->loadFromCode('', [new DataBaseWhere('customcontroller', $this->getClassName())]);
         $webPage->noindex = true;
         return $webPage;
     }
@@ -160,6 +164,7 @@ class WebDocumentation extends PortalController
 
         /// doc page permalink?
         if (null === $docPermalink) {
+            /// project doc pages
             $where = [
                 new DataBaseWhere('idparent', null, 'IS'),
                 new DataBaseWhere('idproject', $this->currentProject->idproject),
@@ -167,6 +172,8 @@ class WebDocumentation extends PortalController
             ];
             $this->docPages = $this->docPage->all($where, [], 0, 0);
         } elseif ($this->docPage->loadFromCode('', [new DataBaseWhere('permalink', $docPermalink)])) {
+            /// individual doc page
+            $this->docPage->increaseVisitCount();
             $this->docPages = $this->docPage->getChildrenPages();
             $this->setTemplate('WebDocPage');
         }

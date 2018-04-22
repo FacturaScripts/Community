@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018  Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,11 +24,6 @@
         <group name="default" numcolumns="12">
             <column name="name" display="none" order="0">
                 <widget type="text" fieldname="name" readonly="true" required="true" />
-            </column>
-            <column name="docpage" numcolumns="3" order="120">
-                <widget type="select" fieldname="docpage" required="true">
-                    <values source="webpages" fieldcode="idpage" fieldtitle="permalink"></values>
-                </widget>
             </column>
             <column name="idproject" title="default-project" numcolumns="3" order="120">
                 <widget type="select" fieldname="idproject" required="true">
