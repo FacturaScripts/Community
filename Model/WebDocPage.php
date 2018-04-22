@@ -157,9 +157,14 @@ class WebDocPage extends Base\ModelClass
     public function test()
     {
         $this->title = Utils::noHtml($this->title);
+        $this->body = strip_tags($this->body);
         $this->permalink = is_null($this->permalink) ? $this->idproject . '/' . Permalink::get($this->title, 150) : $this->permalink;
 
-        return (strlen($this->title) > 1);
+        if (strlen($this->title) < 1) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '100']));
+        }
+
+        return parent::test();
     }
 
     public function url(string $type = 'auto', string $list = 'List')
