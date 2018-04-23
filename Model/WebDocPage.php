@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018  Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -14,7 +14,7 @@
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
@@ -22,6 +22,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\WebPageClass;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
@@ -29,7 +30,7 @@ use FacturaScripts\Plugins\webportal\Model\WebPage;
  *
  * @author Carlos García Gómez
  */
-class WebDocPage extends Base\ModelClass
+class WebDocPage extends WebPageClass
 {
 
     use Base\ModelTrait;
@@ -42,12 +43,6 @@ class WebDocPage extends Base\ModelClass
      * @var string
      */
     public $body;
-
-    /**
-     *
-     * @var string
-     */
-    public $creationdate;
 
     /**
      * Primary key.
@@ -71,13 +66,6 @@ class WebDocPage extends Base\ModelClass
     public $idproject;
 
     /**
-     * Language code.
-     *
-     * @var string
-     */
-    public $langcode;
-
-    /**
      *
      * @var string
      */
@@ -91,20 +79,10 @@ class WebDocPage extends Base\ModelClass
     public $title;
 
     /**
-     * Visit counter.
+     * Returns children items. Items with this page as parent.
      *
-     * @var int
+     * @return WebDocPage[]
      */
-    public $visitcount;
-
-    public function clear()
-    {
-        parent::clear();
-        $this->creationdate = date('d-m-Y');
-        $this->langcode = substr(FS_LANG, 0, 2);
-        $this->visitcount = 0;
-    }
-
     public function getChildrenPages()
     {
         $where = [
@@ -114,11 +92,21 @@ class WebDocPage extends Base\ModelClass
         return $this->all($where, [], 0, 0);
     }
 
+    /**
+     * Returns the parent page.
+     *
+     * @return WebDocPage
+     */
     public function getParentPage()
     {
         return $this->get($this->idparent);
     }
 
+    /**
+     * Returns items with the same parent or project.
+     *
+     * @return WebDocPage[]
+     */
     public function getSisterPages()
     {
         $operator = is_null($this->idparent) ? 'IS' : '=';
@@ -131,42 +119,51 @@ class WebDocPage extends Base\ModelClass
     }
 
     /**
-     * Increase visit counter and save. To improve performancem this will only happen every 2 or 10 times.
+     * Returns the name of the column that is the primary key of the model.
+     *
+     * @return string
      */
-    public function increaseVisitCount()
-    {
-        if ($this->visitcount < 100 && mt_rand(0, 1) == 0) {
-            $this->visitcount += 2;
-            $this->save();
-        } elseif ($this->visitcount > 100 && mt_rand(0, 9) === 0) {
-            $this->visitcount += 10;
-            $this->save();
-        }
-    }
-
     public static function primaryColumn()
     {
         return 'iddoc';
     }
 
+    /**
+     * Returns the name of the table that uses this model.
+     *
+     * @return string
+     */
     public static function tableName()
     {
         return 'webdocpages';
     }
 
+    /**
+     * Returns True if there is no errors on properties values.
+     *
+     * @return bool
+     */
     public function test()
     {
-        $this->title = Utils::noHtml($this->title);
         $this->body = strip_tags($this->body);
-        $this->permalink = is_null($this->permalink) ? $this->idproject . '/' . Permalink::get($this->title, 150) : $this->permalink;
+        $this->title = Utils::noHtml($this->title);
 
         if (strlen($this->title) < 1) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '100']));
         }
 
+        $this->permalink = is_null($this->permalink) ? $this->idproject . '/' . Permalink::get($this->title, 150) : $this->permalink;
         return parent::test();
     }
 
+    /**
+     * Returns the url where to see / modify the data.
+     *
+     * @param string $type
+     * @param string $list
+     *
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         switch ($type) {

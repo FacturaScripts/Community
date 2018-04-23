@@ -53,6 +53,9 @@ class ListWebProject extends ExtendedController\ListController
         $this->addOrderBy('ListWebDocPage', 'creationdate', 'date');
         $this->addOrderBy('ListWebDocPage', 'visitcount');
         
+        $projects = $this->codeModel->all('webprojects', 'idproject', 'name');
+        $this->addFilterSelect('ListWebDocPage', 'idproject', 'project', 'idproject', $projects);
+        
         $langValues = $this->codeModel->all('webdocpages', 'langcode', 'langcode');
         $this->addFilterSelect('ListWebDocPage', 'langcode', 'language', 'langcode', $langValues);
     }
