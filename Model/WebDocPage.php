@@ -78,6 +78,20 @@ class WebDocPage extends WebPageClass
      */
     public $title;
 
+    public function description(int $len = 300): string
+    {
+        $description = '';
+        foreach (explode(' ', $this->body) as $word) {
+            if (mb_strlen($description . $word . ' ') >= $len) {
+                break;
+            }
+
+            $description .= $word . ' ';
+        }
+
+        return trim($description);
+    }
+
     /**
      * Returns children items. Items with this page as parent.
      *
