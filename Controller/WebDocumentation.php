@@ -139,7 +139,6 @@ class WebDocumentation extends PortalController
         }
 
         $webPage->loadFromCode('', [new DataBaseWhere('customcontroller', $this->getClassName())]);
-        $webPage->noindex = true;
         return $webPage;
     }
 
@@ -192,6 +191,6 @@ class WebDocumentation extends PortalController
             new DataBaseWhere('idproject', $this->currentProject->idproject),
             new DataBaseWhere('langcode', $this->webPage->langcode)
         ];
-        $this->docPages = $this->docPage->all($where, [], 0, 0);
+        $this->docPages = $this->docPage->all($where, ['ordernum' => 'ASC'], 0, 0);
     }
 }

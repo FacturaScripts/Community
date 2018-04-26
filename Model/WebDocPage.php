@@ -22,7 +22,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\WebPageClass;
+use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
@@ -103,7 +103,7 @@ class WebDocPage extends WebPageClass
             new DataBaseWhere('idparent', $this->iddoc),
             new DataBaseWhere('langcode', $this->langcode)
         ];
-        return $this->all($where, [], 0, 0);
+        return $this->all($where, ['ordernum' => 'ASC'], 0, 0);
     }
 
     /**
@@ -129,7 +129,7 @@ class WebDocPage extends WebPageClass
             new DataBaseWhere('idproject', $this->idproject),
             new DataBaseWhere('langcode', $this->langcode)
         ];
-        return $this->all($where, [], 0, 0);
+        return $this->all($where, ['ordernum' => 'ASC'], 0, 0);
     }
 
     /**

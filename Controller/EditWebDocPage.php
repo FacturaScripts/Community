@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 
@@ -46,6 +47,20 @@ class EditWebDocPage extends PortalController
         return $pageData;
     }
 
+    public function getProjectDocPages()
+    {
+        $where = [
+            new DataBaseWhere('idproject', $this->webDocPage->idproject),
+            new DataBaseWhere('langcode', $this->webDocPage->langcode)
+        ];
+
+        if (null !== $this->webDocPage->iddoc) {
+            $where[] = new DataBaseWhere('iddoc', $this->webDocPage->iddoc, '!=');
+        }
+
+        return $this->webDocPage->all($where, ['ordernum' => 'ASC'], 0, 0);
+    }
+
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
@@ -66,20 +81,16 @@ class EditWebDocPage extends PortalController
     {
         $this->setTemplate('EditWebDocPage');
 
-        $body = $this->request->request->get('body', '');
-        $code = $this->request->get('code');
+        $code = $this->request->get('code', '');
         $idparent = $this->request->get('idparent');
-        $idproject = $this->request->get('idproject');
-        $langcode = $this->request->get('langcode');
         $title = $this->request->request->get('title', '');
-
         $this->webDocPage = new WebDocPage();
 
         /// loads doc page
         if (!$this->webDocPage->loadFromCode($code)) {
             /// if it's a new doc page, then use the idproject and langcode
-            $this->webDocPage->idproject = $idproject;
-            $this->webDocPage->langcode = $langcode;
+            $this->webDocPage->idproject = $this->request->get('idproject', $this->webDocPage->idproject);
+            $this->webDocPage->langcode = $this->request->get('langcode', $this->webDocPage->langcode);
 
             if (!empty($idparent)) {
                 $this->newChildrenPage($idparent);
@@ -87,9 +98,10 @@ class EditWebDocPage extends PortalController
         }
 
         if ('' !== $title) {
+            $this->webDocPage->body = $this->request->request->get('body', '');
             $this->webDocPage->idparent = empty($idparent) ? null : $idparent;
+            $this->webDocPage->ordernum = (int) $this->request->get('ordernum', '100');
             $this->webDocPage->title = $title;
-            $this->webDocPage->body = $body;
             if ($this->webDocPage->save()) {
                 $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
             } else {

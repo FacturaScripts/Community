@@ -28,11 +28,10 @@
             </div>
             <form action="{{ fsc.url() }}" method="post">
                 <input type="hidden" name="code" value="{{ fsc.webDocPage.primaryColumnValue() }}"/>
-                <input type="hidden" name="idparent" value="{{ fsc.webDocPage.idparent }}"/>
                 <input type="hidden" name="idproject" value="{{ fsc.webDocPage.idproject }}"/>
                 <input type="hidden" name="langcode" value="{{ fsc.webDocPage.langcode }}"/>
                 <div class="columns">
-                    <div class="column col-12">
+                    <div class="column col-12 col-xs-12">
                         <div class="form-group">
                             <div class="input-group">
                                 <span class="input-group-addon">{{ i18n.trans('title') }}</span>
@@ -42,6 +41,34 @@
                         </div>
                         <div class="form-group">
                             <textarea name="body" class="form-input">{{ fsc.webDocPage.body }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column col-8 col-xs-8">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ i18n.trans('parent') }}</span>
+                                <select name="idparent" class="form-select">
+                                    <option value="">{{ i18n.trans('none') }}</option>
+                                    <option value="">------</option>
+                                    {% for docPage in fsc.getProjectDocPages() %}
+                                        {% if docPage.iddoc == fsc.webDocPage.idparent %}
+                                            <option value="{{ docPage.iddoc }}" selected="">{{ docPage.title }}</option>
+                                        {% else %}
+                                            <option value="{{ docPage.iddoc }}">{{ docPage.title }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column col-4 col-xs-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">{{ i18n.trans('sort') }}</span>
+                                <input type="number" name="ordernum" value="{{ fsc.webDocPage.ordernum }}" class="form-input" autocomplete="off"/>
+                            </div>
                         </div>
                     </div>
                 </div>

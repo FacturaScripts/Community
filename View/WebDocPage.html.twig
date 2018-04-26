@@ -47,19 +47,6 @@
                                 <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                             </a>
                         </li>
-                        <li class="divider" data-content="{{ i18n.trans('more') }}">
-                        </li>
-                        {% for sisterPage in fsc.docPage.getSisterPages() %}
-                            <li class="menu-item">
-                                {% if sisterPage.iddoc == fsc.docPage.iddoc %}
-                                    <i class="fa fa-eye fa-fw" aria-hidden="true"></i> <b>{{ sisterPage.title }}</b>
-                                {% else %}
-                                    <a href="{{ asset(sisterPage.url('link')) }}">
-                                        <i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ sisterPage.title }}
-                                    </a>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
                         <li class="divider" data-content="{{ i18n.trans('properties') }}">
                         </li>
                         <li class="menu-item">
@@ -70,6 +57,18 @@
                             <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('last-update') }}:
                             {{ fsc.docPage.lastmod }}
                         </li>
+                    </ul>
+                    <br/>
+                    <ul>
+                        {% for sisterPage in fsc.docPage.getSisterPages() %}
+                            <li>
+                                {% if sisterPage.iddoc == fsc.docPage.iddoc %}
+                                    <b>{{ sisterPage.title }}</b>
+                                {% else %}
+                                    <a href="{{ asset(sisterPage.url('link')) }}">{{ sisterPage.title }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
