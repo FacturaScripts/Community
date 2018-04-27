@@ -93,7 +93,10 @@ class WebDocumentation extends PortalController
     public function parsedown(string $txt): string
     {
         $parser = new Parsedown();
-        return $parser->text($txt);
+        $html = $parser->text($txt);
+        
+        /// fix <pre> tag
+        return str_replace('<pre>', '<pre class="code">', $html);
     }
 
     public function privateCore(&$response, $user, $permissions)
