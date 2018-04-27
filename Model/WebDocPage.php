@@ -159,7 +159,7 @@ class WebDocPage extends WebPageClass
      */
     public function test()
     {
-        $this->body = strip_tags($this->body);
+        $this->body = Utils::noHtml($this->body);
         $this->title = Utils::noHtml($this->title);
 
         if (strlen($this->title) < 1) {

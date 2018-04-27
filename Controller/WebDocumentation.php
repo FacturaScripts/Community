@@ -22,6 +22,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
@@ -93,8 +94,8 @@ class WebDocumentation extends PortalController
     public function parsedown(string $txt): string
     {
         $parser = new Parsedown();
-        $html = $parser->text($txt);
-        
+        $html = $parser->text(Utils::fixHtml($txt));
+
         /// fix <pre> tag
         return str_replace('<pre>', '<pre class="code">', $html);
     }
