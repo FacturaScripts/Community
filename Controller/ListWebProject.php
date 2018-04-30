@@ -51,6 +51,7 @@ class ListWebProject extends ExtendedController\ListController
         $this->addSearchFields('ListWebDocPage', ['title', 'body']);
         $this->addOrderBy('ListWebDocPage', 'title');
         $this->addOrderBy('ListWebDocPage', 'creationdate', 'date');
+        $this->addOrderBy('ListWebDocPage', 'lastmod', 'last-update', 2);
         $this->addOrderBy('ListWebDocPage', 'visitcount');
         
         $projects = $this->codeModel->all('webprojects', 'idproject', 'name');
