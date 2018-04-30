@@ -69,4 +69,8 @@
         <name>ca_webdocpages_webprojects</name>
         <type>FOREIGN KEY (idproject) REFERENCES webprojects (idproject) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
+    <constraint>
+        <name>uniq_webdocpages_permalink</name>
+        <type>UNIQUE (permalink)</type>
+    </constraint>
 </table>

@@ -142,7 +142,16 @@ class WebDocumentation extends PortalController
             return $webPage;
         }
 
-        $webPage->loadFromCode('', [new DataBaseWhere('customcontroller', $this->getClassName())]);
+        if( !$webPage->loadFromCode('', [new DataBaseWhere('customcontroller', $this->getClassName())]) ) {
+            /// create the webpage
+            $webPage->customcontroller = $this->getClassName();
+            $webPage->description = 'Doc';
+            $webPage->permalink = 'doc*';
+            $webPage->shorttitle = 'Doc';
+            $webPage->title = 'Doc';
+            $webPage->save();
+        }
+        
         return $webPage;
     }
 

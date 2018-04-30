@@ -16,7 +16,7 @@
                             </li>
                         {% endif %}
                     </ul>
-                    <h1 class="text-capitalize">{{ fsc.docPage.title }}</h1>
+                    <h1>{{ fsc.docPage.title }}</h1>
                     {{ fsc.parsedown(fsc.docPage.body) | raw }}
                     <ul>
                         {% for docPage in fsc.docPages %}
@@ -34,6 +34,20 @@
                     </ul>
                 </div>
                 <div class="column col-3 col-xs-12">
+                    {% set sisterPages = fsc.docPage.getSisterPages() %}
+                    {% if sisterPages | length > 1 %}
+                        <ul>
+                            {% for sisterPage in fsc.docPage.getSisterPages() %}
+                                <li>
+                                    {% if sisterPage.iddoc == fsc.docPage.iddoc %}
+                                        <b>{{ sisterPage.title }}</b>
+                                    {% else %}
+                                        <a href="{{ asset(sisterPage.url('link')) }}">{{ sisterPage.title }}</a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     <ul class="menu">
                         <li class="divider" data-content="{{ i18n.trans('actions') }}">
                         </li>
@@ -57,18 +71,6 @@
                             <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('last-update') }}:
                             {{ fsc.docPage.lastmod }}
                         </li>
-                    </ul>
-                    <br/>
-                    <ul>
-                        {% for sisterPage in fsc.docPage.getSisterPages() %}
-                            <li>
-                                {% if sisterPage.iddoc == fsc.docPage.iddoc %}
-                                    <b>{{ sisterPage.title }}</b>
-                                {% else %}
-                                    <a href="{{ asset(sisterPage.url('link')) }}">{{ sisterPage.title }}</a>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
                     </ul>
                 </div>
             </div>

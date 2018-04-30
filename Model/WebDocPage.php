@@ -166,7 +166,7 @@ class WebDocPage extends WebPageClass
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '100']));
         }
 
-        $this->permalink = is_null($this->permalink) ? $this->idproject . '/' . Permalink::get($this->title, 150) : $this->permalink;
+        $this->permalink = is_null($this->permalink) ? $this->newPermalink() : $this->permalink;
         return parent::test();
     }
 
@@ -202,5 +202,15 @@ class WebDocPage extends WebPageClass
             default:
                 return parent::url($type, $list);
         }
+    }
+
+    private function newPermalink()
+    {
+        $permalink = $this->idproject . '/' . Permalink::get($this->title, 150);
+        if (empty($this->all([new DataBaseWhere('permalink', $permalink)]))) {
+            return $permalink;
+        }
+
+        return $permalink . '-' . mt_rand(2, 999);
     }
 }
