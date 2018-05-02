@@ -186,7 +186,7 @@ class WebDocumentation extends PortalController
 
     private function loadPage()
     {
-        $this->docPage->increaseVisitCount();
+        $this->docPage->increaseVisitCount($this->request->getClientIp());
         $this->docPages = $this->docPage->getChildrenPages();
 
         $this->title = $this->docPage->title;
