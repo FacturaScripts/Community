@@ -4,7 +4,7 @@
     <div class="body-section body-padding">
         <div class="container">
             <div class="columns">
-                <div class="column col-9 col-xs-12 col-sm-12">
+                <div class="column col-9 col-md-12">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item">
                             <a href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">{{ fsc.currentProject.name }}</a>
@@ -33,7 +33,7 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="column col-3 col-xs-12 col-sm-12">
+                <div class="column col-3 col-md-12">
                     <div class="divider text-center show-sm" data-content="{{ i18n.trans('more') }}"></div>
                     {% set sisterPages = fsc.docPage.getSisterPages() %}
                     {% if sisterPages | length > 1 %}
@@ -56,13 +56,13 @@
                         <li class="divider" data-content="{{ i18n.trans('actions') }}">
                         </li>
                         <li class="menu-item">
-                            <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}">
-                                <i class="fa fa-file-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
+                            <a href="{{ asset(fsc.docPage.url()) }}">
+                                <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                             </a>
                         </li>
                         <li class="menu-item">
-                            <a href="{{ asset(fsc.docPage.url()) }}">
-                                <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
+                            <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}">
+                                <i class="fa fa-file-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
                             </a>
                         </li>
                         <li class="divider" data-content="{{ i18n.trans('properties') }}">
@@ -74,6 +74,10 @@
                         <li class="menu-item">
                             <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('last-update') }}:
                             {{ fsc.docPage.lastmod }}
+                        </li>
+                        <li class="menu-item">
+                            <i class="fa fa-users fa-fw" aria-hidden="true"></i> {{ i18n.trans('visit-counter') }}:
+                            {{ fsc.docPage.visitcount }}
                         </li>
                     </ul>
                 </div>
