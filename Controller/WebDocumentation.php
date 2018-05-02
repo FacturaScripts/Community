@@ -96,8 +96,8 @@ class WebDocumentation extends PortalController
         $parser = new Parsedown();
         $html = $parser->text(Utils::fixHtml($txt));
 
-        /// fix <pre> tag
-        return str_replace('<pre>', '<pre class="code">', $html);
+        /// some html fixes
+        return str_replace(['<p>', '<pre>'], ['<p class="text-justify">', '<pre class="code">'], $html);
     }
 
     public function privateCore(&$response, $user, $permissions)
@@ -142,7 +142,7 @@ class WebDocumentation extends PortalController
             return $webPage;
         }
 
-        if( !$webPage->loadFromCode('', [new DataBaseWhere('customcontroller', $this->getClassName())]) ) {
+        if (!$webPage->loadFromCode('', [new DataBaseWhere('customcontroller', $this->getClassName())])) {
             /// create the webpage
             $webPage->customcontroller = $this->getClassName();
             $webPage->description = 'Doc';
@@ -151,7 +151,7 @@ class WebDocumentation extends PortalController
             $webPage->title = 'Doc';
             $webPage->save();
         }
-        
+
         return $webPage;
     }
 
