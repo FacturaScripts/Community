@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -186,7 +186,8 @@ class WebDocumentation extends PortalController
 
     private function loadPage()
     {
-        $this->docPage->increaseVisitCount($this->request->getClientIp());
+        $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+        $this->docPage->increaseVisitCount($ipAddress);
         $this->docPages = $this->docPage->getChildrenPages();
 
         $this->title = $this->docPage->title;
