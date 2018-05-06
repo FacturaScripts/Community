@@ -93,6 +93,26 @@ class DownloadBuild extends PortalController
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
     }
 
+    protected function getBuilds()
+    {
+        $data = [];
+        $buildModel = new WebBuild();
+        foreach ($this->currentProject->all([], [], 0, 0) as $project) {
+            $projectData = ['project' => $project->idproject, 'builds' => []];
+            foreach ($buildModel->all([new DataBaseWhere('idproject', $project->idproject)], ['version' => 'DESC'], 0, 5) as $build) {
+                $projectData['builds'][] = [
+                    'version' => $build->version,
+                    'stable' => $build->stable,
+                    'beta' => $build->beta
+                ];
+            }
+
+            $data[] = $projectData;
+        }
+
+        return $data;
+    }
+
     protected function getUrlExtraParams()
     {
         $params = [];
@@ -109,12 +129,14 @@ class DownloadBuild extends PortalController
         $this->setTemplate(false);
 
         $urlParams = $this->getUrlExtraParams();
-        $idproject = isset($urlParams[0]) ? $urlParams[0] : 0;
+        $idproject = isset($urlParams[0]) ? $urlParams[0] : '';
         $buildVersion = isset($urlParams[1]) ? $urlParams[1] : 'stable';
 
         /// current project
         $this->currentProject = new WebProject();
-        if ($this->currentProject->loadFromCode($idproject)) {
+        if ('' === $idproject) {
+            $this->response->setContent(json_encode($this->getBuilds()));
+        } elseif ($this->currentProject->loadFromCode($idproject)) {
             $this->findBuild($idproject, $buildVersion);
         } else {
             $this->response->setContent('PROJECT-NOT-FOUND');

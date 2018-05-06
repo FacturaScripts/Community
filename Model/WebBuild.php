@@ -104,7 +104,7 @@ class WebBuild extends Base\ModelClass
         $this->downloads = 0;
         $this->hour = date('H:i:s');
         $this->stable = false;
-        $this->version = 0.0;
+        $this->version = 1.0;
     }
 
     public function delete()
