@@ -65,6 +65,7 @@ class ListWebProject extends ExtendedController\ListController
         $this->addSearchFields('ListWebBuild', ['path']);
         $this->addOrderBy('ListWebBuild', 'version');
         $this->addOrderBy('ListWebBuild', 'date');
+        $this->addOrderBy('ListWebBuild', 'downloads');
         
         $this->addFilterCheckbox('ListWebBuild', 'beta', 'beta', 'beta');
         $this->addFilterCheckbox('ListWebBuild', 'stable', 'stable', 'stable');

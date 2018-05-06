@@ -44,5 +44,8 @@
         <column name="hour" display="right" order="150">
             <widget type="date" fieldname="hour" />
         </column>
+        <column name="downloads" display="right" order="160">
+            <widget type="number" fieldname="downloads" />
+        </column>
     </columns>
 </view>
