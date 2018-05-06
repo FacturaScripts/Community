@@ -45,7 +45,7 @@ class ListWebProject extends ExtendedController\ListController
         $this->addSearchFields('ListWebProject', ['name']);
         $this->addOrderBy('ListWebProject', 'name');
         $this->addOrderBy('ListWebProject', 'creationdate', 'date');
-        
+
         /// doc pages
         $this->addView('ListWebDocPage', 'WebDocPage', 'documentation', 'fa-book');
         $this->addSearchFields('ListWebDocPage', ['title', 'body']);
@@ -53,11 +53,20 @@ class ListWebProject extends ExtendedController\ListController
         $this->addOrderBy('ListWebDocPage', 'creationdate', 'date');
         $this->addOrderBy('ListWebDocPage', 'lastmod', 'last-update', 2);
         $this->addOrderBy('ListWebDocPage', 'visitcount');
-        
+
         $projects = $this->codeModel->all('webprojects', 'idproject', 'name');
         $this->addFilterSelect('ListWebDocPage', 'idproject', 'project', 'idproject', $projects);
-        
+
         $langValues = $this->codeModel->all('webdocpages', 'langcode', 'langcode');
         $this->addFilterSelect('ListWebDocPage', 'langcode', 'language', 'langcode', $langValues);
+
+        /// builds
+        $this->addView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive-o');
+        $this->addSearchFields('ListWebBuild', ['path']);
+        $this->addOrderBy('ListWebBuild', 'version');
+        $this->addOrderBy('ListWebBuild', 'date');
+        
+        $this->addFilterCheckbox('ListWebBuild', 'beta', 'beta', 'beta');
+        $this->addFilterCheckbox('ListWebBuild', 'stable', 'stable', 'stable');
     }
 }

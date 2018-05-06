@@ -18,7 +18,7 @@
         <name>iddoc</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('webdocpages_idproject_seq'::regclass)</default>
+        <default>nextval('webdocpages_iddoc_seq'::regclass)</default>
     </column>
     <column>
         <name>idparent</name>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : webbuilds.xml
+    Author     : Carlos Garcia Gomez
+    Description:
+        Structure for the webbuilds table.
+-->
+<table>
+    <column>
+        <name>beta</name>
+        <type>boolean</type>
+    </column>
+    <column>
+        <name>date</name>
+        <type>date</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>downloads</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>hour</name>
+        <type>time without time zone</type>
+    </column>
+    <column>
+        <name>idbuild</name>
+        <type>serial</type>
+        <null>NO</null>
+        <default>nextval('webbuilds_idbuild_seq'::regclass)</default>
+    </column>
+    <column>
+        <name>idfile</name>
+        <type>integer</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>idproject</name>
+        <type>integer</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>path</name>
+        <type>character varying(200)</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>stable</name>
+        <type>boolean</type>
+    </column>
+    <column>
+        <name>version</name>
+        <type>double precision</type>
+        <null>NO</null>
+    </column>
+    <constraint>
+        <name>webbuilds_pkey</name>
+        <type>PRIMARY KEY (idbuild)</type>
+    </constraint>
+    <constraint>
+        <name>ca_webbuilds_attached_files</name>
+        <type>FOREIGN KEY (idfile) REFERENCES attached_files (idfile) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_webbuilds_webprojects</name>
+        <type>FOREIGN KEY (idproject) REFERENCES webprojects (idproject) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>uniq_webbuilds_version</name>
+        <type>UNIQUE (idproject,version)</type>
+    </constraint>
+</table>

@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Lib\ExtendedController;
 
 /**
@@ -42,6 +43,11 @@ class EditWebProject extends ExtendedController\PanelController
     protected function createViews()
     {
         $this->addEditView('EditWebProject', 'WebProject', 'project', 'fa-folder');
+        $this->addListView('ListWebDocPage', 'WebDocPage', 'documentation', 'fa-book');
+        $this->addListView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive-o');
+
+        $this->views['ListWebDocPage']->disableColumn('project', true);
+        $this->views['ListWebBuild']->disableColumn('project', true);
     }
 
     protected function loadData($viewName, $view)
@@ -50,6 +56,12 @@ class EditWebProject extends ExtendedController\PanelController
             case 'EditWebProject':
                 $code = $this->request->get('code');
                 $view->loadData($code);
+                break;
+
+            case 'ListWebDocPage':
+            case 'ListWebBuild':
+                $idproject = $this->getViewModelValue('EditWebProject', 'idproject');
+                $view->loadData(false, [new DataBaseWhere('idproject', $idproject)]);
                 break;
         }
     }
