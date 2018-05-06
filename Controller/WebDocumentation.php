@@ -27,6 +27,7 @@ use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 use Parsedown;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of WebDocumentation
@@ -167,7 +168,10 @@ class WebDocumentation extends PortalController
 
         /// current project
         $this->currentProject = new WebProject();
-        $this->currentProject->loadFromCode($idproject);
+        if (!$this->currentProject->loadFromCode($idproject)) {
+            $this->miniLog->alert($this->i18n->trans('no-data'));
+            $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
+        }
 
         /// all projects
         $this->projects = $this->currentProject->all([], ['name' => 'ASC'], 0, 0);
@@ -181,6 +185,9 @@ class WebDocumentation extends PortalController
         } elseif ($this->docPage->loadFromCode('', [new DataBaseWhere('permalink', $docPermalink)])) {
             /// individual doc page
             $this->loadPage();
+        } else {
+            $this->miniLog->alert($this->i18n->trans('no-data'));
+            $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         }
     }
 
