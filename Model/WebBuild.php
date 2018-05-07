@@ -117,17 +117,6 @@ class WebBuild extends Base\ModelClass
         return false;
     }
 
-    public function increaseDownloads()
-    {
-        if ($this->downloads < 100 && mt_rand(0, 1) == 0) {
-            $this->downloads += 2;
-            $this->save();
-        } elseif ($this->downloads >= 100 && mt_rand(0, 9) === 0) {
-            $this->downloads += 10;
-            $this->save();
-        }
-    }
-
     /**
      * 
      * @return AttachedFile
@@ -140,6 +129,25 @@ class WebBuild extends Base\ModelClass
         }
 
         return null;
+    }
+
+    public function increaseDownloads()
+    {
+        if ($this->downloads < 100 && mt_rand(0, 1) == 0) {
+            $this->downloads += 2;
+            $this->save();
+        } elseif ($this->downloads >= 100 && mt_rand(0, 9) === 0) {
+            $this->downloads += 10;
+            $this->save();
+        }
+    }
+
+    public function install()
+    {
+        /// to force check this table.
+        new AttachedFile();
+
+        return parent::install();
     }
 
     public static function primaryColumn()
