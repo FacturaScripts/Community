@@ -38,6 +38,16 @@ class DownloadBuild extends PortalController
      */
     public $currentProject;
 
+    public function getPageData()
+    {
+        $pagedata = parent::getPageData();
+        $pagedata['menu'] = 'web';
+        $pagedata['icon'] = 'fa-file-archive-o';
+        $pagedata['showonmenu'] = false;
+        
+        return $pagedata;
+    }
+
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
