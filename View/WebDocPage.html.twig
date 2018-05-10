@@ -14,11 +14,7 @@
                                 {{ i18n.trans('index') }}
                                 <i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
                             </a>
-                            <ul class="menu">
-                                <li class="menu-item">
-                                    {{ macros.showIndexUl(fsc.docIndex) }}
-                                </li>
-                            </ul>
+                            {{ macros.showIndexUlMenu(fsc.docIndex) }}
                         </div>
                         <br/><br/>
                     </div>
@@ -96,6 +92,27 @@
     <ul>
         {% for item in items %}
             <li>
+                <a href="{{ asset(item.page.url('link')) }}">
+                    {% if item.selected %}
+                        <b>{{ item.page.title }}</b>
+                    {% else %}
+                        {{ item.page.title }}
+                    {% endif %}
+                </a>
+                {% if item.more | length > 0 %}
+                    {{ macros.showIndexUl(item.more) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro showIndexUlMenu(items) %}
+    {% import _self as macros %}
+
+    <ul class="menu menu-big" style="width: 285px;">
+        {% for item in items %}
+            <li class="menu-item">
                 <a href="{{ asset(item.page.url('link')) }}">
                     {% if item.selected %}
                         <b>{{ item.page.title }}</b>

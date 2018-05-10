@@ -44,7 +44,7 @@ class WebSearch extends ParentSearch
             $this->searchResults[$link] = [
                 'icon' => 'fa-book',
                 'title' => $docPage->title,
-                'description' => $docPage->body,
+                'description' => $docPage->description(300),
                 'link' => $link
             ];
         }

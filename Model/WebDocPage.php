@@ -78,11 +78,18 @@ class WebDocPage extends WebPageClass
      */
     public $title;
 
-    public function description(int $len = 300): string
+    /**
+     * Returns a maximun legth of $legth form the body property of this block.
+     * 
+     * @param int $length
+     *
+     * @return string
+     */
+    public function description(int $length = 300): string
     {
         $description = '';
         foreach (explode(' ', $this->body) as $word) {
-            if (mb_strlen($description . $word . ' ') >= $len) {
+            if (mb_strlen($description . $word . ' ') >= $length) {
                 break;
             }
 
