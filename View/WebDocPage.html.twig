@@ -1,21 +1,56 @@
 {% extends "Master/PortalTemplate.html.twig" %}
 
 {% block body %}
+    {% import _self as macros %}
+
     <div class="body-section body-padding">
         <div class="container">
             <div class="columns">
-                <div class="column col-9 col-md-12">
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">{{ fsc.currentProject.name }}</a>
-                        </li>
-                        {% if fsc.docPage.idparent %}
-                            {% set parentPage = fsc.docPage.getParentPage() %}
-                            <li class="breadcrumb-item">
-                                <a href="{{ asset(parentPage.url('link')) }}">{{ parentPage.title }}</a>
-                            </li>
-                        {% endif %}
-                    </ul>
+                <div class="column col-6">
+                    <div class="show-xs">
+                        <div class="dropdown">
+                            <a href="#" class="btn dropdown-toggle" tabindex="0">
+                                <i class="fa fa-book fa-fw" aria-hidden="true"></i>
+                                {{ i18n.trans('index') }}
+                                <i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+                            </a>
+                            <ul class="menu">
+                                <li class="menu-item">
+                                    {{ macros.showIndexUl(fsc.docIndex) }}
+                                </li>
+                            </ul>
+                        </div>
+                        <br/><br/>
+                    </div>
+                    <a class="btn hide-xs" href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">
+                        <i class="fa fa-folder-open fa-fw" aria-hidden="true"></i> {{ fsc.currentProject.name }}
+                    </a>
+                </div>
+                <div class="column text-right">
+                    <div class="btn-group">
+                        <a href="{{ asset(fsc.docPage.url()) }}" class="btn">
+                            <i class="fa fa-edit fa-fw" aria-hidden="true"></i>
+                            <span class="hide-xs">{{ i18n.trans('edit') }}</span>
+                        </a>
+                        <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn">
+                            <i class="fa fa-file-o fa-fw" aria-hidden="true"></i>
+                            <span class="hide-xs">{{ i18n.trans('add') }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column col-3 col-md-12">
+                    <div class="hide-xs">
+                        {{ macros.showIndexUl(fsc.docIndex) }}
+                    </div>
+                </div>
+                <div class="divider-vert hide-md"></div>
+                <div class="column">
+                    {% if fsc.docPage.idparent %}
+                        {% set parentPage = fsc.docPage.getParentPage() %}
+                        <b>{{ parentPage.title }}</b>
+                    {% endif %}
                     <h1>{{ fsc.docPage.title }}</h1>
                     {{ fsc.parsedown(fsc.docPage.body) | raw }}
                     <ul>
@@ -33,55 +68,45 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="column col-3 col-md-12">
-                    <div class="divider text-center show-sm" data-content="{{ i18n.trans('more') }}"></div>
-                    {% set sisterPages = fsc.docPage.getSisterPages() %}
-                    {% if sisterPages | length > 1 %}
-                        <h4>
-                            <a href="{{ asset(parentPage.url('link')) }}">{{ parentPage.title }}</a>
-                        </h4>
-                        <ul>
-                            {% for sisterPage in fsc.docPage.getSisterPages() %}
-                                <li>
-                                    {% if sisterPage.iddoc == fsc.docPage.iddoc %}
-                                        <b>{{ sisterPage.title }}</b>
-                                    {% else %}
-                                        <a href="{{ asset(sisterPage.url('link')) }}">{{ sisterPage.title }}</a>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    <ul class="menu">
-                        <li class="divider" data-content="{{ i18n.trans('actions') }}">
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ asset(fsc.docPage.url()) }}">
-                                <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}">
-                                <i class="fa fa-file-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
-                            </a>
-                        </li>
-                        <li class="divider" data-content="{{ i18n.trans('properties') }}">
-                        </li>
-                        <li class="menu-item">
-                            <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('created') }}:
-                            {{ fsc.docPage.creationdate }}
-                        </li>
-                        <li class="menu-item">
-                            <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('last-update') }}:
-                            {{ fsc.docPage.lastmod }}
-                        </li>
-                        <li class="menu-item">
-                            <i class="fa fa-users fa-fw" aria-hidden="true"></i> {{ i18n.trans('visit-counter') }}:
-                            {{ fsc.docPage.visitcount }}
-                        </li>
-                    </ul>
+            </div>
+            <div class="columns">
+                <div class="column col-12 text-center">
+                    <div class="divider text-center" data-content="{{ i18n.trans('properties') }}"></div>
+                    <span class="label label-rounded">
+                        <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('created') }}:
+                        {{ fsc.docPage.creationdate }}
+                    </span>
+                    <span class="label label-rounded">
+                        <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('last-update') }}:
+                        {{ fsc.docPage.lastmod }}
+                    </span>
+                    <span class="label label-rounded">
+                        <i class="fa fa-users fa-fw" aria-hidden="true"></i> {{ i18n.trans('visit-counter') }}:
+                        {{ fsc.docPage.visitcount }}
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
+
+{% macro showIndexUl(items) %}
+    {% import _self as macros %}
+
+    <ul>
+        {% for item in items %}
+            <li>
+                <a href="{{ asset(item.page.url('link')) }}">
+                    {% if item.selected %}
+                        <b>{{ item.page.title }}</b>
+                    {% else %}
+                        {{ item.page.title }}
+                    {% endif %}
+                </a>
+                {% if item.more | length > 0 %}
+                    {{ macros.showIndexUl(item.more) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}

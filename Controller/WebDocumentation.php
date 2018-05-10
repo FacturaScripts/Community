@@ -51,6 +51,12 @@ class WebDocumentation extends PortalController
 
     /**
      *
+     * @var array
+     */
+    public $docIndex;
+
+    /**
+     *
      * @var WebDocPage
      */
     public $docPage;
@@ -111,6 +117,28 @@ class WebDocumentation extends PortalController
     {
         parent::publicCore($response);
         $this->loadData();
+    }
+
+    private function getProjectIndex($docPage = null, $subIndex = [])
+    {
+        if (is_null($docPage)) {
+            $docPage = $this->docPage;
+        }
+
+        $index = [];
+        foreach ($docPage->getSisterPages() as $sisterPage) {
+            $index[] = [
+                'page' => $sisterPage,
+                'more' => ($sisterPage->iddoc === $docPage->iddoc) ? $subIndex : [],
+                'selected' => ($sisterPage->iddoc === $docPage->iddoc)
+            ];
+        }
+
+        if (!empty($index) && !is_null($index[0]['page']->idparent)) {
+            return $this->getProjectIndex($docPage->getParentPage(), $index);
+        }
+
+        return $index;
     }
 
     private function getUrlExtraParams()
@@ -196,6 +224,7 @@ class WebDocumentation extends PortalController
         $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
         $this->docPage->increaseVisitCount($ipAddress);
         $this->docPages = $this->docPage->getChildrenPages();
+        $this->docIndex = $this->getProjectIndex();
 
         $this->title = $this->docPage->title;
         $this->description = $this->docPage->description(300);
