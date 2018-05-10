@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -44,7 +44,7 @@ class DownloadBuild extends PortalController
         $pagedata['menu'] = 'web';
         $pagedata['icon'] = 'fa-file-archive-o';
         $pagedata['showonmenu'] = false;
-        
+
         return $pagedata;
     }
 
@@ -72,7 +72,7 @@ class DownloadBuild extends PortalController
         $build->increaseDownloads();
 
         $this->response->headers->set('Content-type', $attachedFile->mimetype);
-        $this->response->headers->set('Content-disposition', 'attachment; filename="' . $build->idproject . '.zip"');
+        $this->response->headers->set('Content-disposition', 'attachment; filename="' . $build->fileName() . '"');
         $this->response->headers->set('Content-length', $attachedFile->size);
         $this->response->setContent(file_get_contents(FS_FOLDER . DIRECTORY_SEPARATOR . $attachedFile->path));
     }

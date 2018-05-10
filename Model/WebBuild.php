@@ -117,6 +117,16 @@ class WebBuild extends Base\ModelClass
         return false;
     }
 
+    public function fileName()
+    {
+        $project = new WebProject();
+        if ($project->loadFromCode($this->idproject)) {
+            return $project->name . '-' . $this->version . '.zip';
+        }
+
+        return $this->idbuild . '.zip';
+    }
+
     /**
      * 
      * @return AttachedFile
