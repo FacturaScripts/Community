@@ -41,12 +41,12 @@ class WebSearch extends ParentSearch
         ];
         foreach ($docPage->all($whereDoc, ['visitcount' => 'DESC']) as $docPage) {
             $link = $docPage->url('link');
-            $this->searchResults[$link] = [
+            $this->addSearchResults([
                 'icon' => 'fa-book',
                 'title' => $docPage->title,
-                'description' => $docPage->description(300),
+                'description' => $docPage->body,
                 'link' => $link
-            ];
+            ]);
         }
     }
 }

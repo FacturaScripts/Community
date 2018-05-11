@@ -23,16 +23,10 @@
                     </a>
                 </div>
                 <div class="column text-right">
-                    <div class="btn-group">
-                        <a href="{{ asset(fsc.docPage.url()) }}" class="btn">
-                            <i class="fa fa-edit fa-fw" aria-hidden="true"></i>
-                            <span class="hide-xs">{{ i18n.trans('edit') }}</span>
-                        </a>
-                        <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn">
-                            <i class="fa fa-file-o fa-fw" aria-hidden="true"></i>
-                            <span class="hide-xs">{{ i18n.trans('add') }}</span>
-                        </a>
-                    </div>
+                    <a href="{{ asset(fsc.docPage.url()) }}" class="btn">
+                        <i class="fa fa-edit fa-fw" aria-hidden="true"></i>
+                        <span class="hide-xs">{{ i18n.trans('edit') }}</span>
+                    </a>
                 </div>
             </div>
             <div class="columns">
@@ -63,23 +57,10 @@
                             </li>
                         {% endfor %}
                     </ul>
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column col-12 text-center">
-                    <div class="divider text-center" data-content="{{ i18n.trans('properties') }}"></div>
-                    <span class="label label-rounded">
-                        <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('created') }}:
-                        {{ fsc.docPage.creationdate }}
-                    </span>
-                    <span class="label label-rounded">
-                        <i class="fa fa-calendar fa-fw" aria-hidden="true"></i> {{ i18n.trans('last-update') }}:
-                        {{ fsc.docPage.lastmod }}
-                    </span>
-                    <span class="label label-rounded">
-                        <i class="fa fa-users fa-fw" aria-hidden="true"></i> {{ i18n.trans('visit-counter') }}:
-                        {{ fsc.docPage.visitcount }}
-                    </span>
+                    <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn">
+                        <i class="fa fa-file-o fa-fw" aria-hidden="true"></i>
+                        <span class="hide-xs">{{ i18n.trans('add') }}</span>
+                    </a>
                 </div>
             </div>
         </div>
