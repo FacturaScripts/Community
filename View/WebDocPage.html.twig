@@ -22,21 +22,22 @@
                         <i class="fa fa-folder-open fa-fw" aria-hidden="true"></i> {{ fsc.currentProject.name }}
                     </a>
                 </div>
-                <div class="column text-right">
-                    <a href="{{ asset(fsc.docPage.url()) }}" class="btn">
-                        <i class="fa fa-edit fa-fw" aria-hidden="true"></i>
-                        <span class="hide-xs">{{ i18n.trans('edit') }}</span>
-                    </a>
-                </div>
+                {% if fsc.contact or fsc.user %}
+                    <div class="column text-right">
+                        <a href="{{ asset(fsc.docPage.url()) }}" class="btn">
+                            <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
+                        </a>
+                    </div>
+                {% endif %}
             </div>
             <div class="columns">
-                <div class="column col-3 col-md-12">
+                <div class="column">
                     <div class="hide-xs">
                         {{ macros.showIndexUl(fsc.docIndex) }}
                     </div>
                 </div>
                 <div class="divider-vert hide-md"></div>
-                <div class="column">
+                <div class="column col-9 col-md-12">
                     {% if fsc.docPage.idparent %}
                         {% set parentPage = fsc.docPage.getParentPage() %}
                         <b>{{ parentPage.title }}</b>
@@ -57,10 +58,11 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn">
-                        <i class="fa fa-file-o fa-fw" aria-hidden="true"></i>
-                        <span class="hide-xs">{{ i18n.trans('add') }}</span>
-                    </a>
+                    {% if fsc.contact or fsc.user %}
+                        <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn">
+                            <i class="fa fa-file-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -27,6 +27,7 @@
                 </div>
                 <div class="column col-3 col-md-12">
                     <ul class="menu">
+                        {% if fsc.contact or fsc.user %}
                         <li class="divider" data-content="{{ i18n.trans('page') }}">
                         </li>
                         <li class="menu-item">
@@ -34,6 +35,7 @@
                                 <i class="fa fa-file-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
                             </a>
                         </li>
+                        {% endif %}
                         <li class="divider" data-content="{{ i18n.trans('projects') }}">
                         </li>
                         {% for project in fsc.projects %}

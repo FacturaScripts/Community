@@ -104,7 +104,7 @@ class WebDocumentation extends PortalController
         $html = $parser->text(Utils::fixHtml($txt));
 
         /// some html fixes
-        return str_replace(['<p>', '<pre>'], ['<p class="text-justify">', '<pre class="code">'], $html);
+        return str_replace(['<p>', '<pre>', '<img '], ['<p class="text-justify">', '<pre class="code">', '<img class="img-responsive" '], $html);
     }
 
     public function privateCore(&$response, $user, $permissions)
