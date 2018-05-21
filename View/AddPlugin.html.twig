@@ -1,0 +1,29 @@
+{% extends "Master/PortalTemplate.html.twig" %}
+
+{% block body %}
+    <div class="body-section">
+    <br/>
+        <div class="container grid-lg">
+            <div class="columns">
+                <div class="column col-12">
+                    <div class="empty">
+                        <div class="empty-icon">
+                            <i class="fa fa-plug fa-3x" aria-hidden="true"></i>
+                        </div>
+                        <p class="empty-title h5">{{ i18n.trans('new-plugin') }}</p>
+                        <p class="empty-subtitle">{{ i18n.trans('new-plugin-paragraph') }}</p>
+                        <form action="{{ fsc.url() }}" method="post">
+                            <input type="hidden" name="action" value="new"/>
+                            <div class="empty-action input-group input-inline">
+                                <input type="text" name="name" class="form-input" maxlength="50" placeholder="{{ i18n.trans('name') }}" autocomplete="off" autofocus="" required="true"/>
+                                <button type="submit" class="btn btn-primary input-group-btn">
+                                    {{ i18n.trans('save') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
