@@ -22,6 +22,7 @@ use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\PluginProject;
 use FacturaScripts\Plugins\Community\Model\WebProject;
+use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 
@@ -70,6 +71,7 @@ class AddPlugin extends PortalController
 
         $member = new WebTeamMember();
         $where = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
             new DataBaseWhere('idteam', $idteamdev),
             new DataBaseWhere('accepted', true)
         ];
@@ -80,7 +82,10 @@ class AddPlugin extends PortalController
     protected function newPlugin(string $name): bool
     {
         if (!$this->contactCanAdd()) {
-            $this->miniLog->error('join team development');
+            $idteamdev = AppSettings::get('community', 'idteamdev', '');
+            $team = new WebTeam();
+            $team->loadFromCode($idteamdev);
+            $this->miniLog->error($this->i18n->trans('join-team', ['%team%' => $team->name]));
             return false;
         }
 
