@@ -1,22 +1,21 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>{{ i18n.trans('name') }}</th>
+            <th>{{ i18n.trans('team') }}</th>
+            <th>{{ i18n.trans('accepted') }}</th>
             <th class="text-right">{{ i18n.trans('date') }}</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
         {% set section = fsc.getCurrentSection() %}
-        {% for team in section.cursor %}
+        {% for member in section.cursor %}
             <tr>
-                <td>{{ team.getContactName() }}</td>
-                <td class="text-right">{{ team.creationdate }}</td>
-                <td class="text-right">
-                    {% if fsc.contactCanEdit() %}
-                        <a href="{{ team.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
-                    {% endif %}
+                <td>
+                    {% set team = member.getTeam() %}
+                    <a href="{{ team.url() }}">{{ team.name }}</a>
                 </td>
+                <td>{{ member.accepted ? i18n.trans('yes') : '-' }}</td>
+                <td class="text-right">{{ member.creationdate }}</td>
             </tr>
         {% else %}
             <tr>

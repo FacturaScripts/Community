@@ -30,10 +30,6 @@
         <type>serial</type>
         <null>NO</null>
     </column>
-    <column>
-        <name>observations</name>
-        <type>text</type>
-    </column>
     <constraint>
         <name>webteams_members_pkey</name>
         <type>PRIMARY KEY (id)</type>

@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Core\Model\Contacto;
 
@@ -66,12 +65,6 @@ class WebTeamMember extends Base\ModelClass
      */
     public $idteam;
 
-    /**
-     *
-     * @var string
-     */
-    public $observations;
-
     public function clear()
     {
         parent::clear();
@@ -79,7 +72,7 @@ class WebTeamMember extends Base\ModelClass
         $this->creationdate = date('d-m-Y');
     }
 
-    public function getName()
+    public function getContactName()
     {
         $contact = new Contacto();
         if ($contact->loadFromCode($this->idcontacto)) {
@@ -87,6 +80,13 @@ class WebTeamMember extends Base\ModelClass
         }
 
         return '-';
+    }
+
+    public function getTeam()
+    {
+        $team = new WebTeam();
+        $team->loadFromCode($this->idteam);
+        return $team;
     }
 
     public static function primaryColumn()
@@ -97,12 +97,6 @@ class WebTeamMember extends Base\ModelClass
     public static function tableName()
     {
         return 'webteams_members';
-    }
-
-    public function test()
-    {
-        $this->observations = Utils::noHtml($this->observations);
-        return parent::test();
     }
 
     public function url(string $type = 'auto', string $list = 'List')

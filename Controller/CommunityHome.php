@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
@@ -31,12 +32,22 @@ class CommunityHome extends SectionController
     protected function createSections()
     {
         if (null === $this->contact) {
+            $this->setTemplate('Master/PortalTemplate');
             return;
         }
+
+        $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users');
     }
 
     protected function loadData($sectionName)
     {
-        
+        switch ($sectionName) {
+            case 'teams':
+                $where = [
+                    new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+                ];
+                $this->loadListSection($sectionName, $where);
+                break;
+        }
     }
 }
