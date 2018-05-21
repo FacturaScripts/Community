@@ -70,6 +70,27 @@ class WebTeam extends Base\ModelClass
         $this->creationdate = date('d-m-Y');
     }
 
+    /**
+     * Returns a maximun legth of $legth form the body property of this block.
+     * 
+     * @param int $length
+     *
+     * @return string
+     */
+    public function description(int $length = 300): string
+    {
+        $description = '';
+        foreach (explode(' ', $this->description) as $word) {
+            if (mb_strlen($description . $word . ' ') >= $length) {
+                break;
+            }
+
+            $description .= $word . ' ';
+        }
+
+        return trim($description);
+    }
+
     public static function primaryColumn()
     {
         return 'idteam';

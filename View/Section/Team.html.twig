@@ -1,25 +1,49 @@
 {% set section = fsc.getCurrentSection() %}
+{% set team = section.cursor | first %}
 
 <div class="container">
-    {% for team in section.cursor %}
-        <div class="columns">
-            <div class="column col-12">
-                <h1>{{ team.name }}</h1>
+    <div class="columns">
+        <div class="column col-12">
+            <h1>{{ team.name }}</h1>
+            <p>{{ team.description | raw }}</p>
+            <div class="btn-group">
+                {% if fsc.contactCanEdit() %}
+                    <a href="{{ team.url() }}&action=leave" class="btn btn-error">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> {{ i18n.trans('leave') }}
+                    </a>
+                    <a href="#" class="btn" onclick="return showModal('editTeamModal');">
+                        <i class="fa fa-edit" aria-hidden="true"></i> {{ i18n.trans('edit') }}
+                    </a>
+                {% else %}
+                    <a href="{{ team.url() }}&action=join" class="btn btn-primary">
+                        <i class="fa fa-sign-in" aria-hidden="true"></i> {{ i18n.trans('join') }}
+                    </a>
+                {% endif %}
             </div>
         </div>
-        <div class="columns">
-            <div class="column col-8 col-md-12">
-                {{ team.description() }}
-            </div>
-            <div class="column col-4 col-md-12 text-right">
-                <a href="{{ team.url() }}&action=join" class="btn btn-primary">{{ i18n.trans('join') }}</a>
-            </div>
-        </div>
-    {% else %}
-        <div class="columns">
-            <div class="column col-12">
-                <h1>{{ i18n.trans('no-data') }}</h1>
-            </div>
-        </div>
-    {% endfor %}
+    </div>
 </div>
+<br/>
+
+<form action="" method="post">
+    <input type="hidden" name="action" value="edit"/>
+    <div class="modal" id="editTeamModal">
+        <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('editTeamModal');"></a>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a href="#close" onclick="return hideModal('editTeamModal');" class="btn btn-clear float-right" aria-label="Close"></a>
+                <div class="modal-title h5">{{ i18n.trans('description') }}</div>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <div class="form-group">
+                        <textarea name="description" class="form-input" rows="3">{{ team.description }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-block btn-primary">
+                        {{ i18n.trans('save') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
