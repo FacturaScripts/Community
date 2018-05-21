@@ -18,8 +18,10 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 
 /**
@@ -73,7 +75,7 @@ class EditWebDocPage extends PortalController
         if (null === $this->contact) {
             $this->setTemplate('Master/LoginToContinue');
         } elseif (!$this->contactCanEdit()) {
-            $this->miniLog->error('you-cant-edit');
+            $this->miniLog->error('join team documentation');
         } else {
             $this->loadWebDocPage();
         }
@@ -81,7 +83,18 @@ class EditWebDocPage extends PortalController
 
     private function contactCanEdit(): bool
     {
-        return false;
+        $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
+        if (empty($idteamdoc)) {
+            return false;
+        }
+
+        $member = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idteam', $idteamdoc),
+            new DataBaseWhere('accepted', true)
+        ];
+
+        return $member->loadFromCode('', $where);
     }
 
     private function loadWebDocPage()
