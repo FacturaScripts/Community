@@ -15,10 +15,6 @@
         <type>text</type>
     </column>
     <column>
-        <name>idcontacto</name>
-        <type>integer</type>
-    </column>
-    <column>
         <name>idteam</name>
         <type>serial</type>
         <null>NO</null>

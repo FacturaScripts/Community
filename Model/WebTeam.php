@@ -45,13 +45,6 @@ class WebTeam extends Base\ModelClass
     public $description;
 
     /**
-     * Contact identifier.
-     *
-     * @var int
-     */
-    public $idcontacto;
-
-    /**
      * Primary key.
      *
      * @var int
