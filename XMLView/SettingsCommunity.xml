@@ -30,6 +30,16 @@
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"/>
                 </widget>
             </column>
+            <column name="idteamdev" title="development-team" numcolumns="3" order="120">
+                <widget type="select" fieldname="idteamdev" required="true">
+                    <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
+                </widget>
+            </column>
+            <column name="idteamdoc" title="documentation-team" numcolumns="3" order="120">
+                <widget type="select" fieldname="idteamdoc" required="true">
+                    <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
+                </widget>
+            </column>
         </group>
     </columns>
 </view>

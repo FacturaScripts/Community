@@ -1,0 +1,7 @@
+{% set section = fsc.getCurrentSection() %}
+{% for team in section.cursor %}
+    <h1>{{ team.name }}</h1>
+    <a href="{{ team.url() }}&action=join" class="btn btn-primary">{{ i18n.trans('join') }}</a>
+{% else %}
+    <h1>{{ i18n.trans('no-data') }}</h1>
+{% endfor %}

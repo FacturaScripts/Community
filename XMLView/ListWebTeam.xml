@@ -22,24 +22,13 @@
 <view>
     <columns>
         <column name="code" display="none" order="100">
-            <widget type="text" fieldname="iddoc" onclick="EditWebDocPage" />
+            <widget type="text" fieldname="idteam" onclick="EditWebTeam" />
         </column>
-        <column name="project" order="110">
-            <widget type="select" fieldname="idproject">
-                <values source="webprojects" fieldcode="idproject" fieldtitle="name"></values>
-            </widget>
+        <column name="name" order="110">
+            <widget type="text" fieldname="name" />
         </column>
-        <column name="lang-code" order="120">
-            <widget type="text" fieldname="langcode" />
-        </column>
-        <column name="title" order="130">
-            <widget type="text" fieldname="title" />
-        </column>
-        <column name="visitcount" title="visit-counter" display="right" order="140">
-            <widget type="number" fieldname="visitcount" />
-        </column>
-        <column name="lastmod" title="last-update" display="right" order="150">
-            <widget type="date" fieldname="lastmod" />
+        <column name="creation-date" display="right" order="120">
+            <widget type="date" fieldname="creationdate" />
         </column>
     </columns>
 </view>

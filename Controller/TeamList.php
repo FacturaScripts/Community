@@ -21,23 +21,22 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
- * Description of PluginList
+ * Description of TeamList
  *
  * @author carlos
  */
-class PluginList extends SectionController
+class TeamList extends SectionController
 {
 
     protected function createSections()
     {
-        $this->addListSection('plugins', 'PluginProject', 'Section/Plugins', 'plugins', 'fa-plug');
-        $this->addButton('plugins', 'AddPlugin', 'new', 'fa-plus');
+        $this->addListSection('teams', 'WebTeam', 'Section/Teams', 'teams', 'fa-users');
     }
 
     protected function loadData($sectionName)
     {
         switch ($sectionName) {
-            case 'plugins':
+            case 'teams':
                 $this->loadListSection($sectionName);
                 break;
         }

@@ -85,6 +85,7 @@ class WebDocumentation extends PortalController
         $pageData['title'] = 'documentation';
         $pageData['menu'] = 'web';
         $pageData['icon'] = 'fa-book';
+        $pageData['showonmenu'] = true;
 
         return $pageData;
     }
