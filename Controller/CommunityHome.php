@@ -29,6 +29,25 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class CommunityHome extends SectionController
 {
 
+    protected function commonCore()
+    {
+        parent::commonCore();
+
+        /// hide sectionController template if all sections are empty
+        if ($this->getTemplate() == 'Master/SectionController.html.twig') {
+            $empty = true;
+            foreach ($this->sections as $section) {
+                if ($section['count'] > 0) {
+                    $empty = false;
+                }
+            }
+
+            if ($empty) {
+                $this->setTemplate('Master/PortalTemplate');
+            }
+        }
+    }
+
     protected function createSections()
     {
         if (null === $this->contact) {
