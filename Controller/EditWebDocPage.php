@@ -72,29 +72,30 @@ class EditWebDocPage extends PortalController
     public function publicCore(&$response)
     {
         parent::publicCore($response);
+
+        /// can this contact edit this page?
+        $continue = false;
+        $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
         if (null === $this->contact) {
             $this->setTemplate('Master/LoginToContinue');
-        } elseif (!$this->contactCanEdit()) {
-            $this->miniLog->error('join team documentation');
-        } else {
+        } elseif (!empty($idteamdoc)) {
+            $member = new WebTeamMember();
+            $where = [
+                new DataBaseWhere('idteam', $idteamdoc),
+                new DataBaseWhere('accepted', true)
+            ];
+
+            if ($member->loadFromCode('', $where)) {
+                $continue = true;
+            } else {
+                $team = $member->getTeam();
+                $this->miniLog->alert($this->i18n->trans('join-team', ['%team%' => $team->name]));
+            }
+        }
+
+        if ($continue) {
             $this->loadWebDocPage();
         }
-    }
-
-    private function contactCanEdit(): bool
-    {
-        $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
-        if (empty($idteamdoc)) {
-            return false;
-        }
-
-        $member = new WebTeamMember();
-        $where = [
-            new DataBaseWhere('idteam', $idteamdoc),
-            new DataBaseWhere('accepted', true)
-        ];
-
-        return $member->loadFromCode('', $where);
     }
 
     private function loadWebDocPage()
