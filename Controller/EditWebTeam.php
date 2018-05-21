@@ -51,6 +51,21 @@ class EditWebTeam extends SectionController
         return $member->loadFromCode('', $where);
     }
 
+    public function showJoinButton(): bool
+    {
+        if (null === $this->contact) {
+            return false;
+        }
+
+        $member = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+            new DataBaseWhere('idteam', $this->request->get('code', '')),
+        ];
+
+        return !$member->loadFromCode('', $where);
+    }
+
     protected function acceptAction()
     {
         if (!$this->contactCanEdit()) {
