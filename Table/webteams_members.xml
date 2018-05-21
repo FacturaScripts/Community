@@ -38,4 +38,8 @@
         <name>webteams_members_pkey</name>
         <type>PRIMARY KEY (id)</type>
     </constraint>
+    <constraint>
+        <name>uniq_webteams_members</name>
+        <type>UNIQUE (idteam,idcontacto)</type>
+    </constraint>
 </table>

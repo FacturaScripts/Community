@@ -15,7 +15,9 @@
                 <td>{{ team.observations }}</td>
                 <td class="text-right">{{ team.creationdate }}</td>
                 <td class="text-right">
-                    <a href="{{ team.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
+                    {% if fsc.contactCanEdit() %}
+                        <a href="{{ team.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}

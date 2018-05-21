@@ -27,6 +27,9 @@
         <column name="name" order="110">
             <widget type="text" fieldname="name" />
         </column>
+        <column name="description" order="120">
+            <widget type="text" fieldname="description" />
+        </column>
         <column name="creation-date" display="right" order="120">
             <widget type="date" fieldname="creationdate" />
         </column>

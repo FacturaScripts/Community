@@ -11,6 +11,10 @@
         <type>date</type>
     </column>
     <column>
+        <name>description</name>
+        <type>text</type>
+    </column>
+    <column>
         <name>idcontacto</name>
         <type>integer</type>
     </column>

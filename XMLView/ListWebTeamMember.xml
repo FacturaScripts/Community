@@ -34,7 +34,7 @@
                 <values source="contactos" fieldcode="idcontacto" fieldtitle="nombre"></values>
             </widget>
         </column>
-        <column name="accepted" order="130" display="none">
+        <column name="accepted" order="130">
             <widget type="checkbox" fieldname="accepted" />
         </column>
         <column name="notes" order="140">

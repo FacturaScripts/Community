@@ -1,7 +1,25 @@
 {% set section = fsc.getCurrentSection() %}
-{% for team in section.cursor %}
-    <h1>{{ team.name }}</h1>
-    <a href="{{ team.url() }}&action=join" class="btn btn-primary">{{ i18n.trans('join') }}</a>
-{% else %}
-    <h1>{{ i18n.trans('no-data') }}</h1>
-{% endfor %}
+
+<div class="container">
+    {% for team in section.cursor %}
+        <div class="columns">
+            <div class="column col-12">
+                <h1>{{ team.name }}</h1>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column col-8 col-md-12">
+                {{ team.description() }}
+            </div>
+            <div class="column col-4 col-md-12 text-right">
+                <a href="{{ team.url() }}&action=join" class="btn btn-primary">{{ i18n.trans('join') }}</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="columns">
+            <div class="column col-12">
+                <h1>{{ i18n.trans('no-data') }}</h1>
+            </div>
+        </div>
+    {% endfor %}
+</div>

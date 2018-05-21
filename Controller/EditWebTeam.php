@@ -31,15 +31,28 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class EditWebTeam extends SectionController
 {
 
-    protected function commonCore()
+    public function contactCanEdit(): bool
     {
-        parent::commonCore();
-        $action = $this->request->get('action', '');
-        $this->execAction($action);
+        if ($this->user) {
+            return true;
+        }
+
+        $member = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idteam', $this->request->get('code', '')),
+            new DataBaseWhere('accepted', true)
+        ];
+
+        return $member->loadFromCode('', $where);
     }
 
     protected function acceptAction()
     {
+        if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            return;
+        }
+
         $idrequest = $this->request->get('idrequest', '');
         $member = new WebTeamMember();
 
@@ -59,9 +72,15 @@ class EditWebTeam extends SectionController
         $this->addListSection('team', 'WebTeam', 'Section/Team', 'team', 'fa-users');
         $this->addListSection('members', 'WebTeamMember', 'Section/TeamMembers', 'members', 'fa-users');
         $this->addListSection('requests', 'WebTeamMember', 'Section/TeamRequests', 'requests', 'fa-users');
+
+        $this->sections['team']['fixed'] = true;
+        if ($this->active === 'team') {
+            $this->active = 'members';
+            $this->current = 'members';
+        }
     }
 
-    protected function execAction(string $action)
+    protected function execPreviousAction(string $action)
     {
         switch ($action) {
             case 'accept-request':
@@ -72,6 +91,8 @@ class EditWebTeam extends SectionController
                 $this->joinAction();
                 break;
         }
+
+        return true;
     }
 
     protected function joinAction()
@@ -83,7 +104,7 @@ class EditWebTeam extends SectionController
 
         $member = new WebTeamMember();
         $member->idcontacto = $this->contact->idcontacto;
-        $member->idteam = $this->sections['team']['cursor'][0]->idteam;
+        $member->idteam = $this->request->get('code', '');
         if ($member->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
         } else {
