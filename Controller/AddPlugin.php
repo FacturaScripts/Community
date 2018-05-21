@@ -81,6 +81,7 @@ class AddPlugin extends PortalController
     {
         if (!$this->contactCanAdd()) {
             $this->miniLog->error('join team development');
+            return false;
         }
 
         $project = new WebProject();

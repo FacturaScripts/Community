@@ -37,15 +37,15 @@ class CommunityHome extends SectionController
         }
 
         $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users');
+        $this->addListSection('plugins', 'PluginProject', 'Section/Plugins', 'plugins', 'fa-plug');
     }
 
     protected function loadData($sectionName)
     {
         switch ($sectionName) {
+            case 'plugins':
             case 'teams':
-                $where = [
-                    new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-                ];
+                $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto),];
                 $this->loadListSection($sectionName, $where);
                 break;
         }
