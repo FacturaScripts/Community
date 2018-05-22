@@ -18,7 +18,9 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Lib\ExtendedController;
+use FacturaScripts\Plugins\Community\Model\WebDocPage;
 
 /**
  * Description of ListWebProject controller.
@@ -76,5 +78,35 @@ class ListWebProject extends ExtendedController\ListController
 
         $langValues = $this->codeModel->all('webdocpages', 'langcode', 'langcode');
         $this->addFilterSelect('ListWebDocPage', 'langcode', 'language', 'langcode', $langValues);
+    }
+
+    protected function execAfterAction($action)
+    {
+        if ($action === 'regen-permalinks') {
+            $this->regenPermalinksAction();
+        }
+
+        parent::execAfterAction($action);
+    }
+
+    private function regenPermalinks(WebDocPage $docPage)
+    {
+        $docPage->permalink = null;
+        if ($docPage->save()) {
+            foreach ($docPage->getChildrenPages() as $children) {
+                $this->regenPermalinks($children);
+            }
+        }
+    }
+
+    private function regenPermalinksAction()
+    {
+        $docPageModel = new WebDocPage();
+        $where = [new DataBaseWhere('idparent', null, 'IS')];
+        foreach ($docPageModel->all($where) as $docPage) {
+            $this->regenPermalinks($docPage);
+        }
+
+        $this->miniLog->info('done');
     }
 }

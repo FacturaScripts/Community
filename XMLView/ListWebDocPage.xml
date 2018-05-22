@@ -42,4 +42,14 @@
             <widget type="date" fieldname="lastmod" />
         </column>
     </columns>
+    <rows>
+        <row type="status">
+            <option color="table-success" fieldname="visitcount">&gt;100</option>
+        </row>
+        <row type="footer">
+            <group name="footer-actions" footer="specials-actions">
+                <button type="action" label="regen-permalinks" color="info" action="regen-permalinks" icon="fa-list-ol" />
+            </group>
+        </row>
+    </rows>
 </view>

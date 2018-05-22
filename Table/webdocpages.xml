@@ -49,7 +49,7 @@
     </column>
     <column>
         <name>permalink</name>
-        <type>character varying(150)</type>
+        <type>character varying(250)</type>
         <null>NO</null>
     </column>
     <column>

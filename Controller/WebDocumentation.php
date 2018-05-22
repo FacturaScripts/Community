@@ -193,7 +193,7 @@ class WebDocumentation extends PortalController
 
         $urlParams = $this->getUrlExtraParams();
         $idproject = isset($urlParams[0]) ? $urlParams[0] : $this->defaultIdproject;
-        $docPermalink = isset($urlParams[1]) ? $urlParams[0] . '/' . $urlParams[1] : null;
+        $docPermalink = isset($urlParams[1]) ? implode('/', $urlParams) : null;
 
         /// current project
         $this->currentProject = new WebProject();

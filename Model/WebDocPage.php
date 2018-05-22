@@ -36,6 +36,8 @@ class WebDocPage extends WebPageClass
     use Base\ModelTrait;
 
     const CUSTOM_CONTROLLER = 'WebDocumentation';
+    const MAX_PERMALINK_LENGTH = 250;
+    const PERMALINK_LENGTH = 90;
 
     /**
      * Page text.
@@ -213,8 +215,21 @@ class WebDocPage extends WebPageClass
 
     private function newPermalink()
     {
-        $permalink = $this->idproject . '/' . Permalink::get($this->title, 150);
-        if (empty($this->all([new DataBaseWhere('permalink', $permalink)]))) {
+        $permalink = null;
+        if (!is_null($this->idparent)) {
+            /// gets parent page to use on permalink
+            $parent = $this->getParentPage();
+            $permalink = $parent->permalink . '/' . Permalink::get($this->title, self::PERMALINK_LENGTH);
+        }
+
+        if (is_null($permalink) || strlen($permalink) > self::MAX_PERMALINK_LENGTH) {
+            $permalink = $this->idproject . '/' . Permalink::get($this->title, self::PERMALINK_LENGTH);
+        }
+
+        /// Are there more pages with this permalink?
+        $coincidences = $this->all([new DataBaseWhere('permalink', $permalink)]);
+        if (empty($coincidences) || (\count($coincidences) === 1 && $coincidences[0]->iddoc === $this->iddoc)) {
+            /// no
             return $permalink;
         }
 
