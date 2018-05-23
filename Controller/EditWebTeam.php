@@ -194,7 +194,7 @@ class EditWebTeam extends SectionController
             $teamLog = new WebTeamLog();
             $teamLog->idcontacto = $member->idcontacto;
             $teamLog->idteam = $member->idteam;
-            $teamLog->description = $member->getContactName() . ' want to be member of this team.';
+            $teamLog->description = $member->getContactName() . ' wants to be member of this team.';
             $teamLog->save();
         } else {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));

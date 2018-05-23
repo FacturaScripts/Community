@@ -23,6 +23,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\PluginProject;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
+use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 
@@ -104,6 +105,26 @@ class AddPlugin extends PortalController
         $pluginProject->idcontacto = $this->contact->idcontacto;
         $pluginProject->idproject = $project->idproject;
         $pluginProject->name = $name;
-        return $pluginProject->save();
+        if ($pluginProject->save()) {
+            $this->saveTeamLog($pluginProject);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function saveTeamLog(PluginProject $plugin)
+    {
+        $idteamdev = AppSettings::get('community', 'idteamdev', '');
+        if (empty($idteamdev)) {
+            return;
+        }
+
+        $teamLog = new WebTeamLog();
+        $teamLog->description = 'New plugin: ' . $plugin->name;
+        $teamLog->idcontacto = $this->contact->idcontacto;
+        $teamLog->idteam = $idteamdev;
+        $teamLog->link = $plugin->url('link');
+        $teamLog->save();
     }
 }
