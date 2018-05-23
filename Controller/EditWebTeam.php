@@ -44,11 +44,22 @@ class EditWebTeam extends SectionController
         $member = new WebTeamMember();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $this->request->get('code', '')),
+            new DataBaseWhere('idteam', $this->getTeamId()),
             new DataBaseWhere('accepted', true)
         ];
 
         return $member->loadFromCode('', $where);
+    }
+
+    public function getTeamId()
+    {
+        $code = $this->request->get('code', '');
+        if (!empty($code)) {
+            return $code;
+        }
+
+        $uri = explode('/', $this->uri);
+        return end($uri);
     }
 
     public function showJoinButton(): bool
@@ -60,7 +71,7 @@ class EditWebTeam extends SectionController
         $member = new WebTeamMember();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $this->request->get('code', '')),
+            new DataBaseWhere('idteam', $this->getTeamId()),
         ];
 
         return !$member->loadFromCode('', $where);
@@ -106,7 +117,7 @@ class EditWebTeam extends SectionController
             return;
         }
 
-        $code = $this->request->get('code', '');
+        $code = $this->getTeamId();
         $team = new WebTeam();
         if (!empty($code) && $team->loadFromCode($code)) {
             $team->description = $this->request->get('description', '');
@@ -115,6 +126,18 @@ class EditWebTeam extends SectionController
             } else {
                 $this->miniLog->alert($this->i18n->trans('record-save-error'));
             }
+        }
+    }
+
+    protected function execAfterAction(string $action)
+    {
+        switch ($action) {
+            case 'accept-request':
+            case 'join':
+            case 'leave':
+                /// we force save to update number of members and requests
+                $this->sections['team']['cursor'][0]->save();
+                break;
         }
     }
 
@@ -150,7 +173,7 @@ class EditWebTeam extends SectionController
 
         $member = new WebTeamMember();
         $member->idcontacto = $this->contact->idcontacto;
-        $member->idteam = $this->request->get('code', '');
+        $member->idteam = $this->getTeamId();
         if ($member->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
         } else {
@@ -168,7 +191,7 @@ class EditWebTeam extends SectionController
         $member = new WebTeamMember();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $this->request->get('code', '')),
+            new DataBaseWhere('idteam', $this->getTeamId()),
         ];
 
         if (!$member->loadFromCode('', $where)) {
@@ -185,7 +208,7 @@ class EditWebTeam extends SectionController
     {
         switch ($sectionName) {
             case 'team':
-                $code = $this->request->get('code', '');
+                $code = $this->getTeamId();
                 $team = new WebTeam();
                 if (!empty($code) && $team->loadFromCode($code)) {
                     $this->sections[$sectionName]['cursor'] = [$team];
@@ -199,7 +222,7 @@ class EditWebTeam extends SectionController
 
             case 'members':
                 $where = [
-                    new DataBaseWhere('idteam', $this->request->get('code', '')),
+                    new DataBaseWhere('idteam', $this->getTeamId()),
                     new DataBaseWhere('accepted', true),
                 ];
                 $this->loadListSection($sectionName, $where);
@@ -207,7 +230,7 @@ class EditWebTeam extends SectionController
 
             case 'requests':
                 $where = [
-                    new DataBaseWhere('idteam', $this->request->get('code', '')),
+                    new DataBaseWhere('idteam', $this->getTeamId()),
                     new DataBaseWhere('accepted', false),
                 ];
                 $this->loadListSection($sectionName, $where);
