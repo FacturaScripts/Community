@@ -8,13 +8,13 @@
     </thead>
     <tbody>
         {% set section = fsc.getCurrentSection() %}
-        {% for team in section.cursor %}
+        {% for member in section.cursor %}
             <tr>
-                <td>{{ team.getContactName() }}</td>
-                <td class="text-right">{{ team.creationdate }}</td>
+                <td>{{ member.getContactName() }}</td>
+                <td class="text-right">{{ member.creationdate }}</td>
                 <td class="text-right">
                     {% if fsc.contactCanEdit() %}
-                        <a href="{{ team.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
+                        <a href="{{ member.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
                     {% endif %}
                 </td>
             </tr>

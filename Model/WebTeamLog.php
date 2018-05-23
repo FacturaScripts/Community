@@ -22,27 +22,20 @@ use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Core\Model\Contacto;
 
 /**
- * Description of WebTeamMember
+ * Description of WebTeamLog
  *
  * @author carlos
  */
-class WebTeamMember extends Base\ModelClass
+class WebTeamLog extends Base\ModelClass
 {
 
     use Base\ModelTrait;
 
     /**
      *
-     * @var bool
-     */
-    public $accepted;
-
-    /**
-     * Creation date.
-     *
      * @var string
      */
-    public $creationdate;
+    public $description;
 
     /**
      * Primary key.
@@ -65,11 +58,22 @@ class WebTeamMember extends Base\ModelClass
      */
     public $idteam;
 
+    /**
+     *
+     * @var string
+     */
+    public $link;
+
+    /**
+     *
+     * @var string
+     */
+    public $time;
+
     public function clear()
     {
         parent::clear();
-        $this->accepted = false;
-        $this->creationdate = date('d-m-Y');
+        $this->time = date('d-m-Y H:i:s');
     }
 
     /**
@@ -87,18 +91,6 @@ class WebTeamMember extends Base\ModelClass
         return '-';
     }
 
-    /**
-     * Returns team.
-     * 
-     * @return WebTeam
-     */
-    public function getTeam()
-    {
-        $team = new WebTeam();
-        $team->loadFromCode($this->idteam);
-        return $team;
-    }
-
     public static function primaryColumn()
     {
         return 'id';
@@ -106,16 +98,11 @@ class WebTeamMember extends Base\ModelClass
 
     public static function tableName()
     {
-        return 'webteams_members';
+        return 'webteams_logs';
     }
 
     public function url(string $type = 'auto', string $list = 'List')
     {
-        $team = new WebTeam();
-        if ($type == 'accept' && $team->loadFromCode($this->idteam)) {
-            return $team->url() . '?action=accept-request&idrequest=' . $this->id;
-        }
-
         return parent::url($type, 'ListWebProject?active=List');
     }
 }

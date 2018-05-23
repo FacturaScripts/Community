@@ -50,5 +50,10 @@ class ListWebTeam extends ExtendedController\ListController
         $this->addView('ListWebTeamMember', 'WebTeamMember', 'members', 'fa-users');
         $this->addSearchFields('ListWebTeamMember', ['observations']);
         $this->addOrderBy('ListWebTeamMember', 'creationdate', 'date');
+        
+        /// Members
+        $this->addView('ListWebTeamLog', 'WebTeamLog', 'logs', 'fa-file-text-o');
+        $this->addSearchFields('ListWebTeamLog', ['description']);
+        $this->addOrderBy('ListWebTeamLog', 'time', 'date');
     }
 }

@@ -2,15 +2,17 @@
     <thead>
         <tr>
             <th>{{ i18n.trans('name') }}</th>
+            <th>{{ i18n.trans('description') }}</th>
             <th class="text-right">{{ i18n.trans('date') }}</th>
         </tr>
     </thead>
     <tbody>
         {% set section = fsc.getCurrentSection() %}
-        {% for member in section.cursor %}
+        {% for log in section.cursor %}
             <tr>
-                <td>{{ member.getContactName() }}</td>
-                <td class="text-right">{{ member.creationdate }}</td>
+                <td>{{ log.getContactName() }}</td>
+                <td>{{ log.description }}</td>
+                <td class="text-right">{{ log.time }}</td>
             </tr>
         {% else %}
             <tr>

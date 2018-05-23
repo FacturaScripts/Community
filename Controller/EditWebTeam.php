@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
+use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
@@ -95,6 +96,13 @@ class EditWebTeam extends SectionController
         $member->accepted = true;
         if ($member->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+
+            $nick = is_null($this->contact) ? $this->user->nick : $this->contact->fullName();
+            $teamLog = new WebTeamLog();
+            $teamLog->description = 'Accepted as new member by ' . $nick . '.';
+            $teamLog->idcontacto = $member->idcontacto;
+            $teamLog->idteam = $member->idteam;
+            $teamLog->save();
         }
     }
 
@@ -106,8 +114,15 @@ class EditWebTeam extends SectionController
             'template' => 'Section/Team.html.twig',
         ]);
 
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o');
+        $this->addSearchOptions('logs', ['description']);
+        $this->addOrderOption('logs', 'time', 'date', 2);
+
         $this->addListSection('members', 'WebTeamMember', 'Section/TeamMembers', 'members', 'fa-users');
+        $this->addOrderOption('members', 'creationdate', 'date', 2);
+
         $this->addListSection('requests', 'WebTeamMember', 'Section/TeamRequests', 'requests', 'fa-address-card');
+        $this->addOrderOption('requests', 'creationdate', 'date', 2);
     }
 
     protected function editAction()
@@ -176,6 +191,11 @@ class EditWebTeam extends SectionController
         $member->idteam = $this->getTeamId();
         if ($member->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $teamLog = new WebTeamLog();
+            $teamLog->idcontacto = $member->idcontacto;
+            $teamLog->idteam = $member->idteam;
+            $teamLog->description = $member->getContactName() . ' want to be member of this team.';
+            $teamLog->save();
         } else {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
         }
@@ -201,23 +221,20 @@ class EditWebTeam extends SectionController
 
         if ($member->delete()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $teamLog = new WebTeamLog();
+            $teamLog->description = 'Leaves this team.';
+            $teamLog->idcontacto = $member->idcontacto;
+            $teamLog->idteam = $member->idteam;
+            $teamLog->save();
         }
     }
 
     protected function loadData($sectionName)
     {
         switch ($sectionName) {
-            case 'team':
-                $code = $this->getTeamId();
-                $team = new WebTeam();
-                if (!empty($code) && $team->loadFromCode($code)) {
-                    $this->sections[$sectionName]['cursor'] = [$team];
-                    $this->title = $team->name;
-                    $this->description = $team->description();
-                } else {
-                    $this->miniLog->alert($this->i18n->trans('no-data'));
-                    $this->webPage->noindex = true;
-                }
+            case 'logs':
+                $where = [new DataBaseWhere('idteam', $this->getTeamId())];
+                $this->loadListSection($sectionName, $where);
                 break;
 
             case 'members':
@@ -234,6 +251,19 @@ class EditWebTeam extends SectionController
                     new DataBaseWhere('accepted', false),
                 ];
                 $this->loadListSection($sectionName, $where);
+                break;
+
+            case 'team':
+                $code = $this->getTeamId();
+                $team = new WebTeam();
+                if (!empty($code) && $team->loadFromCode($code)) {
+                    $this->sections[$sectionName]['cursor'] = [$team];
+                    $this->title = $team->name;
+                    $this->description = $team->description();
+                } else {
+                    $this->miniLog->alert($this->i18n->trans('no-data'));
+                    $this->webPage->noindex = true;
+                }
                 break;
         }
     }

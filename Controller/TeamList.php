@@ -34,11 +34,19 @@ class TeamList extends SectionController
         $this->addOrderOption('teams', 'name', 'name');
         $this->addOrderOption('teams', 'nummembers', 'members');
         $this->addOrderOption('teams', 'nummembers', 'requests');
+
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o');
+        $this->addSearchOptions('logs', ['description']);
+        $this->addOrderOption('logs', 'time', 'date', 2);
     }
 
     protected function loadData($sectionName)
     {
         switch ($sectionName) {
+            case 'logs':
+                $this->loadListSection($sectionName);
+                break;
+
             case 'teams':
                 $this->loadListSection($sectionName);
                 break;
