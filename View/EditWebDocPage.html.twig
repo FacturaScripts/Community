@@ -18,7 +18,7 @@
         <div class="container">
             <div class="columns">
                 <div class="column col-4 col-xs-12">
-                    <a href="{{ fsc.webDocPage.url('link') }}" class="btn">
+                    <a href="{{ fsc.getBackUrl() }}" class="btn">
                         <i class="fa fa-arrow-left" aria-hidden="true"></i> {{ i18n.trans('back') }}
                     </a>
                 </div>
@@ -27,6 +27,7 @@
                 </div>
             </div>
             <form action="{{ fsc.url() }}" method="post">
+                <input type="hidden" name="action" value="save"/>
                 <input type="hidden" name="code" value="{{ fsc.webDocPage.primaryColumnValue() }}"/>
                 <input type="hidden" name="idproject" value="{{ fsc.webDocPage.idproject }}"/>
                 <input type="hidden" name="langcode" value="{{ fsc.webDocPage.langcode }}"/>
@@ -72,7 +73,41 @@
                         </div>
                     </div>
                 </div>
+                <div class="columns">
+                    <div class="column">
+                        <br/>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <a href="#" class="btn btn-error" onclick="return showModal('deleteDocModal');">
+                            <i class="fa fa-trash fa-fw" aria-hidden="true"></i> {{ i18n.trans('delete') }}
+                        </a>
+                    </div>
+                    <div class="column text-right">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('save') }}
+                        </button>
+                    </div>
+                </div>
             </form>
+        </div>
+    </div>
+    <div class="modal modal-sm" id="deleteDocModal">
+        <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('deleteDocModal');"></a>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a href="#close" onclick="return hideModal('deleteDocModal');" class="btn btn-clear float-right" aria-label="Close"></a>
+                <div class="modal-title h5">{{ i18n.trans('confirm-delete') }}</div>
+                <p>{{ i18n.trans('are-you-sure') }}</p>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <a href="{{ fsc.webDocPage.url() }}&action=delete" class="btn btn-error">
+                        <i class="fa fa-trash fa-fw" aria-hidden="true"></i> {{ i18n.trans('delete') }}
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

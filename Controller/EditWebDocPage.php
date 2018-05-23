@@ -39,6 +39,20 @@ class EditWebDocPage extends PortalController
      */
     public $webDocPage;
 
+    public function getBackUrl()
+    {
+        if ($this->webDocPage->exists()) {
+            return $this->webDocPage->url('link');
+        }
+
+        $parent = $this->webDocPage->getParentPage();
+        if ($parent) {
+            return $parent->url('link');
+        }
+
+        return '#';
+    }
+
     public function getProjectDocPages()
     {
         $where = [
@@ -88,6 +102,24 @@ class EditWebDocPage extends PortalController
         }
     }
 
+    private function deleteAction()
+    {
+        if ($this->webDocPage->exists() && $this->webDocPage->delete()) {
+            $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
+        }
+
+        $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
+        if (empty($idteamdoc)) {
+            return;
+        }
+
+        $teamLog = new WebTeamLog();
+        $teamLog->description = 'Deleted documentation page: ' . $this->webDocPage->title;
+        $teamLog->idteam = $idteamdoc;
+        $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
+        $teamLog->save();
+    }
+
     private function loadWebDocPage()
     {
         $this->setTemplate('EditWebDocPage');
@@ -108,8 +140,15 @@ class EditWebDocPage extends PortalController
             }
         }
 
-        if ('' !== $title) {
-            $this->saveDoc($idparent, $title);
+        $action = $this->request->get('action', '');
+        switch ($action) {
+            case 'delete':
+                $this->deleteAction();
+                break;
+
+            case 'save':
+                $this->saveAction($idparent, $title);
+                break;
         }
 
         $this->title = $this->webDocPage->title . ' - ' . $this->i18n->trans('edit');
@@ -125,8 +164,12 @@ class EditWebDocPage extends PortalController
         }
     }
 
-    private function saveDoc($idparent, $title)
+    private function saveAction($idparent, $title)
     {
+        if ('' === $title) {
+            return;
+        }
+
         $this->webDocPage->body = $this->request->request->get('body', '');
         $this->webDocPage->idparent = empty($idparent) ? null : $idparent;
         $this->webDocPage->ordernum = (int) $this->request->get('ordernum', '100');

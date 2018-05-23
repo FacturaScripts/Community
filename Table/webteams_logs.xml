@@ -19,7 +19,6 @@
     <column>
         <name>idcontacto</name>
         <type>integer</type>
-        <null>NO</null>
     </column>
     <column>
         <name>idteam</name>
