@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th>{{ i18n.trans('name') }}</th>
+            <th></th>
             <th class="text-right">{{ i18n.trans('date') }}</th>
         </tr>
     </thead>
@@ -10,6 +11,11 @@
         {% for member in section.cursor %}
             <tr>
                 <td>{{ member.getContactName() }}</td>
+                <td class="text-right">
+                    {% if member.accepted == false and fsc.contactCanEdit() %}
+                        <a href="{{ member.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
+                    {% endif %}
+                </td>
                 <td class="text-right">{{ member.creationdate }}</td>
             </tr>
         {% else %}

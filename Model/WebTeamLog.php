@@ -91,6 +91,18 @@ class WebTeamLog extends Base\ModelClass
         return '-';
     }
 
+    /**
+     * Returns team.
+     * 
+     * @return WebTeam
+     */
+    public function getTeam()
+    {
+        $team = new WebTeam();
+        $team->loadFromCode($this->idteam);
+        return $team;
+    }
+
     public static function primaryColumn()
     {
         return 'id';

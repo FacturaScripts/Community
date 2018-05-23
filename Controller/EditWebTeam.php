@@ -121,7 +121,7 @@ class EditWebTeam extends SectionController
         $this->addListSection('members', 'WebTeamMember', 'Section/TeamMembers', 'members', 'fa-users');
         $this->addOrderOption('members', 'creationdate', 'date', 2);
 
-        $this->addListSection('requests', 'WebTeamMember', 'Section/TeamRequests', 'requests', 'fa-address-card');
+        $this->addListSection('requests', 'WebTeamMember', 'Section/TeamMembers', 'requests', 'fa-address-card');
         $this->addOrderOption('requests', 'creationdate', 'date', 2);
     }
 
