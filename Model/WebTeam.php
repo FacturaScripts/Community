@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 
@@ -57,10 +58,24 @@ class WebTeam extends Base\ModelClass
      */
     public $name;
 
+    /**
+     *
+     * @var int
+     */
+    public $nummembers;
+
+    /**
+     *
+     * @var int
+     */
+    public $numrequests;
+
     public function clear()
     {
         parent::clear();
         $this->creationdate = date('d-m-Y');
+        $this->nummembers = 0;
+        $this->numrequests = 0;
     }
 
     /**
@@ -98,12 +113,32 @@ class WebTeam extends Base\ModelClass
     {
         $this->description = Utils::noHtml($this->description);
         $this->name = Utils::noHtml($this->name);
-
         if (strlen($this->name) < 1) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']));
             return false;
         }
 
+        if (empty($this->creationdate)) {
+            $this->creationdate = date('d-m-Y');
+        }
+
+        $this->updateStats();
         return parent::test();
+    }
+
+    public function updateStats()
+    {
+        $member = new WebTeamMember();
+        $whereMembers = [
+            new DataBaseWhere('idteam', $this->idteam),
+            new DataBaseWhere('accepted', true)
+        ];
+        $this->nummembers = $member->count($whereMembers);
+
+        $whereRequests = [
+            new DataBaseWhere('idteam', $this->idteam),
+            new DataBaseWhere('accepted', true, '!=')
+        ];
+        $this->numrequests = $member->count($whereRequests);
     }
 }

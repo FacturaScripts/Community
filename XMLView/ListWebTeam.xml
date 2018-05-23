@@ -30,7 +30,13 @@
         <column name="description" order="120">
             <widget type="text" fieldname="description" />
         </column>
-        <column name="creation-date" display="right" order="120">
+        <column name="members" display="right" order="130">
+            <widget type="number" fieldname="nummembers" />
+        </column>
+        <column name="requests" display="right" order="140">
+            <widget type="number" fieldname="numrequests" />
+        </column>
+        <column name="creation-date" display="right" order="150">
             <widget type="date" fieldname="creationdate" />
         </column>
     </columns>

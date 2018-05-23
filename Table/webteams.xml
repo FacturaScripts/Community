@@ -24,6 +24,14 @@
         <name>name</name>
         <type>character varying(50)</type>
     </column>
+    <column>
+        <name>nummembers</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>numrequests</name>
+        <type>integer</type>
+    </column>
     <constraint>
         <name>webteams_pkey</name>
         <type>PRIMARY KEY (idteam)</type>

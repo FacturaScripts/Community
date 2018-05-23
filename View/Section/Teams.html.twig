@@ -3,6 +3,8 @@
         <tr>
             <th>{{ i18n.trans('name') }}</th>
             <th>{{ i18n.trans('description') }}</th>
+            <th class="text-right">{{ i18n.trans('members') }}</th>
+            <th class="text-right">{{ i18n.trans('requests') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -13,10 +15,12 @@
                     <a href="{{ team.url('public') }}">{{ team.name }}</a>
                 </td>
                 <td>{{ team.description() | raw }}</td>
+                <td class="text-right">{{ team.nummembers }}</td>
+                <td class="text-right">{{ team.numrequests }}</td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="2" class="bg-warning">
+                <td colspan="4" class="bg-warning">
                     {{ i18n.trans('no-data') }}
                 </td>
             </tr>
