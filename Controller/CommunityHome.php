@@ -36,9 +36,11 @@ class CommunityHome extends SectionController
         /// hide sectionController template if all sections are empty
         if ($this->getTemplate() == 'Master/SectionController.html.twig') {
             $empty = true;
-            foreach ($this->sections as $section) {
+            foreach ($this->sections as $name => $section) {
                 if ($section['count'] > 0) {
                     $empty = false;
+                } else {
+                    unset($this->sections[$name]);
                 }
             }
 
