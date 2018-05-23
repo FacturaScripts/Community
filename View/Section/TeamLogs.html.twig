@@ -3,7 +3,7 @@
         <tr>
             {% if 'team' not in fsc.sections | keys %}
                 <th>{{ i18n.trans('team') }}</th>
-            {% endif %}
+                {% endif %}
             <th>{{ i18n.trans('name') }}</th>
             <th>{{ i18n.trans('description') }}</th>
             <th class="text-right">{{ i18n.trans('date') }}</th>
@@ -20,7 +20,13 @@
                     </td>
                 {% endif %}
                 <td>{{ log.getContactName() }}</td>
-                <td>{{ log.description }}</td>
+                <td>
+                    {% if log.link %}
+                        <a href="{{ asset(log.link) }}">{{ log.description }}</a>
+                    {% else %}
+                        {{ log.description }}
+                    {% endif %}
+                </td>
                 <td class="text-right">{{ log.time }}</td>
             </tr>
         {% else %}

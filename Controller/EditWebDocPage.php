@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
+use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 
@@ -37,17 +38,6 @@ class EditWebDocPage extends PortalController
      * @var WebDocPage
      */
     public $webDocPage;
-
-    public function getPageData()
-    {
-        $pageData = parent::getPageData();
-        $pageData['title'] = 'web-doc-page';
-        $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-folder';
-        $pageData['showonmenu'] = false;
-
-        return $pageData;
-    }
 
     public function getProjectDocPages()
     {
@@ -119,15 +109,7 @@ class EditWebDocPage extends PortalController
         }
 
         if ('' !== $title) {
-            $this->webDocPage->body = $this->request->request->get('body', '');
-            $this->webDocPage->idparent = empty($idparent) ? null : $idparent;
-            $this->webDocPage->ordernum = (int) $this->request->get('ordernum', '100');
-            $this->webDocPage->title = $title;
-            if ($this->webDocPage->save()) {
-                $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
-            } else {
-                $this->miniLog->alert($this->i18n->trans('record-save-error'));
-            }
+            $this->saveDoc($idparent, $title);
         }
 
         $this->title = $this->webDocPage->title . ' - ' . $this->i18n->trans('edit');
@@ -141,5 +123,34 @@ class EditWebDocPage extends PortalController
             $this->webDocPage->idproject = $parentDocPage->idproject;
             $this->webDocPage->langcode = $parentDocPage->langcode;
         }
+    }
+
+    private function saveDoc($idparent, $title)
+    {
+        $this->webDocPage->body = $this->request->request->get('body', '');
+        $this->webDocPage->idparent = empty($idparent) ? null : $idparent;
+        $this->webDocPage->ordernum = (int) $this->request->get('ordernum', '100');
+        $this->webDocPage->title = $title;
+        if ($this->webDocPage->save()) {
+            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $this->saveTeamLog();
+        } else {
+            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        }
+    }
+
+    private function saveTeamLog()
+    {
+        $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
+        if (empty($idteamdoc)) {
+            return;
+        }
+
+        $teamLog = new WebTeamLog();
+        $teamLog->description = 'Modified documentation page: ' . $this->webDocPage->title;
+        $teamLog->idteam = $idteamdoc;
+        $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
+        $teamLog->link = $this->webDocPage->url('link');
+        $teamLog->save();
     }
 }
