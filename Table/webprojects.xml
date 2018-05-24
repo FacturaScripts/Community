@@ -11,6 +11,14 @@
         <type>date</type>
     </column>
     <column>
+        <name>description</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>idcontacto</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>idproject</name>
         <type>serial</type>
         <null>NO</null>
@@ -19,6 +27,11 @@
     <column>
         <name>name</name>
         <type>character varying(50)</type>
+    </column>
+    <column>
+        <name>plugin</name>
+        <type>boolean</type>
+        <default>false</default>
     </column>
     <constraint>
         <name>webprojects_pkey</name>

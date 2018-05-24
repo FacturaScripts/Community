@@ -39,6 +39,19 @@ class WebProject extends Base\ModelClass
     public $creationdate;
 
     /**
+     *
+     * @var string
+     */
+    public $description;
+
+    /**
+     * Contact identifier.
+     *
+     * @var int
+     */
+    public $idcontacto;
+
+    /**
      * Primary key.
      *
      * @var int
@@ -53,12 +66,19 @@ class WebProject extends Base\ModelClass
     public $name;
 
     /**
+     *
+     * @var bool
+     */
+    public $plugin;
+
+    /**
      * Reset the values of all model properties.
      */
     public function clear()
     {
         parent::clear();
         $this->creationdate = date('d-m-Y');
+        $this->plugin = true;
     }
 
     /**
@@ -88,6 +108,7 @@ class WebProject extends Base\ModelClass
      */
     public function test()
     {
+        $this->description = Utils::noHtml($this->description);
         $this->name = Utils::noHtml($this->name);
         if (strlen($this->name) < 1) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']));

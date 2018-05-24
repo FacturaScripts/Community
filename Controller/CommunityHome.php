@@ -58,7 +58,7 @@ class CommunityHome extends SectionController
         }
 
         $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users');
-        $this->addListSection('plugins', 'PluginProject', 'Section/Plugins', 'plugins', 'fa-plug');
+        $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug');
     }
 
     protected function loadData($sectionName)
