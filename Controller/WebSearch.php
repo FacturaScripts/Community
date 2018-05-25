@@ -19,8 +19,8 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Plugins\Community\Model\PluginProject;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
+use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Controller\WebSearch as ParentSearch;
 
 /**
@@ -43,27 +43,28 @@ class WebSearch extends ParentSearch
         $docPage = new WebDocPage();
         $where = [new DataBaseWhere('body|title', $this->query, 'LIKE')];
         foreach ($docPage->all($where, ['visitcount' => 'DESC']) as $docPage) {
-            $link = $docPage->url('link');
             $this->addSearchResults([
                 'icon' => 'fa-book',
                 'title' => $docPage->title,
                 'description' => $docPage->body,
-                'link' => $link
+                'link' => $docPage->url('link')
             ]);
         }
     }
 
     protected function searchPlugins()
     {
-        $pluginProject = new PluginProject();
-        $where = [new DataBaseWhere('name|description', $this->query, 'LIKE')];
+        $pluginProject = new WebProject();
+        $where = [
+            new DataBaseWhere('name|description', $this->query, 'LIKE'),
+            new DataBaseWhere('plugin', true)
+        ];
         foreach ($pluginProject->all($where) as $plugin) {
-            $link = $plugin->url('link');
             $this->addSearchResults([
                 'icon' => 'fa-plug',
                 'title' => $plugin->name,
                 'description' => $plugin->description,
-                'link' => $link
+                'link' => $plugin->url('link')
             ]);
         }
     }

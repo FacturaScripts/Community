@@ -198,13 +198,7 @@ class WebDocPage extends WebPageClass
                     new DataBaseWhere('langcode', $this->langcode)
                 ];
                 if ($webPage->loadFromCode('', $where)) {
-                    $url = $webPage->permalink;
-                }
-                if ('*' === substr($url, -1)) {
-                    $url = substr($url, 1, -1);
-                }
-                if ('/' === substr($url, -1)) {
-                    $url = substr($url, 1, -1);
+                    $url = $webPage->url('link');
                 }
                 return empty($this->permalink) ? $url : $url . '/' . $this->permalink;
 

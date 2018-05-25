@@ -9,11 +9,11 @@
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
-                                <a href="{{ asset(docPage.url('link')) }}">{{ docPage.title }}</a>
+                                <a href="{{ docPage.url('link') }}">{{ docPage.title }}</a>
                                 {% for childrenPage in docPage.getChildrenPages() %}
                                     <ul>
                                         <li>
-                                            <a href="{{ asset(childrenPage.url('link')) }}">{{ childrenPage.title }}</a>
+                                            <a href="{{ childrenPage.url('link') }}">{{ childrenPage.title }}</a>
                                         </li>
                                     </ul>
                                 {% endfor %}
@@ -28,13 +28,13 @@
                 <div class="column col-3 col-md-12">
                     <ul class="menu">
                         {% if fsc.contact or fsc.user %}
-                        <li class="divider" data-content="{{ i18n.trans('page') }}">
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ asset('EditWebDocPage?idproject=' ~ fsc.currentProject.idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
-                                <i class="fa fa-file-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
-                            </a>
-                        </li>
+                            <li class="divider" data-content="{{ i18n.trans('page') }}">
+                            </li>
+                            <li class="menu-item">
+                                <a href="{{ asset('EditWebDocPage?idproject=' ~ fsc.currentProject.idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
+                                    <i class="fa fa-file-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
+                                </a>
+                            </li>
                         {% endif %}
                         <li class="divider" data-content="{{ i18n.trans('projects') }}">
                         </li>

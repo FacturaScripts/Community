@@ -32,7 +32,7 @@ class PluginList extends SectionController
     protected function createSections()
     {
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug');
-        if (!empty($this->contact)) {
+        if (!empty($this->contact) || $this->user) {
             $this->addButton('plugins', 'AddPlugin', 'new', 'fa-plus');
         }
     }

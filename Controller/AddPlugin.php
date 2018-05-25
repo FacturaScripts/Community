@@ -48,14 +48,13 @@ class AddPlugin extends PortalController
 
     protected function commonCore()
     {
-        if (empty($this->contact)) {
+        if (empty($this->contact) && !$this->user) {
             $this->setTemplate('Master/LoginToContinue');
             return;
         }
 
         $name = $this->request->get('name', '');
         if ('' !== $name && $this->newPlugin($name)) {
-            $this->response->headers->set('Refresh', '1; ' . AppSettings::get('webportal', 'url'));
             return;
         }
 
@@ -64,6 +63,10 @@ class AddPlugin extends PortalController
 
     protected function contactCanAdd(): bool
     {
+        if ($this->user) {
+            return true;
+        }
+
         $idteamdev = AppSettings::get('community', 'idteamdev', '');
         if (empty($idteamdev)) {
             return false;
@@ -96,10 +99,11 @@ class AddPlugin extends PortalController
 
         $project->name = $name;
         $project->description = $name;
-        $project->idcontacto = $this->contact->idcontacto;
-        if (!$project->save()) {
+        $project->idcontacto = empty($this->contact) ? null : $this->contact->idcontacto;
+        if ($project->save()) {
             $this->saveTeamLog($project);
-            return false;
+            $this->response->headers->set('Refresh', '0; ' . $project->url('link'));
+            return true;
         }
 
         return false;
@@ -114,7 +118,7 @@ class AddPlugin extends PortalController
 
         $teamLog = new WebTeamLog();
         $teamLog->description = 'New plugin: ' . $plugin->name;
-        $teamLog->idcontacto = $this->contact->idcontacto;
+        $teamLog->idcontacto = $plugin->idcontacto;
         $teamLog->idteam = $idteamdev;
         $teamLog->link = $plugin->url('link');
         $teamLog->save();
