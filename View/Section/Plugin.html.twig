@@ -1,0 +1,22 @@
+{% set section = fsc.getCurrentSection() %}
+{% set plugin = section.model %}
+
+<div class="container">
+    <div class="columns">
+        <div class="column col-12">
+            <h1>{{ plugin.name }}</h1>
+            <p>{{ plugin.description }}</p>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column col-4">
+            <a href="{{ plugin.url('public') }}" class="btn">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                <span class="hide-xs">{{ i18n.trans('all') }}</span>
+            </a>
+        </div>
+        <div class="column col-8 text-right">
+            
+        </div>
+    </div>
+</div>

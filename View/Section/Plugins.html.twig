@@ -9,7 +9,9 @@
         {% set section = fsc.getCurrentSection() %}
         {% for plugin in section.cursor %}
             <tr>
-                <td>{{ plugin.name }}</td>
+                <td>
+                    <a href="{{ plugin.url() }}">{{ plugin.name }}</a>
+                </td>
                 <td>{{ plugin.description }}</td>
             </tr>
         {% else %}

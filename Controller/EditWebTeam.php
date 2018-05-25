@@ -23,6 +23,7 @@ use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of EditWebTeam
@@ -87,7 +88,6 @@ class EditWebTeam extends SectionController
 
         $idrequest = $this->request->get('idrequest', '');
         $member = new WebTeamMember();
-
         if ('' === $idrequest || !$member->loadFromCode($idrequest)) {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
             return;
@@ -229,7 +229,7 @@ class EditWebTeam extends SectionController
         }
     }
 
-    protected function loadData($sectionName)
+    protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
             case 'logs':
@@ -255,13 +255,12 @@ class EditWebTeam extends SectionController
 
             case 'team':
                 $code = $this->getTeamId();
-                $team = new WebTeam();
-                if (!empty($code) && $team->loadFromCode($code)) {
-                    $this->sections[$sectionName]['cursor'] = [$team];
-                    $this->title = $team->name;
-                    $this->description = $team->description();
+                if (!empty($code) && $this->sections[$sectionName]['model']->loadFromCode($code)) {
+                    $this->title = $this->sections[$sectionName]['model']->name;
+                    $this->description = $this->sections[$sectionName]['model']->description();
                 } else {
                     $this->miniLog->alert($this->i18n->trans('no-data'));
+                    $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
                     $this->webPage->noindex = true;
                 }
                 break;

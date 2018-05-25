@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,10 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of WebProject model.
@@ -115,5 +117,21 @@ class WebProject extends Base\ModelClass
         }
 
         return parent::test();
+    }
+
+    public function url(string $type = 'auto', string $list = 'List')
+    {
+        $webPage = new WebPage();
+        if ($type === 'public') {
+            foreach ($webPage->all([new DataBaseWhere('customcontroller', 'PluginList')]) as $wpage) {
+                return $wpage->url('link');
+            }
+        } elseif ($type != 'list') {
+            foreach ($webPage->all([new DataBaseWhere('customcontroller', 'ViewPlugin')]) as $wpage) {
+                return $wpage->url('link') . $this->name;
+            }
+        }
+
+        return parent::url($type, $list);
     }
 }

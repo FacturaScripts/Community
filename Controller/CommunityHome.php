@@ -61,7 +61,7 @@ class CommunityHome extends SectionController
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug');
     }
 
-    protected function loadData($sectionName)
+    protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
             case 'plugins':

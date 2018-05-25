@@ -40,7 +40,7 @@ class TeamList extends SectionController
         $this->addOrderOption('logs', 'time', 'date', 2);
     }
 
-    protected function loadData($sectionName)
+    protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
             case 'logs':

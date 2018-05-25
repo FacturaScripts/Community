@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
@@ -36,11 +37,12 @@ class PluginList extends SectionController
         }
     }
 
-    protected function loadData($sectionName)
+    protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
             case 'plugins':
-                $this->loadListSection($sectionName);
+                $where = [new DataBaseWhere('plugin', true)];
+                $this->loadListSection($sectionName, $where);
                 break;
         }
     }
