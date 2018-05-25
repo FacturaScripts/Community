@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebProject;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -89,19 +90,44 @@ class ViewPlugin extends SectionController
         ]);
     }
 
-    protected function loadData(string $sectionName)
+    protected function editAction()
     {
-        switch ($sectionName) {
-            case 'plugin':
-                $this->loadPlugin($sectionName);
+        if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            return;
+        }
+
+        $this->project->description = $this->request->get('description', '');
+        $this->project->publicrepo = $this->request->get('publicrepo', '');
+        if ($this->project->save()) {
+            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+        } else {
+            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        }
+    }
+
+    protected function execAfterAction(string $action)
+    {
+        switch ($action) {
+            case 'edit':
+                $this->editAction();
                 break;
         }
     }
 
-    protected function loadPlugin(string $sectionName)
+    protected function loadData(string $sectionName)
+    {
+        switch ($sectionName) {
+            case 'plugin':
+                $this->loadPlugin();
+                break;
+        }
+    }
+
+    protected function loadPlugin()
     {
         $this->project = $this->getProject();
-        if ($this->project->exists()) {
+        if ($this->project->exists() && $this->project->plugin) {
             $this->title = 'Plugin ' . $this->project->name;
             $this->description = $this->project->description();
             return;

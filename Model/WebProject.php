@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Model;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Core\Model\Contacto;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
@@ -74,6 +75,12 @@ class WebProject extends Base\ModelClass
     public $plugin;
 
     /**
+     *
+     * @var string
+     */
+    public $publicrepo;
+
+    /**
      * Reset the values of all model properties.
      */
     public function clear()
@@ -102,6 +109,21 @@ class WebProject extends Base\ModelClass
         }
 
         return trim($description);
+    }
+
+    /**
+     * Returns contact name.
+     *
+     * @return string
+     */
+    public function getContactName()
+    {
+        $contact = new Contacto();
+        if ($contact->loadFromCode($this->idcontacto)) {
+            return $contact->fullName();
+        }
+
+        return '-';
     }
 
     /**

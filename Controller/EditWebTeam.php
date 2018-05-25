@@ -146,9 +146,8 @@ class EditWebTeam extends SectionController
             return;
         }
 
-        $team = $this->getTeam();
-        $team->description = $this->request->get('description', '');
-        if ($team->save()) {
+        $this->team->description = $this->request->get('description', '');
+        if ($this->team->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
         } else {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
@@ -164,6 +163,10 @@ class EditWebTeam extends SectionController
                 /// we force save to update number of members and requests
                 $this->team->save();
                 break;
+
+            case 'edit':
+                $this->editAction();
+                break;
         }
     }
 
@@ -172,10 +175,6 @@ class EditWebTeam extends SectionController
         switch ($action) {
             case 'accept-request':
                 $this->acceptAction();
-                break;
-
-            case 'edit':
-                $this->editAction();
                 break;
 
             case 'join':
@@ -270,12 +269,12 @@ class EditWebTeam extends SectionController
                 break;
 
             case 'team':
-                $this->loadTeam($sectionName);
+                $this->loadTeam();
                 break;
         }
     }
 
-    protected function loadTeam(string $sectionName)
+    protected function loadTeam()
     {
         $this->team = $this->getTeam();
         if ($this->team->exists()) {

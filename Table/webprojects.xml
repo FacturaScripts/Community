@@ -33,6 +33,10 @@
         <type>boolean</type>
         <default>false</default>
     </column>
+    <column>
+        <name>publicrepo</name>
+        <type>character varying(300)</type>
+    </column>
     <constraint>
         <name>webprojects_pkey</name>
         <type>PRIMARY KEY (idproject)</type>

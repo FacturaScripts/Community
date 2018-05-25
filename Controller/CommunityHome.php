@@ -46,6 +46,15 @@ class CommunityHome extends SectionController
 
             if ($empty) {
                 $this->setTemplate('Master/PortalTemplate');
+                return;
+            }
+
+            foreach ($this->sections as $name => $section) {
+                if ($section['count'] > 0) {
+                    $this->active = $name;
+                    $this->current = $name;
+                    break;
+                }
             }
         }
     }
