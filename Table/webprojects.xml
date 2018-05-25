@@ -37,4 +37,8 @@
         <name>webprojects_pkey</name>
         <type>PRIMARY KEY (idproject)</type>
     </constraint>
+    <constraint>
+        <name>uniq_webprojects</name>
+        <type>UNIQUE (name)</type>
+    </constraint>
 </table>
