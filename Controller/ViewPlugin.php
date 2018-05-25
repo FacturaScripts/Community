@@ -32,6 +32,12 @@ use Symfony\Component\HttpFoundation\Response;
 class ViewPlugin extends SectionController
 {
 
+    /**
+     *
+     * @var WebProject
+     */
+    protected $project;
+
     public function contactCanEdit(): bool
     {
         if ($this->user) {
@@ -57,11 +63,28 @@ class ViewPlugin extends SectionController
         return $member->loadFromCode('', $where);
     }
 
+    public function getProject(): WebProject
+    {
+        if (isset($this->project)) {
+            return $this->project;
+        }
+
+        $project = new WebProject();
+        $code = $this->request->get('code', '');
+        if (!empty($code)) {
+            $project->loadFromCode($code);
+            return $project;
+        }
+
+        $uri = explode('/', $this->uri);
+        $project->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
+        return $project;
+    }
+
     protected function createSections()
     {
         $this->addSection('plugin', [
             'fixed' => true,
-            'model' => new WebProject(),
             'template' => 'Section/Plugin.html.twig',
         ]);
     }
@@ -77,19 +100,10 @@ class ViewPlugin extends SectionController
 
     protected function loadPlugin(string $sectionName)
     {
-        $idplugin = $this->request->get('code', '');
-        if (!empty($idplugin)) {
-            if (!$this->sections[$sectionName]['model']->loadFromCode($idplugin)) {
-                $this->miniLog->alert($this->i18n->trans('no-data'));
-                $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
-                $this->webPage->noindex = true;
-            }
-
-            return;
-        }
-
-        $uri = explode('/', $this->uri);
-        if ($this->sections[$sectionName]['model']->loadFromCode('', [new DataBaseWhere('name', end($uri))])) {
+        $this->project = $this->getProject();
+        if ($this->project->exists()) {
+            $this->title = 'Plugin ' . $this->project->name;
+            $this->description = $this->project->description();
             return;
         }
 

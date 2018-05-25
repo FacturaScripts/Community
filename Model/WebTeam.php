@@ -152,7 +152,7 @@ class WebTeam extends Base\ModelClass
             }
         } elseif ($type != 'list') {
             foreach ($webPage->all([new DataBaseWhere('customcontroller', 'EditWebTeam')]) as $wpage) {
-                return $wpage->url('link') . $this->idteam;
+                return $wpage->url('link') . $this->name;
             }
         }
 

@@ -33,6 +33,12 @@ use Symfony\Component\HttpFoundation\Response;
 class EditWebTeam extends SectionController
 {
 
+    /**
+     *
+     * @var WebTeam
+     */
+    protected $team;
+
     public function contactCanEdit(): bool
     {
         if ($this->user) {
@@ -44,24 +50,32 @@ class EditWebTeam extends SectionController
         }
 
         $member = new WebTeamMember();
+        $team = $this->getTeam();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $this->getTeamId()),
+            new DataBaseWhere('idteam', $team->idteam),
             new DataBaseWhere('accepted', true)
         ];
 
         return $member->loadFromCode('', $where);
     }
 
-    public function getTeamId()
+    public function getTeam(): WebTeam
     {
-        $code = $this->request->get('code', '');
-        if (!empty($code)) {
-            return $code;
+        if (isset($this->team)) {
+            return $this->team;
+        }
+
+        $team = new WebTeam();
+        $idteam = $this->request->get('code', '');
+        if (!empty($idteam)) {
+            $team->loadFromCode($idteam);
+            return $team;
         }
 
         $uri = explode('/', $this->uri);
-        return end($uri);
+        $team->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
+        return $team;
     }
 
     public function showJoinButton(): bool
@@ -71,9 +85,10 @@ class EditWebTeam extends SectionController
         }
 
         $member = new WebTeamMember();
+        $team = $this->getTeam();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $this->getTeamId()),
+            new DataBaseWhere('idteam', $team->idteam),
         ];
 
         return !$member->loadFromCode('', $where);
@@ -110,7 +125,6 @@ class EditWebTeam extends SectionController
     {
         $this->addSection('team', [
             'fixed' => true,
-            'model' => new WebTeam(),
             'template' => 'Section/Team.html.twig',
         ]);
 
@@ -132,15 +146,12 @@ class EditWebTeam extends SectionController
             return;
         }
 
-        $code = $this->getTeamId();
-        $team = new WebTeam();
-        if (!empty($code) && $team->loadFromCode($code)) {
-            $team->description = $this->request->get('description', '');
-            if ($team->save()) {
-                $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
-            } else {
-                $this->miniLog->alert($this->i18n->trans('record-save-error'));
-            }
+        $team = $this->getTeam();
+        $team->description = $this->request->get('description', '');
+        if ($team->save()) {
+            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+        } else {
+            $this->miniLog->alert($this->i18n->trans('record-save-error'));
         }
     }
 
@@ -151,7 +162,7 @@ class EditWebTeam extends SectionController
             case 'join':
             case 'leave':
                 /// we force save to update number of members and requests
-                $this->sections['team']['cursor'][0]->save();
+                $this->team->save();
                 break;
         }
     }
@@ -186,9 +197,10 @@ class EditWebTeam extends SectionController
             return;
         }
 
+        $team = $this->getTeam();
         $member = new WebTeamMember();
         $member->idcontacto = $this->contact->idcontacto;
-        $member->idteam = $this->getTeamId();
+        $member->idteam = $team->idteam;
         if ($member->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
             $teamLog = new WebTeamLog();
@@ -209,9 +221,10 @@ class EditWebTeam extends SectionController
         }
 
         $member = new WebTeamMember();
+        $team = $this->getTeam();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $this->getTeamId()),
+            new DataBaseWhere('idteam', $team->idteam),
         ];
 
         if (!$member->loadFromCode('', $where)) {
@@ -231,15 +244,16 @@ class EditWebTeam extends SectionController
 
     protected function loadData(string $sectionName)
     {
+        $team = $this->getTeam();
         switch ($sectionName) {
             case 'logs':
-                $where = [new DataBaseWhere('idteam', $this->getTeamId())];
+                $where = [new DataBaseWhere('idteam', $team->idteam)];
                 $this->loadListSection($sectionName, $where);
                 break;
 
             case 'members':
                 $where = [
-                    new DataBaseWhere('idteam', $this->getTeamId()),
+                    new DataBaseWhere('idteam', $team->idteam),
                     new DataBaseWhere('accepted', true),
                 ];
                 $this->loadListSection($sectionName, $where);
@@ -247,23 +261,29 @@ class EditWebTeam extends SectionController
 
             case 'requests':
                 $where = [
-                    new DataBaseWhere('idteam', $this->getTeamId()),
+                    new DataBaseWhere('idteam', $team->idteam),
                     new DataBaseWhere('accepted', false),
                 ];
                 $this->loadListSection($sectionName, $where);
                 break;
 
             case 'team':
-                $code = $this->getTeamId();
-                if (!empty($code) && $this->sections[$sectionName]['model']->loadFromCode($code)) {
-                    $this->title = $this->sections[$sectionName]['model']->name;
-                    $this->description = $this->sections[$sectionName]['model']->description();
-                } else {
-                    $this->miniLog->alert($this->i18n->trans('no-data'));
-                    $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
-                    $this->webPage->noindex = true;
-                }
+                $this->loadTeam($sectionName);
                 break;
         }
+    }
+
+    protected function loadTeam(string $sectionName)
+    {
+        $this->team = $this->getTeam();
+        if ($this->team->exists()) {
+            $this->title = $this->team->name;
+            $this->description = $this->team->description();
+            return;
+        }
+
+        $this->miniLog->alert($this->i18n->trans('no-data'));
+        $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
+        $this->webPage->noindex = true;
     }
 }
