@@ -218,6 +218,8 @@ class EditWebTeam extends SectionController
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
             return;
+        } elseif (empty($this->contact)) {
+            return;
         }
 
         $member = new WebTeamMember();

@@ -57,13 +57,27 @@ class CommunityHome extends SectionController
             return;
         }
 
-        $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users');
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug');
+        $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users', 'teams');
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
+        $this->addSearchOptions('logs', ['description']);
+        $this->addOrderOption('logs', 'time', 'date', 2);
     }
 
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
+            case 'logs':
+                $idTeams = [];
+                foreach ($this->sections['teams']['cursor'] as $member) {
+                    if ($member->accepted) {
+                        $idTeams[] = $member->idteam;
+                    }
+                }
+                $where = [new DataBaseWhere('idteam', implode(',', $idTeams), 'IN'),];
+                $this->loadListSection($sectionName, $where);
+                break;
+
             case 'plugins':
             case 'teams':
                 $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto),];
