@@ -12,7 +12,7 @@
         {% for team in section.cursor %}
             <tr>
                 <td>
-                    <a href="{{ team.url() }}">{{ team.name }}</a>
+                    <a href="{{ team.url('link') }}">{{ team.name }}</a>
                 </td>
                 <td>{{ team.description() | raw }}</td>
                 <td class="text-right">{{ team.nummembers }}</td>

@@ -120,7 +120,7 @@ class WebDocumentation extends PortalController
         $this->loadData();
     }
 
-    private function getProjectIndex($docPage = null, $subIndex = [])
+    protected function getProjectIndex($docPage = null, $subIndex = [])
     {
         if (is_null($docPage)) {
             $docPage = $this->docPage;
@@ -142,7 +142,7 @@ class WebDocumentation extends PortalController
         return $index;
     }
 
-    private function getUrlExtraParams()
+    protected function getUrlExtraParams()
     {
         if ($this->uri === '/' . $this->getClassName()) {
             return [];
@@ -152,7 +152,7 @@ class WebDocumentation extends PortalController
         return empty($params[0]) ? [] : $params;
     }
 
-    private function getUrlPrefix()
+    protected function getUrlPrefix()
     {
         $urlPrefix = substr($this->webPage->permalink, 1);
         if ('*' === substr($this->webPage->permalink, -1)) {
@@ -185,7 +185,7 @@ class WebDocumentation extends PortalController
         return $webPage;
     }
 
-    private function loadData()
+    protected function loadData()
     {
         $this->setTemplate('WebDocumentation');
         $this->defaultIdproject = AppSettings::get('community', 'idproject', '');
@@ -221,7 +221,7 @@ class WebDocumentation extends PortalController
         }
     }
 
-    private function loadPage()
+    protected function loadPage()
     {
         $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
         $this->docPage->increaseVisitCount($ipAddress);
@@ -233,7 +233,7 @@ class WebDocumentation extends PortalController
         $this->setTemplate('WebDocPage');
     }
 
-    private function loadProject()
+    protected function loadProject()
     {
         $this->title .= ' - ' . $this->currentProject->name;
         $this->description .= ' - Project: ' . $this->currentProject->name;

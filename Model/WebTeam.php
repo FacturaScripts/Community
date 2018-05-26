@@ -146,11 +146,11 @@ class WebTeam extends Base\ModelClass
     public function url(string $type = 'auto', string $list = 'List')
     {
         $webPage = new WebPage();
-        if ($type === 'public') {
+        if ($type === 'link-all') {
             foreach ($webPage->all([new DataBaseWhere('customcontroller', 'TeamList')]) as $wpage) {
                 return $wpage->url('link');
             }
-        } elseif ($type != 'list') {
+        } elseif ($type === 'link') {
             foreach ($webPage->all([new DataBaseWhere('customcontroller', 'EditWebTeam')]) as $wpage) {
                 return $wpage->url('link') . $this->name;
             }

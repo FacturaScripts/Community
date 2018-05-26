@@ -16,7 +16,7 @@
                 {% if 'team' not in fsc.sections | keys %}
                     <td>
                         {% set team = log.getTeam() %}
-                        <a href="{{ team.url() }}">{{ team.name }}</a>
+                        <a href="{{ team.url('link') }}">{{ team.name }}</a>
                     </td>
                 {% endif %}
                 <td>{{ log.getContactName() }}</td>

@@ -25,10 +25,15 @@
             <column name="code" display="none" order="100">
                 <widget type="text" fieldname="idproject" required="true" />
             </column>
-            <column name="name" numcolumns="8" order="110">
+            <column name="name" numcolumns="6" order="110">
                 <widget type="text" fieldname="name" required="true" />
             </column>
-            <column name="date" numcolumns="4" order="120">
+            <column name="contact" numcolumns="4" order="120">
+                <widget type="select" fieldname="idcontacto">
+                    <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
+                </widget>
+            </column>
+            <column name="date" numcolumns="2" order="130">
                 <widget type="datepicker" fieldname="creationdate" />
             </column>
         </group>

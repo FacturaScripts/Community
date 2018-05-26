@@ -12,7 +12,7 @@
             <tr>
                 <td>
                     {% set team = member.getTeam() %}
-                    <a href="{{ team.url() }}">{{ team.name }}</a>
+                    <a href="{{ team.url('link') }}">{{ team.name }}</a>
                 </td>
                 <td>{{ member.accepted ? i18n.trans('yes') : '-' }}</td>
                 <td class="text-right">{{ member.creationdate }}</td>

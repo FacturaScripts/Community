@@ -3,7 +3,9 @@
 <div class="container">
     <div class="columns">
         <div class="column col-12">
-            <h1>Plugin {{ plugin.name }}</h1>
+            <h1>
+                <i class="fa fa-plug fa-fw" aria-hidden="true"></i> Plugin {{ plugin.name }}
+            </h1>
             <p>
                 {{ plugin.description }}<br/>
                 {% if plugin.publicrepo %}
@@ -17,7 +19,7 @@
     </div>
     <div class="columns">
         <div class="column col-4">
-            <a href="{{ plugin.url('public') }}" class="btn">
+            <a href="{{ plugin.url('link-all') }}" class="btn">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 <span class="hide-xs">{{ i18n.trans('all') }}</span>
             </a>

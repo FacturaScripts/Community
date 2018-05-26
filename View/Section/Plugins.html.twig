@@ -10,7 +10,7 @@
         {% for plugin in section.cursor %}
             <tr>
                 <td>
-                    <a href="{{ plugin.url() }}">{{ plugin.name }}</a>
+                    <a href="{{ plugin.url('link') }}">{{ plugin.name }}</a>
                 </td>
                 <td>{{ plugin.description() }}</td>
             </tr>

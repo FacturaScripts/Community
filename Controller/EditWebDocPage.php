@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
+use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
@@ -92,7 +93,8 @@ class EditWebDocPage extends PortalController
             if ($member->loadFromCode('', $where)) {
                 $continue = true;
             } else {
-                $team = $member->getTeam();
+                $team = new WebTeam();
+                $team->loadFromCode($idteamdoc);
                 $this->miniLog->alert($this->i18n->trans('join-team', ['%team%' => $team->name]));
             }
         }

@@ -189,22 +189,25 @@ class WebDocPage extends WebPageClass
      */
     public function url(string $type = 'auto', string $list = 'List')
     {
-        switch ($type) {
-            case 'link':
-                $url = '#';
-                $webPage = new WebPage();
-                $where = [
-                    new DataBaseWhere('customcontroller', self::CUSTOM_CONTROLLER),
-                    new DataBaseWhere('langcode', $this->langcode)
-                ];
-                if ($webPage->loadFromCode('', $where)) {
-                    $url = $webPage->url('link');
-                }
-                return empty($this->permalink) ? $url : $url . '/' . $this->permalink;
+        if (in_array($type, ['link', 'link-all'])) {
+            $url = '#';
+            $webPage = new WebPage();
+            $where = [
+                new DataBaseWhere('customcontroller', self::CUSTOM_CONTROLLER),
+                new DataBaseWhere('langcode', $this->langcode)
+            ];
+            if ($webPage->loadFromCode('', $where)) {
+                $url = $webPage->url('link');
+            }
 
-            default:
-                return parent::url($type, 'ListWebProject?active=List');
+            if ($type === 'link-all') {
+                return $url;
+            }
+
+            return empty($this->permalink) ? $url : $url . '/' . $this->permalink;
         }
+
+        return parent::url($type, 'ListWebProject?active=List');
     }
 
     private function newPermalink()
