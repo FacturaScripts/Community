@@ -47,7 +47,7 @@ class WebSearch extends ParentSearch
                 'icon' => 'fa-book',
                 'title' => $docPage->title,
                 'description' => $docPage->body,
-                'link' => $docPage->url('link')
+                'link' => $docPage->url('public')
             ]);
         }
     }
@@ -64,7 +64,7 @@ class WebSearch extends ParentSearch
                 'icon' => 'fa-plug',
                 'title' => $plugin->name,
                 'description' => $plugin->description,
-                'link' => $plugin->url('link')
+                'link' => $plugin->url('public')
             ]);
         }
     }

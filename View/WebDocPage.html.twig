@@ -47,11 +47,11 @@
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
-                                <a href="{{ docPage.url('link') }}">{{ docPage.title }}</a>
+                                <a href="{{ docPage.url('public') }}">{{ docPage.title }}</a>
                                 {% for childrenPage in docPage.getChildrenPages() %}
                                     <ul>
                                         <li>
-                                            <a href="{{ childrenPage.url('link') }}">{{ childrenPage.title }}</a>
+                                            <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title }}</a>
                                         </li>
                                     </ul>
                                 {% endfor %}
@@ -75,7 +75,7 @@
     <ul>
         {% for item in items %}
             <li>
-                <a href="{{ item.page.url('link') }}">
+                <a href="{{ item.page.url('public') }}">
                     {% if item.selected %}
                         <b>{{ item.page.title }}</b>
                     {% else %}
@@ -96,7 +96,7 @@
     <ul class="menu menu-big" style="width: 285px;">
         {% for item in items %}
             <li class="menu-item">
-                <a href="{{ item.page.url('link') }}">
+                <a href="{{ item.page.url('public') }}">
                     {% if item.selected %}
                         <b>{{ item.page.title }}</b>
                     {% else %}

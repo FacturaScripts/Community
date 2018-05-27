@@ -102,7 +102,7 @@ class AddPlugin extends PortalController
         $project->idcontacto = empty($this->contact) ? null : $this->contact->idcontacto;
         if ($project->save()) {
             $this->saveTeamLog($project);
-            $this->response->headers->set('Refresh', '0; ' . $project->url('link'));
+            $this->response->headers->set('Refresh', '0; ' . $project->url('public'));
             return true;
         }
 
@@ -120,7 +120,7 @@ class AddPlugin extends PortalController
         $teamLog->description = 'New plugin: ' . $plugin->name;
         $teamLog->idcontacto = $plugin->idcontacto;
         $teamLog->idteam = $idteamdev;
-        $teamLog->link = $plugin->url('link');
+        $teamLog->link = $plugin->url('public');
         $teamLog->save();
     }
 }

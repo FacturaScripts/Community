@@ -189,7 +189,7 @@ class WebDocPage extends WebPageClass
      */
     public function url(string $type = 'auto', string $list = 'List')
     {
-        if (in_array($type, ['link', 'link-all'])) {
+        if (in_array($type, ['public', 'public-list'])) {
             $url = '#';
             $webPage = new WebPage();
             $where = [
@@ -197,10 +197,10 @@ class WebDocPage extends WebPageClass
                 new DataBaseWhere('langcode', $this->langcode)
             ];
             if ($webPage->loadFromCode('', $where)) {
-                $url = $webPage->url('link');
+                $url = $webPage->url('public');
             }
 
-            if ($type === 'link-all') {
+            if ($type === 'public-list') {
                 return $url;
             }
 

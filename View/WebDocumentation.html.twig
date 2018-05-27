@@ -9,11 +9,11 @@
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
-                                <a href="{{ docPage.url('link') }}">{{ docPage.title }}</a>
+                                <a href="{{ docPage.url('public') }}">{{ docPage.title }}</a>
                                 {% for childrenPage in docPage.getChildrenPages() %}
                                     <ul>
                                         <li>
-                                            <a href="{{ childrenPage.url('link') }}">{{ childrenPage.title }}</a>
+                                            <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title }}</a>
                                         </li>
                                     </ul>
                                 {% endfor %}

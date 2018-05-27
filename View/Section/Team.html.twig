@@ -11,7 +11,7 @@
     </div>
     <div class="columns">
         <div class="column col-4">
-            <a href="{{ team.url('link-all') }}" class="btn">
+            <a href="{{ team.url('public-list') }}" class="btn">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 <span class="hide-xs">{{ i18n.trans('all') }}</span>
             </a>
@@ -19,7 +19,7 @@
         <div class="column col-8 text-right">
             <div class="btn-group">
                 {% if fsc.contactCanEdit() %}
-                    <a href="{{ team.url('link') }}?action=leave" class="btn btn-error">
+                    <a href="{{ team.url('public') }}?action=leave" class="btn btn-error">
                         <i class="fa fa-sign-out" aria-hidden="true"></i> {{ i18n.trans('leave') }}
                     </a>
                     <a href="#" class="btn" onclick="return showModal('editTeamModal');">
@@ -27,7 +27,7 @@
                         <span class="hide-xs">{{ i18n.trans('edit') }}</span>
                     </a>
                 {% elseif fsc.showJoinButton() %}
-                    <a href="{{ team.url('link') }}?action=join" class="btn btn-success">
+                    <a href="{{ team.url('public') }}?action=join" class="btn btn-success">
                         <i class="fa fa-sign-in" aria-hidden="true"></i> {{ i18n.trans('join') }}
                     </a>
                 {% endif %}

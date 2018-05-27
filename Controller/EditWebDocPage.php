@@ -43,15 +43,15 @@ class EditWebDocPage extends PortalController
     public function getBackUrl()
     {
         if ($this->webDocPage->exists()) {
-            return $this->webDocPage->url('link');
+            return $this->webDocPage->url('public');
         }
 
         $parent = $this->webDocPage->getParentPage();
         if ($parent) {
-            return $parent->url('link');
+            return $parent->url('public');
         }
 
-        return '#';
+        return $this->webDocPage->url('public-list');
     }
 
     public function getProjectDocPages()
@@ -195,7 +195,7 @@ class EditWebDocPage extends PortalController
         $teamLog->description = 'Modified documentation page: ' . $this->webDocPage->title;
         $teamLog->idteam = $idteamdoc;
         $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
-        $teamLog->link = $this->webDocPage->url('link');
+        $teamLog->link = $this->webDocPage->url('public');
         $teamLog->save();
     }
 }

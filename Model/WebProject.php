@@ -165,13 +165,13 @@ class WebProject extends Base\ModelClass
     public function url(string $type = 'auto', string $list = 'List')
     {
         $webPage = new WebPage();
-        if ($type === 'link-all') {
+        if ($type === 'public-list') {
             foreach ($webPage->all([new DataBaseWhere('customcontroller', 'PluginList')]) as $wpage) {
-                return $wpage->url('link');
+                return $wpage->url('public');
             }
-        } elseif ($type === 'link') {
+        } elseif ($type === 'public') {
             foreach ($webPage->all([new DataBaseWhere('customcontroller', 'ViewPlugin')]) as $wpage) {
-                return $wpage->url('link') . $this->name;
+                return $wpage->url('public') . $this->name;
             }
         }
 
