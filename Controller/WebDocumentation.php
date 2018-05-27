@@ -203,7 +203,7 @@ class WebDocumentation extends PortalController
         }
 
         /// all projects
-        $this->projects = $this->currentProject->all([], ['name' => 'ASC'], 0, 0);
+        $this->projects = $this->currentProject->all([new DataBaseWhere('plugin', true, '!=')], ['name' => 'ASC'], 0, 0);
 
         $this->docPage = new WebDocPage();
 

@@ -39,7 +39,7 @@ class CommunityHome extends SectionController
             foreach ($this->sections as $name => $section) {
                 if ($section['count'] > 0) {
                     $empty = false;
-                } else {
+                } elseif ($name !== 'home') {
                     unset($this->sections[$name]);
                 }
             }
@@ -50,11 +50,9 @@ class CommunityHome extends SectionController
             }
 
             foreach ($this->sections as $name => $section) {
-                if ($section['count'] > 0) {
-                    $this->active = $name;
-                    $this->current = $name;
-                    break;
-                }
+                $this->active = $name;
+                $this->current = $name;
+                break;
             }
         }
     }
@@ -66,8 +64,10 @@ class CommunityHome extends SectionController
             return;
         }
 
+        $this->addSection('home', ['icon' => 'fa-home', 'label' => $this->i18n->trans('home')]);
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug');
         $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users', 'teams');
+
         $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);

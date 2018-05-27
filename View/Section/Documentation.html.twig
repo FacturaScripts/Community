@@ -1,0 +1,18 @@
+<ul>
+    {% for docPage in section.cursor %}
+        <li>
+            <a href="{{ docPage.url('public') }}">{{ docPage.title }}</a>
+            {% for childrenPage in docPage.getChildrenPages() %}
+                <ul>
+                    <li>
+                        <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title }}</a>
+                    </li>
+                </ul>
+            {% endfor %}
+        </li>
+    {% else %}
+        <li>
+            {{ i18n.trans('no-data') }}
+        </li>
+    {% endfor %}
+</ul>

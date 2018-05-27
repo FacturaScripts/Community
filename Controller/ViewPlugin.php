@@ -82,12 +82,29 @@ class ViewPlugin extends SectionController
         return $project;
     }
 
+    protected function commonCore()
+    {
+        parent::commonCore();
+
+        foreach ($this->sections as $name => $section) {
+            if ($section['count'] == 0 && !$section['fixed']) {
+                unset($this->sections[$name]);
+            }
+        }
+
+        foreach ($this->sections as $name => $section) {
+            if ($section['count'] > 0) {
+                $this->active = $name;
+                $this->current = $name;
+                break;
+            }
+        }
+    }
+
     protected function createSections()
     {
-        $this->addSection('plugin', [
-            'fixed' => true,
-            'template' => 'Section/Plugin.html.twig',
-        ]);
+        $this->addSection('plugin', ['fixed' => true, 'template' => 'Section/Plugin']);
+        $this->addListSection('docs', 'WebDocPage', 'Section/Documentation', 'documentation');
     }
 
     protected function editAction()
@@ -118,6 +135,15 @@ class ViewPlugin extends SectionController
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
+            case 'docs':
+                $project = $this->getProject();
+                $where = [
+                    new DataBaseWhere('idproject', $project->idproject),
+                    new DataBaseWhere('idparent', null, 'IS'),
+                ];
+                $this->loadListSection($sectionName, $where);
+                break;
+
             case 'plugin':
                 $this->loadPlugin();
                 break;

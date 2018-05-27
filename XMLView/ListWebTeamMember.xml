@@ -31,7 +31,7 @@
         </column>
         <column name="contact" order="120">
             <widget type="select" fieldname="idcontacto" onclick="EditContacto">
-                <values source="contactos" fieldcode="idcontacto" fieldtitle="nombre"></values>
+                <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
             </widget>
         </column>
         <column name="accepted" order="130">

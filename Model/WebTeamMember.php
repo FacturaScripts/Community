@@ -113,7 +113,7 @@ class WebTeamMember extends Base\ModelClass
     {
         $team = new WebTeam();
         if ($type == 'accept' && $team->loadFromCode($this->idteam)) {
-            return $team->url() . '?action=accept-request&idrequest=' . $this->id;
+            return $team->url('public') . '?action=accept-request&idrequest=' . $this->id;
         }
 
         return parent::url($type, 'ListWebProject?active=List');

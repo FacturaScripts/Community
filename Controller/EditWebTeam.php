@@ -123,10 +123,7 @@ class EditWebTeam extends SectionController
 
     protected function createSections()
     {
-        $this->addSection('team', [
-            'fixed' => true,
-            'template' => 'Section/Team.html.twig',
-        ]);
+        $this->addSection('team', ['fixed' => true, 'template' => 'Section/Team']);
 
         $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o');
         $this->addSearchOptions('logs', ['description']);
