@@ -172,20 +172,28 @@ class EditWebDocPage extends PortalController
             return;
         }
 
+        $previousmod = $this->webDocPage->lastmod;
+
         $this->webDocPage->body = $this->request->request->get('body', '');
         $this->webDocPage->idparent = empty($idparent) ? null : $idparent;
         $this->webDocPage->ordernum = (int) $this->request->get('ordernum', '100');
         $this->webDocPage->title = $title;
+
         if ($this->webDocPage->save()) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-            $this->saveTeamLog();
+            $this->saveTeamLog($previousmod);
         } else {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
         }
     }
 
-    private function saveTeamLog()
+    private function saveTeamLog(string $previousmod)
     {
+        /// we only save a log the first time this doc is modified today
+        if (date('d-m-Y') == $previousmod) {
+            return;
+        }
+
         $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
         if (empty($idteamdoc)) {
             return;
