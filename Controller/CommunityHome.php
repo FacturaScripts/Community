@@ -52,7 +52,9 @@ class CommunityHome extends SectionController
             foreach ($this->sections as $name => $section) {
                 $this->active = $name;
                 $this->current = $name;
-                break;
+                if ($section['count'] > 0) {
+                    break;
+                }
             }
         }
     }
