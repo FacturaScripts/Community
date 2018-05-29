@@ -31,32 +31,32 @@ use FacturaScripts\Plugins\webportal\Controller\WebSearch as ParentSearch;
 class WebSearch extends ParentSearch
 {
 
-    protected function search()
+    protected function search(string $query)
     {
-        parent::search();
-        $this->searchDocPages();
-        $this->searchPlugins();
+        parent::search($query);
+        $this->searchDocPages($query);
+        $this->searchPlugins($query);
     }
 
-    protected function searchDocPages()
+    protected function searchDocPages(string $query)
     {
         $docPage = new WebDocPage();
-        $where = [new DataBaseWhere('body|title', $this->query, 'LIKE')];
+        $where = [new DataBaseWhere('body|title', $query, 'LIKE')];
         foreach ($docPage->all($where, ['visitcount' => 'DESC']) as $docPage) {
             $this->addSearchResults([
                 'icon' => 'fa-book',
                 'title' => $docPage->title,
                 'description' => $docPage->body,
                 'link' => $docPage->url('public')
-            ]);
+                ], $query);
         }
     }
 
-    protected function searchPlugins()
+    protected function searchPlugins(string $query)
     {
         $pluginProject = new WebProject();
         $where = [
-            new DataBaseWhere('name|description', $this->query, 'LIKE'),
+            new DataBaseWhere('name|description', $query, 'LIKE'),
             new DataBaseWhere('plugin', true)
         ];
         foreach ($pluginProject->all($where) as $plugin) {
@@ -65,7 +65,7 @@ class WebSearch extends ParentSearch
                 'title' => $plugin->name,
                 'description' => $plugin->description,
                 'link' => $plugin->url('public')
-            ]);
+                ], $query);
         }
     }
 }
