@@ -197,6 +197,10 @@ class EditWebTeam extends SectionController
         $member = new WebTeamMember();
         $member->idcontacto = $this->contact->idcontacto;
         $member->idteam = $team->idteam;
+        if ($this->user) {
+            $member->accepted = true;
+        }
+
         if ($member->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
             $teamLog = new WebTeamLog();
