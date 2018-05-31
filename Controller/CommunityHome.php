@@ -85,13 +85,13 @@ class CommunityHome extends SectionController
                         $idTeams[] = $member->idteam;
                     }
                 }
-                $where = [new DataBaseWhere('idteam', implode(',', $idTeams), 'IN'),];
+                $where = [new DataBaseWhere('idteam', implode(',', $idTeams), 'IN')];
                 $this->loadListSection($sectionName, $where);
                 break;
 
             case 'plugins':
             case 'teams':
-                $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto),];
+                $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];
                 $this->loadListSection($sectionName, $where);
                 break;
         }
