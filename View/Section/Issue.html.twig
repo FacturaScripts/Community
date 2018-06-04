@@ -1,0 +1,17 @@
+{% set issue = fsc.getIssue() %}
+
+<div class="container">
+    <div class="columns">
+        <div class="column col-12">
+            <h1>
+                <i class="fa fa-question-circle fa-fw" aria-hidden="true"></i> Issue #{{ issue.idissue }}
+            </h1>
+            <small>{{ issue.creationroute }}</small>
+            <p>
+                {{ issue.body }}<br/>
+                <small>{{ issue.creationdate }}</small>
+            </p>
+        </div>
+    </div>
+</div>
+<br/>

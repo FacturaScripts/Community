@@ -11,12 +11,12 @@
         <type>text</type>
     </column>
     <column>
-        <name>contactroute</name>
-        <type>character varying(300)</type>
-    </column>
-    <column>
         <name>creationdate</name>
         <type>timestamp</type>
+    </column>
+    <column>
+        <name>creationroute</name>
+        <type>character varying(300)</type>
     </column>
     <column>
         <name>idcontacto</name>

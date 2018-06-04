@@ -87,6 +87,7 @@ class AddIssue extends PortalController
             $this->issue->idtree = $this->request->get('idtree');
             if ($this->issue->save()) {
                 $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+                $this->response->headers->set('Refresh', '0; ' . $this->issue->url('public'));
             } else {
                 $this->miniLog->alert($this->i18n->trans('record-save-error'));
             }

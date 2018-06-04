@@ -18,9 +18,11 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
+use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of Issue model.
@@ -79,6 +81,12 @@ class Issue extends WebPageClass
      * @var string
      */
     public $title;
+    
+    /**
+     *
+     * @var array
+     */
+    private static $urls = [];
 
     /**
      * Returns a maximun legth of $legth form the body property of this block.
@@ -122,5 +130,31 @@ class Issue extends WebPageClass
         $this->body = Utils::noHtml($this->body);
         $this->title = Utils::noHtml($this->title);
         return parent::test();
+    }
+
+    public function url(string $type = 'auto', string $list = 'List')
+    {
+        switch ($type) {
+            case 'public':
+                return $this->getCustomUrl($type) . $this->idissue;
+        }
+
+        return parent::url($type, $list);
+    }
+
+    protected function getCustomUrl(string $type): string
+    {
+        if (isset(self::$urls[$type])) {
+            return self::$urls[$type];
+        }
+
+        $controller = 'EditIssue';
+        $webPage = new WebPage();
+        foreach ($webPage->all([new DataBaseWhere('customcontroller', $controller)]) as $wpage) {
+            self::$urls[$type] = $wpage->url('public');
+            return self::$urls[$type];
+        }
+
+        return '#';
     }
 }

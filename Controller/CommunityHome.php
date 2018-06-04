@@ -67,9 +67,13 @@ class CommunityHome extends SectionController
         }
 
         $this->addSection('home', ['icon' => 'fa-home', 'label' => $this->i18n->trans('home')]);
+
         $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle');
+        $this->addSearchOptions('myissues', ['title', 'body', 'creationroute']);
+        $this->addOrderOption('myissues', 'creationdate', 'date', 2);
+
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug');
-        
+
         $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users', 'teams');
         $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
         $this->addSearchOptions('logs', ['description']);
