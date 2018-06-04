@@ -1,16 +1,16 @@
 {% set issue = fsc.getIssue() %}
+{% set contact = issue.getContact() %}
 
 <div class="container">
     <div class="columns">
-        <div class="column col-12">
-            <h1>
-                <i class="fa fa-question-circle fa-fw" aria-hidden="true"></i> Issue #{{ issue.idissue }}
-            </h1>
+        <div class="column col-2 col-xs-12 text-right">
+            <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ fsc.obfuscateEmail(contact.email) }}" class="custom-img-responsive"/>
+        </div>
+        <div class="column">
+            <h1>Issue #{{ issue.idissue }}</h1>
             <small>{{ issue.creationroute }}</small>
-            <p>
-                {{ issue.body }}<br/>
-                <small>{{ issue.creationdate }}</small>
-            </p>
+            <div>{{ issue.body }}</div>
+            <small>{{ issue.creationdate }}</small>
         </div>
     </div>
 </div>

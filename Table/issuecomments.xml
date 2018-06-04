@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : issuecomments.xml
+    Author     : Carlos Garcia Gomez
+    Description:
+        Structure for the issuecomments table.
+-->
+<table>
+    <column>
+        <name>body</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>creationdate</name>
+        <type>timestamp</type>
+    </column>
+    <column>
+        <name>idcomment</name>
+        <type>serial</type>
+        <null>NO</null>
+        <default>nextval('issuecomments_idcomment_seq'::regclass)</default>
+    </column>
+    <column>
+        <name>idcontacto</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>idissue</name>
+        <type>integer</type>
+    </column>
+    <constraint>
+        <name>issuecomments_pkey</name>
+        <type>PRIMARY KEY (idcomment)</type>
+    </constraint>
+    <constraint>
+        <name>ca_issuecomments_issues</name>
+        <type>FOREIGN KEY (idissue) REFERENCES issues (idissue) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+</table>

@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,19 +18,16 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Core\Model\Contacto;
-use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
-use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of Issue model.
  *
  * @author Carlos García Gómez
  */
-class Issue extends WebPageClass
+class IssueComment extends Base\ModelClass
 {
 
     use Base\ModelTrait;
@@ -46,7 +43,14 @@ class Issue extends WebPageClass
      *
      * @var string
      */
-    public $creationroute;
+    public $creationdate;
+
+    /**
+     * Primary key.
+     *
+     * @var int
+     */
+    public $idcomment;
 
     /**
      * Contact identifier.
@@ -56,49 +60,16 @@ class Issue extends WebPageClass
     public $idcontacto;
 
     /**
-     * Primary key.
+     * Issue identifier.
      *
      * @var int
      */
     public $idissue;
 
-    /**
-     * Related project key.
-     *
-     * @var int
-     */
-    public $idproject;
-
-    /**
-     * Identifier of the team assigned to solve this issue.
-     *
-     * @var int
-     */
-    public $idteam;
-
-    /**
-     * Related contact form tree key.
-     *
-     * @var int
-     */
-    public $idtree;
-
-    /**
-     *
-     * @var array
-     */
-    private static $urls = [];
-
-    /**
-     * Returns a maximun legth of $legth form the body property of this block.
-     * 
-     * @param int $length
-     *
-     * @return string
-     */
-    public function description(int $length = 300): string
+    public function clear()
     {
-        return Utils::trueTextBreak($this->body, $length);
+        parent::clear();
+        $this->creationdate = date('d-m-Y H:i:s');
     }
 
     public function getContact()
@@ -115,7 +86,7 @@ class Issue extends WebPageClass
      */
     public static function primaryColumn()
     {
-        return 'idissue';
+        return 'idcomment';
     }
 
     /**
@@ -125,7 +96,7 @@ class Issue extends WebPageClass
      */
     public static function tableName()
     {
-        return 'issues';
+        return 'issuecomments';
     }
 
     /**
@@ -137,30 +108,5 @@ class Issue extends WebPageClass
     {
         $this->body = Utils::noHtml($this->body);
         return parent::test();
-    }
-
-    public function url(string $type = 'auto', string $list = 'List')
-    {
-        if ($type === 'public') {
-            return $this->getCustomUrl($type) . $this->idissue;
-        }
-
-        return parent::url($type, $list);
-    }
-
-    protected function getCustomUrl(string $type): string
-    {
-        if (isset(self::$urls[$type])) {
-            return self::$urls[$type];
-        }
-
-        $controller = 'EditIssue';
-        $webPage = new WebPage();
-        foreach ($webPage->all([new DataBaseWhere('customcontroller', $controller)]) as $wpage) {
-            self::$urls[$type] = $wpage->url('public');
-            return self::$urls[$type];
-        }
-
-        return '#';
     }
 }

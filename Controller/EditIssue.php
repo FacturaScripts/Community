@@ -18,8 +18,10 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 use FacturaScripts\Plugins\Community\Model\Issue;
+use FacturaScripts\Plugins\Community\Model\IssueComment;
 
 /**
  * Description of EditIssue
@@ -34,6 +36,11 @@ class EditIssue extends SectionController
      * @var Issue
      */
     protected $issue;
+
+    public function getGravatar(string $email, int $size = 80): string
+    {
+        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
+    }
 
     public function getIssue(): Issue
     {
@@ -53,14 +60,60 @@ class EditIssue extends SectionController
         return $issue;
     }
 
+    public function obfuscateEmail(string $email): string
+    {
+        $aux = explode('@', $email);
+        return (count($aux) == 2) ? $aux[0] . '_' . substr(md5($aux[1]), 0, 6) : '-';
+    }
+
+    protected function addNewComment()
+    {
+        $text = $this->request->get('newComment', '');
+        if (empty($text)) {
+            return;
+        }
+
+        $issue = $this->getIssue();
+        $comment = new IssueComment();
+        $comment->body = $text;
+        $comment->idcontacto = $this->contact->idcontacto;
+        $comment->idissue = $issue->idissue;
+
+        if ($comment->save()) {
+            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $issue->save();
+        } else {
+            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        }
+
+        return true;
+    }
+
     protected function createSections()
     {
         $this->addSection('issue', ['fixed' => true, 'template' => 'Section/Issue']);
+        $this->addListSection('comments', 'IssueComment', 'Section/IssueComments', 'comments', 'fa-comments');
+        $this->addOrderOption('comments', 'creationdate', 'date');
+    }
+
+    protected function execPreviousAction(string $action)
+    {
+        if ($action === 'new-comment') {
+            return $this->addNewComment();
+        }
+
+        return parent::execPreviousAction($action);
     }
 
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
+            case 'comments':
+                $issue = $this->getIssue();
+                $where = [new DataBaseWhere('idissue', $issue->idissue)];
+                $this->loadListSection($sectionName, $where);
+                break;
+
             case 'issue':
                 $this->loadIssue();
                 break;
