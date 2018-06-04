@@ -70,6 +70,18 @@ class WebTeamLog extends Base\ModelClass
      */
     public $time;
 
+    /**
+     *
+     * @var array
+     */
+    private static $contacts = [];
+
+    /**
+     *
+     * @var array
+     */
+    private static $teams = [];
+
     public function clear()
     {
         parent::clear();
@@ -83,9 +95,17 @@ class WebTeamLog extends Base\ModelClass
      */
     public function getContactName()
     {
-        $contact = new Contacto();
-        if ($contact->loadFromCode($this->idcontacto)) {
-            return $contact->fullName();
+        if (empty($this->idcontacto)) {
+            return '-';
+        }
+
+        if (isset(self::$contacts[$this->idcontacto])) {
+            return self::$contacts[$this->idcontacto]->fullName();
+        }
+
+        self::$contacts[$this->idcontacto] = new Contacto();
+        if (self::$contacts[$this->idcontacto]->loadFromCode($this->idcontacto)) {
+            return self::$contacts[$this->idcontacto]->fullName();
         }
 
         return '-';
@@ -98,9 +118,13 @@ class WebTeamLog extends Base\ModelClass
      */
     public function getTeam()
     {
-        $team = new WebTeam();
-        $team->loadFromCode($this->idteam);
-        return $team;
+        if (isset(self::$teams[$this->idteam])) {
+            return self::$teams[$this->idteam];
+        }
+
+        self::$teams[$this->idteam] = new WebTeam();
+        self::$teams[$this->idteam]->loadFromCode($this->idteam);
+        return self::$teams[$this->idteam];
     }
 
     public static function primaryColumn()

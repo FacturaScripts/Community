@@ -67,9 +67,10 @@ class CommunityHome extends SectionController
         }
 
         $this->addSection('home', ['icon' => 'fa-home', 'label' => $this->i18n->trans('home')]);
+        $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle');
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug');
+        
         $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users', 'teams');
-
         $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);
@@ -89,6 +90,7 @@ class CommunityHome extends SectionController
                 $this->loadListSection($sectionName, $where);
                 break;
 
+            case 'myissues':
             case 'plugins':
             case 'teams':
                 $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];

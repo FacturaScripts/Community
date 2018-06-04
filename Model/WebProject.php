@@ -81,6 +81,12 @@ class WebProject extends Base\ModelClass
     public $publicrepo;
 
     /**
+     *
+     * @var array
+     */
+    private static $urls = [];
+
+    /**
      * Reset the values of all model properties.
      */
     public function clear()
@@ -99,16 +105,7 @@ class WebProject extends Base\ModelClass
      */
     public function description(int $length = 300): string
     {
-        $description = '';
-        foreach (explode(' ', $this->description) as $word) {
-            if (mb_strlen($description . $word . ' ') >= $length) {
-                break;
-            }
-
-            $description .= $word . ' ';
-        }
-
-        return trim($description);
+        return Utils::trueTextBreak($this->description, $length);
     }
 
     /**
@@ -119,7 +116,7 @@ class WebProject extends Base\ModelClass
     public function getContactName()
     {
         $contact = new Contacto();
-        if ($contact->loadFromCode($this->idcontacto)) {
+        if (!empty($this->idcontacto) && $contact->loadFromCode($this->idcontacto)) {
             return $contact->fullName();
         }
 
@@ -164,17 +161,30 @@ class WebProject extends Base\ModelClass
 
     public function url(string $type = 'auto', string $list = 'List')
     {
-        $webPage = new WebPage();
-        if ($type === 'public-list') {
-            foreach ($webPage->all([new DataBaseWhere('customcontroller', 'PluginList')]) as $wpage) {
-                return $wpage->url('public');
-            }
-        } elseif ($type === 'public') {
-            foreach ($webPage->all([new DataBaseWhere('customcontroller', 'ViewPlugin')]) as $wpage) {
-                return $wpage->url('public') . $this->name;
-            }
+        switch ($type) {
+            case 'public-list':
+                return $this->getCustomUrl($type);
+
+            case 'public':
+                return $this->getCustomUrl($type) . $this->name;
         }
 
         return parent::url($type, $list);
+    }
+
+    protected function getCustomUrl(string $type): string
+    {
+        if (isset(self::$urls[$type])) {
+            return self::$urls[$type];
+        }
+
+        $controller = ('public-list' === $type) ? 'PluginList' : 'ViewPlugin';
+        $webPage = new WebPage();
+        foreach ($webPage->all([new DataBaseWhere('customcontroller', $controller)]) as $wpage) {
+            self::$urls[$type] = $wpage->url('public');
+            return self::$urls[$type];
+        }
+
+        return '#';
     }
 }

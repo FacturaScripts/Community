@@ -42,7 +42,7 @@ class ContactFormTree extends WebPageClass
      * @var string
      */
     public $body;
-    
+
     /**
      *
      * @var string
@@ -75,6 +75,12 @@ class ContactFormTree extends WebPageClass
      * @var string
      */
     public $title;
+
+    /**
+     *
+     * @var array
+     */
+    private static $urls = [];
 
     public function body(): string
     {
@@ -176,23 +182,29 @@ class ContactFormTree extends WebPageClass
     public function url(string $type = 'auto', string $list = 'List')
     {
         if (in_array($type, ['public', 'public-list'])) {
-            $url = '#';
-            $webPage = new WebPage();
-            $where = [
-                new DataBaseWhere('customcontroller', self::CUSTOM_CONTROLLER),
-                new DataBaseWhere('langcode', $this->langcode)
-            ];
-            if ($webPage->loadFromCode('', $where)) {
-                $url = $webPage->url('public');
-            }
-
-            if ($type === 'public-list') {
-                return $url;
-            }
-
-            return $url . '?code=' . $this->idtree;
+            $url = $this->getCustomUrl($type);
+            return ($type === 'public-list') ? $url : $url . '?code=' . $this->idtree;
         }
 
         return parent::url($type, $list);
+    }
+
+    protected function getCustomUrl(string $type): string
+    {
+        if (isset(self::$urls[$type])) {
+            return self::$urls[$type];
+        }
+
+        $webPage = new WebPage();
+        $where = [
+            new DataBaseWhere('customcontroller', self::CUSTOM_CONTROLLER),
+            new DataBaseWhere('langcode', $this->langcode)
+        ];
+        foreach ($webPage->all($where) as $wpage) {
+            self::$urls[$type] = $wpage->url('public');
+            return self::$urls[$type];
+        }
+
+        return '#';
     }
 }

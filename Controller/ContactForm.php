@@ -98,7 +98,7 @@ class ContactForm extends PortalController
         $this->currentTree->increaseVisitCount($this->request->getClientIp());
         switch ($this->currentTree->endaction) {
             case 'send-issue':
-                $this->response->headers->set('Refresh', '0; SendIssue?idtree=' . $this->currentTree->idtree);
+                $this->response->headers->set('Refresh', '0; ' . self::SEND_ISSUE_CONTROLLER . '?idtree=' . $this->currentTree->idtree);
                 break;
 
             case 'select-plugin':

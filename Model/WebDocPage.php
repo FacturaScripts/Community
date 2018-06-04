@@ -81,6 +81,12 @@ class WebDocPage extends WebPageClass
     public $title;
 
     /**
+     *
+     * @var array
+     */
+    private static $urls = [];
+
+    /**
      * Returns a maximun legth of $legth form the body property of this block.
      * 
      * @param int $length
@@ -89,16 +95,7 @@ class WebDocPage extends WebPageClass
      */
     public function description(int $length = 300): string
     {
-        $description = '';
-        foreach (explode(' ', $this->body) as $word) {
-            if (mb_strlen($description . $word . ' ') >= $length) {
-                break;
-            }
-
-            $description .= $word . ' ';
-        }
-
-        return trim($description);
+        return Utils::trueTextBreak($this->body, $length);
     }
 
     /**
@@ -190,16 +187,7 @@ class WebDocPage extends WebPageClass
     public function url(string $type = 'auto', string $list = 'List')
     {
         if (in_array($type, ['public', 'public-list'])) {
-            $url = '#';
-            $webPage = new WebPage();
-            $where = [
-                new DataBaseWhere('customcontroller', self::CUSTOM_CONTROLLER),
-                new DataBaseWhere('langcode', $this->langcode)
-            ];
-            if ($webPage->loadFromCode('', $where)) {
-                $url = $webPage->url('public');
-            }
-
+            $url = $this->getCustomUrl($type);
             if ($type === 'public-list') {
                 return $url;
             }
@@ -208,6 +196,25 @@ class WebDocPage extends WebPageClass
         }
 
         return parent::url($type, 'ListWebProject?active=List');
+    }
+
+    protected function getCustomUrl(string $type): string
+    {
+        if (isset(self::$urls[$type])) {
+            return self::$urls[$type];
+        }
+
+        $webPage = new WebPage();
+        $where = [
+            new DataBaseWhere('customcontroller', self::CUSTOM_CONTROLLER),
+            new DataBaseWhere('langcode', $this->langcode)
+        ];
+        foreach ($webPage->all($where) as $wpage) {
+            self::$urls[$type] = $wpage->url('public');
+            return self::$urls[$type];
+        }
+
+        return '#';
     }
 
     private function newPermalink()

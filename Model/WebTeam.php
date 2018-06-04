@@ -71,6 +71,12 @@ class WebTeam extends Base\ModelClass
      */
     public $numrequests;
 
+    /**
+     *
+     * @var array
+     */
+    private static $urls = [];
+
     public function clear()
     {
         parent::clear();
@@ -88,16 +94,7 @@ class WebTeam extends Base\ModelClass
      */
     public function description(int $length = 300): string
     {
-        $description = '';
-        foreach (explode(' ', $this->description) as $word) {
-            if (mb_strlen($description . $word . ' ') >= $length) {
-                break;
-            }
-
-            $description .= $word . ' ';
-        }
-
-        return trim($description);
+        return Utils::trueTextBreak($this->description, $length);
     }
 
     public static function primaryColumn()
@@ -145,17 +142,30 @@ class WebTeam extends Base\ModelClass
 
     public function url(string $type = 'auto', string $list = 'List')
     {
-        $webPage = new WebPage();
-        if ($type === 'public-list') {
-            foreach ($webPage->all([new DataBaseWhere('customcontroller', 'TeamList')]) as $wpage) {
-                return $wpage->url('public');
-            }
-        } elseif ($type === 'public') {
-            foreach ($webPage->all([new DataBaseWhere('customcontroller', 'EditWebTeam')]) as $wpage) {
-                return $wpage->url('public') . $this->name;
-            }
+        switch ($type) {
+            case 'public-list':
+                return $this->getCustomUrl($type);
+
+            case 'public':
+                return $this->getCustomUrl($type) . $this->name;
         }
 
         return parent::url($type, $list);
+    }
+
+    protected function getCustomUrl(string $type): string
+    {
+        if (isset(self::$urls[$type])) {
+            return self::$urls[$type];
+        }
+
+        $controller = ('public-list' === $type) ? 'TeamList' : 'EditWebTeam';
+        $webPage = new WebPage();
+        foreach ($webPage->all([new DataBaseWhere('customcontroller', $controller)]) as $wpage) {
+            self::$urls[$type] = $wpage->url('public');
+            return self::$urls[$type];
+        }
+
+        return '#';
     }
 }
