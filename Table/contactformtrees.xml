@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : contactformtrees.xml
+    Author     : Carlos Garcia Gomez
+    Description:
+        Structure for the contactformtrees table.
+-->
+<table>
+    <column>
+        <name>body</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>creationdate</name>
+        <type>date</type>
+    </column>
+    <column>
+        <name>endaction</name>
+        <type>character varying(25)</type>
+    </column>
+    <column>
+        <name>idtree</name>
+        <type>serial</type>
+        <null>NO</null>
+        <default>nextval('contactformtrees_idtree_seq'::regclass)</default>
+    </column>
+    <column>
+        <name>icon</name>
+        <type>character varying(25)</type>
+    </column>
+    <column>
+        <name>idparent</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>langcode</name>
+        <type>character varying(2)</type>
+    </column>
+    <column>
+        <name>lastip</name>
+        <type>character varying(40)</type>
+    </column>
+    <column>
+        <name>lastmod</name>
+        <type>date</type>
+    </column>
+    <column>
+        <name>ordernum</name>
+        <type>integer</type>
+        <null>NO</null>
+        <default>100</default>
+    </column>
+    <column>
+        <name>title</name>
+        <type>character varying(250)</type>
+    </column>
+    <column>
+        <name>visitcount</name>
+        <type>integer</type>
+        <default>0</default>
+    </column>
+    <constraint>
+        <name>contactformtrees_pkey</name>
+        <type>PRIMARY KEY (idtree)</type>
+    </constraint>
+    <constraint>
+        <name>ca_contactformtrees_self</name>
+        <type>FOREIGN KEY (idparent) REFERENCES contactformtrees (idtree) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+</table>

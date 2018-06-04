@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * This file is part of Community plugin for FacturaScripts.
+ * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Carlos García Gómez <carlos@facturascripts.com>
+-->
+
+<view>
+    <columns>
+        <group name="data" numcolumns="12">
+            <column name="code" display="none" order="100">
+                <widget type="text" fieldname="idtree" required="true" />
+            </column>
+            <column name="title" numcolumns="6" order="110">
+                <widget type="text" fieldname="title" required="true" />
+            </column>
+            <column name="end-action" numcolumns="2" order="120">
+                <widget type="select" fieldname="endaction">
+                    <values title="select-cloud-install">select-cloud-install</values>
+                    <values title="select-plugin">select-plugin</values>
+                    <values title="select-plugin-2017">select-plugin-2017</values>
+                    <values title="send-issue">send-issue</values>
+                </widget>
+            </column>
+            <column name="parent" numcolumns="4" order="130">
+                <widget type="select" fieldname="idparent" onclick="EditContactFormTree">
+                    <values source="contactformtrees" fieldcode="idtree" fieldtitle="title"></values>
+                </widget>
+            </column>
+            <column name="content" title="content" numcolumns="12" order="130">
+                <widget type="html" fieldname="body" />
+            </column>
+            <column name="lang-code" numcolumns="3" order="140">
+                <widget type="text" fieldname="langcode" required="true" />
+            </column>
+            <column name="sort" numcolumns="3" order="150">
+                <widget type="number" fieldname="ordernum" />
+            </column>
+            <column name="icon" numcolumns="3" order="160">
+                <widget type="text" fieldname="icon" />
+            </column>
+            <column name="date" numcolumns="3" order="170">
+                <widget type="datepicker" fieldname="creationdate" />
+            </column>
+        </group>
+    </columns>
+</view>
