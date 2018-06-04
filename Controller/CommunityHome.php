@@ -35,27 +35,7 @@ class CommunityHome extends SectionController
 
         /// hide sectionController template if all sections are empty
         if ($this->getTemplate() == 'Master/SectionController.html.twig') {
-            $empty = true;
-            foreach ($this->sections as $name => $section) {
-                if ($section['count'] > 0) {
-                    $empty = false;
-                } elseif ($name !== 'home') {
-                    unset($this->sections[$name]);
-                }
-            }
-
-            if ($empty) {
-                $this->setTemplate('Master/PortalTemplate');
-                return;
-            }
-
-            foreach ($this->sections as $name => $section) {
-                $this->active = $name;
-                $this->current = $name;
-                if ($section['count'] > 0) {
-                    break;
-                }
-            }
+            $this->hideSections();
         }
     }
 
@@ -88,6 +68,51 @@ class CommunityHome extends SectionController
         $this->addSearchOptions('issues', ['title', 'body', 'creationroute']);
         $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('issues', 'creationdate', 'date');
+    }
+
+    protected function getSectionLastmod(array &$section): int
+    {
+        $lastmod = 0;
+
+        if (isset($section['cursor'][0]->creationdate) && strtotime($section['cursor'][0]->creationdate) > $lastmod) {
+            $lastmod = strtotime($section['cursor'][0]->creationdate);
+        }
+
+        if (isset($section['cursor'][0]->lastmod) && strtotime($section['cursor'][0]->lastmod) > $lastmod) {
+            $lastmod = strtotime($section['cursor'][0]->lastmod);
+        }
+
+        return $lastmod;
+    }
+
+    protected function hideSections()
+    {
+        $empty = true;
+        $lastmod = 0;
+        foreach ($this->sections as $name => $section) {
+            if ($section['count'] > 0) {
+                $empty = false;
+            } elseif ($name !== 'home') {
+                unset($this->sections[$name]);
+            }
+
+            if ($this->getSectionLastmod($section) > $lastmod) {
+                $lastmod = $this->getSectionLastmod($section);
+            }
+        }
+
+        if ($empty) {
+            $this->setTemplate('Master/PortalTemplate');
+            return;
+        }
+
+        foreach ($this->sections as $name => $section) {
+            $this->active = $name;
+            $this->current = $name;
+            if ($this->getSectionLastmod($section) >= $lastmod) {
+                break;
+            }
+        }
     }
 
     protected function loadData(string $sectionName)
