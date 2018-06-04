@@ -83,13 +83,6 @@ class Issue extends WebPageClass
     public $idtree;
 
     /**
-     * Title of the document page.
-     *
-     * @var string
-     */
-    public $title;
-
-    /**
      *
      * @var array
      */
@@ -135,15 +128,13 @@ class Issue extends WebPageClass
     public function test()
     {
         $this->body = Utils::noHtml($this->body);
-        $this->title = Utils::noHtml($this->title);
         return parent::test();
     }
 
     public function url(string $type = 'auto', string $list = 'List')
     {
-        switch ($type) {
-            case 'public':
-                return $this->getCustomUrl($type) . $this->idissue;
+        if ($type === 'public') {
+            return $this->getCustomUrl($type) . $this->idissue;
         }
 
         return parent::url($type, $list);

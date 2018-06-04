@@ -70,7 +70,8 @@ class CommunityHome extends SectionController
 
         $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'your');
         $this->addSearchOptions('myissues', ['title', 'body', 'creationroute']);
-        $this->addOrderOption('myissues', 'creationdate', 'date', 2);
+        $this->addOrderOption('myissues', 'lastmod', 'last-update', 2);
+        $this->addOrderOption('myissues', 'creationdate', 'date');
 
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug', 'your');
         $this->addSearchOptions('plugins', ['name', 'description']);
@@ -85,7 +86,8 @@ class CommunityHome extends SectionController
 
         $this->addListSection('issues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'teams');
         $this->addSearchOptions('issues', ['title', 'body', 'creationroute']);
-        $this->addOrderOption('issues', 'creationdate', 'date', 2);
+        $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
+        $this->addOrderOption('issues', 'creationdate', 'date');
     }
 
     protected function loadData(string $sectionName)

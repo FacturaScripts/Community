@@ -73,6 +73,7 @@ class EditIssue extends SectionController
         if ($this->issue->exists()) {
             $this->title = 'Issue #' . $this->issue->idissue;
             $this->description = $this->issue->description();
+            $this->issue->increaseVisitCount($this->request->getClientIp());
             return;
         }
 

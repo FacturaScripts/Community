@@ -53,10 +53,6 @@
         <type>timestamp</type>
     </column>
     <column>
-        <name>title</name>
-        <type>character varying(250)</type>
-    </column>
-    <column>
         <name>visitcount</name>
         <type>integer</type>
         <default>0</default>
