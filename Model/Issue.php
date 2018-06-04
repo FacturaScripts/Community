@@ -69,6 +69,13 @@ class Issue extends WebPageClass
     public $idproject;
 
     /**
+     * Identifier of the team assigned to solve this issue.
+     *
+     * @var int
+     */
+    public $idteam;
+
+    /**
      * Related contact form tree key.
      *
      * @var int
@@ -81,7 +88,7 @@ class Issue extends WebPageClass
      * @var string
      */
     public $title;
-    
+
     /**
      *
      * @var array

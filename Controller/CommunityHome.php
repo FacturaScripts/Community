@@ -68,21 +68,30 @@ class CommunityHome extends SectionController
 
         $this->addSection('home', ['icon' => 'fa-home', 'label' => $this->i18n->trans('home')]);
 
-        $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle');
+        $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'your');
         $this->addSearchOptions('myissues', ['title', 'body', 'creationroute']);
         $this->addOrderOption('myissues', 'creationdate', 'date', 2);
 
-        $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug');
+        $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug', 'your');
+        $this->addSearchOptions('plugins', ['name', 'description']);
+        $this->addOrderOption('plugins', 'name', 'name', 1);
 
         $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users', 'teams');
+        $this->addOrderOption('teams', 'creationdate', 'date', 2);
+
         $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);
+
+        $this->addListSection('issues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'teams');
+        $this->addSearchOptions('issues', ['title', 'body', 'creationroute']);
+        $this->addOrderOption('issues', 'creationdate', 'date', 2);
     }
 
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
+            case 'issues':
             case 'logs':
                 $idTeams = [];
                 foreach ($this->sections['teams']['cursor'] as $member) {

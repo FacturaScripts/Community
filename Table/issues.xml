@@ -33,6 +33,10 @@
         <type>integer</type>
     </column>
     <column>
+        <name>idteam</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>idtree</name>
         <type>integer</type>
     </column>

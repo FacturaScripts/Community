@@ -25,18 +25,23 @@
             <column name="name" display="none" order="0">
                 <widget type="text" fieldname="name" readonly="true" required="true" />
             </column>
-            <column name="idproject" title="default-project" numcolumns="3" order="120">
+            <column name="idproject" title="default-project" numcolumns="3" order="100">
                 <widget type="select" fieldname="idproject" required="true">
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"/>
                 </widget>
             </column>
-            <column name="idteamdev" title="development-team" numcolumns="3" order="120">
+            <column name="idteamdev" title="development-team" numcolumns="3" order="110">
                 <widget type="select" fieldname="idteamdev" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>
             <column name="idteamdoc" title="documentation-team" numcolumns="3" order="120">
                 <widget type="select" fieldname="idteamdoc" required="true">
+                    <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
+                </widget>
+            </column>
+            <column name="idteamsup" title="support-team" numcolumns="3" order="130">
+                <widget type="select" fieldname="idteamsup" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>

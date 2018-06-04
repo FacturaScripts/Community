@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 use FacturaScripts\Plugins\Community\Model\ContactFormTree;
 use FacturaScripts\Plugins\Community\Model\Issue;
@@ -84,7 +85,9 @@ class AddIssue extends PortalController
             $this->issue->creationroute = implode(', ', $this->getTreeList());
             $this->issue->idcontacto = $this->contact->idcontacto;
             $this->issue->idproject = $this->request->get('idproject');
+            $this->issue->idteam = $idteamdoc = AppSettings::get('community', 'idteamsup');
             $this->issue->idtree = $this->request->get('idtree');
+            
             if ($this->issue->save()) {
                 $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
                 $this->response->headers->set('Refresh', '0; ' . $this->issue->url('public'));
