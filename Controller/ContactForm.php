@@ -75,8 +75,12 @@ class ContactForm extends PortalController
 
     protected function commonCore()
     {
-        $this->setTemplate('ContactForm');
+        if (null === $this->contact) {
+            $this->setTemplate('Master/LoginToContinue');
+            return;
+        }
 
+        $this->setTemplate('ContactForm');
         $code = $this->request->get('code', '');
         if (empty($code)) {
             $this->getRoot();

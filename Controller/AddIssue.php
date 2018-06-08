@@ -85,7 +85,7 @@ class AddIssue extends PortalController
             $this->issue->creationroute = implode(', ', $this->getTreeList());
             $this->issue->idcontacto = $this->contact->idcontacto;
             $this->issue->idproject = $this->request->get('idproject');
-            $this->issue->idteam = $idteamdoc = AppSettings::get('community', 'idteamsup');
+            $this->issue->idteam = AppSettings::get('community', 'idteamsup');
             $this->issue->idtree = $this->request->get('idtree');
             
             if ($this->issue->save()) {

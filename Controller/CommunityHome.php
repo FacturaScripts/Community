@@ -52,6 +52,7 @@ class CommunityHome extends SectionController
         $this->addSearchOptions('myissues', ['title', 'body', 'creationroute']);
         $this->addOrderOption('myissues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('myissues', 'creationdate', 'date');
+        $this->addButton('myissues', 'ContactForm', 'new', 'fa-plus');
 
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug', 'your');
         $this->addSearchOptions('plugins', ['name', 'description']);

@@ -8,11 +8,7 @@
         <div class="container grid-lg">
             <div class="columns">
                 <div class="column col-12">
-                    {% if fsc.contact %}
-                        {{ macros.showFormTrees(fsc, i18n) }}
-                    {% else %}
-                        {{ macros.showNeedsLogin(appSettings, fsc) }}
-                    {% endif %}
+                    {{ macros.showFormTrees(fsc, i18n) }}
                 </div>
             </div>
         </div>
@@ -44,33 +40,5 @@
                 {% endif %}
             </dd>
         {% endfor %}
-    </dl>
-{% endmacro %}
-
-{% macro showNeedsLogin(appSettings, fsc) %}
-    <h1>Contacto</h1>
-    <p>Para poder ayudarle necesitamos que se identifique de alguna manera:</p>
-    <dl>
-        {% if appSettings.get('webportal','fbappid','') != '' %}
-            <dd>
-                <a href="{{ constant('FS_ROUTE') }}/HybridLogin?prov=facebook&return={{ fsc.url() }}">
-                    <i class="fa fa-facebook fa-fw" aria-hidden="true"></i> identificarme con mi cuenta de <b>facebook</b>
-                </a>
-            </dd>
-        {% endif %}
-        {% if appSettings.get('webportal','googleappid','') != '' %}
-            <dd>
-                <a href="{{ constant('FS_ROUTE') }}/HybridLogin?prov=google&return={{ fsc.url() }}">
-                    <i class="fa fa-google fa-fw" aria-hidden="true"></i> identificarme con mi cuenta de <b>google</b>
-                </a>
-            </dd>
-        {% endif %}
-        {% if appSettings.get('webportal','twitterappid','') != '' %}
-            <dd>
-                <a href="{{ constant('FS_ROUTE') }}/HybridLogin?prov=twitter&return={{ fsc.url() }}">
-                    <i class="fa fa-twitter fa-fw" aria-hidden="true"></i> identificarme con mi cuenta de <b>twitter</b>
-                </a>
-            </dd>
-        {% endif %}
     </dl>
 {% endmacro %}
