@@ -132,6 +132,11 @@ class WebProject extends Base\ModelClass
     {
         return 'idproject';
     }
+    
+    public function primaryDescriptionColumn()
+    {
+        return 'name';
+    }
 
     /**
      * Returns the name of the table that uses this model.
