@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -45,8 +45,8 @@ class ListWebProject extends ExtendedController\ListController
         /// projects
         $this->addView('ListWebProject', 'WebProject', 'projects', 'fa-folder');
         $this->addSearchFields('ListWebProject', ['name']);
-        $this->addOrderBy('ListWebProject', 'name');
-        $this->addOrderBy('ListWebProject', 'creationdate', 'date');
+        $this->addOrderBy('ListWebProject', ['name']);
+        $this->addOrderBy('ListWebProject', ['creationdate'], 'date');
 
         $this->createViewsDocPages();
         $this->createViewsBuild();
@@ -56,9 +56,9 @@ class ListWebProject extends ExtendedController\ListController
     {
         $this->addView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive-o');
         $this->addSearchFields('ListWebBuild', ['path']);
-        $this->addOrderBy('ListWebBuild', 'version');
-        $this->addOrderBy('ListWebBuild', 'date');
-        $this->addOrderBy('ListWebBuild', 'downloads');
+        $this->addOrderBy('ListWebBuild', ['version']);
+        $this->addOrderBy('ListWebBuild', ['date'], 'date', 2);
+        $this->addOrderBy('ListWebBuild', ['downloads']);
 
         $this->addFilterCheckbox('ListWebBuild', 'beta', 'beta', 'beta');
         $this->addFilterCheckbox('ListWebBuild', 'stable', 'stable', 'stable');
@@ -68,10 +68,10 @@ class ListWebProject extends ExtendedController\ListController
     {
         $this->addView('ListWebDocPage', 'WebDocPage', 'documentation', 'fa-book');
         $this->addSearchFields('ListWebDocPage', ['title', 'body']);
-        $this->addOrderBy('ListWebDocPage', 'title');
-        $this->addOrderBy('ListWebDocPage', 'creationdate', 'date');
-        $this->addOrderBy('ListWebDocPage', 'lastmod', 'last-update', 2);
-        $this->addOrderBy('ListWebDocPage', 'visitcount');
+        $this->addOrderBy('ListWebDocPage', ['title']);
+        $this->addOrderBy('ListWebDocPage', ['creationdate'], 'date');
+        $this->addOrderBy('ListWebDocPage', ['lastmod'], 'last-update', 2);
+        $this->addOrderBy('ListWebDocPage', ['visitcount']);
 
         $projects = $this->codeModel->all('webprojects', 'idproject', 'name');
         $this->addFilterSelect('ListWebDocPage', 'idproject', 'project', 'idproject', $projects);

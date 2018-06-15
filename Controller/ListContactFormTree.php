@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,8 +43,8 @@ class ListContactFormTree extends ExtendedController\ListController
         $this->addView('ListContactFormTree', 'ContactFormTree', 'contact-form', 'fa-code-fork');
         $this->addSearchFields('ListContactFormTree', ['title', 'body']);
         $this->addOrderBy('ListContactFormTree', ['idparent', 'ordernum'], 'sort');
-        $this->addOrderBy('ListContactFormTree', 'title');
-        $this->addOrderBy('ListContactFormTree', 'visitcount', 'visit-counter');
-        $this->addOrderBy('ListContactFormTree', 'lastmod', 'last-update');
+        $this->addOrderBy('ListContactFormTree', ['title']);
+        $this->addOrderBy('ListContactFormTree', ['visitcount'], 'visit-counter');
+        $this->addOrderBy('ListContactFormTree', ['lastmod'], 'last-update');
     }
 }
