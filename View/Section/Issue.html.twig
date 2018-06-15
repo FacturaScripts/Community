@@ -9,8 +9,12 @@
         <div class="column">
             <h1>Issue #{{ issue.idissue }}</h1>
             <small>{{ issue.creationroute }}</small>
-            <div>{{ issue.body }}</div>
-            <small>{{ issue.creationdate }}</small>
+            <div>{{ issue.body | raw }}</div>
+            <small>
+                <i class="fa fa-user" aria-hidden="true"></i> {{ issue.getContact().fullName() }} |
+                <i class="fa fa-calendar" aria-hidden="true"></i> {{ issue.creationdate }} |
+                <i class="fa fa-clock-o" aria-hidden="true"></i> {{ issue.lastmod }}
+            </small>
         </div>
     </div>
 </div>

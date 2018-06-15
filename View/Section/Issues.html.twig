@@ -10,7 +10,14 @@
         {% for issue in section.cursor %}
             <tr>
                 <td>
-                    <a href="{{ issue.url('public') }}">{{ issue.description() }}</a>
+                    #{{ issue.idissue }}
+                    <a href="{{ issue.url('public') }}">{{ issue.description() | raw }}</a>
+                    <br/>
+                    <small>
+                        {% if issue.lastcommidcontacto %}
+                            <i class="fa fa-comments-o" aria-hidden="true"></i> {{ issue.getLastCommentContact().fullName() }}
+                        {% endif %}
+                    </small>
                 </td>
                 <td class="text-right">{{ issue.creationdate }}</td>
             </tr>

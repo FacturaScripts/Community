@@ -44,6 +44,12 @@ class Issue extends WebPageClass
 
     /**
      *
+     * @var bool
+     */
+    public $closed;
+
+    /**
+     *
      * @var string
      */
     public $creationroute;
@@ -85,9 +91,21 @@ class Issue extends WebPageClass
 
     /**
      *
+     * @var int
+     */
+    public $lastcommidcontacto;
+
+    /**
+     *
      * @var array
      */
     private static $urls = [];
+
+    public function clear()
+    {
+        parent::clear();
+        $this->closed = false;
+    }
 
     /**
      * Returns a maximun legth of $legth form the body property of this block.
@@ -105,6 +123,13 @@ class Issue extends WebPageClass
     {
         $contact = new Contacto();
         $contact->loadFromCode($this->idcontacto);
+        return $contact;
+    }
+
+    public function getLastCommentContact()
+    {
+        $contact = new Contacto();
+        $contact->loadFromCode($this->lastcommidcontacto);
         return $contact;
     }
 

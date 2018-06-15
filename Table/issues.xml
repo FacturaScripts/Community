@@ -11,6 +11,10 @@
         <type>text</type>
     </column>
     <column>
+        <name>closed</name>
+        <type>boolean</type>
+    </column>
+    <column>
         <name>creationdate</name>
         <type>timestamp</type>
     </column>
@@ -45,6 +49,10 @@
     <column>
         <name>langcode</name>
         <type>character varying(2)</type>
+    </column>
+    <column>
+        <name>lastcommidcontacto</name>
+        <type>integer</type>
     </column>
     <column>
         <name>lastip</name>

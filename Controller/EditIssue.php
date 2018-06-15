@@ -81,6 +81,7 @@ class EditIssue extends SectionController
 
         if ($comment->save()) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $issue->lastcommidcontacto = $this->contact->idcontacto;
             $issue->save();
         } else {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));

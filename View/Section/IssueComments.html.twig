@@ -9,7 +9,7 @@
             </figure>
         </div>
         <div class="tile-content">
-            {{ comment.body }}
+            {{ comment.body | raw }}
         </div>
     </div>
 {% else %}

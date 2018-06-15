@@ -49,7 +49,7 @@ class CommunityHome extends SectionController
         $this->addSection('home', ['icon' => 'fa-home', 'label' => $this->i18n->trans('home')]);
 
         $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'your');
-        $this->addSearchOptions('myissues', ['title', 'body', 'creationroute']);
+        $this->addSearchOptions('myissues', ['body', 'creationroute']);
         $this->addOrderOption('myissues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('myissues', 'creationdate', 'date');
         $this->addButton('myissues', 'ContactForm', 'new', 'fa-plus');
@@ -66,7 +66,7 @@ class CommunityHome extends SectionController
         $this->addOrderOption('logs', 'time', 'date', 2);
 
         $this->addListSection('issues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'teams');
-        $this->addSearchOptions('issues', ['title', 'body', 'creationroute']);
+        $this->addSearchOptions('issues', ['body', 'creationroute']);
         $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('issues', 'creationdate', 'date');
     }
@@ -88,6 +88,10 @@ class CommunityHome extends SectionController
 
     protected function hideSections()
     {
+        if (!empty($this->request->request->all())) {
+            return;
+        }
+
         $empty = true;
         $lastmod = 0;
         foreach ($this->sections as $name => $section) {
