@@ -70,8 +70,17 @@ class EditIssue extends SectionController
 
     protected function addNewComment(): bool
     {
+        if (!$this->contactCanEdit()) {
+            return false;
+        }
+
+        $close = $this->request->request->get('close', '');
         $text = $this->request->get('newComment', '');
-        if (empty($text) || !$this->contactCanEdit()) {
+        if (empty($text) && $close === 'TRUE') {
+            $text = $this->i18n->trans('close');
+        }
+
+        if (empty($text)) {
             return false;
         }
 
@@ -80,16 +89,16 @@ class EditIssue extends SectionController
         $comment->body = $text;
         $comment->idcontacto = $this->contact->idcontacto;
         $comment->idissue = $issue->idissue;
-
-        if ($comment->save()) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-            $issue->lastcommidcontacto = $this->contact->idcontacto;
-            $issue->save();
-            return true;
+        if (!$comment->save()) {
+            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+            return false;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
-        return false;
+        $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+        $issue->lastcommidcontacto = $this->contact->idcontacto;
+        $issue->closed = ($close === 'TRUE') ? true : $issue->closed;
+        $issue->save();
+        return true;
     }
 
     protected function contactCanEdit(): bool
@@ -125,15 +134,22 @@ class EditIssue extends SectionController
     protected function createSections()
     {
         $this->addSection('issue', ['fixed' => true, 'template' => 'Section/Issue']);
+
         $this->addListSection('comments', 'IssueComment', 'Section/IssueComments', 'comments', 'fa-comments');
         $this->addOrderOption('comments', 'creationdate', 'date');
+        $this->addButton('comments', $this->getIssue()->url('public'), '', 'fa-refresh');
     }
 
     protected function execPreviousAction(string $action)
     {
-        if ($action === 'new-comment') {
-            $this->addNewComment();
-            return true;
+        switch ($action) {
+            case 'new-comment':
+                $this->addNewComment();
+                return true;
+
+            case 're-open':
+                $this->reopenAction();
+                return true;
         }
 
         return parent::execPreviousAction($action);
@@ -177,5 +193,14 @@ class EditIssue extends SectionController
         $this->title = 'Issue #' . $this->issue->idissue;
         $this->description = $this->issue->description();
         $this->issue->increaseVisitCount($this->request->getClientIp());
+    }
+
+    protected function reopenAction()
+    {
+        if ($this->contactCanEdit()) {
+            $issue = $this->getIssue();
+            $issue->closed = false;
+            $issue->save();
+        }
     }
 }

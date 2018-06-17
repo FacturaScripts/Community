@@ -13,6 +13,9 @@
                     #{{ issue.idissue }}
                     <a href="{{ issue.url('public') }}">{{ issue.description() | raw }}</a>
                     <br/>
+                    {% if issue.closed %}
+                        <span class="label label-error">{{ i18n.trans('closed') }}</span>&nbsp;
+                    {% endif %}
                     <small>
                         {% if issue.lastcommidcontacto %}
                             <i class="fa fa-comments-o" aria-hidden="true"></i> {{ issue.getLastCommentContact().fullName() }}
