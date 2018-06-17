@@ -22,6 +22,8 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\IssueComment;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of EditIssue
@@ -66,11 +68,11 @@ class EditIssue extends SectionController
         return (count($aux) == 2) ? $aux[0] . '_' . substr(md5($aux[1]), 0, 6) : '-';
     }
 
-    protected function addNewComment()
+    protected function addNewComment(): bool
     {
         $text = $this->request->get('newComment', '');
-        if (empty($text)) {
-            return;
+        if (empty($text) || !$this->contactCanEdit()) {
+            return false;
         }
 
         $issue = $this->getIssue();
@@ -83,11 +85,41 @@ class EditIssue extends SectionController
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
             $issue->lastcommidcontacto = $this->contact->idcontacto;
             $issue->save();
-        } else {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+            return true;
         }
 
-        return true;
+        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        return false;
+    }
+
+    protected function contactCanEdit(): bool
+    {
+        if (null === $this->contact) {
+            return false;
+        }
+
+        $issue = $this->getIssue();
+        if ($issue->idcontacto === $this->contact->idcontacto) {
+            return true;
+        }
+
+        $member = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+            new DataBaseWhere('idteam', $issue->idteam),
+            new DataBaseWhere('accepted', true)
+        ];
+
+        return $member->loadFromCode('', $where);
+    }
+
+    protected function contactCanSee(): bool
+    {
+        if ($this->contactCanEdit()) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function createSections()
@@ -100,7 +132,8 @@ class EditIssue extends SectionController
     protected function execPreviousAction(string $action)
     {
         if ($action === 'new-comment') {
-            return $this->addNewComment();
+            $this->addNewComment();
+            return true;
         }
 
         return parent::execPreviousAction($action);
@@ -124,15 +157,25 @@ class EditIssue extends SectionController
     protected function loadIssue()
     {
         $this->issue = $this->getIssue();
-        if ($this->issue->exists()) {
-            $this->title = 'Issue #' . $this->issue->idissue;
-            $this->description = $this->issue->description();
-            $this->issue->increaseVisitCount($this->request->getClientIp());
+        if (!$this->issue->exists()) {
+            $this->miniLog->alert($this->i18n->trans('no-data'));
+            $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
+            $this->webPage->noindex = true;
             return;
         }
 
-        $this->miniLog->alert($this->i18n->trans('no-data'));
-        $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
-        $this->webPage->noindex = true;
+        if (!$this->contactCanSee()) {
+            $this->miniLog->alert($this->i18n->trans('access-denied'));
+            $this->response->setStatusCode(Response::HTTP_FORBIDDEN);
+            $this->webPage->noindex = true;
+
+            $template = (null === $this->contact) ? 'Master/LoginToContinue' : 'Master/AccessDenied';
+            $this->setTemplate($template);
+            return;
+        }
+
+        $this->title = 'Issue #' . $this->issue->idissue;
+        $this->description = $this->issue->description();
+        $this->issue->increaseVisitCount($this->request->getClientIp());
     }
 }

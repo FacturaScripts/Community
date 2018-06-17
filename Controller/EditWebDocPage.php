@@ -86,6 +86,7 @@ class EditWebDocPage extends PortalController
         } elseif (!empty($idteamdoc)) {
             $member = new WebTeamMember();
             $where = [
+                new DataBaseWhere('idcontacto', $this->contact->idcontacto),
                 new DataBaseWhere('idteam', $idteamdoc),
                 new DataBaseWhere('accepted', true)
             ];
@@ -96,6 +97,7 @@ class EditWebDocPage extends PortalController
                 $team = new WebTeam();
                 $team->loadFromCode($idteamdoc);
                 $this->miniLog->alert($this->i18n->trans('join-team', ['%team%' => $team->name]));
+                $this->setTemplate('Master/AccessDenied');
             }
         }
 
