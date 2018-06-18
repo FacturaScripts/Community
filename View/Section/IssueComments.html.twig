@@ -12,11 +12,6 @@
             {{ comment.body | raw }}
         </div>
     </div>
-{% else %}
-    <br/>
-    <div class="toast">
-        {{ i18n.trans('no-data') }}
-    </div>
 {% endfor %}
 
 {% if fsc.getIssue().closed %}

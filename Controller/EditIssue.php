@@ -18,7 +18,9 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Dinamic\Lib\EmailTools;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\IssueComment;
@@ -94,10 +96,13 @@ class EditIssue extends SectionController
             return false;
         }
 
-        $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+        /// update issue
         $issue->lastcommidcontacto = $this->contact->idcontacto;
         $issue->closed = ($close === 'TRUE') ? true : $issue->closed;
         $issue->save();
+
+        $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+        $this->notifyComment($issue, $comment);
         return true;
     }
 
@@ -193,6 +198,32 @@ class EditIssue extends SectionController
         $this->title = 'Issue #' . $this->issue->idissue;
         $this->description = $this->issue->description();
         $this->issue->increaseVisitCount($this->request->getClientIp());
+    }
+
+    /**
+     * 
+     * @param Issue        $issue
+     * @param IssueComment $comment
+     */
+    protected function notifyComment($issue, $comment)
+    {
+        if ($issue->idcontacto === $comment->idcontacto) {
+            return;
+        }
+
+        $contact = $issue->getContact();
+        $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
+        $title = 'Issue #' . $issue->idissue . ': comentario de ' . $issue->getLastCommentContact()->fullName();
+        $txt = '<a href="' . $link . '">Issue #' . $issue->idissue . '</a><br/>' . $comment->body;
+
+        $emailTools = new EmailTools();
+        $mail = $emailTools->newMail();
+        $mail->addAddress($contact->email, $contact->fullName());
+        $mail->Subject = $title;
+        $mail->msgHTML($txt);
+        if ($mail->send()) {
+            $this->miniLog->notice($this->i18n->trans('email-sent'));
+        }
     }
 
     protected function reopenAction()
