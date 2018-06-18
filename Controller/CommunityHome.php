@@ -122,8 +122,11 @@ class CommunityHome extends SectionController
 
     protected function loadData(string $sectionName)
     {
+        $where = [];
         switch ($sectionName) {
             case 'issues':
+                $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto, '!=');
+            /// no break
             case 'logs':
                 $idTeams = [];
                 foreach ($this->sections['teams']['cursor'] as $member) {
@@ -131,14 +134,14 @@ class CommunityHome extends SectionController
                         $idTeams[] = $member->idteam;
                     }
                 }
-                $where = [new DataBaseWhere('idteam', implode(',', $idTeams), 'IN')];
+                $where[] = new DataBaseWhere('idteam', implode(',', $idTeams), 'IN');
                 $this->loadListSection($sectionName, $where);
                 break;
 
             case 'myissues':
             case 'plugins':
             case 'teams':
-                $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];
+                $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto);
                 $this->loadListSection($sectionName, $where);
                 break;
         }
