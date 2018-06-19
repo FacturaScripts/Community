@@ -12,7 +12,7 @@
             {% endif %}
             <h1>Issue #{{ issue.idissue }}</h1>
             <small>{{ issue.creationroute }}</small>
-            <div>{{ issue.body | raw }}</div>
+            <div>{{ issue.body | nl2br | raw }}</div>
             <small>
                 <i class="fa fa-user" aria-hidden="true"></i> {{ issue.getContact().fullName() }} |
                 <i class="fa fa-calendar" aria-hidden="true"></i> {{ issue.creationdate }} |

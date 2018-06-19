@@ -143,6 +143,11 @@ class EditIssue extends SectionController
         $this->addListSection('comments', 'IssueComment', 'Section/IssueComments', 'comments', 'fa-comments');
         $this->addOrderOption('comments', 'creationdate', 'date');
         $this->addButton('comments', $this->getIssue()->url('public'), '', 'fa-refresh');
+
+        $this->addListSection('userissues', 'Issue', 'Section/Issues', 'related', 'fa-question-circle');
+        $this->addSearchOptions('userissues', ['body', 'creationroute']);
+        $this->addOrderOption('userissues', 'lastmod', 'last-update', 2);
+        $this->addOrderOption('userissues', 'creationdate', 'date');
     }
 
     protected function execPreviousAction(string $action)
@@ -171,6 +176,15 @@ class EditIssue extends SectionController
 
             case 'issue':
                 $this->loadIssue();
+                break;
+
+            case 'userissues':
+                $issue = $this->getIssue();
+                $where = [
+                    new DataBaseWhere('idcontacto', $issue->idcontacto),
+                    new DataBaseWhere('idissue', $issue->idissue, '!=')
+                ];
+                $this->loadListSection($sectionName, $where);
                 break;
         }
     }
