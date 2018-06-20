@@ -9,7 +9,7 @@
             </figure>
         </div>
         <div class="tile-content">
-            {{ comment.body | nl2br | raw }}
+            {{ comment.body | raw | nl2br }}
         </div>
     </div>
 {% endfor %}
