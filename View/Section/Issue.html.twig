@@ -14,7 +14,7 @@
             {% if issue.closed %}
                 <span class="label label-error">{{ i18n.trans('closed') }}</span>
             {% endif %}
-            <h1 class="h3">Issue #{{ issue.idissue }}</h1>
+            <h1 class="h3">{{ issue.title() }}</h1>
             <small>{{ issue.creationroute }}</small>
             <p>{{ issue.body | raw | nl2br }}</p>
             <small>

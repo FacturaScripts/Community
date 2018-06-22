@@ -164,6 +164,11 @@ class Issue extends WebPageClass
         return parent::test();
     }
 
+    public function title()
+    {
+        return self::$i18n->trans('issue') . ' #' . $this->idissue;
+    }
+
     public function url(string $type = 'auto', string $list = 'List')
     {
         if ($type === 'public') {

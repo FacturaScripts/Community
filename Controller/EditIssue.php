@@ -204,7 +204,7 @@ class EditIssue extends SectionController
             return;
         }
 
-        $this->title = 'Issue #' . $this->issue->idissue;
+        $this->title = $this->issue->title();
         $this->description = $this->issue->description();
         $this->issue->increaseVisitCount($this->request->getClientIp());
     }

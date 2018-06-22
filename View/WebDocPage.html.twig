@@ -40,18 +40,18 @@
                 <div class="column col-9 col-md-12">
                     {% if fsc.docPage.idparent %}
                         {% set parentPage = fsc.docPage.getParentPage() %}
-                        <b>{{ parentPage.title }}</b>
+                        <b>{{ parentPage.title | raw  }}</b>
                     {% endif %}
-                    <h1>{{ fsc.docPage.title }}</h1>
+                    <h1>{{ fsc.docPage.title | raw }}</h1>
                     {{ fsc.parsedown(fsc.docPage.body) | raw }}
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
-                                <a href="{{ docPage.url('public') }}">{{ docPage.title }}</a>
+                                <a href="{{ docPage.url('public') }}">{{ docPage.title | raw  }}</a>
                                 {% for childrenPage in docPage.getChildrenPages() %}
                                     <ul>
                                         <li>
-                                            <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title }}</a>
+                                            <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title | raw }}</a>
                                         </li>
                                     </ul>
                                 {% endfor %}
@@ -77,9 +77,9 @@
             <li>
                 <a href="{{ item.page.url('public') }}">
                     {% if item.selected %}
-                        <b>{{ item.page.title }}</b>
+                        <b>{{ item.page.title | raw }}</b>
                     {% else %}
-                        {{ item.page.title }}
+                        {{ item.page.title | raw }}
                     {% endif %}
                 </a>
                 {% if item.more | length > 0 %}
@@ -98,9 +98,9 @@
             <li class="menu-item">
                 <a href="{{ item.page.url('public') }}">
                     {% if item.selected %}
-                        <b>{{ item.page.title }}</b>
+                        <b>{{ item.page.title | raw  }}</b>
                     {% else %}
-                        {{ item.page.title }}
+                        {{ item.page.title | raw  }}
                     {% endif %}
                 </a>
                 {% if item.more | length > 0 %}
