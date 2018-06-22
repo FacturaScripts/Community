@@ -4,7 +4,11 @@
 <div class="container">
     <div class="columns">
         <div class="column col-2 col-xs-12 text-right">
-            <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ fsc.obfuscateEmail(contact.email) }}" class="custom-img-responsive"/>
+            <span class="label">{{ contact.fullName() }}</span><br/>
+            {% if contact.empresa %}
+                <span class="label">{{ contact.empresa }}</span><br/>
+            {% endif %}
+            <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ contact.fullName() }}" class="custom-img-responsive"/>
         </div>
         <div class="column">
             {% if issue.closed %}
@@ -12,9 +16,8 @@
             {% endif %}
             <h1 class="h3">Issue #{{ issue.idissue }}</h1>
             <small>{{ issue.creationroute }}</small>
-            <div>{{ issue.body | raw | nl2br }}</div>
+            <p>{{ issue.body | raw | nl2br }}</p>
             <small>
-                <i class="fa fa-user" aria-hidden="true"></i> {{ issue.getContact().fullName() }} |
                 <i class="fa fa-calendar" aria-hidden="true"></i> {{ issue.creationdate }} |
                 <i class="fa fa-clock-o" aria-hidden="true"></i> {{ issue.lastmod }}
             </small>

@@ -64,12 +64,6 @@ class EditIssue extends SectionController
         return $issue;
     }
 
-    public function obfuscateEmail(string $email): string
-    {
-        $aux = explode('@', $email);
-        return (count($aux) == 2) ? $aux[0] . '_' . substr(md5($aux[1]), 0, 6) : '-';
-    }
-
     protected function addNewComment(): bool
     {
         if (!$this->contactCanEdit()) {
@@ -142,7 +136,7 @@ class EditIssue extends SectionController
 
         $this->addListSection('comments', 'IssueComment', 'Section/IssueComments', 'comments', 'fa-comments');
         $this->addOrderOption('comments', 'creationdate', 'date');
-        $this->addButton('comments', $this->getIssue()->url('public'), '', 'fa-refresh');
+        $this->addButton('comments', $this->getIssue()->url('public'), 'reload', 'fa-refresh');
 
         $this->addListSection('userissues', 'Issue', 'Section/Issues', 'related', 'fa-question-circle');
         $this->addSearchOptions('userissues', ['body', 'creationroute']);
