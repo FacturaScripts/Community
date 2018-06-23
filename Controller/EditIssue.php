@@ -136,12 +136,13 @@ class EditIssue extends SectionController
 
         $this->addListSection('comments', 'IssueComment', 'Section/IssueComments', 'comments', 'fa-comments');
         $this->addOrderOption('comments', 'creationdate', 'date');
+        $this->addOrderOption('comments', 'idcontacto', 'user');
         $this->addButton('comments', $this->getIssue()->url('public'), 'reload', 'fa-refresh');
 
         $this->addListSection('userissues', 'Issue', 'Section/Issues', 'related', 'fa-question-circle');
         $this->addSearchOptions('userissues', ['body', 'creationroute']);
-        $this->addOrderOption('userissues', 'lastmod', 'last-update', 2);
-        $this->addOrderOption('userissues', 'creationdate', 'date');
+        $this->addOrderOption('userissues', 'creationdate', 'date', 2);
+        $this->addOrderOption('userissues', 'lastmod', 'last-update');
     }
 
     protected function execPreviousAction(string $action)
