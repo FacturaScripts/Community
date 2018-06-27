@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
@@ -40,6 +41,8 @@ class WebSearch extends ParentSearch
 
     protected function searchDocPages(string $query)
     {
+        $defaultIdproject = AppSettings::get('community', 'idproject', '');
+
         $docPage = new WebDocPage();
         $where = [new DataBaseWhere('body|title', $query, 'LIKE')];
         foreach ($docPage->all($where, ['visitcount' => 'DESC']) as $docPage) {
@@ -47,7 +50,8 @@ class WebSearch extends ParentSearch
                 'icon' => 'fa-book',
                 'title' => $docPage->title,
                 'description' => $docPage->body,
-                'link' => $docPage->url('public')
+                'link' => $docPage->url('public'),
+                'priority' => ($docPage->idproject == $defaultIdproject) ? 0 : -1,
                 ], $query);
         }
     }
