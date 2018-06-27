@@ -82,25 +82,6 @@ class ViewPlugin extends SectionController
         return $project;
     }
 
-    protected function commonCore()
-    {
-        parent::commonCore();
-
-        foreach ($this->sections as $name => $section) {
-            if ($section['count'] == 0 && !$section['fixed']) {
-                unset($this->sections[$name]);
-            }
-        }
-
-        foreach ($this->sections as $name => $section) {
-            if ($section['count'] > 0) {
-                $this->active = $name;
-                $this->current = $name;
-                break;
-            }
-        }
-    }
-
     protected function createSections()
     {
         $this->addSection('plugin', ['fixed' => true, 'template' => 'Section/Plugin']);
