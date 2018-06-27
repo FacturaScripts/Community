@@ -1,16 +1,17 @@
+{% import _self as macros %}
 {% set plugin = fsc.getProject() %}
 
 <div class="container">
     <div class="columns">
-        <div class="column col-12">
+        <div class="column col-2 col-xs-12 text-right">
+            <i class="fa fa-plug fa-5x fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="column col-10 col-xs-12">
             <h1 class="h3">
-                <i class="fa fa-plug fa-fw" aria-hidden="true"></i> Plugin {{ plugin.name }}
+                Plugin {{ plugin.name }}
             </h1>
             <p>
                 {{ plugin.description }}<br/>
-                {% if plugin.publicrepo %}
-                    {{ i18n.trans('public-repository') }}: <a href="{{ plugin.publicrepo }}" target="_blank">{{ plugin.publicrepo }}</a> &nbsp;
-                {% endif %}
                 {% if plugin.idcontacto %}
                     {{ i18n.trans('mantainer') }}: {{ plugin.getContactName() }}
                 {% endif %}
@@ -18,13 +19,16 @@
         </div>
     </div>
     <div class="columns">
-        <div class="column col-4">
+        <div class="column col-2">
             <a href="{{ plugin.url('public-list') }}" class="btn">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 <span class="hide-xs">{{ i18n.trans('all') }}</span>
             </a>
         </div>
-        <div class="column col-8 text-right">
+        <div class="column">
+            {{ macros.downloadButton(plugin, i18n, fsc) }}
+        </div>
+        <div class="column text-right">
             {% if fsc.contactCanEdit() %}
                 <a href="#" class="btn" onclick="return showModal('editPluginModal');">
                     <i class="fa fa-edit" aria-hidden="true"></i>
@@ -63,3 +67,14 @@
         </div>
     </div>
 </form>
+
+{% macro downloadButton(plugin, i18n, fsc) %}
+    {% if plugin.publicrepo %}
+        <div class="btn-group">
+            <a href="{{ plugin.publicrepo }}" target="_blank" rel="nofollow" class="btn btn-success">
+                <i class="fa fa-git-square fa-fw" aria-hidden="true"></i>
+                <span class="hide-xs">{{ i18n.trans('source-code') }}</span>
+            </a>
+        </div>
+    {% endif %}
+{% endmacro %}

@@ -218,6 +218,7 @@ class WebDocumentation extends PortalController
             $this->miniLog->alert($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
+            $this->setTemplate('Master/Portal404');
         }
     }
 
