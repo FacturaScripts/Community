@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
@@ -28,6 +29,12 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
  */
 class CommunityHome extends SectionController
 {
+
+    /**
+     *
+     * @var array
+     */
+    private $teams;
 
     protected function commonCore()
     {
@@ -58,9 +65,6 @@ class CommunityHome extends SectionController
         $this->addSearchOptions('plugins', ['name', 'description']);
         $this->addOrderOption('plugins', 'name', 'name', 1);
 
-        $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users', 'teams');
-        $this->addOrderOption('teams', 'creationdate', 'date', 2);
-
         $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);
@@ -69,6 +73,13 @@ class CommunityHome extends SectionController
         $this->addSearchOptions('issues', ['body', 'creationroute']);
         $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('issues', 'creationdate', 'date');
+    }
+
+    protected function getTeams()
+    {
+        $teamMember = new WebTeamMember();
+        $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];
+        return $teamMember->all($where, [], 0, 0);
     }
 
     protected function getSectionLastmod(array &$section): int
@@ -129,7 +140,7 @@ class CommunityHome extends SectionController
             /// no break
             case 'logs':
                 $idTeams = [];
-                foreach ($this->sections['teams']['cursor'] as $member) {
+                foreach ($this->getTeams() as $member) {
                     if ($member->accepted) {
                         $idTeams[] = $member->idteam;
                     }
@@ -140,7 +151,6 @@ class CommunityHome extends SectionController
 
             case 'myissues':
             case 'plugins':
-            case 'teams':
                 $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto);
                 $this->loadListSection($sectionName, $where);
                 break;
