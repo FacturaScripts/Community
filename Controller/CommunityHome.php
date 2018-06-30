@@ -65,14 +65,14 @@ class CommunityHome extends SectionController
         $this->addSearchOptions('plugins', ['name', 'description']);
         $this->addOrderOption('plugins', 'name', 'name', 1);
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
-        $this->addSearchOptions('logs', ['description']);
-        $this->addOrderOption('logs', 'time', 'date', 2);
-
         $this->addListSection('issues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'teams');
         $this->addSearchOptions('issues', ['body', 'creationroute']);
         $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('issues', 'creationdate', 'date');
+
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
+        $this->addSearchOptions('logs', ['description']);
+        $this->addOrderOption('logs', 'time', 'date', 2);
     }
 
     protected function getTeams()
