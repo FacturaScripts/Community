@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : translations.xml
+    Author     : Raul Jimenez Jimenez
+    Description:
+        Structure for the translations table.
+-->
+<table>
+    <column>
+        <name>id</name>
+        <type>serial</type>
+        <null>NO</null>
+        <default>nextval('translations_id_seq'::regclass)</default>
+    </column>
+    <column>
+        <name>langcode</name>
+        <type>character varying(6)</type>
+    </column>
+     <column>
+        <name>name</name>
+        <type>character varying(100)</type>
+    </column>
+    <column>
+        <name>description</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>translation</name>
+        <type>text</type>
+    </column>
+    <constraint>
+        <name>uniq_translations_id</name>
+        <type>UNIQUE (id)</type>
+    </constraint>
+    
+</table>
