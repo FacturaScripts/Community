@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : languages.xml
+    Author     : Raul Jimenez Jimenez
+    Description:
+        Structure for the languages table.
+-->
+<table>
+    <column>
+        <name>langcode</name>
+        <type>character varying(6)</type>
+    </column>
+     <column>
+        <name>description</name>
+        <type>character varying(50)</type>
+    </column>
+    <column>
+        <name>parentcode</name>
+        <type>character varying(6)</type>
+    </column>
+    <constraint>
+        <name>uniq_languages_id</name>
+        <type>UNIQUE (id)</type>
+    </constraint>
+    <constraint>
+        <name>uniq_langcode</name>
+        <type>UNIQUE (langcode)</type>
+    </constraint>
+    <constraint>
+        <name>ca_parent_language</name>
+        <type>FOREIGN KEY (parentcode) REFERENCES languages (langcode) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+</table>
