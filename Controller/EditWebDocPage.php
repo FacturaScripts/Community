@@ -40,6 +40,22 @@ class EditWebDocPage extends PortalController
      */
     public $webDocPage;
 
+    /**
+     * Undo html scape from Utils::noHtml() method, BUT without undo scape of <
+     * We do this to prevent html inyections on the markdown javascript editor.
+     * 
+     * @param string $txt
+     *
+     * @return string
+     */
+    public function fixHtml($txt)
+    {
+        $original = ['&gt;', '&quot;', '&#39;'];
+        $final = ['>', "'", "'"];
+
+        return ($txt === null) ? null : trim(str_replace($original, $final, $txt));
+    }
+
     public function getBackUrl()
     {
         if ($this->webDocPage->exists()) {
@@ -65,7 +81,7 @@ class EditWebDocPage extends PortalController
             $where[] = new DataBaseWhere('iddoc', $this->webDocPage->iddoc, '!=');
         }
 
-        return $this->webDocPage->all($where, ['ordernum' => 'ASC'], 0, 0);
+        return $this->webDocPage->all($where, ['LOWER(title)' => 'ASC'], 0, 0);
     }
 
     public function privateCore(&$response, $user, $permissions)

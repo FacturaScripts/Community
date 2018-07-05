@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,42 +18,19 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 
 /**
- * Description of WebTeam
+ * Description of Translation
  *
  * @author Raul Jimenez <raul.jimenez@nazcanetworks.com>
  */
-class Language extends Base\ModelClass
+class Translation extends Base\ModelClass
 {
 
     use Base\ModelTrait;
-    
-    /**
-     * Primary key
-     * 
-     * @var int
-     */
-    public $id;
-    
-     /**
-     * Language code
-     * 
-     * @var string 
-     */
-    public $langcode;
-    
-    /**
-     *
-     * Name
-     * 
-     * @var string 
-     */
-    public $name;
-    
+
     /**
      *
      * Description of Translation
@@ -61,15 +38,37 @@ class Language extends Base\ModelClass
      * @var string 
      */
     public $description;
-    
+
+    /**
+     * Primary key
+     * 
+     * @var int
+     */
+    public $id;
+
+    /**
+     * Language code
+     * 
+     * @var string 
+     */
+    public $langcode;
+
+    /**
+     *
+     * Name
+     * 
+     * @var string 
+     */
+    public $name;
+
     /**
      * Translation of text in a language.
      * 
      * @var string
      */
     public $translation;
-    
-     /**
+
+    /**
      * Returns the name of the column that is the primary key of the model.
      *
      * @return int
@@ -88,8 +87,7 @@ class Language extends Base\ModelClass
     {
         return 'translations';
     }
-    
-    
+
     /**
      * Returns True if there is no errors on properties values.
      *
@@ -97,11 +95,13 @@ class Language extends Base\ModelClass
      */
     public function test()
     {
-        if (strlen($this->langcode) < 1 || strlen($this->langcode) > 6 || strlen($this->description) < 1 ) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '100']));
+        $this->description = Utils::noHtml($this->description);
+        if (strlen($this->description) < 1 || strlen($this->description) > 50) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'description', '%min%' => '1', '%max%' => '50']));
         }
+
+        $this->name = Utils::noHtml($this->name);
+        $this->translation = Utils::noHtml($this->translation);
         return parent::test();
     }
-    
 }
-

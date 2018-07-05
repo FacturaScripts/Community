@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,12 +18,11 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 
 /**
- * Description of WebTeam
+ * Description of Language
  *
  * @author Raul Jimenez <raul.jimenez@nazcanetworks.com>
  */
@@ -33,19 +32,19 @@ class Language extends Base\ModelClass
     use Base\ModelTrait;
 
     /**
-     * Language code
-     * 
-     * @var string 
-     */
-    public $langcode;
-
-    /**
      *
      * Description of Language
      * 
      * @var string 
      */
     public $description;
+
+    /**
+     * Language code
+     * 
+     * @var string 
+     */
+    public $langcode;
 
     /**
      * Parent code for variations 
@@ -81,9 +80,19 @@ class Language extends Base\ModelClass
      */
     public function test()
     {
-        if (strlen($this->langcode) < 1 || strlen($this->langcode) > 6 || strlen($this->description) < 1 || strlen($this->description) > 50) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '100']));
+        if (strlen($this->langcode) < 1 || strlen($this->langcode) > 6) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'langcode', '%min%' => '1', '%max%' => '6']));
         }
+
+        $this->description = Utils::noHtml($this->description);
+        if (strlen($this->description) < 1 || strlen($this->description) > 50) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'description', '%min%' => '1', '%max%' => '50']));
+        }
+
+        if (empty($this->parentcode)) {
+            $this->parentcode = null;
+        }
+
         return parent::test();
     }
 }

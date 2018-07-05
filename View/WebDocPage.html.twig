@@ -44,17 +44,16 @@
                     {% endif %}
                     <h1>{{ fsc.docPage.title | raw }}</h1>
                     {{ fsc.parsedown(fsc.docPage.body) | raw }}
+                    <br/>
+                    {% if fsc.docPages is not empty %}
+                        <h5>
+                            <i class="fa fa-folder-open fa-fw" aria-hidden="true"></i> {{ i18n.trans('even-more') }}:
+                        </h5>
+                    {% endif %}
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
                                 <a href="{{ docPage.url('public') }}">{{ docPage.title | raw  }}</a>
-                                {% for childrenPage in docPage.getChildrenPages() %}
-                                    <ul>
-                                        <li>
-                                            <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title | raw }}</a>
-                                        </li>
-                                    </ul>
-                                {% endfor %}
                             </li>
                         {% endfor %}
                     </ul>

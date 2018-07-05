@@ -15,22 +15,29 @@
     <column>
         <name>langcode</name>
         <type>character varying(6)</type>
+        <null>NO</null>
     </column>
-     <column>
+    <column>
         <name>name</name>
         <type>character varying(100)</type>
+        <null>NO</null>
     </column>
     <column>
         <name>description</name>
         <type>text</type>
+        <null>NO</null>
     </column>
     <column>
         <name>translation</name>
         <type>text</type>
+        <null>NO</null>
     </column>
     <constraint>
-        <name>uniq_translations_id</name>
-        <type>UNIQUE (id)</type>
+        <name>translations_pkey</name>
+        <type>PRIMARY KEY (id)</type>
     </constraint>
-    
+    <constraint>
+        <name>ca_translations_languages</name>
+        <type>FOREIGN KEY (langcode) REFERENCES languages (langcode) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
 </table>

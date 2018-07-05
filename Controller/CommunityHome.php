@@ -61,10 +61,6 @@ class CommunityHome extends SectionController
         $this->addOrderOption('myissues', 'creationdate', 'date');
         $this->addButton('myissues', 'ContactForm', 'new', 'fa-plus');
 
-        $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug', 'your');
-        $this->addSearchOptions('plugins', ['name', 'description']);
-        $this->addOrderOption('plugins', 'name', 'name', 1);
-
         $this->addListSection('issues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'teams');
         $this->addSearchOptions('issues', ['body', 'creationroute']);
         $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
@@ -150,7 +146,6 @@ class CommunityHome extends SectionController
                 break;
 
             case 'myissues':
-            case 'plugins':
                 $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto);
                 $this->loadListSection($sectionName, $where);
                 break;
