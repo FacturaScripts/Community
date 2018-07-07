@@ -7,6 +7,11 @@
 -->
 <table>
     <column>
+        <name>description</name>
+        <type>text</type>
+        <null>NO</null>
+    </column>
+    <column>
         <name>id</name>
         <type>serial</type>
         <null>NO</null>
@@ -14,17 +19,16 @@
     </column>
     <column>
         <name>langcode</name>
-        <type>character varying(6)</type>
+        <type>character varying(8)</type>
         <null>NO</null>
+    </column>
+    <column>
+        <name>lastmod</name>
+        <type>timestamp</type>
     </column>
     <column>
         <name>name</name>
         <type>character varying(100)</type>
-        <null>NO</null>
-    </column>
-    <column>
-        <name>description</name>
-        <type>text</type>
         <null>NO</null>
     </column>
     <column>
@@ -39,5 +43,9 @@
     <constraint>
         <name>ca_translations_languages</name>
         <type>FOREIGN KEY (langcode) REFERENCES languages (langcode) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>uniq_translation_language</name>
+        <type>UNIQUE (langcode,name)</type>
     </constraint>
 </table>

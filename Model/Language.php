@@ -47,11 +47,24 @@ class Language extends Base\ModelClass
     public $langcode;
 
     /**
+     * Last modification date.
+     *
+     * @var string
+     */
+    public $lastmod;
+
+    /**
      * Parent code for variations 
      * 
      * @var string
      */
     public $parentcode;
+
+    public function clear()
+    {
+        parent::clear();
+        $this->lastmod = date('d-m-Y H:i:s');
+    }
 
     /**
      * Returns the name of the column that is the primary key of the model.
@@ -80,8 +93,8 @@ class Language extends Base\ModelClass
      */
     public function test()
     {
-        if (strlen($this->langcode) < 1 || strlen($this->langcode) > 6) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'langcode', '%min%' => '1', '%max%' => '6']));
+        if (strlen($this->langcode) < 1 || strlen($this->langcode) > 8) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'langcode', '%min%' => '1', '%max%' => '8']));
         }
 
         $this->description = Utils::noHtml($this->description);

@@ -7,18 +7,22 @@
 -->
 <table>
     <column>
-        <name>langcode</name>
-        <type>character varying(6)</type>
-        <null>NO</null>
-    </column>
-     <column>
         <name>description</name>
         <type>character varying(50)</type>
         <null>NO</null>
     </column>
     <column>
+        <name>langcode</name>
+        <type>character varying(8)</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>lastmod</name>
+        <type>timestamp</type>
+    </column>
+    <column>
         <name>parentcode</name>
-        <type>character varying(6)</type>
+        <type>character varying(8)</type>
     </column>
     <constraint>
         <name>languages_pkey</name>

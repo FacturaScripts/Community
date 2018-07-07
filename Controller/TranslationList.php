@@ -20,35 +20,91 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
  * Description of TranslationList
  *
  * @author Carlos García Gómez
  */
-class TranslationList extends PortalController
+class TranslationList extends SectionController
 {
 
-    public $languages = [];
-
-    public function privateCore(&$response, $user, $permissions)
+    protected function createSections()
     {
-        parent::privateCore($response, $user, $permissions);
-        $this->loadData();
+        $this->addListSection('languages', 'Language', 'Section/Languages', 'languages', 'fa-language');
+        $this->addSearchOptions('languages', ['description']);
+        $this->addOrderOption('languages', 'langcode', 'code', 1);
+        $this->addOrderOption('languages', 'description', 'description');
+        $this->addOrderOption('languages', 'lastmod', 'last-update');
+        $this->addButton('languages', $this->url() . '?action=import-lang', 'import', '');
+
+        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fa-copy');
+        $this->addSearchOptions('translations', ['name', 'description', 'translation']);
+        $this->addOrderOption('translations', 'name', 'code', 1);
+        $this->addOrderOption('translations', 'lastmod', 'last-update');
+        $this->addButton('translations', $this->url() . '?action=import-trans', 'import', '');
     }
 
-    public function publicCore(&$response)
+    protected function execPreviousAction(string $action)
     {
-        parent::publicCore($response);
-        $this->loadData();
+        switch ($action) {
+            case 'import-lang':
+                $this->importLanguagesAction();
+                return true;
+
+            case 'import-trans':
+                $this->importTranslationsAction();
+                return true;
+
+            default:
+                return parent::execPreviousAction($action);
+        }
     }
 
-    protected function loadData()
+    protected function importLanguagesAction()
     {
-        $this->setTemplate('TranslationList');
+        if (!$this->user) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+        }
 
-        $languageModel = new Language();
-        $this->languages = $languageModel->all([], [], 0, 0);
+        foreach ($this->i18n->getAvailableLanguages() as $key => $value) {
+            $language = new Language();
+            $language->langcode = $key;
+            $language->description = $value;
+            $language->save();
+        }
+    }
+
+    protected function importTranslationsAction()
+    {
+        if (!$this->user) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+        }
+
+        $json = json_decode(file_get_contents(FS_FOLDER . '/Core/Translation/en_EN.json'), true);
+        foreach ($json as $key => $value) {
+            $translation = new Translation();
+            $translation->langcode = 'en_EN';
+            $translation->name = $key;
+            $translation->description = $translation->translation = $value;
+            if ($translation->exists()) {
+                break;
+            }
+            $translation->save();
+        }
+    }
+
+    protected function loadData(string $sectionName)
+    {
+        switch ($sectionName) {
+            case 'languages':
+                $this->loadListSection($sectionName);
+                break;
+
+            case 'translations':
+                $this->loadListSection($sectionName);
+                break;
+        }
     }
 }

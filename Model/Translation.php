@@ -54,6 +54,13 @@ class Translation extends Base\ModelClass
     public $langcode;
 
     /**
+     * Last modification date.
+     *
+     * @var string
+     */
+    public $lastmod;
+
+    /**
      *
      * Name
      * 
@@ -67,6 +74,19 @@ class Translation extends Base\ModelClass
      * @var string
      */
     public $translation;
+
+    public function clear()
+    {
+        parent::clear();
+        $this->lastmod = date('d-m-Y H:i:s');
+    }
+
+    public function install()
+    {
+        new Language();
+
+        return parent::install();
+    }
 
     /**
      * Returns the name of the column that is the primary key of the model.
@@ -96,10 +116,6 @@ class Translation extends Base\ModelClass
     public function test()
     {
         $this->description = Utils::noHtml($this->description);
-        if (strlen($this->description) < 1 || strlen($this->description) > 50) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'description', '%min%' => '1', '%max%' => '50']));
-        }
-
         $this->name = Utils::noHtml($this->name);
         $this->translation = Utils::noHtml($this->translation);
         return parent::test();
