@@ -27,7 +27,7 @@ use FacturaScripts\Plugins\Community\Model\WebProject;
 /**
  * Description of AddIssue
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class AddIssue extends PortalController
 {

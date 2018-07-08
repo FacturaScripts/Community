@@ -29,7 +29,7 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 /**
  * Description of EditWebDocPage controller.
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class EditWebDocPage extends PortalController
 {

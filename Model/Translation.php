@@ -47,6 +47,12 @@ class Translation extends Base\ModelClass
     public $id;
 
     /**
+     *
+     * @var int
+     */
+    public $idproject;
+
+    /**
      * Language code
      * 
      * @var string 

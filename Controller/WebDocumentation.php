@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Description of WebDocumentation
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class WebDocumentation extends PortalController
 {

@@ -18,6 +18,11 @@
         <default>nextval('translations_id_seq'::regclass)</default>
     </column>
     <column>
+        <name>idproject</name>
+        <type>integer</type>
+        <null>NO</null>
+    </column>
+    <column>
         <name>langcode</name>
         <type>character varying(8)</type>
         <null>NO</null>
@@ -43,6 +48,10 @@
     <constraint>
         <name>ca_translations_languages</name>
         <type>FOREIGN KEY (langcode) REFERENCES languages (langcode) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_translations_webprojects</name>
+        <type>FOREIGN KEY (idproject) REFERENCES webprojects (idproject) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
         <name>uniq_translation_language</name>

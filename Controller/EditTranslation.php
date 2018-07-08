@@ -18,40 +18,23 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Plugins\webportal\Controller\EditProfile as parentController;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
- * Description of PortalHome
+ * Description of EditTranslation
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class EditProfile extends parentController
+class EditTranslation extends SectionController
 {
 
     protected function createSections()
     {
-        parent::createSections();
-
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o');
-        $this->addSearchOptions('logs', ['description']);
-        $this->addOrderOption('logs', 'time', 'date', 2);
-
-        $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users');
-        $this->addOrderOption('teams', 'creationdate', 'date', 2);
+        ;
     }
 
     protected function loadData(string $sectionName)
     {
-        switch ($sectionName) {
-            case 'logs':
-            case 'teams':
-                $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto);
-                $this->loadListSection($sectionName, $where);
-                break;
-
-            default:
-                parent::loadData($sectionName);
-        }
+        ;
     }
 }

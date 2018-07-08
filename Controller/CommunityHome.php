@@ -25,7 +25,7 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 /**
  * Description of PortalHome
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class CommunityHome extends SectionController
 {

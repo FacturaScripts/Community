@@ -11,8 +11,15 @@
         {% set section = fsc.getCurrentSection() %}
         {% for language in section.cursor %}
             <tr>
-                <td>{{ language.langcode }}</td>
-                <td>{{ language.description }}</td>
+                <td>
+                    <a href="{{ language.url() }}">{{ language.langcode }}</a>
+                </td>
+                <td>
+                    {{ language.description }}
+                    {% if language.mainlanguage %}
+                        <span class="label label-success">{{ i18n.trans('default') }}</span>
+                    {% endif %}
+                </td>
                 <td>{{ language.parentcode }}</td>
                 <td class="text-right">{{ language.lastmod }}</td>
             </tr>

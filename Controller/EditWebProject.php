@@ -24,7 +24,7 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
 /**
  * Description of EditWebProject controller.
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class EditWebProject extends ExtendedController\PanelController
 {

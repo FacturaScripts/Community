@@ -27,7 +27,7 @@ use FacturaScripts\Plugins\webportal\Controller\WebSearch as ParentSearch;
 /**
  * Description of WebSearch
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class WebSearch extends ParentSearch
 {

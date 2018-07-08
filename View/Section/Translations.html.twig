@@ -13,7 +13,9 @@
         {% for translation in section.cursor %}
             <tr>
                 <td>{{ translation.langcode }}</td>
-                <td>{{ translation.name }}</td>
+                <td>
+                    <a href="{{ translation.url() }}">{{ translation.name }}</a>
+                </td>
                 <td>{{ translation.translation | raw }}</td>
                 <td>{{ translation.description | raw }}</td>
                 <td class="text-right">{{ translation.lastmod }}</td>

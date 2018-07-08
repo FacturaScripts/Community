@@ -23,7 +23,7 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 /**
  * Description of TeamList
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class TeamList extends SectionController
 {

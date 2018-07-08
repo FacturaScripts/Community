@@ -19,13 +19,12 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Plugins\Community\Model\Language;
-use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
  * Description of TranslationList
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class TranslationList extends SectionController
 {
@@ -43,7 +42,6 @@ class TranslationList extends SectionController
         $this->addSearchOptions('translations', ['name', 'description', 'translation']);
         $this->addOrderOption('translations', 'name', 'code', 1);
         $this->addOrderOption('translations', 'lastmod', 'last-update');
-        $this->addButton('translations', $this->url() . '?action=import-trans', 'import', '');
     }
 
     protected function execPreviousAction(string $action)
@@ -51,10 +49,6 @@ class TranslationList extends SectionController
         switch ($action) {
             case 'import-lang':
                 $this->importLanguagesAction();
-                return true;
-
-            case 'import-trans':
-                $this->importTranslationsAction();
                 return true;
 
             default:
@@ -72,26 +66,8 @@ class TranslationList extends SectionController
             $language = new Language();
             $language->langcode = $key;
             $language->description = $value;
+            $language->mainlanguage = ($key === 'en_EN');
             $language->save();
-        }
-    }
-
-    protected function importTranslationsAction()
-    {
-        if (!$this->user) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
-        }
-
-        $json = json_decode(file_get_contents(FS_FOLDER . '/Core/Translation/en_EN.json'), true);
-        foreach ($json as $key => $value) {
-            $translation = new Translation();
-            $translation->langcode = 'en_EN';
-            $translation->name = $key;
-            $translation->description = $translation->translation = $value;
-            if ($translation->exists()) {
-                break;
-            }
-            $translation->save();
         }
     }
 

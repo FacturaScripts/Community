@@ -29,7 +29,7 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 /**
  * Description of AddPlugin
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class AddPlugin extends PortalController
 {

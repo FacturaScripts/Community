@@ -24,7 +24,7 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 /**
  * Description of PluginList
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class PluginList extends SectionController
 {

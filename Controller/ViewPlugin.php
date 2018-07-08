@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Description of ViewPlugin
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class ViewPlugin extends SectionController
 {

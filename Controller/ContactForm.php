@@ -26,7 +26,7 @@ use FacturaScripts\Plugins\Community\Model\WebProject;
 /**
  * Description of ContactForm
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class ContactForm extends PortalController
 {

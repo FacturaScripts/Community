@@ -23,7 +23,7 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
 /**
  * Description of ListWebProject controller.
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class ListWebTeam extends ExtendedController\ListController
 {

@@ -18,8 +18,10 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of Language
@@ -54,16 +56,29 @@ class Language extends Base\ModelClass
     public $lastmod;
 
     /**
+     *
+     * @var bool
+     */
+    public $mainlanguage;
+
+    /**
      * Parent code for variations 
      * 
      * @var string
      */
     public $parentcode;
 
+    /**
+     *
+     * @var array
+     */
+    private static $urls = [];
+
     public function clear()
     {
         parent::clear();
         $this->lastmod = date('d-m-Y H:i:s');
+        $this->mainlanguage = false;
     }
 
     /**
@@ -107,5 +122,34 @@ class Language extends Base\ModelClass
         }
 
         return parent::test();
+    }
+
+    public function url(string $type = 'auto', string $list = 'List')
+    {
+        switch ($type) {
+            case 'public-list':
+                return $this->getCustomUrl($type);
+
+            case 'public':
+                return $this->getCustomUrl($type) . $this->name;
+        }
+
+        return parent::url($type, $list);
+    }
+
+    protected function getCustomUrl(string $type): string
+    {
+        if (isset(self::$urls[$type])) {
+            return self::$urls[$type];
+        }
+
+        $controller = 'TranslationList';
+        $webPage = new WebPage();
+        foreach ($webPage->all([new DataBaseWhere('customcontroller', $controller)]) as $wpage) {
+            self::$urls[$type] = $wpage->url('public');
+            return self::$urls[$type];
+        }
+
+        return '#';
     }
 }

@@ -26,7 +26,7 @@ use FacturaScripts\Plugins\webportal\Controller\Sitemap as parentController;
 /**
  * Description of Sitemap
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class Sitemap extends parentController
 {

@@ -25,7 +25,7 @@ use FacturaScripts\Plugins\Community\Model\WebDocPage;
 /**
  * Description of ListWebProject controller.
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class ListWebProject extends ExtendedController\ListController
 {

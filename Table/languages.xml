@@ -21,6 +21,10 @@
         <type>timestamp</type>
     </column>
     <column>
+        <name>mainlanguage</name>
+        <type>boolean</type>
+    </column>
+    <column>
         <name>parentcode</name>
         <type>character varying(8)</type>
     </column>

@@ -23,7 +23,7 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
 /**
  * Description of ListContactFormTree
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class ListContactFormTree extends ExtendedController\ListController
 {

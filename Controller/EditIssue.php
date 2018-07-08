@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Description of EditIssue
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class EditIssue extends SectionController
 {

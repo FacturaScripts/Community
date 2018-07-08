@@ -24,7 +24,7 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
 /**
  * Description of EditContactFormTree
  *
- * @author carlos
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class EditContactFormTree extends ExtendedController\PanelController
 {
