@@ -40,9 +40,9 @@ class EditLanguage extends SectionController
 
     /**
      *
-     * @var Language
+     * @var array
      */
-    private $mainLanguage;
+    private $mainTranslations = [];
 
     public function contactCanEdit(): bool
     {
@@ -97,21 +97,21 @@ class EditLanguage extends SectionController
      */
     private function checkTranslation(&$language, $translationName): bool
     {
-        if ($language->mainlanguage) {
+        $mainlangcode = AppSettings::get('community', 'mainlanguage');
+        if ($language->langcode === $mainlangcode) {
             return true;
         }
 
-        if (!isset($this->mainLanguage)) {
-            $this->mainLanguage = new Language();
-            $this->mainLanguage->loadFromCode('', [new DataBaseWhere('mainlanguage', true)]);
+        if (empty($this->mainTranslations)) {
+            $this->mainTranslations = [];
+            $translation = new Translation();
+            $where = [new DataBaseWhere('langcode', $mainlangcode)];
+            foreach ($translation->all($where, [], 0, 0) as $trans) {
+                $this->mainTranslations[] = $trans->name;
+            }
         }
 
-        $where = [
-            new DataBaseWhere('langcode', $this->mainLanguage->langcode),
-            new DataBaseWhere('name', $translationName),
-        ];
-        $translation = new Translation();
-        return $translation->loadFromCode('', $where);
+        return in_array($translationName, $this->mainTranslations);
     }
 
     protected function createSections()
@@ -183,8 +183,14 @@ class EditLanguage extends SectionController
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
         }
 
-        $idproject = AppSettings::get('community', 'idproject');
         $language = $this->getLanguageModel();
+        if ($language->parentcode) {
+            $this->miniLog->alert("You can't import a language with parent.");
+        }
+
+        // import translations from file
+        $newTranslations = [];
+        $idproject = AppSettings::get('community', 'idproject');
         $json = json_decode(file_get_contents(FS_FOLDER . '/Core/Translation/' . $language->langcode . '.json'), true);
         foreach ($json as $key => $value) {
             $translation = new Translation();
@@ -193,18 +199,43 @@ class EditLanguage extends SectionController
             $translation->name = $key;
             $translation->description = $translation->translation = $value;
 
-            /// is this string in database?
-            if ($translation->exists()) {
-                break;
-            }
-
             /// is this string in the main language?
             if (!$this->checkTranslation($language, $key)) {
                 continue;
             }
 
-            $translation->save();
+            if ($translation->save()) {
+                $newTranslations[] = $key;
+            }
         }
+
+        // generate missing translations
+        $mainlangcode = AppSettings::get('community', 'mainlanguage');
+        foreach ($this->mainTranslations as $mainKey) {
+            if (in_array($mainKey, $newTranslations)) {
+                continue;
+            }
+
+            // we need main translation
+            $mainTranslation = new Translation();
+            $where = [
+                new DataBaseWhere('langcode', $mainlangcode),
+                new DataBaseWhere('name', $mainKey)
+            ];
+            $mainTranslation->loadFromCode('', $where);
+
+            $newTranslation = new Translation();
+            $newTranslation->description = $mainTranslation->description;
+            $newTranslation->idproject = $idproject;
+            $newTranslation->langcode = $language->langcode;
+            $newTranslation->lastmod = $mainTranslation->lastmod;
+            $newTranslation->name = $mainTranslation->name;
+            $newTranslation->translation = $mainTranslation->translation;
+            $newTranslation->save();
+        }
+
+        $language->updateStats();
+        $language->save();
     }
 
     protected function loadData(string $sectionName)

@@ -21,8 +21,8 @@
         <type>timestamp</type>
     </column>
     <column>
-        <name>mainlanguage</name>
-        <type>boolean</type>
+        <name>numtranslations</name>
+        <type>integer</type>
     </column>
     <column>
         <name>parentcode</name>

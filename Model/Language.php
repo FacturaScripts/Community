@@ -57,9 +57,9 @@ class Language extends Base\ModelClass
 
     /**
      *
-     * @var bool
+     * @var int
      */
-    public $mainlanguage;
+    public $numtranslations;
 
     /**
      * Parent code for variations 
@@ -78,7 +78,7 @@ class Language extends Base\ModelClass
     {
         parent::clear();
         $this->lastmod = date('d-m-Y H:i:s');
-        $this->mainlanguage = false;
+        $this->numtranslations = 0;
     }
 
     /**
@@ -122,6 +122,13 @@ class Language extends Base\ModelClass
         }
 
         return parent::test();
+    }
+
+    public function updateStats()
+    {
+        $where = [new DataBaseWhere('langcode', $this->langcode)];
+        $translation = new Translation();
+        $this->numtranslations = $translation->count($where);
     }
 
     public function url(string $type = 'auto', string $list = 'List')

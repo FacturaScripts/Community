@@ -4,6 +4,7 @@
             <th>{{ i18n.trans('code') }}</th>
             <th>{{ i18n.trans('description') }}</th>
             <th>{{ i18n.trans('parent') }}</th>
+            <th class="text-right">{{ i18n.trans('number-of-translations') }}</th>
             <th class="text-right">{{ i18n.trans('last-update') }}</th>
         </tr>
     </thead>
@@ -14,18 +15,14 @@
                 <td>
                     <a href="{{ language.url() }}">{{ language.langcode }}</a>
                 </td>
-                <td>
-                    {{ language.description }}
-                    {% if language.mainlanguage %}
-                        <span class="label label-success">{{ i18n.trans('principal') }}</span>
-                    {% endif %}
-                </td>
+                <td>{{ language.description }}</td>
                 <td>{{ language.parentcode }}</td>
+                <td class="text-right">{{ language.numtranslations }}</td>
                 <td class="text-right">{{ language.lastmod }}</td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4" class="bg-warning">
+                <td colspan="5" class="bg-warning">
                     {{ i18n.trans('no-data') }}
                 </td>
             </tr>

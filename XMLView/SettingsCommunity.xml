@@ -45,6 +45,16 @@
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>
+            <column name="idteamtra" title="translation-team" numcolumns="3" order="140">
+                <widget type="select" fieldname="idteamtra" required="true">
+                    <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
+                </widget>
+            </column>
+            <column name="mainlanguage" title="main-language" numcolumns="3" order="150">
+                <widget type="select" fieldname="mainlanguage" required="true">
+                    <values source="languages" fieldcode="langcode" fieldtitle="langcode"/>
+                </widget>
+            </column>
         </group>
     </columns>
 </view>

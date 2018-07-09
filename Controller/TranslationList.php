@@ -33,9 +33,10 @@ class TranslationList extends SectionController
     {
         $this->addListSection('languages', 'Language', 'Section/Languages', 'languages', 'fa-language');
         $this->addSearchOptions('languages', ['description']);
-        $this->addOrderOption('languages', 'langcode', 'code', 1);
+        $this->addOrderOption('languages', 'langcode', 'code');
         $this->addOrderOption('languages', 'description', 'description');
         $this->addOrderOption('languages', 'lastmod', 'last-update');
+        $this->addOrderOption('languages', 'numtranslations', 'number-of-translations', 2);
 
         if ($this->user) {
             $this->addButton('languages', $this->url() . '?action=import-lang', 'import', '');
@@ -69,7 +70,6 @@ class TranslationList extends SectionController
             $language = new Language();
             $language->langcode = $key;
             $language->description = $value;
-            $language->mainlanguage = ($key === 'en_EN');
             $language->save();
         }
     }
