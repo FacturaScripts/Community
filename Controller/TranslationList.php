@@ -36,7 +36,10 @@ class TranslationList extends SectionController
         $this->addOrderOption('languages', 'langcode', 'code', 1);
         $this->addOrderOption('languages', 'description', 'description');
         $this->addOrderOption('languages', 'lastmod', 'last-update');
-        $this->addButton('languages', $this->url() . '?action=import-lang', 'import', '');
+
+        if ($this->user) {
+            $this->addButton('languages', $this->url() . '?action=import-lang', 'import', '');
+        }
 
         $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fa-copy');
         $this->addSearchOptions('translations', ['name', 'description', 'translation']);

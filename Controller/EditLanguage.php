@@ -44,6 +44,15 @@ class EditLanguage extends SectionController
      */
     private $mainLanguage;
 
+    public function contactCanEdit(): bool
+    {
+        if ($this->user) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function getLanguageModel(): Language
     {
         if (isset($this->languageModel)) {
@@ -60,6 +69,25 @@ class EditLanguage extends SectionController
         $uri = explode('/', $this->uri);
         $language->loadFromCode(end($uri));
         return $language;
+    }
+
+    public function getParentLanguages(): array
+    {
+        $current = $this->getLanguageModel();
+        $languages = [];
+        foreach ($current->all([], ['langcode' => 'ASC'], 0, 0) as $language) {
+            if ($language->langcode === $current->langcode) {
+                continue;
+            }
+
+            if ($language->parentcode) {
+                continue;
+            }
+
+            $languages[] = $language;
+        }
+
+        return $languages;
     }
 
     /**
@@ -95,13 +123,51 @@ class EditLanguage extends SectionController
         $this->addOrderOption('translations', 'name', 'code', 1);
         $this->addOrderOption('translations', 'lastmod', 'last-update');
 
+        if ($this->user) {
+            $language = $this->getLanguageModel();
+            $this->addButton('translations', $language->url() . '&action=import-trans', 'import', '');
+        }
+    }
+
+    protected function deleteAction()
+    {
+        if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-delete'));
+        }
+
         $language = $this->getLanguageModel();
-        $this->addButton('translations', $language->url() . '&action=import-trans', 'import', '');
+        if ($language->delete()) {
+            $this->miniLog->info($this->i18n->trans('record-deleted-correctly'));
+        }
+    }
+
+    protected function editAction()
+    {
+        if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+        }
+
+        $language = $this->getLanguageModel();
+        $language->description = $this->request->request->get('description', '');
+        $language->parentcode = ('' === $this->request->request->get('parentcode', '')) ? null : $this->request->request->get('parentcode', '');
+        if ($language->save()) {
+            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+        } else {
+            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        }
     }
 
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
+            case 'delete':
+                $this->deleteAction();
+                return true;
+
+            case 'edit':
+                $this->editAction();
+                return true;
+
             case 'import-trans':
                 $this->importTranslationsAction();
                 return true;
