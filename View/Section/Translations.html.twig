@@ -4,7 +4,6 @@
             <th>{{ i18n.trans('langcode') }}</th>
             <th>{{ i18n.trans('name') }}</th>
             <th>{{ i18n.trans('translation') }}</th>
-            <th>{{ i18n.trans('description') }}</th>
             <th class="text-right">{{ i18n.trans('last-update') }}</th>
         </tr>
     </thead>
@@ -17,7 +16,6 @@
                     <a href="{{ translation.url() }}">{{ translation.name }}</a>
                 </td>
                 <td>{{ translation.translation | raw }}</td>
-                <td>{{ translation.description | raw }}</td>
                 <td class="text-right">{{ translation.lastmod }}</td>
             </tr>
         {% else %}

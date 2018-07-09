@@ -18,6 +18,11 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Model\Translation;
+use FacturaScripts\Plugins\Community\Model\WebTeamLog;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
@@ -28,13 +33,115 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class EditTranslation extends SectionController
 {
 
+    /**
+     *
+     * @var Translation
+     */
+    private $translationModel;
+
+    public function contactCanEdit(): bool
+    {
+        if ($this->user) {
+            return true;
+        }
+
+        // Contact is member of translation team?
+        $idteamtra = AppSettings::get('community', 'idteamtra');
+        $member = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+            new DataBaseWhere('idteam', $idteamtra),
+            new DataBaseWhere('accepted', true)
+        ];
+
+        return $member->loadFromCode('', $where);
+    }
+
+    public function getTranslationModel(): Translation
+    {
+        if (isset($this->translationModel)) {
+            return $this->translationModel;
+        }
+
+        $translation = new Translation();
+        $code = $this->request->get('code', '');
+        if (!empty($code)) {
+            $translation->loadFromCode($code);
+            return $translation;
+        }
+
+        $uri = explode('/', $this->uri);
+        $translation->loadFromCode(end($uri));
+        return $translation;
+    }
+
     protected function createSections()
     {
-        ;
+        $this->addSection('translation', ['fixed' => true, 'template' => 'Section/Translation']);
+
+        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fa-copy');
+        $this->addSearchOptions('translations', ['name', 'description', 'translation']);
+        $this->addOrderOption('translations', 'name', 'code', 1);
+        $this->addOrderOption('translations', 'lastmod', 'last-update');
+    }
+
+    protected function editAction()
+    {
+        if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+        }
+
+        $translation = $this->getTranslationModel();
+        $translation->description = $this->request->request->get('description', '');
+        $translation->translation = $this->request->request->get('translation', '');
+        $translation->lastmod = date('d-m-Y H:i:s');
+
+        if ($translation->save()) {
+            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $this->saveTeamLog($translation);
+        } else {
+            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        }
+    }
+
+    protected function execPreviousAction(string $action)
+    {
+        switch ($action) {
+            case 'edit':
+                $this->editAction();
+                return true;
+
+            default:
+                return parent::execPreviousAction($action);
+        }
     }
 
     protected function loadData(string $sectionName)
     {
-        ;
+        switch ($sectionName) {
+            case 'translations':
+                $translation = $this->getTranslationModel();
+                $where = [
+                    new DataBaseWhere('name', $translation->name),
+                    new DataBaseWhere('id', $translation->id, '!=')
+                ];
+                $this->loadListSection($sectionName, $where);
+                break;
+        }
+    }
+
+    private function saveTeamLog(Translation $translation)
+    {
+        $idteamtra = AppSettings::get('community', 'idteamtra', '');
+        if (empty($idteamtra)) {
+            return;
+        }
+
+        $teamLog = new WebTeamLog();
+        $teamLog->description = 'Modified translation: ' . $translation->langcode . ' / ' . $translation->name;
+        $teamLog->idteam = $idteamtra;
+        $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
+        $teamLog->link = $translation->url('public');
+        $teamLog->save();
     }
 }

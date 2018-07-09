@@ -18,8 +18,10 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of Translation
@@ -81,6 +83,12 @@ class Translation extends Base\ModelClass
      */
     public $translation;
 
+    /**
+     *
+     * @var array
+     */
+    private static $urls = [];
+
     public function clear()
     {
         parent::clear();
@@ -125,5 +133,31 @@ class Translation extends Base\ModelClass
         $this->name = Utils::noHtml($this->name);
         $this->translation = Utils::noHtml($this->translation);
         return parent::test();
+    }
+
+    public function url(string $type = 'auto', string $list = 'List')
+    {
+        switch ($type) {
+            case 'public-list':
+                return $this->getCustomUrl($type);
+        }
+
+        return parent::url($type, $list);
+    }
+
+    protected function getCustomUrl(string $type): string
+    {
+        if (isset(self::$urls[$type])) {
+            return self::$urls[$type];
+        }
+
+        $controller = 'TranslationList';
+        $webPage = new WebPage();
+        foreach ($webPage->all([new DataBaseWhere('customcontroller', $controller)]) as $wpage) {
+            self::$urls[$type] = $wpage->url('public');
+            return self::$urls[$type];
+        }
+
+        return '#';
     }
 }

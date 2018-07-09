@@ -136,9 +136,6 @@ class Language extends Base\ModelClass
         switch ($type) {
             case 'public-list':
                 return $this->getCustomUrl($type);
-
-            case 'public':
-                return $this->getCustomUrl($type) . $this->name;
         }
 
         return parent::url($type, $list);

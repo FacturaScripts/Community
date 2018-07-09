@@ -1,0 +1,38 @@
+{% set translation = fsc.getTranslationModel() %}
+
+<div class="container">
+    <div class="columns">
+        <div class="column col-2 text-right">
+            <i class="fa fa-language fa-3x fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="column">
+            <h1 class="h3">{{ translation.langcode }} / {{ translation.name }}</h1>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column col-2">
+            <a href="{{ translation.url('public-list') }}" class="btn">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                <span class="hide-xs">{{ i18n.trans('all') }}</span>
+            </a>
+        </div>
+        <div class="column">
+            <form action="" method="post">
+                <input type="hidden" name="action" value="edit"/>
+                <div class="form-group">
+                    {{ i18n.trans('translation') }}:
+                    <input type="text" name="translation" value="{{ translation.translation }}" class="form-input" required=""/>
+                </div>
+                <div class="form-group">
+                    {{ i18n.trans('description') }}:
+                    <input type="text" name="description" value="{{ translation.description }}" class="form-input" required=""/>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    {{ i18n.trans('save') }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<br/>
+<br/>
