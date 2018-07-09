@@ -127,6 +127,11 @@ class EditLanguage extends SectionController
             $language = $this->getLanguageModel();
             $this->addButton('translations', $language->url() . '&action=import-trans', 'import', '');
         }
+
+        $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fa-eye');
+        $this->addSearchOptions('revisions', ['name', 'description', 'translation']);
+        $this->addOrderOption('revisions', 'name', 'code', 1);
+        $this->addOrderOption('revisions', 'lastmod', 'last-update');
     }
 
     protected function deleteAction()
@@ -242,6 +247,15 @@ class EditLanguage extends SectionController
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
+            case 'revisions':
+                $language = $this->getLanguageModel();
+                $where = [
+                    new DataBaseWhere('langcode', $language->langcode),
+                    new DataBaseWhere('needsrevision', true)
+                ];
+                $this->loadListSection($sectionName, $where);
+                break;
+
             case 'translations':
                 $language = $this->getLanguageModel();
                 $where = [new DataBaseWhere('langcode', $language->langcode)];
