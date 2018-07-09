@@ -198,6 +198,7 @@ class EditLanguage extends SectionController
             $translation->langcode = $language->langcode;
             $translation->name = $key;
             $translation->description = $translation->translation = $value;
+            $translation->needsrevision = false;
 
             /// is this string in the main language?
             if (!$this->checkTranslation($language, $key)) {

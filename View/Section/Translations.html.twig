@@ -15,7 +15,14 @@
                 <td>
                     <a href="{{ translation.url() }}">{{ translation.name }}</a>
                 </td>
-                <td>{{ translation.translation | raw }}</td>
+                {% if translation.needsrevision %}
+                    <td class="bg-warning">{{ translation.translation | raw }}</td>
+                {% else %}
+                    <td>
+                        {{ translation.translation | raw }}
+                        <i class="fa fa-check fa-fw" aria-hidden="true"></i>
+                    </td>
+                {% endif %}
                 <td class="text-right">{{ translation.lastmod }}</td>
             </tr>
         {% else %}

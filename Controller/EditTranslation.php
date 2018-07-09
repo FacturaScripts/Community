@@ -75,6 +75,24 @@ class EditTranslation extends SectionController
         return $translation;
     }
 
+    protected function checkRevisions(Translation $translation)
+    {
+        $mainlangcode = AppSettings::get('community', 'mainlanguage');
+        if ($translation->langcode != $mainlangcode) {
+            return;
+        }
+
+        // when we change a translation in main language, we check equivalent translations for revision
+        $where = [
+            new DataBaseWhere('name', $translation->name),
+            new DataBaseWhere('id', $translation->id, '!=')
+        ];
+        foreach ($translation->all($where, [], 0, 0) as $trans) {
+            $trans->needsrevision = true;
+            $trans->save();
+        }
+    }
+
     protected function createSections()
     {
         $this->addSection('translation', ['fixed' => true, 'template' => 'Section/Translation']);
@@ -95,9 +113,11 @@ class EditTranslation extends SectionController
         $translation->description = $this->request->request->get('description', '');
         $translation->translation = $this->request->request->get('translation', '');
         $translation->lastmod = date('d-m-Y H:i:s');
+        $translation->needsrevision = false;
 
         if ($translation->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $this->checkRevisions($translation);
             $this->saveTeamLog($translation);
         } else {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));

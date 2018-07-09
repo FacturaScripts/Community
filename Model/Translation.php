@@ -69,12 +69,17 @@ class Translation extends Base\ModelClass
     public $lastmod;
 
     /**
-     *
      * Name
      * 
      * @var string 
      */
     public $name;
+
+    /**
+     *
+     * @var bool
+     */
+    public $needsrevision;
 
     /**
      * Translation of text in a language.
@@ -93,6 +98,7 @@ class Translation extends Base\ModelClass
     {
         parent::clear();
         $this->lastmod = date('d-m-Y H:i:s');
+        $this->needsrevision = true;
     }
 
     public function install()

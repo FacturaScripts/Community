@@ -37,6 +37,11 @@
         <null>NO</null>
     </column>
     <column>
+        <name>needsrevision</name>
+        <type>boolean</type>
+        <null>NO</null>
+    </column>
+    <column>
         <name>translation</name>
         <type>text</type>
         <null>NO</null>
