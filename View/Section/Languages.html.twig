@@ -5,7 +5,7 @@
             <th>{{ i18n.trans('description') }}</th>
             <th>{{ i18n.trans('parent') }}</th>
             <th class="text-right">{{ i18n.trans('number-of-translations') }}</th>
-            <th class="text-right">{{ i18n.trans('last-update') }}</th>
+            <th class="text-right">{{ i18n.trans('needs-revision') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -18,11 +18,15 @@
                 <td>{{ language.description }}</td>
                 <td>{{ language.parentcode }}</td>
                 <td class="text-right">{{ language.numtranslations }}</td>
-                <td class="text-right">{{ language.lastmod }}</td>
+                {% if language.needsrevision == 0 %}
+                    <td class="text-right bg-success">{{ language.needsrevision }}</td>
+                {% else %}
+                    <td class="text-right bg-warning">{{ language.needsrevision }}</td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
-                <td colspan="5" class="bg-warning">
+                <td colspan="6" class="bg-warning">
                     {{ i18n.trans('no-data') }}
                 </td>
             </tr>

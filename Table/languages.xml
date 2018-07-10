@@ -21,6 +21,10 @@
         <type>timestamp</type>
     </column>
     <column>
+        <name>needsrevision</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>numtranslations</name>
         <type>integer</type>
     </column>

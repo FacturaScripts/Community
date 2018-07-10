@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
@@ -118,6 +119,7 @@ class EditTranslation extends SectionController
         if ($translation->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
             $this->checkRevisions($translation);
+            $this->updateLanguageStats($translation->langcode);
             $this->saveTeamLog($translation);
         } else {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
@@ -163,5 +165,14 @@ class EditTranslation extends SectionController
         $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
         $teamLog->link = $translation->url('public');
         $teamLog->save();
+    }
+
+    private function updateLanguageStats(string $langcode)
+    {
+        $language = new Language();
+        if ($language->loadFromCode($langcode)) {
+            $language->updateStats();
+            $language->save();
+        }
     }
 }

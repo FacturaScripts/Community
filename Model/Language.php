@@ -59,6 +59,12 @@ class Language extends Base\ModelClass
      *
      * @var int
      */
+    public $needsrevision;
+
+    /**
+     *
+     * @var int
+     */
     public $numtranslations;
 
     /**
@@ -78,6 +84,7 @@ class Language extends Base\ModelClass
     {
         parent::clear();
         $this->lastmod = date('d-m-Y H:i:s');
+        $this->needsrevision = 0;
         $this->numtranslations = 0;
     }
 
@@ -129,6 +136,9 @@ class Language extends Base\ModelClass
         $where = [new DataBaseWhere('langcode', $this->langcode)];
         $translation = new Translation();
         $this->numtranslations = $translation->count($where);
+
+        $where[] = new DataBaseWhere('needsrevision', true);
+        $this->needsrevision = $translation->count($where);
     }
 
     public function url(string $type = 'auto', string $list = 'List')
