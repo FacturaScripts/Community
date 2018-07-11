@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
@@ -230,6 +231,10 @@ class EditLanguage extends SectionController
                 $this->importTranslationsAction();
                 return true;
 
+            case 'json':
+                $this->jsonExport();
+                return false;
+
             default:
                 return parent::execPreviousAction($action);
         }
@@ -300,6 +305,22 @@ class EditLanguage extends SectionController
 
         $language->updateStats();
         $language->save();
+    }
+
+    protected function jsonExport()
+    {
+        $this->setTemplate(false);
+
+        $json = [];
+        $language = $this->getLanguageModel();
+        $translation = new Translation();
+        $where = [new DataBaseWhere('langcode', $language->langcode)];
+        foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $trans) {
+            $json[$trans->name] = Utils::fixHtml($trans->translation);
+        }
+
+        $this->response->headers->set('Content-Type', 'application/json');
+        $this->response->setContent(json_encode($json));
     }
 
     /**
