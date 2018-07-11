@@ -11,9 +11,9 @@
                 Plugin {{ plugin.name }}
             </h1>
             <p>
-                {{ plugin.description }}<br/>
+                {{ plugin.description }}
                 {% if plugin.idcontacto %}
-                    {{ i18n.trans('mantainer') }}: {{ plugin.getContactName() }}
+                    <br/><b>{{ i18n.trans('mantainer') }}</b>: {{ plugin.getContactName() }}
                 {% endif %}
             </p>
         </div>

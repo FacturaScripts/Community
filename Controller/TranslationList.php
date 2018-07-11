@@ -32,7 +32,7 @@ class TranslationList extends SectionController
     protected function createSections()
     {
         $this->addListSection('languages', 'Language', 'Section/Languages', 'languages', 'fa-language');
-        $this->addSearchOptions('languages', ['description']);
+        $this->addSearchOptions('languages', ['langcode', 'description']);
         $this->addOrderOption('languages', 'langcode', 'code');
         $this->addOrderOption('languages', 'description', 'description');
         $this->addOrderOption('languages', 'lastmod', 'last-update');
@@ -64,6 +64,7 @@ class TranslationList extends SectionController
     {
         if (!$this->user) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            return;
         }
 
         foreach ($this->i18n->getAvailableLanguages() as $key => $value) {

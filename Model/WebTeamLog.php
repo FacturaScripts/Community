@@ -19,7 +19,6 @@
 namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Model\Base;
-use FacturaScripts\Core\Model\Contacto;
 
 /**
  * Description of WebTeamLog
@@ -30,6 +29,7 @@ class WebTeamLog extends Base\ModelClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      *
@@ -43,13 +43,6 @@ class WebTeamLog extends Base\ModelClass
      * @var int
      */
     public $id;
-
-    /**
-     * Contact identifier.
-     *
-     * @var int
-     */
-    public $idcontacto;
 
     /**
      * Team identifier.
@@ -74,41 +67,15 @@ class WebTeamLog extends Base\ModelClass
      *
      * @var array
      */
-    private static $contacts = [];
-
-    /**
-     *
-     * @var array
-     */
     private static $teams = [];
 
+    /**
+     * Sets default values.
+     */
     public function clear()
     {
         parent::clear();
         $this->time = date('d-m-Y H:i:s');
-    }
-
-    /**
-     * Returns contact name.
-     *
-     * @return string
-     */
-    public function getContactName()
-    {
-        if (empty($this->idcontacto)) {
-            return '-';
-        }
-
-        if (isset(self::$contacts[$this->idcontacto])) {
-            return self::$contacts[$this->idcontacto]->fullName();
-        }
-
-        self::$contacts[$this->idcontacto] = new Contacto();
-        if (self::$contacts[$this->idcontacto]->loadFromCode($this->idcontacto)) {
-            return self::$contacts[$this->idcontacto]->fullName();
-        }
-
-        return '-';
     }
 
     /**
@@ -127,16 +94,31 @@ class WebTeamLog extends Base\ModelClass
         return self::$teams[$this->idteam];
     }
 
+    /**
+     * 
+     * @return string
+     */
     public static function primaryColumn()
     {
         return 'id';
     }
 
+    /**
+     * 
+     * @return string
+     */
     public static function tableName()
     {
         return 'webteams_logs';
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     * 
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         return parent::url($type, 'ListWebProject?active=List');

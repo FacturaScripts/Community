@@ -67,6 +67,10 @@ class AddPlugin extends PortalController
             return true;
         }
 
+        if (null === $this->contact) {
+            return false;
+        }
+
         $idteamdev = AppSettings::get('community', 'idteamdev', '');
         if (empty($idteamdev)) {
             return false;

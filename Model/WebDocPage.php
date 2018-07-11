@@ -198,6 +198,12 @@ class WebDocPage extends WebPageClass
         return parent::url($type, 'ListWebProject?active=List');
     }
 
+    /**
+     * 
+     * @param string $type
+     *
+     * @return string
+     */
     protected function getCustomUrl(string $type): string
     {
         if (isset(self::$urls[$type])) {
@@ -217,6 +223,10 @@ class WebDocPage extends WebPageClass
         return '#';
     }
 
+    /**
+     * 
+     * @return string
+     */
     private function newPermalink()
     {
         $permalink = null;

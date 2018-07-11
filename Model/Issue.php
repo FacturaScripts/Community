@@ -34,6 +34,7 @@ class Issue extends WebPageClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      * Page text.
@@ -53,13 +54,6 @@ class Issue extends WebPageClass
      * @var string
      */
     public $creationroute;
-
-    /**
-     * Contact identifier.
-     * 
-     * @var int
-     */
-    public $idcontacto;
 
     /**
      * Primary key.
@@ -101,6 +95,9 @@ class Issue extends WebPageClass
      */
     private static $urls = [];
 
+    /**
+     * Sets default values.
+     */
     public function clear()
     {
         parent::clear();
@@ -119,13 +116,11 @@ class Issue extends WebPageClass
         return Utils::trueTextBreak($this->body, $length);
     }
 
-    public function getContact()
-    {
-        $contact = new Contacto();
-        $contact->loadFromCode($this->idcontacto);
-        return $contact;
-    }
-
+    /**
+     * Returns contact model from last comment.
+     *
+     * @return Contacto
+     */
     public function getLastCommentContact()
     {
         $contact = new Contacto();
@@ -164,11 +159,23 @@ class Issue extends WebPageClass
         return parent::test();
     }
 
-    public function title()
+    /**
+     * Returns title of the issue.
+     *
+     * @return string
+     */
+    public function title(): string
     {
         return self::$i18n->trans('issue') . ' #' . $this->idissue;
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     *
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         if ($type === 'public') {
@@ -178,6 +185,12 @@ class Issue extends WebPageClass
         return parent::url($type, $list);
     }
 
+    /**
+     * 
+     * @param string $type
+     *
+     * @return string
+     */
     protected function getCustomUrl(string $type): string
     {
         if (isset(self::$urls[$type])) {

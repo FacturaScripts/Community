@@ -21,7 +21,6 @@ namespace FacturaScripts\Plugins\Community\Model;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
-use FacturaScripts\Core\Model\Contacto;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
@@ -33,6 +32,7 @@ class WebProject extends Base\ModelClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      * Creation date.
@@ -46,13 +46,6 @@ class WebProject extends Base\ModelClass
      * @var string
      */
     public $description;
-
-    /**
-     * Contact identifier.
-     *
-     * @var int
-     */
-    public $idcontacto;
 
     /**
      * Primary key.
@@ -109,21 +102,6 @@ class WebProject extends Base\ModelClass
     }
 
     /**
-     * Returns contact name.
-     *
-     * @return string
-     */
-    public function getContactName()
-    {
-        $contact = new Contacto();
-        if (!empty($this->idcontacto) && $contact->loadFromCode($this->idcontacto)) {
-            return $contact->fullName();
-        }
-
-        return '-';
-    }
-
-    /**
      * Returns the name of the column that is the primary key of the model.
      *
      * @return string
@@ -132,7 +110,11 @@ class WebProject extends Base\ModelClass
     {
         return 'idproject';
     }
-    
+
+    /**
+     * 
+     * @return string
+     */
     public function primaryDescriptionColumn()
     {
         return 'name';
@@ -164,6 +146,13 @@ class WebProject extends Base\ModelClass
         return parent::test();
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     * 
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         switch ($type) {
@@ -177,6 +166,12 @@ class WebProject extends Base\ModelClass
         return parent::url($type, $list);
     }
 
+    /**
+     * 
+     * @param string $type
+     * 
+     * @return string
+     */
     protected function getCustomUrl(string $type): string
     {
         if (isset(self::$urls[$type])) {

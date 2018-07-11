@@ -96,6 +96,9 @@ class WebBuild extends Base\ModelClass
      */
     public $version;
 
+    /**
+     * Sets default values.
+     */
     public function clear()
     {
         parent::clear();
@@ -107,6 +110,10 @@ class WebBuild extends Base\ModelClass
         $this->version = 1.0;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public function delete()
     {
         $attachedFile = $this->getAttachedFile();
@@ -117,6 +124,10 @@ class WebBuild extends Base\ModelClass
         return false;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function fileName()
     {
         $project = new WebProject();
@@ -141,6 +152,9 @@ class WebBuild extends Base\ModelClass
         return null;
     }
 
+    /**
+     * 
+     */
     public function increaseDownloads()
     {
         if ($this->downloads < 100 && mt_rand(0, 1) == 0) {
@@ -152,6 +166,10 @@ class WebBuild extends Base\ModelClass
         }
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function install()
     {
         /// to force check this table.
@@ -160,16 +178,28 @@ class WebBuild extends Base\ModelClass
         return parent::install();
     }
 
+    /**
+     * 
+     * @return string
+     */
     public static function primaryColumn()
     {
         return 'idbuild';
     }
 
+    /**
+     * 
+     * @return string
+     */
     public static function tableName()
     {
         return 'webbuilds';
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public function test()
     {
         if (null === $this->idfile) {
@@ -191,6 +221,13 @@ class WebBuild extends Base\ModelClass
         return parent::test();
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     *
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         return parent::url($type, 'ListWebProject?active=List');

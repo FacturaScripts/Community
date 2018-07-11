@@ -22,6 +22,7 @@ use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
@@ -44,6 +45,10 @@ class EditLanguage extends SectionController
      */
     private $mainTranslations = [];
 
+    /**
+     * 
+     * @return bool
+     */
     public function contactCanEdit(): bool
     {
         if ($this->user) {
@@ -53,6 +58,10 @@ class EditLanguage extends SectionController
         return false;
     }
 
+    /**
+     * 
+     * @return Language
+     */
     public function getLanguageModel(): Language
     {
         if (isset($this->languageModel)) {
@@ -71,6 +80,10 @@ class EditLanguage extends SectionController
         return $language;
     }
 
+    /**
+     * 
+     * @return array
+     */
     public function getParentLanguages(): array
     {
         $current = $this->getLanguageModel();
@@ -88,6 +101,27 @@ class EditLanguage extends SectionController
         }
 
         return $languages;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getTeamMembers(): array
+    {
+        $idteamtra = AppSettings::get('community', 'idteamtra');
+        $memberModel = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idteam', $idteamtra),
+            new DataBaseWhere('accepted', true),
+        ];
+
+        $values = [];
+        foreach ($memberModel->all($where, [], 0, 0) as $member) {
+            $values[] = $member->getContact();
+        }
+
+        return $values;
     }
 
     /**
@@ -114,6 +148,9 @@ class EditLanguage extends SectionController
         return in_array($translationName, $this->mainTranslations);
     }
 
+    /**
+     * 
+     */
     protected function createSections()
     {
         $this->addSection('language', ['fixed' => true, 'template' => 'Section/Language']);
@@ -134,10 +171,14 @@ class EditLanguage extends SectionController
         $this->addOrderOption('revisions', 'lastmod', 'last-update');
     }
 
+    /**
+     * 
+     */
     protected function deleteAction()
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-delete'));
+            return;
         }
 
         $language = $this->getLanguageModel();
@@ -146,15 +187,21 @@ class EditLanguage extends SectionController
         }
     }
 
+    /**
+     * 
+     */
     protected function editAction()
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            return;
         }
 
         $language = $this->getLanguageModel();
         $language->description = $this->request->request->get('description', '');
+        $language->idcontacto = ('' === $this->request->request->get('idcontacto', '')) ? null : $this->request->request->get('idcontacto', '');
         $language->parentcode = ('' === $this->request->request->get('parentcode', '')) ? null : $this->request->request->get('parentcode', '');
+
         if ($language->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
         } else {
@@ -162,6 +209,12 @@ class EditLanguage extends SectionController
         }
     }
 
+    /**
+     * 
+     * @param string $action
+     *
+     * @return boolean
+     */
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
@@ -182,15 +235,20 @@ class EditLanguage extends SectionController
         }
     }
 
+    /**
+     * 
+     */
     protected function importTranslationsAction()
     {
         if (!$this->user) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            return;
         }
 
         $language = $this->getLanguageModel();
         if ($language->parentcode) {
             $this->miniLog->alert("You can't import a language with parent.");
+            return;
         }
 
         // import translations from file
@@ -244,6 +302,10 @@ class EditLanguage extends SectionController
         $language->save();
     }
 
+    /**
+     * 
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {

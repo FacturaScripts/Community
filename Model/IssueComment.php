@@ -20,7 +20,6 @@ namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
-use FacturaScripts\Core\Model\Contacto;
 
 /**
  * Description of Issue model.
@@ -31,6 +30,7 @@ class IssueComment extends Base\ModelClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      * Page text.
@@ -53,13 +53,6 @@ class IssueComment extends Base\ModelClass
     public $idcomment;
 
     /**
-     * Contact identifier.
-     * 
-     * @var int
-     */
-    public $idcontacto;
-
-    /**
      * Issue identifier.
      *
      * @var int
@@ -70,13 +63,6 @@ class IssueComment extends Base\ModelClass
     {
         parent::clear();
         $this->creationdate = date('d-m-Y H:i:s');
-    }
-
-    public function getContact()
-    {
-        $contact = new Contacto();
-        $contact->loadFromCode($this->idcontacto);
-        return $contact;
     }
 
     /**

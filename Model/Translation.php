@@ -94,6 +94,9 @@ class Translation extends Base\ModelClass
      */
     private static $urls = [];
 
+    /**
+     * Sets default values.
+     */
     public function clear()
     {
         parent::clear();
@@ -101,10 +104,13 @@ class Translation extends Base\ModelClass
         $this->needsrevision = true;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function install()
     {
         new Language();
-
         return parent::install();
     }
 
@@ -141,6 +147,13 @@ class Translation extends Base\ModelClass
         return parent::test();
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     * 
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         switch ($type) {
@@ -151,6 +164,12 @@ class Translation extends Base\ModelClass
         return parent::url($type, $list);
     }
 
+    /**
+     * 
+     * @param string $type
+     *
+     * @return string
+     */
     protected function getCustomUrl(string $type): string
     {
         if (isset(self::$urls[$type])) {

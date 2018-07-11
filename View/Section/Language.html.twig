@@ -7,7 +7,12 @@
         </div>
         <div class="column">
             <h1 class="h3">{{ language.langcode }}</h1>
-            <p>{{ language.description }}</p>
+            <p>
+                {{ language.description }}
+                {% if language.idcontacto %}
+                    <br/><b>{{ i18n.trans('mantainer') }}</b>: {{ language.getContactName() }}
+                {% endif %}
+            </p>
         </div>
     </div>
     <div class="columns">
@@ -54,13 +59,27 @@
                     <div class="form-group">
                         {{ i18n.trans('parent') }}:
                         <select name="parentcode" class="form-select">
-                            <option>{{ i18n.trans('none') }}</option>
-                            <option>------</option>
+                            <option value="">{{ i18n.trans('none') }}</option>
+                            <option value="">------</option>
                             {% for lang2 in fsc.getParentLanguages() %}
                                 {% if lang2.langcode == language.parentcode %}
                                     <option value="{{ lang2.langcode }}" selected="">{{ lang2.langcode }} | {{ lang2.description }}</option>
                                 {% else %}
                                     <option value="{{ lang2.langcode }}">{{ lang2.langcode }} | {{ lang2.description }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        {{ i18n.trans('mantainer') }}:
+                        <select name="idcontacto" class="form-select">
+                            <option value="">{{ i18n.trans('none') }}</option>
+                            <option value="">------</option>
+                            {% for contact in fsc.getTeamMembers() %}
+                                {% if contact.idcontacto == language.idcontacto %}
+                                    <option value="{{ contact.idcontacto }}" selected="">{{ contact.fullName() }}</option>
+                                {% else %}
+                                    <option value="{{ contact.idcontacto }}">{{ contact.fullName() }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>

@@ -77,6 +77,9 @@ class WebTeam extends Base\ModelClass
      */
     private static $urls = [];
 
+    /**
+     * Sets default values.
+     */
     public function clear()
     {
         parent::clear();
@@ -97,16 +100,28 @@ class WebTeam extends Base\ModelClass
         return Utils::trueTextBreak($this->description, $length);
     }
 
+    /**
+     * 
+     * @return string
+     */
     public static function primaryColumn()
     {
         return 'idteam';
     }
 
+    /**
+     * 
+     * @return string
+     */
     public static function tableName()
     {
         return 'webteams';
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public function test()
     {
         $this->description = Utils::noHtml($this->description);
@@ -124,6 +139,9 @@ class WebTeam extends Base\ModelClass
         return parent::test();
     }
 
+    /**
+     * 
+     */
     public function updateStats()
     {
         $member = new WebTeamMember();
@@ -140,6 +158,13 @@ class WebTeam extends Base\ModelClass
         $this->numrequests = $member->count($whereRequests);
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     *
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         switch ($type) {
@@ -153,6 +178,12 @@ class WebTeam extends Base\ModelClass
         return parent::url($type, $list);
     }
 
+    /**
+     * 
+     * @param string $type
+     *
+     * @return string
+     */
     protected function getCustomUrl(string $type): string
     {
         if (isset(self::$urls[$type])) {

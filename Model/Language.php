@@ -32,6 +32,7 @@ class Language extends Base\ModelClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      *
@@ -80,6 +81,9 @@ class Language extends Base\ModelClass
      */
     private static $urls = [];
 
+    /**
+     * Sets default values.
+     */
     public function clear()
     {
         parent::clear();
@@ -131,6 +135,9 @@ class Language extends Base\ModelClass
         return parent::test();
     }
 
+    /**
+     * Updates language stats.
+     */
     public function updateStats()
     {
         $where = [new DataBaseWhere('langcode', $this->langcode)];
@@ -141,6 +148,13 @@ class Language extends Base\ModelClass
         $this->needsrevision = $translation->count($where);
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     * 
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         switch ($type) {
@@ -151,6 +165,12 @@ class Language extends Base\ModelClass
         return parent::url($type, $list);
     }
 
+    /**
+     * 
+     * @param string $type
+     *
+     * @return string
+     */
     protected function getCustomUrl(string $type): string
     {
         if (isset(self::$urls[$type])) {

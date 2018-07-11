@@ -82,11 +82,18 @@ class ContactFormTree extends WebPageClass
      */
     private static $urls = [];
 
+    /**
+     * 
+     * @return string
+     */
     public function body(): string
     {
         return Utils::fixHtml($this->body);
     }
 
+    /**
+     * Sets default values.
+     */
     public function clear()
     {
         parent::clear();
@@ -189,6 +196,12 @@ class ContactFormTree extends WebPageClass
         return parent::url($type, $list);
     }
 
+    /**
+     * 
+     * @param string $type
+     *
+     * @return string
+     */
     protected function getCustomUrl(string $type): string
     {
         if (isset(self::$urls[$type])) {

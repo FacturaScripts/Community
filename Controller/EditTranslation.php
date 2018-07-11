@@ -40,10 +40,19 @@ class EditTranslation extends SectionController
      */
     private $translationModel;
 
+    /**
+     * Returns true if contact can edit this translation.
+     *
+     * @return bool
+     */
     public function contactCanEdit(): bool
     {
         if ($this->user) {
             return true;
+        }
+
+        if (null === $this->contact) {
+            return false;
         }
 
         // Contact is member of translation team?
@@ -54,10 +63,25 @@ class EditTranslation extends SectionController
             new DataBaseWhere('idteam', $idteamtra),
             new DataBaseWhere('accepted', true)
         ];
+        if (!$member->loadFromCode('', $where)) {
+            return false;
+        }
 
-        return $member->loadFromCode('', $where);
+        // This language has a mantainer?
+        $translation = $this->getTranslationModel();
+        $language = new Language();
+        $language->loadFromCode($translation->langcode);
+        if ($language->idcontacto && $language->idcontacto != $this->contact->idcontacto) {
+            return false;
+        }
+
+        return true;
     }
 
+    /**
+     * 
+     * @return Translation
+     */
     public function getTranslationModel(): Translation
     {
         if (isset($this->translationModel)) {
@@ -76,6 +100,10 @@ class EditTranslation extends SectionController
         return $translation;
     }
 
+    /**
+     * 
+     * @param Translation $translation
+     */
     protected function checkRevisions(Translation $translation)
     {
         $mainlangcode = AppSettings::get('community', 'mainlanguage');
@@ -94,6 +122,9 @@ class EditTranslation extends SectionController
         }
     }
 
+    /**
+     * 
+     */
     protected function createSections()
     {
         $this->addSection('translation', ['fixed' => true, 'template' => 'Section/Translation']);
@@ -104,10 +135,14 @@ class EditTranslation extends SectionController
         $this->addOrderOption('translations', 'lastmod', 'last-update');
     }
 
+    /**
+     * 
+     */
     protected function editAction()
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            return;
         }
 
         $translation = $this->getTranslationModel();
@@ -126,6 +161,12 @@ class EditTranslation extends SectionController
         }
     }
 
+    /**
+     * 
+     * @param string $action
+     * 
+     * @return boolean
+     */
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
@@ -138,6 +179,10 @@ class EditTranslation extends SectionController
         }
     }
 
+    /**
+     * 
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
@@ -152,6 +197,10 @@ class EditTranslation extends SectionController
         }
     }
 
+    /**
+     * 
+     * @param Translation $translation
+     */
     private function saveTeamLog(Translation $translation)
     {
         $idteamtra = AppSettings::get('community', 'idteamtra', '');
@@ -167,6 +216,10 @@ class EditTranslation extends SectionController
         $teamLog->save();
     }
 
+    /**
+     * 
+     * @param string $langcode
+     */
     private function updateLanguageStats(string $langcode)
     {
         $language = new Language();

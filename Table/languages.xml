@@ -12,6 +12,10 @@
         <null>NO</null>
     </column>
     <column>
+        <name>idcontacto</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>langcode</name>
         <type>character varying(8)</type>
         <null>NO</null>
@@ -39,5 +43,9 @@
     <constraint>
         <name>ca_languages_parent</name>
         <type>FOREIGN KEY (parentcode) REFERENCES languages (langcode) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_languages_contactos</name>
+        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
 </table>

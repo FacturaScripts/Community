@@ -19,7 +19,6 @@
 namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Model\Base;
-use FacturaScripts\Core\Model\Contacto;
 
 /**
  * Description of WebTeamMember
@@ -30,6 +29,7 @@ class WebTeamMember extends Base\ModelClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      *
@@ -52,39 +52,20 @@ class WebTeamMember extends Base\ModelClass
     public $id;
 
     /**
-     * Contact identifier.
-     *
-     * @var int
-     */
-    public $idcontacto;
-
-    /**
      * Team identifier.
      *
      * @var int
      */
     public $idteam;
 
+    /**
+     * Sets default values.
+     */
     public function clear()
     {
         parent::clear();
         $this->accepted = false;
         $this->creationdate = date('d-m-Y');
-    }
-
-    /**
-     * Returns contact name.
-     *
-     * @return string
-     */
-    public function getContactName()
-    {
-        $contact = new Contacto();
-        if ($contact->loadFromCode($this->idcontacto)) {
-            return $contact->fullName();
-        }
-
-        return '-';
     }
 
     /**
@@ -99,16 +80,31 @@ class WebTeamMember extends Base\ModelClass
         return $team;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public static function primaryColumn()
     {
         return 'id';
     }
 
+    /**
+     * 
+     * @return string
+     */
     public static function tableName()
     {
         return 'webteams_members';
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     *
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         $team = new WebTeam();
