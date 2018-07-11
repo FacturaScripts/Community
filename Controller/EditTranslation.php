@@ -133,6 +133,11 @@ class EditTranslation extends SectionController
         $this->addSearchOptions('translations', ['name', 'description', 'translation']);
         $this->addOrderOption('translations', 'name', 'code', 1);
         $this->addOrderOption('translations', 'lastmod', 'last-update');
+
+        $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fa-eye');
+        $this->addSearchOptions('revisions', ['name', 'description', 'translation']);
+        $this->addOrderOption('revisions', 'name', 'code', 1);
+        $this->addOrderOption('revisions', 'lastmod', 'last-update');
     }
 
     /**
@@ -186,6 +191,16 @@ class EditTranslation extends SectionController
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
+            case 'revisions':
+                $translation = $this->getTranslationModel();
+                $where = [
+                    new DataBaseWhere('langcode', $translation->langcode),
+                    new DataBaseWhere('needsrevision', true),
+                    new DataBaseWhere('id', $translation->id, '!=')
+                ];
+                $this->loadListSection($sectionName, $where);
+                break;
+
             case 'translations':
                 $translation = $this->getTranslationModel();
                 $where = [
