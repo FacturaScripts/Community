@@ -18,7 +18,9 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Dinamic\Lib\EmailTools;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
@@ -118,6 +120,7 @@ class EditWebTeam extends SectionController
             $teamLog->idcontacto = $member->idcontacto;
             $teamLog->idteam = $member->idteam;
             $teamLog->save();
+            $this->notifyAccept($member);
         }
     }
 
@@ -288,5 +291,23 @@ class EditWebTeam extends SectionController
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');
+    }
+
+    protected function notifyAccept(WebTeamMember $member)
+    {
+        $contact = $member->getContact();
+        $team = $this->getTeam();
+        $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
+        $title = 'Has sido aceptado como miembro del equipo ' . $team->name;
+        $txt = '¡Felicidades!<br/>Has sido aceptado en el equipo <a href="' . $link . '">' . $team->name . '</a>: ' . $team->description;
+
+        $emailTools = new EmailTools();
+        $mail = $emailTools->newMail();
+        $mail->addAddress($contact->email, $contact->fullName());
+        $mail->Subject = $title;
+        $mail->msgHTML($txt);
+        if ($mail->send()) {
+            $this->miniLog->notice($this->i18n->trans('email-sent'));
+        }
     }
 }
