@@ -30,17 +30,22 @@ trait ContactTrait
 
     /**
      * Contact identifier.
-     * 
+     *
      * @var int
      */
     public $idcontacto;
 
     /**
      *
-     * @var array
+     * @var Contacto[]
      */
     private static $contacts = [];
 
+    /**
+     * Return the actual contact.
+     *
+     * @return Contacto
+     */
     public function getContact()
     {
         $contact = new Contacto();
@@ -53,7 +58,7 @@ trait ContactTrait
      *
      * @return string
      */
-    public function getContactName()
+    public function getContactName(): string
     {
         if (empty($this->idcontacto)) {
             return '-';

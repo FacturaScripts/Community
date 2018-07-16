@@ -36,16 +36,30 @@ class EditIssue extends SectionController
 {
 
     /**
+     * The selected issue.
      *
      * @var Issue
      */
     protected $issue;
 
+    /**
+     * Return the gravatar url to show email avatar.
+     *
+     * @param string $email
+     * @param int    $size
+     *
+     * @return string
+     */
     public function getGravatar(string $email, int $size = 80): string
     {
-        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($email))) . '?s=' . $size;
     }
 
+    /**
+     * Return the related issue.
+     *
+     * @return Issue
+     */
     public function getIssue(): Issue
     {
         if (isset($this->issue)) {
@@ -64,6 +78,11 @@ class EditIssue extends SectionController
         return $issue;
     }
 
+    /**
+     * Add a new comment to this issue.
+     *
+     * @return bool
+     */
     protected function addNewComment(): bool
     {
         if (!$this->contactCanEdit()) {
@@ -100,6 +119,11 @@ class EditIssue extends SectionController
         return true;
     }
 
+    /**
+     * Returns true if contact can edit this issue.
+     *
+     * @return bool
+     */
     protected function contactCanEdit(): bool
     {
         if (null === $this->contact) {
@@ -121,6 +145,11 @@ class EditIssue extends SectionController
         return $member->loadFromCode('', $where);
     }
 
+    /**
+     * Returns true if contact can see this issue.
+     *
+     * @return bool
+     */
     protected function contactCanSee(): bool
     {
         if ($this->contactCanEdit()) {
@@ -130,6 +159,9 @@ class EditIssue extends SectionController
         return false;
     }
 
+    /**
+     * Load sections to the view.
+     */
     protected function createSections()
     {
         $this->addSection('issue', ['fixed' => true, 'template' => 'Section/Issue']);
@@ -145,6 +177,13 @@ class EditIssue extends SectionController
         $this->addOrderOption('userissues', 'lastmod', 'last-update');
     }
 
+    /**
+     * Run the actions that alter data before reading it.
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
@@ -160,6 +199,11 @@ class EditIssue extends SectionController
         return parent::execPreviousAction($action);
     }
 
+    /**
+     * Load section data procedure
+     *
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
@@ -184,6 +228,9 @@ class EditIssue extends SectionController
         }
     }
 
+    /**
+     * Loads an existing issue.
+     */
     protected function loadIssue()
     {
         $this->issue = $this->getIssue();
@@ -211,7 +258,8 @@ class EditIssue extends SectionController
     }
 
     /**
-     * 
+     * Notify a new comment on an existing issue.
+     *
      * @param Issue        $issue
      * @param IssueComment $comment
      */
@@ -236,6 +284,9 @@ class EditIssue extends SectionController
         }
     }
 
+    /**
+     * Re-open an existing issue.
+     */
     protected function reopenAction()
     {
         if ($this->contactCanEdit()) {

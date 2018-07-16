@@ -19,12 +19,15 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
+use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of EditWebDocPage controller.
@@ -35,6 +38,7 @@ class EditWebDocPage extends PortalController
 {
 
     /**
+     * This doc page.
      *
      * @var WebDocPage
      */
@@ -43,10 +47,10 @@ class EditWebDocPage extends PortalController
     /**
      * Undo html scape from Utils::noHtml() method, BUT without undo scape of <
      * We do this to prevent html inyections on the markdown javascript editor.
-     * 
+     *
      * @param string $txt
      *
-     * @return string
+     * @return null|string
      */
     public function fixHtml($txt)
     {
@@ -56,7 +60,12 @@ class EditWebDocPage extends PortalController
         return ($txt === null) ? null : trim(str_replace($original, $final, $txt));
     }
 
-    public function getBackUrl()
+    /**
+     * Returns the back url.
+     *
+     * @return string
+     */
+    public function getBackUrl(): string
     {
         if ($this->webDocPage->exists()) {
             return $this->webDocPage->url('public');
@@ -70,7 +79,12 @@ class EditWebDocPage extends PortalController
         return $this->webDocPage->url('public-list');
     }
 
-    public function getProjectDocPages()
+    /**
+     * Returns a list of doc pages.
+     *
+     * @return array
+     */
+    public function getProjectDocPages(): array
     {
         $where = [
             new DataBaseWhere('idproject', $this->webDocPage->idproject),
@@ -84,12 +98,24 @@ class EditWebDocPage extends PortalController
         return $this->webDocPage->all($where, ['LOWER(title)' => 'ASC'], 0, 0);
     }
 
+    /**
+     * * Runs the controller's private logic.
+     *
+     * @param Response              $response
+     * @param User                  $user
+     * @param ControllerPermissions $permissions
+     */
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
         $this->loadWebDocPage();
     }
 
+    /**
+     * Execute the public part of the controller.
+     *
+     * @param Response $response
+     */
     public function publicCore(&$response)
     {
         parent::publicCore($response);
@@ -122,6 +148,9 @@ class EditWebDocPage extends PortalController
         }
     }
 
+    /**
+     * Code for delete action.
+     */
     private function deleteAction()
     {
         if ($this->webDocPage->exists() && $this->webDocPage->delete()) {
@@ -140,12 +169,15 @@ class EditWebDocPage extends PortalController
         $teamLog->save();
     }
 
+    /**
+     * Loads the doc page data.
+     */
     private function loadWebDocPage()
     {
         $this->setTemplate('EditWebDocPage');
 
         $code = $this->request->get('code', '');
-        $idparent = $this->request->get('idparent');
+        $idParent = $this->request->get('idparent');
         $title = $this->request->request->get('title', '');
         $this->webDocPage = new WebDocPage();
 
@@ -155,8 +187,8 @@ class EditWebDocPage extends PortalController
             $this->webDocPage->idproject = $this->request->get('idproject', $this->webDocPage->idproject);
             $this->webDocPage->langcode = $this->request->get('langcode', $this->webDocPage->langcode);
 
-            if (!empty($idparent)) {
-                $this->newChildrenPage($idparent);
+            if (!empty($idParent)) {
+                $this->newChildrenPage($idParent);
             }
         }
 
@@ -167,48 +199,64 @@ class EditWebDocPage extends PortalController
                 break;
 
             case 'save':
-                $this->saveAction($idparent, $title);
+                $this->saveAction($idParent, $title);
                 break;
         }
 
         $this->title = $this->webDocPage->title . ' - ' . $this->i18n->trans('edit');
     }
 
-    private function newChildrenPage(int $idparent)
+    /**
+     * Adds a new page as children of another page.
+     *
+     * @param int $idParent
+     */
+    private function newChildrenPage(int $idParent)
     {
-        $parentDocPage = $this->webDocPage->get($idparent);
+        $parentDocPage = $this->webDocPage->get($idParent);
         if ($parentDocPage) {
-            $this->webDocPage->idparent = $idparent;
+            $this->webDocPage->idparent = $idParent;
             $this->webDocPage->idproject = $parentDocPage->idproject;
             $this->webDocPage->langcode = $parentDocPage->langcode;
         }
     }
 
-    private function saveAction($idparent, $title)
+    /**
+     * Code for save action.
+     *
+     * @param $idParent
+     * @param $title
+     */
+    private function saveAction($idParent, $title)
     {
         if ('' === $title) {
             return;
         }
 
-        $previousmod = $this->webDocPage->lastmod;
+        $previousMod = $this->webDocPage->lastmod;
 
         $this->webDocPage->body = $this->request->request->get('body', '');
-        $this->webDocPage->idparent = empty($idparent) ? null : $idparent;
+        $this->webDocPage->idparent = empty($idParent) ? null : $idParent;
         $this->webDocPage->ordernum = (int) $this->request->get('ordernum', '100');
         $this->webDocPage->title = $title;
 
         if ($this->webDocPage->save()) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-            $this->saveTeamLog($previousmod);
+            $this->saveTeamLog($previousMod);
         } else {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
         }
     }
 
-    private function saveTeamLog(string $previousmod)
+    /**
+     * Store a log detail for the previous modification.
+     *
+     * @param string $previousMod
+     */
+    private function saveTeamLog(string $previousMod)
     {
         /// we only save a log the first time this doc is modified today
-        if (date('d-m-Y') == $previousmod) {
+        if (date('d-m-Y') === $previousMod) {
             return;
         }
 

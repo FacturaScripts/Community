@@ -31,6 +31,11 @@ use FacturaScripts\Plugins\webportal\Controller\Sitemap as parentController;
 class Sitemap extends parentController
 {
 
+    /**
+     * Return a list of items to generate the sitemap.
+     *
+     * @return array
+     */
     protected function getSitemapItems(): array
     {
         $items = parent::getSitemapItems();
@@ -50,6 +55,11 @@ class Sitemap extends parentController
         return $items;
     }
 
+    /**
+     * Returns a list of items for doc pages.
+     *
+     * @return array
+     */
     protected function getDocPagesItems(): array
     {
         $items = [];
@@ -62,6 +72,11 @@ class Sitemap extends parentController
         return $items;
     }
 
+    /**
+     * Returns a list of items for plugins.
+     *
+     * @return array
+     */
     protected function getPluginItems(): array
     {
         $items = [];
@@ -78,6 +93,11 @@ class Sitemap extends parentController
         return $items;
     }
 
+    /**
+     * Returns a list of items for Teams.
+     *
+     * @return array
+     */
     protected function getTeamItems(): array
     {
         $items = [];

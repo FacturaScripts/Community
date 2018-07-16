@@ -29,6 +29,9 @@ use FacturaScripts\Plugins\webportal\Controller\EditProfile as parentController;
 class EditProfile extends parentController
 {
 
+    /**
+     * Load sections to the view.
+     */
     protected function createSections()
     {
         parent::createSections();
@@ -41,6 +44,11 @@ class EditProfile extends parentController
         $this->addOrderOption('teams', 'creationdate', 'date', 2);
     }
 
+    /**
+     * Load section data procedure
+     *
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {

@@ -34,11 +34,17 @@ class ViewPlugin extends SectionController
 {
 
     /**
+     * The project related to this plugin.
      *
      * @var WebProject
      */
     protected $project;
 
+    /**
+     * * Returns true if contact can edit this plugin.
+     *
+     * @return bool
+     */
     public function contactCanEdit(): bool
     {
         if ($this->user) {
@@ -64,6 +70,11 @@ class ViewPlugin extends SectionController
         return $member->loadFromCode('', $where);
     }
 
+    /**
+     * Return the project by code.
+     *
+     * @return WebProject
+     */
     public function getProject(): WebProject
     {
         if (isset($this->project)) {
@@ -82,12 +93,18 @@ class ViewPlugin extends SectionController
         return $project;
     }
 
+    /**
+     * Load sections to the view.
+     */
     protected function createSections()
     {
         $this->addSection('plugin', ['fixed' => true, 'template' => 'Section/Plugin']);
         $this->addListSection('docs', 'WebDocPage', 'Section/Documentation', 'documentation');
     }
 
+    /**
+     * Code for edit action.
+     */
     protected function editAction()
     {
         if (!$this->contactCanEdit()) {
@@ -104,6 +121,11 @@ class ViewPlugin extends SectionController
         }
     }
 
+    /**
+     * Runs the controller actions after data read.
+     *
+     * @param string $action
+     */
     protected function execAfterAction(string $action)
     {
         switch ($action) {
@@ -113,6 +135,11 @@ class ViewPlugin extends SectionController
         }
     }
 
+    /**
+     * Load section data procedure
+     *
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
@@ -131,6 +158,9 @@ class ViewPlugin extends SectionController
         }
     }
 
+    /**
+     * Load the plugin data.
+     */
     protected function loadPlugin()
     {
         $this->project = $this->getProject();

@@ -34,7 +34,7 @@ class IssueComment extends Base\ModelClass
 
     /**
      * Page text.
-     * 
+     *
      * @var string
      */
     public $body;
@@ -59,6 +59,9 @@ class IssueComment extends Base\ModelClass
      */
     public $idissue;
 
+    /**
+     * Reset the values of all model properties.
+     */
     public function clear()
     {
         parent::clear();

@@ -28,19 +28,29 @@ use FacturaScripts\Core\Lib\ExtendedController\EditController;
 class EditWebBuild extends EditController
 {
 
+    /**
+     * Returns the model name.
+     *
+     * @return string
+     */
     public function getModelClassName()
     {
         return 'WebBuild';
     }
 
+    /**
+     * Returns basic page attributes
+     *
+     * @return array
+     */
     public function getPageData()
     {
-        $pagedata = parent::getPageData();
-        $pagedata['title'] = 'build';
-        $pagedata['menu'] = 'web';
-        $pagedata['icon'] = 'fa-file-archive-o';
-        $pagedata['showonmenu'] = false;
+        $pageData = parent::getPageData();
+        $pageData['title'] = 'build';
+        $pageData['menu'] = 'web';
+        $pageData['icon'] = 'fa-file-archive-o';
+        $pageData['showonmenu'] = false;
         
-        return $pagedata;
+        return $pageData;
     }
 }

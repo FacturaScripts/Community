@@ -29,6 +29,9 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class TranslationList extends SectionController
 {
 
+    /**
+     * Load sections to the view.
+     */
     protected function createSections()
     {
         $this->addListSection('languages', 'Language', 'Section/Languages', 'languages', 'fa-language');
@@ -48,6 +51,13 @@ class TranslationList extends SectionController
         $this->addOrderOption('translations', 'lastmod', 'last-update');
     }
 
+    /**
+     * Run the actions that alter data before reading it.
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
@@ -60,6 +70,9 @@ class TranslationList extends SectionController
         }
     }
 
+    /**
+     * Code for import languages action.
+     */
     protected function importLanguagesAction()
     {
         if (!$this->user) {
@@ -75,6 +88,11 @@ class TranslationList extends SectionController
         }
     }
 
+    /**
+     * Load section data procedure
+     *
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {

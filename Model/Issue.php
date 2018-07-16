@@ -38,7 +38,7 @@ class Issue extends WebPageClass
 
     /**
      * Page text.
-     * 
+     *
      * @var string
      */
     public $body;
@@ -96,7 +96,7 @@ class Issue extends WebPageClass
     private static $urls = [];
 
     /**
-     * Sets default values.
+     * Reset the values of all model properties.
      */
     public function clear()
     {
@@ -106,7 +106,7 @@ class Issue extends WebPageClass
 
     /**
      * Returns a maximun legth of $legth form the body property of this block.
-     * 
+     *
      * @param int $length
      *
      * @return string
@@ -170,7 +170,8 @@ class Issue extends WebPageClass
     }
 
     /**
-     * 
+     * Returns the url where to see / modify the data.
+     *
      * @param string $type
      * @param string $list
      *
@@ -186,7 +187,8 @@ class Issue extends WebPageClass
     }
 
     /**
-     * 
+     * Return the public url from custom controller.
+     *
      * @param string $type
      *
      * @return string

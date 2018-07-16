@@ -18,7 +18,9 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebBuild;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
@@ -33,33 +35,56 @@ class DownloadBuild extends PortalController
 {
 
     /**
+     * The current project details.
      *
      * @var WebProject
      */
     public $currentProject;
 
+    /**
+     * Returns basic page attributes
+     *
+     * @return array
+     */
     public function getPageData()
     {
-        $pagedata = parent::getPageData();
-        $pagedata['menu'] = 'web';
-        $pagedata['icon'] = 'fa-file-archive-o';
-        $pagedata['showonmenu'] = false;
+        $pageData = parent::getPageData();
+        $pageData['menu'] = 'web';
+        $pageData['icon'] = 'fa-file-archive-o';
+        $pageData['showonmenu'] = false;
 
-        return $pagedata;
+        return $pageData;
     }
 
+    /**
+     * * Runs the controller's private logic.
+     *
+     * @param Response              $response
+     * @param User                  $user
+     * @param ControllerPermissions $permissions
+     */
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
         $this->loadProject();
     }
 
+    /**
+     * Execute the public part of the controller.
+     *
+     * @param Response $response
+     */
     public function publicCore(&$response)
     {
         parent::publicCore($response);
         $this->loadProject();
     }
 
+    /**
+     * Returns the download link from the build.
+     *
+     * @param WebBuild $build
+     */
     protected function downloadBuild(WebBuild $build)
     {
         $attachedFile = $build->getAttachedFile();
@@ -77,9 +102,15 @@ class DownloadBuild extends PortalController
         $this->response->setContent(file_get_contents(FS_FOLDER . DIRECTORY_SEPARATOR . $attachedFile->path));
     }
 
-    protected function findBuild($idproject, $buildVersion)
+    /**
+     * Returns the file for project/version if it's available.
+     *
+     * @param $idProject
+     * @param $buildVersion
+     */
+    protected function findBuild($idProject, $buildVersion)
     {
-        $where = [new DataBaseWhere('idproject', $idproject)];
+        $where = [new DataBaseWhere('idproject', $idProject)];
         if (is_numeric($buildVersion)) {
             $where[] = new DataBaseWhere('version', $buildVersion);
         }
@@ -103,13 +134,20 @@ class DownloadBuild extends PortalController
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
     }
 
-    protected function getBuilds()
+    /**
+     * Return a list of available builds.
+     *
+     * @return array
+     */
+    protected function getBuilds(): array
     {
         $data = [];
         $buildModel = new WebBuild();
         foreach ($this->currentProject->all([], [], 0, 0) as $project) {
             $projectData = ['project' => $project->idproject, 'builds' => []];
-            foreach ($buildModel->all([new DataBaseWhere('idproject', $project->idproject)], ['version' => 'DESC'], 0, 5) as $build) {
+            $where = [new DataBaseWhere('idproject', $project->idproject)];
+            $order = ['version' => 'DESC'];
+            foreach ($buildModel->all($where, $order, 0, 5) as $build) {
                 $projectData['builds'][] = [
                     'version' => $build->version,
                     'stable' => $build->stable,
@@ -123,7 +161,12 @@ class DownloadBuild extends PortalController
         return $data;
     }
 
-    protected function getUrlExtraParams()
+    /**
+     * Returns extra params from URL.
+     *
+     * @return array
+     */
+    protected function getUrlExtraParams(): array
     {
         $params = [];
         foreach (explode('/', substr($this->uri, 1)) as $num => $param) {
@@ -134,20 +177,23 @@ class DownloadBuild extends PortalController
         return $params;
     }
 
+    /**
+     * Load project data.
+     */
     protected function loadProject()
     {
         $this->setTemplate(false);
 
         $urlParams = $this->getUrlExtraParams();
-        $idproject = isset($urlParams[0]) ? $urlParams[0] : '';
-        $buildVersion = isset($urlParams[1]) ? $urlParams[1] : 'stable';
+        $idProject = $urlParams[0] ?? '';
+        $buildVersion = $urlParams[1] ?? 'stable';
 
         /// current project
         $this->currentProject = new WebProject();
-        if ('' === $idproject) {
+        if ('' === $idProject) {
             $this->response->setContent(json_encode($this->getBuilds()));
-        } elseif ($this->currentProject->loadFromCode($idproject)) {
-            $this->findBuild($idproject, $buildVersion);
+        } elseif ($this->currentProject->loadFromCode($idProject)) {
+            $this->findBuild($idProject, $buildVersion);
         } else {
             $this->response->setContent('PROJECT-NOT-FOUND');
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);

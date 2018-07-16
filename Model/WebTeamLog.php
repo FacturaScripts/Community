@@ -70,7 +70,7 @@ class WebTeamLog extends Base\ModelClass
     private static $teams = [];
 
     /**
-     * Sets default values.
+     * Reset the values of all model properties.
      */
     public function clear()
     {
@@ -80,7 +80,7 @@ class WebTeamLog extends Base\ModelClass
 
     /**
      * Returns team.
-     * 
+     *
      * @return WebTeam
      */
     public function getTeam()
@@ -95,7 +95,8 @@ class WebTeamLog extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the column that is the primary key of the model.
+     *
      * @return string
      */
     public static function primaryColumn()
@@ -104,7 +105,8 @@ class WebTeamLog extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the table that uses this model.
+     *
      * @return string
      */
     public static function tableName()
@@ -113,10 +115,11 @@ class WebTeamLog extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the url where to see / modify the data.
+     *
      * @param string $type
      * @param string $list
-     * 
+     *
      * @return string
      */
     public function url(string $type = 'auto', string $list = 'List')

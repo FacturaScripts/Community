@@ -97,7 +97,7 @@ class WebBuild extends Base\ModelClass
     public $version;
 
     /**
-     * Sets default values.
+     * Reset the values of all model properties.
      */
     public function clear()
     {
@@ -111,8 +111,9 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
-     * @return boolean
+     * Remove the model data from the database.
+     *
+     * @return bool
      */
     public function delete()
     {
@@ -125,10 +126,11 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the file name for this build.
+     *
      * @return string
      */
-    public function fileName()
+    public function fileName(): string
     {
         $project = new WebProject();
         if ($project->loadFromCode($this->idproject)) {
@@ -139,7 +141,8 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
+     * Return the attached file to this build.
+     *
      * @return AttachedFile
      */
     public function getAttachedFile()
@@ -153,7 +156,7 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
+     * Increase download counter.
      */
     public function increaseDownloads()
     {
@@ -167,7 +170,10 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
+     * This function is called when creating the model table. Returns the SQL
+     * that will be executed after the creation of the table. Useful to insert values
+     * default.
+     *
      * @return string
      */
     public function install()
@@ -179,7 +185,8 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the column that is the primary key of the model.
+     *
      * @return string
      */
     public static function primaryColumn()
@@ -188,7 +195,8 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the table that uses this model.
+     *
      * @return string
      */
     public static function tableName()
@@ -197,8 +205,9 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
-     * @return boolean
+     * Returns True if there is no errors on properties values.
+     *
+     * @return bool
      */
     public function test()
     {
@@ -222,7 +231,8 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the url where to see / modify the data.
+     *
      * @param string $type
      * @param string $list
      *

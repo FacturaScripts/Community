@@ -38,7 +38,7 @@ class ContactFormTree extends WebPageClass
 
     /**
      * Page text.
-     * 
+     *
      * @var string
      */
     public $body;
@@ -83,7 +83,8 @@ class ContactFormTree extends WebPageClass
     private static $urls = [];
 
     /**
-     * 
+     * Return the body content.
+     *
      * @return string
      */
     public function body(): string
@@ -92,7 +93,7 @@ class ContactFormTree extends WebPageClass
     }
 
     /**
-     * Sets default values.
+     * Reset the values of all model properties.
      */
     public function clear()
     {
@@ -106,7 +107,7 @@ class ContactFormTree extends WebPageClass
      *
      * @return ContactFormTree[]
      */
-    public function getChildrenPages()
+    public function getChildrenPages(): array
     {
         $where = [
             new DataBaseWhere('idparent', $this->idtree),
@@ -130,7 +131,7 @@ class ContactFormTree extends WebPageClass
      *
      * @return ContactFormTree[]
      */
-    public function getSisterPages()
+    public function getSisterPages(): array
     {
         $operator = is_null($this->idparent) ? 'IS' : '=';
         $where = [
@@ -197,7 +198,8 @@ class ContactFormTree extends WebPageClass
     }
 
     /**
-     * 
+     * Return the public url from custom controller.
+     *
      * @param string $type
      *
      * @return string

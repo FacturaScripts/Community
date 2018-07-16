@@ -19,13 +19,16 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
+use FacturaScripts\Core\Base\ControllerPermissions;
+use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 use FacturaScripts\Plugins\Community\Model\ContactFormTree;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\WebProject;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Description of AddIssue
+ * This class allow us to manage new issues.
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
@@ -33,18 +36,24 @@ class AddIssue extends PortalController
 {
 
     /**
+     * The new issue.
      *
      * @var Issue
      */
     public $issue;
 
-    public function getTreeList()
+    /**
+     * Returns the tree list of related pages.
+     *
+     * @return array
+     */
+    public function getTreeList(): array
     {
         $list = [];
 
-        $idtree = $this->request->get('idtree', '');
+        $idTree = $this->request->get('idtree', '');
         $contactFormTree = new ContactFormTree();
-        if (!empty($idtree) && $contactFormTree->loadFromCode($idtree)) {
+        if (!empty($idTree) && $contactFormTree->loadFromCode($idTree)) {
             array_unshift($list, $contactFormTree->title);
             $parent = $contactFormTree->getParentPage();
             while ($parent && $parent->exists()) {
@@ -62,18 +71,33 @@ class AddIssue extends PortalController
         return $list;
     }
 
+    /**
+     * * Runs the controller's private logic.
+     *
+     * @param Response              $response
+     * @param User                  $user
+     * @param ControllerPermissions $permissions
+     */
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
         $this->commonCore();
     }
 
+    /**
+     * Execute the public part of the controller.
+     *
+     * @param Response $response
+     */
     public function publicCore(&$response)
     {
         parent::publicCore($response);
         $this->commonCore();
     }
 
+    /**
+     * Execute common code between private and public core.
+     */
     protected function commonCore()
     {
         $this->setTemplate('AddIssue');

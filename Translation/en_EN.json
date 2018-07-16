@@ -1,0 +1,23 @@
+{
+    "accepted": "Accepted",
+    "accepted-to-team": "You have been accepted as member to team %teamName%",
+    "accepted-to-team-msg": "¡Congratulations!<br/>You have been accepted to team <a href='%link%'>%teamName%</a>: %teamDescription%",
+    "beta": "Beta",
+    "builds": "Builds",
+    "contact-form": "Contact form",
+    "contacts": "Contacts",
+    "even-more": "Even more",
+    "join-team": "Join %team% team.",
+    "last-update": "Last update",
+    "link": "Link",
+    "members": "Members",
+    "new-plugin": "New plugin: %pluginName%",
+    "project": "Project",
+    "projects": "Projects",
+    "regen-permalinks": "Regenerate permalinks",
+    "requests": "Requests",
+    "stable": "Stable",
+    "team": "Team",
+    "teams": "Teams",
+    "visit-counter": "Visit counter"
+}

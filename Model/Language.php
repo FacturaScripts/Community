@@ -35,17 +35,16 @@ class Language extends Base\ModelClass
     use Common\ContactTrait;
 
     /**
-     *
      * Description of Language
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $description;
 
     /**
      * Language code
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $langcode;
 
@@ -69,8 +68,8 @@ class Language extends Base\ModelClass
     public $numtranslations;
 
     /**
-     * Parent code for variations 
-     * 
+     * Parent code for variations
+     *
      * @var string
      */
     public $parentcode;
@@ -82,7 +81,7 @@ class Language extends Base\ModelClass
     private static $urls = [];
 
     /**
-     * Sets default values.
+     * Reset the values of all model properties.
      */
     public function clear()
     {
@@ -119,12 +118,14 @@ class Language extends Base\ModelClass
      */
     public function test()
     {
-        if (strlen($this->langcode) < 1 || strlen($this->langcode) > 8) {
+        $lenLangCode = strlen($this->langcode);
+        if ($lenLangCode < 1 || $lenLangCode > 8) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'langcode', '%min%' => '1', '%max%' => '8']));
         }
 
         $this->description = Utils::noHtml($this->description);
-        if (strlen($this->description) < 1 || strlen($this->description) > 50) {
+        $lenDesc = strlen($this->description);
+        if ($lenDesc < 1 || $lenDesc > 50) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'description', '%min%' => '1', '%max%' => '50']));
         }
 
@@ -149,10 +150,11 @@ class Language extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the url where to see / modify the data.
+     *
      * @param string $type
      * @param string $list
-     * 
+     *
      * @return string
      */
     public function url(string $type = 'auto', string $list = 'List')
@@ -166,7 +168,8 @@ class Language extends Base\ModelClass
     }
 
     /**
-     * 
+     * Return the public url from custom controller.
+     *
      * @param string $type
      *
      * @return string

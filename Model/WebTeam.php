@@ -78,7 +78,7 @@ class WebTeam extends Base\ModelClass
     private static $urls = [];
 
     /**
-     * Sets default values.
+     * Reset the values of all model properties.
      */
     public function clear()
     {
@@ -90,7 +90,7 @@ class WebTeam extends Base\ModelClass
 
     /**
      * Returns a maximun legth of $legth form the body property of this block.
-     * 
+     *
      * @param int $length
      *
      * @return string
@@ -101,7 +101,8 @@ class WebTeam extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the column that is the primary key of the model.
+     *
      * @return string
      */
     public static function primaryColumn()
@@ -110,7 +111,8 @@ class WebTeam extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the table that uses this model.
+     *
      * @return string
      */
     public static function tableName()
@@ -119,8 +121,9 @@ class WebTeam extends Base\ModelClass
     }
 
     /**
-     * 
-     * @return boolean
+     * Returns True if there is no errors on properties values.
+     *
+     * @return bool
      */
     public function test()
     {
@@ -140,7 +143,7 @@ class WebTeam extends Base\ModelClass
     }
 
     /**
-     * 
+     * Update details for this team.
      */
     public function updateStats()
     {
@@ -159,7 +162,8 @@ class WebTeam extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the url where to see / modify the data.
+     *
      * @param string $type
      * @param string $list
      *
@@ -179,7 +183,8 @@ class WebTeam extends Base\ModelClass
     }
 
     /**
-     * 
+     * Return the public url from custom controller.
+     *
      * @param string $type
      *
      * @return string

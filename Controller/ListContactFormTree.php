@@ -28,6 +28,11 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
 class ListContactFormTree extends ExtendedController\ListController
 {
 
+    /**
+     * Returns basic page attributes
+     *
+     * @return array
+     */
     public function getPageData()
     {
         $pageData = parent::getPageData();
@@ -38,6 +43,9 @@ class ListContactFormTree extends ExtendedController\ListController
         return $pageData;
     }
 
+    /**
+     * Load Views
+     */
     protected function createViews()
     {
         $this->addView('ListContactFormTree', 'ContactFormTree', 'contact-form', 'fa-code-fork');
