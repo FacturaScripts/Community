@@ -209,8 +209,8 @@ class EditLanguage extends SectionController
 
         $language = $this->getLanguageModel();
         $language->description = $this->request->request->get('description', '');
-        $language->idcontacto = $this->request->request->get('idcontacto');
-        $language->parentcode = $this->request->request->get('parentcode');
+        $language->idcontacto = ('' === $this->request->request->get('idcontacto', '')) ? null : $this->request->request->get('idcontacto', '');
+        $language->parentcode = ('' === $this->request->request->get('parentcode', '')) ? null : $this->request->request->get('parentcode', '');
 
         if ($language->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
