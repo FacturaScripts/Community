@@ -36,11 +36,17 @@ class EditWebTeam extends SectionController
 {
 
     /**
+     * This team.
      *
      * @var WebTeam
      */
     protected $team;
 
+    /**
+     * Returns true if contact can edit this webteam.
+     *
+     * @return bool
+     */
     public function contactCanEdit(): bool
     {
         if ($this->user) {
@@ -62,6 +68,11 @@ class EditWebTeam extends SectionController
         return $member->loadFromCode('', $where);
     }
 
+    /**
+     * Return the team details.
+     *
+     * @return WebTeam
+     */
     public function getTeam(): WebTeam
     {
         if (isset($this->team)) {
@@ -80,6 +91,11 @@ class EditWebTeam extends SectionController
         return $team;
     }
 
+    /**
+     * Returns if the join button must be showed for the current contact.
+     *
+     * @return bool
+     */
     public function showJoinButton(): bool
     {
         if (null === $this->contact) {
@@ -96,6 +112,9 @@ class EditWebTeam extends SectionController
         return !$member->loadFromCode('', $where);
     }
 
+    /**
+     * Code for accept action.
+     */
     protected function acceptAction()
     {
         if (!$this->contactCanEdit()) {
@@ -103,9 +122,9 @@ class EditWebTeam extends SectionController
             return;
         }
 
-        $idrequest = $this->request->get('idrequest', '');
+        $idRequest = $this->request->get('idrequest', '');
         $member = new WebTeamMember();
-        if ('' === $idrequest || !$member->loadFromCode($idrequest)) {
+        if ('' === $idRequest || !$member->loadFromCode($idRequest)) {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
             return;
         }
@@ -124,6 +143,9 @@ class EditWebTeam extends SectionController
         }
     }
 
+    /**
+     * Load sections to the view.
+     */
     protected function createSections()
     {
         $this->addSection('team', ['fixed' => true, 'template' => 'Section/Team']);
@@ -139,6 +161,9 @@ class EditWebTeam extends SectionController
         $this->addOrderOption('requests', 'creationdate', 'date', 2);
     }
 
+    /**
+     * Code for edit action.
+     */
     protected function editAction()
     {
         if (!$this->contactCanEdit()) {
@@ -154,6 +179,11 @@ class EditWebTeam extends SectionController
         }
     }
 
+    /**
+     * Runs the controller actions after data read.
+     *
+     * @param string $action
+     */
     protected function execAfterAction(string $action)
     {
         switch ($action) {
@@ -170,6 +200,13 @@ class EditWebTeam extends SectionController
         }
     }
 
+    /**
+     * Run the actions that alter data before reading it.
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
@@ -189,6 +226,9 @@ class EditWebTeam extends SectionController
         return true;
     }
 
+    /**
+     * Code for join action.
+     */
     protected function joinAction()
     {
         if (null === $this->contact) {
@@ -216,6 +256,9 @@ class EditWebTeam extends SectionController
         }
     }
 
+    /**
+     * Code for leave action.
+     */
     protected function leaveAction()
     {
         if (!$this->contactCanEdit()) {
@@ -247,6 +290,11 @@ class EditWebTeam extends SectionController
         }
     }
 
+    /**
+     * Load section data procedure
+     *
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         $team = $this->getTeam();
@@ -278,6 +326,9 @@ class EditWebTeam extends SectionController
         }
     }
 
+    /**
+     * Load team details.
+     */
     protected function loadTeam()
     {
         $this->team = $this->getTeam();
@@ -293,13 +344,18 @@ class EditWebTeam extends SectionController
         $this->setTemplate('Master/Portal404');
     }
 
+    /**
+     * Notify to member that was accepted to team.
+     *
+     * @param WebTeamMember $member
+     */
     protected function notifyAccept(WebTeamMember $member)
     {
         $contact = $member->getContact();
         $team = $this->getTeam();
         $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
-        $title = 'Has sido aceptado como miembro del equipo ' . $team->name;
-        $txt = '¡Felicidades!<br/>Has sido aceptado en el equipo <a href="' . $link . '">' . $team->name . '</a>: ' . $team->description;
+        $title = $this->i18n->trans('accepted-to-team', ['%teamName%' => $team->name]);
+        $txt = $this->i18n->trans('accepted-to-team-msg', ['%link%' => $link, '%teamName%' => $team->name, '%teamDescription%' => $team->description]);
 
         $emailTools = new EmailTools();
         $mail = $emailTools->newMail();

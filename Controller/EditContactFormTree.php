@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Lib\ExtendedController\BaseView;
 use FacturaScripts\Dinamic\Lib\ExtendedController;
 
 /**
@@ -29,6 +30,11 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
 class EditContactFormTree extends ExtendedController\PanelController
 {
 
+    /**
+     * Returns basic page attributes
+     *
+     * @return array
+     */
     public function getPageData()
     {
         $pageData = parent::getPageData();
@@ -40,6 +46,9 @@ class EditContactFormTree extends ExtendedController\PanelController
         return $pageData;
     }
 
+    /**
+     * Load Views
+     */
     protected function createViews()
     {
         $this->addEditView('EditContactFormTree', 'ContactFormTree', 'edit', 'fa-edit');
@@ -48,6 +57,12 @@ class EditContactFormTree extends ExtendedController\PanelController
         $this->views['ListContactFormTree']->disableColumn('parent', true);
     }
 
+    /**
+     * Load data view procedure
+     *
+     * @param string   $viewName
+     * @param BaseView $view
+     */
     protected function loadData($viewName, $view)
     {
         switch ($viewName) {

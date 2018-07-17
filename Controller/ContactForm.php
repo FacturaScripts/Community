@@ -18,10 +18,13 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 use FacturaScripts\Plugins\Community\Model\ContactFormTree;
 use FacturaScripts\Plugins\Community\Model\WebProject;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of ContactForm
@@ -34,35 +37,58 @@ class ContactForm extends PortalController
     const SEND_ISSUE_CONTROLLER = 'AddIssue';
 
     /**
+     * The current contact form tree.
      *
      * @var ContactFormTree
      */
     public $currentTree;
 
     /**
+     * A list of end actions.
      *
      * @var array
      */
     public $endActions = [];
 
     /**
+     * A list of contact form tree.
      *
      * @var ContactFormTree[]
      */
     public $formTrees;
 
+    /**
+     * * Runs the controller's private logic.
+     *
+     * @param Response              $response
+     * @param User                  $user
+     * @param ControllerPermissions $permissions
+     */
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
         $this->commonCore();
     }
 
+    /**
+     * Execute the public part of the controller.
+     *
+     * @param Response $response
+     */
     public function publicCore(&$response)
     {
         parent::publicCore($response);
         $this->commonCore();
     }
 
+    /**
+     * TODO: Undocumented function
+     *
+     * @param string $title
+     * @param string $link
+     * @param string $icon
+     * @param string $observations
+     */
     protected function addEndAction(string $title, string $link = '', string $icon = 'fa-circle-o', string $observations = '')
     {
         $this->endActions[] = [
@@ -73,6 +99,9 @@ class ContactForm extends PortalController
         ];
     }
 
+    /**
+     * Execute common code between private and public core.
+     */
     protected function commonCore()
     {
         if (null === $this->contact) {
@@ -89,6 +118,11 @@ class ContactForm extends PortalController
         }
     }
 
+    /**
+     * Get full tree for current item.
+     *
+     * @param string $code
+     */
     protected function getCurrentTree(string $code)
     {
         $this->currentTree = new ContactFormTree();
@@ -111,6 +145,9 @@ class ContactForm extends PortalController
         }
     }
 
+    /**
+     * Get root contact form tree items.
+     */
     protected function getRoot()
     {
         $formTree = new ContactFormTree();
@@ -118,6 +155,9 @@ class ContactForm extends PortalController
         $this->formTrees = $formTree->all($where, ['ordernum' => 'ASC']);
     }
 
+    /**
+     * TODO: Undocumented function
+     */
     protected function selectPlugin()
     {
         $pluginProject = new WebProject();

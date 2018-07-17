@@ -28,6 +28,9 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class TeamList extends SectionController
 {
 
+    /**
+     * Load sections to the view.
+     */
     protected function createSections()
     {
         $this->addListSection('teams', 'WebTeam', 'Section/Teams', 'teams', 'fa-users');
@@ -40,6 +43,11 @@ class TeamList extends SectionController
         $this->addOrderOption('logs', 'time', 'date', 2);
     }
 
+    /**
+     * Load section data procedure
+     *
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {

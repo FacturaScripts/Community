@@ -35,19 +35,22 @@ class EditLanguage extends SectionController
 {
 
     /**
+     * This language.
      *
      * @var Language
      */
     private $languageModel;
 
     /**
+     * A list of main translations.
      *
      * @var array
      */
     private $mainTranslations = [];
 
     /**
-     * 
+     * Returns true if contact can edit this language.
+     *
      * @return bool
      */
     public function contactCanEdit(): bool
@@ -60,7 +63,8 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Returns the language loaded by code.
+     *
      * @return Language
      */
     public function getLanguageModel(): Language
@@ -82,7 +86,8 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Get a list of the parent languages.
+     *
      * @return array
      */
     public function getParentLanguages(): array
@@ -105,7 +110,8 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Returns a list of team members for this language.
+     *
      * @return array
      */
     public function getTeamMembers(): array
@@ -126,21 +132,24 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Check available translations with translation name.
+     *
      * @param Language $language
      * @param string   $translationName
+     *
+     * @return bool
      */
     private function checkTranslation(&$language, $translationName): bool
     {
-        $mainlangcode = AppSettings::get('community', 'mainlanguage');
-        if ($language->langcode === $mainlangcode) {
+        $mainLangCode = AppSettings::get('community', 'mainlanguage');
+        if ($language->langcode === $mainLangCode) {
             return true;
         }
 
         if (empty($this->mainTranslations)) {
             $this->mainTranslations = [];
             $translation = new Translation();
-            $where = [new DataBaseWhere('langcode', $mainlangcode)];
+            $where = [new DataBaseWhere('langcode', $mainLangCode)];
             foreach ($translation->all($where, [], 0, 0) as $trans) {
                 $this->mainTranslations[] = $trans->name;
             }
@@ -150,7 +159,7 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Load sections to the view.
      */
     protected function createSections()
     {
@@ -173,7 +182,7 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Code for delete action.
      */
     protected function deleteAction()
     {
@@ -189,7 +198,7 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Code for edit action.
      */
     protected function editAction()
     {
@@ -211,10 +220,11 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Run the actions that alter data before reading it.
+     *
      * @param string $action
      *
-     * @return boolean
+     * @return bool
      */
     protected function execPreviousAction(string $action)
     {
@@ -241,7 +251,7 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Import all translations from Core.
      */
     protected function importTranslationsAction()
     {
@@ -259,7 +269,7 @@ class EditLanguage extends SectionController
         // import translations from file
         $newTranslations = [];
         $idproject = AppSettings::get('community', 'idproject');
-        $json = json_decode(file_get_contents(FS_FOLDER . '/Core/Translation/' . $language->langcode . '.json'), true);
+        $json = (array) json_decode(file_get_contents(FS_FOLDER . '/Core/Translation/' . $language->langcode . '.json'), true);
         foreach ($json as $key => $value) {
             $translation = new Translation();
             $translation->idproject = $idproject;
@@ -279,7 +289,7 @@ class EditLanguage extends SectionController
         }
 
         // generate missing translations
-        $mainlangcode = AppSettings::get('community', 'mainlanguage');
+        $mainLangCode = AppSettings::get('community', 'mainlanguage');
         foreach ($this->mainTranslations as $mainKey) {
             if (in_array($mainKey, $newTranslations)) {
                 continue;
@@ -288,7 +298,7 @@ class EditLanguage extends SectionController
             // we need main translation
             $mainTranslation = new Translation();
             $where = [
-                new DataBaseWhere('langcode', $mainlangcode),
+                new DataBaseWhere('langcode', $mainLangCode),
                 new DataBaseWhere('name', $mainKey)
             ];
             $mainTranslation->loadFromCode('', $where);
@@ -307,6 +317,9 @@ class EditLanguage extends SectionController
         $language->save();
     }
 
+    /**
+     * Export content to a JSON file.
+     */
     protected function jsonExport()
     {
         $this->setTemplate(false);
@@ -324,7 +337,8 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * 
+     * Load section data procedure
+     *
      * @param string $sectionName
      */
     protected function loadData(string $sectionName)

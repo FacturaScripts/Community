@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Lib\ExtendedController\BaseView;
 use FacturaScripts\Dinamic\Lib\ExtendedController;
 
 /**
@@ -29,6 +30,11 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
 class EditWebProject extends ExtendedController\PanelController
 {
 
+    /**
+     * Returns basic page attributes
+     *
+     * @return array
+     */
     public function getPageData()
     {
         $pageData = parent::getPageData();
@@ -40,6 +46,9 @@ class EditWebProject extends ExtendedController\PanelController
         return $pageData;
     }
 
+    /**
+     * Load Views
+     */
     protected function createViews()
     {
         $this->addEditView('EditWebProject', 'WebProject', 'project', 'fa-folder');
@@ -50,6 +59,12 @@ class EditWebProject extends ExtendedController\PanelController
         $this->views['ListWebBuild']->disableColumn('project', true);
     }
 
+    /**
+     * Load data view procedure
+     *
+     * @param string   $viewName
+     * @param BaseView $view
+     */
     protected function loadData($viewName, $view)
     {
         switch ($viewName) {

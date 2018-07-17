@@ -28,6 +28,11 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
 class ListWebTeam extends ExtendedController\ListController
 {
 
+    /**
+     * Returns basic page attributes
+     *
+     * @return array
+     */
     public function getPageData()
     {
         $pageData = parent::getPageData();
@@ -38,6 +43,9 @@ class ListWebTeam extends ExtendedController\ListController
         return $pageData;
     }
 
+    /**
+     * Load Views
+     */
     protected function createViews()
     {
         /// Teams

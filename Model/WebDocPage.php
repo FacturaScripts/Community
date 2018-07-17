@@ -41,7 +41,7 @@ class WebDocPage extends WebPageClass
 
     /**
      * Page text.
-     * 
+     *
      * @var string
      */
     public $body;
@@ -88,7 +88,7 @@ class WebDocPage extends WebPageClass
 
     /**
      * Returns a maximun legth of $legth form the body property of this block.
-     * 
+     *
      * @param int $length
      *
      * @return string
@@ -103,7 +103,7 @@ class WebDocPage extends WebPageClass
      *
      * @return WebDocPage[]
      */
-    public function getChildrenPages()
+    public function getChildrenPages(): array
     {
         $where = [
             new DataBaseWhere('idparent', $this->iddoc),
@@ -127,7 +127,7 @@ class WebDocPage extends WebPageClass
      *
      * @return WebDocPage[]
      */
-    public function getSisterPages()
+    public function getSisterPages(): array
     {
         $operator = is_null($this->idparent) ? 'IS' : '=';
         $where = [
@@ -199,7 +199,8 @@ class WebDocPage extends WebPageClass
     }
 
     /**
-     * 
+     * Return the public url from custom controller.
+     *
      * @param string $type
      *
      * @return string
@@ -224,7 +225,8 @@ class WebDocPage extends WebPageClass
     }
 
     /**
-     * 
+     * Generates a new permalink.
+     *
      * @return string
      */
     private function newPermalink()

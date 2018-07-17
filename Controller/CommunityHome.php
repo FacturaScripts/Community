@@ -31,21 +31,29 @@ class CommunityHome extends SectionController
 {
 
     /**
+     * A list of teams.
+     * TODO: Unused.
      *
      * @var array
      */
     private $teams;
 
+    /**
+     * Execute common code between private and public core.
+     */
     protected function commonCore()
     {
         parent::commonCore();
 
         /// hide sectionController template if all sections are empty
-        if ($this->getTemplate() == 'Master/SectionController.html.twig') {
+        if ($this->getTemplate() === 'Master/SectionController.html.twig') {
             $this->hideSections();
         }
     }
 
+    /**
+     * Load sections to the view.
+     */
     protected function createSections()
     {
         if (null === $this->contact) {
@@ -71,28 +79,43 @@ class CommunityHome extends SectionController
         $this->addOrderOption('logs', 'time', 'date', 2);
     }
 
-    protected function getTeams()
+    /**
+     * Return a list of team memebers.
+     *
+     * @return WebTeamMember[]
+     */
+    protected function getTeams(): array
     {
         $teamMember = new WebTeamMember();
         $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];
         return $teamMember->all($where, [], 0, 0);
     }
 
+    /**
+     * Return when was do it the last modification.
+     *
+     * @param array $section
+     *
+     * @return int
+     */
     protected function getSectionLastmod(array &$section): int
     {
-        $lastmod = 0;
+        $lastMod = 0;
 
-        if (isset($section['cursor'][0]->creationdate) && strtotime($section['cursor'][0]->creationdate) > $lastmod) {
-            $lastmod = strtotime($section['cursor'][0]->creationdate);
+        if (isset($section['cursor'][0]->creationdate) && strtotime($section['cursor'][0]->creationdate) > $lastMod) {
+            $lastMod = strtotime($section['cursor'][0]->creationdate);
         }
 
-        if (isset($section['cursor'][0]->lastmod) && strtotime($section['cursor'][0]->lastmod) > $lastmod) {
-            $lastmod = strtotime($section['cursor'][0]->lastmod);
+        if (isset($section['cursor'][0]->lastmod) && strtotime($section['cursor'][0]->lastmod) > $lastMod) {
+            $lastMod = strtotime($section['cursor'][0]->lastmod);
         }
 
-        return $lastmod;
+        return $lastMod;
     }
 
+    /**
+     * Hide unneeded sections.
+     */
     protected function hideSections()
     {
         if (!empty($this->request->request->all())) {
@@ -100,7 +123,7 @@ class CommunityHome extends SectionController
         }
 
         $empty = true;
-        $lastmod = 0;
+        $lastMod = 0;
         foreach ($this->sections as $name => $section) {
             if ($section['count'] > 0) {
                 $empty = false;
@@ -108,8 +131,8 @@ class CommunityHome extends SectionController
                 unset($this->sections[$name]);
             }
 
-            if ($this->getSectionLastmod($section) > $lastmod) {
-                $lastmod = $this->getSectionLastmod($section);
+            if ($this->getSectionLastmod($section) > $lastMod) {
+                $lastMod = $this->getSectionLastmod($section);
             }
         }
 
@@ -121,19 +144,24 @@ class CommunityHome extends SectionController
         foreach ($this->sections as $name => $section) {
             $this->active = $name;
             $this->current = $name;
-            if ($this->getSectionLastmod($section) >= $lastmod) {
+            if ($this->getSectionLastmod($section) >= $lastMod) {
                 break;
             }
         }
     }
 
+    /**
+     * Load section data procedure
+     *
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         $where = [];
         switch ($sectionName) {
             case 'issues':
                 $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto, '!=');
-            /// no break
+                /// no break
             case 'logs':
                 $idTeams = [];
                 foreach ($this->getTeams() as $member) {

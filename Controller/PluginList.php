@@ -29,6 +29,9 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class PluginList extends SectionController
 {
 
+    /**
+     * Load sections to the view.
+     */
     protected function createSections()
     {
         $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug', '2018');
@@ -40,6 +43,11 @@ class PluginList extends SectionController
         }
     }
 
+    /**
+     * Load section data procedure
+     *
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {

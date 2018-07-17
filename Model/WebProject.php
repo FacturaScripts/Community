@@ -91,7 +91,7 @@ class WebProject extends Base\ModelClass
 
     /**
      * Returns a maximun legth of $legth form the body property of this block.
-     * 
+     *
      * @param int $length
      *
      * @return string
@@ -112,7 +112,8 @@ class WebProject extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the column that describes the model, such as name, description...
+     *
      * @return string
      */
     public function primaryDescriptionColumn()
@@ -147,10 +148,11 @@ class WebProject extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the url where to see / modify the data.
+     *
      * @param string $type
      * @param string $list
-     * 
+     *
      * @return string
      */
     public function url(string $type = 'auto', string $list = 'List')
@@ -167,9 +169,10 @@ class WebProject extends Base\ModelClass
     }
 
     /**
-     * 
+     * Return the public url from custom controller.
+     *
      * @param string $type
-     * 
+     *
      * @return string
      */
     protected function getCustomUrl(string $type): string

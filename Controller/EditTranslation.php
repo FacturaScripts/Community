@@ -35,6 +35,7 @@ class EditTranslation extends SectionController
 {
 
     /**
+     * This translation.
      *
      * @var Translation
      */
@@ -71,15 +72,12 @@ class EditTranslation extends SectionController
         $translation = $this->getTranslationModel();
         $language = new Language();
         $language->loadFromCode($translation->langcode);
-        if ($language->idcontacto && $language->idcontacto != $this->contact->idcontacto) {
-            return false;
-        }
-
-        return true;
+        return !($language->idcontacto && $language->idcontacto !== $this->contact->idcontacto);
     }
 
     /**
-     * 
+     * Returns the translation loaded by code.
+     *
      * @return Translation
      */
     public function getTranslationModel(): Translation
@@ -101,13 +99,14 @@ class EditTranslation extends SectionController
     }
 
     /**
-     * 
+     * Check the revisions for this translation.
+     *
      * @param Translation $translation
      */
     protected function checkRevisions(Translation $translation)
     {
-        $mainlangcode = AppSettings::get('community', 'mainlanguage');
-        if ($translation->langcode != $mainlangcode) {
+        $mainLangCode = AppSettings::get('community', 'mainlanguage');
+        if ($translation->langcode !== $mainLangCode) {
             return;
         }
 
@@ -123,7 +122,7 @@ class EditTranslation extends SectionController
     }
 
     /**
-     * 
+     * Load sections to the view.
      */
     protected function createSections()
     {
@@ -141,7 +140,7 @@ class EditTranslation extends SectionController
     }
 
     /**
-     * 
+     * Code for edit action.
      */
     protected function editAction()
     {
@@ -167,10 +166,11 @@ class EditTranslation extends SectionController
     }
 
     /**
-     * 
+     * Run the actions that alter data before reading it.
+     *
      * @param string $action
-     * 
-     * @return boolean
+     *
+     * @return bool
      */
     protected function execPreviousAction(string $action)
     {
@@ -185,7 +185,8 @@ class EditTranslation extends SectionController
     }
 
     /**
-     * 
+     * Load section data procedure
+     *
      * @param string $sectionName
      */
     protected function loadData(string $sectionName)
@@ -213,7 +214,8 @@ class EditTranslation extends SectionController
     }
 
     /**
-     * 
+     * Store a log detail for the translation.
+     *
      * @param Translation $translation
      */
     private function saveTeamLog(Translation $translation)
@@ -232,7 +234,8 @@ class EditTranslation extends SectionController
     }
 
     /**
-     * 
+     * Updates the details of the language.
+     *
      * @param string $langcode
      */
     private function updateLanguageStats(string $langcode)

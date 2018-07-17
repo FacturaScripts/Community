@@ -32,6 +32,11 @@ use FacturaScripts\Plugins\webportal\Controller\WebSearch as ParentSearch;
 class WebSearch extends ParentSearch
 {
 
+    /**
+     * Search the query on pages/plugins.
+     *
+     * @param string $query
+     */
     protected function search(string $query)
     {
         parent::search($query);
@@ -39,6 +44,11 @@ class WebSearch extends ParentSearch
         $this->searchPlugins($query);
     }
 
+    /**
+     * Search the query on pages.
+     *
+     * @param string $query
+     */
     protected function searchDocPages(string $query)
     {
         $defaultIdproject = AppSettings::get('community', 'idproject', '');
@@ -56,6 +66,11 @@ class WebSearch extends ParentSearch
         }
     }
 
+    /**
+     * Search the query on the plugins.
+     *
+     * @param string $query
+     */
     protected function searchPlugins(string $query)
     {
         $pluginProject = new WebProject();

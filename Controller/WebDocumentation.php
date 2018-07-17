@@ -21,11 +21,14 @@ namespace FacturaScripts\Plugins\Community\Controller;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use FacturaScripts\Core\App\AppSettings;
+use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
+use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
+use FacturaScripts\Plugins\webportal\Model\WebPage;
 use Parsedown;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,47 +41,61 @@ class WebDocumentation extends PortalController
 {
 
     /**
+     * This project.
      *
      * @var WebProject
      */
     public $currentProject;
 
     /**
+     * The default project ID.
      *
      * @var mixed
      */
     public $defaultIdproject;
 
     /**
+     * Contains the index of the project.
      *
      * @var array
      */
     public $docIndex;
 
     /**
+     * This documentation page.
      *
      * @var WebDocPage
      */
     public $docPage;
 
     /**
+     * A list of doc pages.
      *
      * @var WebDocPage[]
      */
     public $docPages;
 
     /**
+     * A list of projects.
      *
      * @var WebProject[]
      */
     public $projects;
 
     /**
+     * The prefix to use in the url.
      *
      * @var string
      */
     public $urlPrefix;
 
+    /**
+     * Return the project url.
+     *
+     * @param WebProject $project
+     *
+     * @return string
+     */
     public function getProjectUrl(WebProject $project): string
     {
         if ($project->idproject == $this->defaultIdproject) {
@@ -88,6 +105,13 @@ class WebDocumentation extends PortalController
         return $this->urlPrefix . '/' . $project->idproject;
     }
 
+    /**
+     * Parse the MarkDown code.
+     *
+     * @param string $txt
+     *
+     * @return string
+     */
     public function parsedown(string $txt): string
     {
         $parser = new Parsedown();
@@ -97,19 +121,39 @@ class WebDocumentation extends PortalController
         return str_replace(['<p>', '<pre>', '<img '], ['<p class="text-justify">', '<pre class="code">', '<img class="img-responsive" '], $html);
     }
 
+    /**
+     * * Runs the controller's private logic.
+     *
+     * @param Response              $response
+     * @param User                  $user
+     * @param ControllerPermissions $permissions
+     */
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
         $this->loadData();
     }
 
+    /**
+     * Execute the public part of the controller.
+     *
+     * @param Response $response
+     */
     public function publicCore(&$response)
     {
         parent::publicCore($response);
         $this->loadData();
     }
 
-    protected function getProjectIndex($docPage = null, $subIndex = [])
+    /**
+     * Returns the project index.
+     *
+     * @param null  $docPage
+     * @param array $subIndex
+     *
+     * @return array
+     */
+    protected function getProjectIndex($docPage = null, array $subIndex = []): array
     {
         if (is_null($docPage)) {
             $docPage = $this->docPage;
@@ -120,7 +164,7 @@ class WebDocumentation extends PortalController
             $index[] = [
                 'page' => $sisterPage,
                 'more' => ($sisterPage->iddoc === $docPage->iddoc) ? $subIndex : [],
-                'selected' => ($sisterPage->iddoc === $docPage->iddoc)
+                'selected' => $sisterPage->iddoc === $docPage->iddoc
             ];
         }
 
@@ -131,16 +175,26 @@ class WebDocumentation extends PortalController
         return $index;
     }
 
-    protected function getUrlExtraParams()
+    /**
+     * Returns extra params from URL.
+     *
+     * @return array
+     */
+    protected function getUrlExtraParams(): array
     {
         if ($this->uri === '/' . $this->getClassName()) {
             return [];
         }
 
-        $params = explode('/', substr($this->uri, strlen($this->webPage->permalink)));
+        $params = explode('/', substr($this->uri, \strlen($this->webPage->permalink)));
         return empty($params[0]) ? [] : $params;
     }
 
+    /**
+     * Returns the prefix of this url. Returns false if it haven't prefix.
+     *
+     * @return bool|string
+     */
     protected function getUrlPrefix()
     {
         $urlPrefix = substr($this->webPage->permalink, 1);
@@ -154,6 +208,11 @@ class WebDocumentation extends PortalController
         return $urlPrefix;
     }
 
+    /**
+     * Returns this webpage.
+     *
+     * @return WebPage
+     */
     protected function getWebPage()
     {
         $webPage = parent::getWebPage();
@@ -174,6 +233,9 @@ class WebDocumentation extends PortalController
         return $webPage;
     }
 
+    /**
+     * Load data.
+     */
     protected function loadData()
     {
         $this->setTemplate('WebDocumentation');
@@ -181,7 +243,7 @@ class WebDocumentation extends PortalController
         $this->urlPrefix = $this->getUrlPrefix();
 
         $urlParams = $this->getUrlExtraParams();
-        $idproject = isset($urlParams[0]) ? $urlParams[0] : $this->defaultIdproject;
+        $idproject = $urlParams[0] ?? $this->defaultIdproject;
         $docPermalink = isset($urlParams[1]) ? implode('/', $urlParams) : null;
 
         /// current project
@@ -211,6 +273,9 @@ class WebDocumentation extends PortalController
         }
     }
 
+    /**
+     * Load this page data.
+     */
     protected function loadPage()
     {
         $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
@@ -223,6 +288,9 @@ class WebDocumentation extends PortalController
         $this->setTemplate('WebDocPage');
     }
 
+    /**
+     * Load the project data related to this page.
+     */
     protected function loadProject()
     {
         $this->title .= ' - ' . $this->currentProject->name;

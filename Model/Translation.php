@@ -34,16 +34,15 @@ class Translation extends Base\ModelClass
     use Base\ModelTrait;
 
     /**
-     *
      * Description of Translation
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $description;
 
     /**
      * Primary key
-     * 
+     *
      * @var int
      */
     public $id;
@@ -56,8 +55,8 @@ class Translation extends Base\ModelClass
 
     /**
      * Language code
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $langcode;
 
@@ -70,8 +69,8 @@ class Translation extends Base\ModelClass
 
     /**
      * Name
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $name;
 
@@ -83,7 +82,7 @@ class Translation extends Base\ModelClass
 
     /**
      * Translation of text in a language.
-     * 
+     *
      * @var string
      */
     public $translation;
@@ -95,7 +94,7 @@ class Translation extends Base\ModelClass
     private static $urls = [];
 
     /**
-     * Sets default values.
+     * Reset the values of all model properties.
      */
     public function clear()
     {
@@ -105,7 +104,10 @@ class Translation extends Base\ModelClass
     }
 
     /**
-     * 
+     * This function is called when creating the model table. Returns the SQL
+     * that will be executed after the creation of the table. Useful to insert values
+     * default.
+     *
      * @return string
      */
     public function install()
@@ -117,7 +119,7 @@ class Translation extends Base\ModelClass
     /**
      * Returns the name of the column that is the primary key of the model.
      *
-     * @return int
+     * @return string
      */
     public static function primaryColumn()
     {
@@ -148,10 +150,11 @@ class Translation extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the url where to see / modify the data.
+     *
      * @param string $type
      * @param string $list
-     * 
+     *
      * @return string
      */
     public function url(string $type = 'auto', string $list = 'List')
@@ -165,7 +168,8 @@ class Translation extends Base\ModelClass
     }
 
     /**
-     * 
+     * Return the public url from custom controller.
+     *
      * @param string $type
      *
      * @return string

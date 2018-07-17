@@ -30,6 +30,11 @@ use FacturaScripts\Plugins\Community\Model\WebDocPage;
 class ListWebProject extends ExtendedController\ListController
 {
 
+    /**
+     * Returns basic page attributes
+     *
+     * @return array
+     */
     public function getPageData()
     {
         $pageData = parent::getPageData();
@@ -40,6 +45,9 @@ class ListWebProject extends ExtendedController\ListController
         return $pageData;
     }
 
+    /**
+     * Load Views
+     */
     protected function createViews()
     {
         /// projects
@@ -52,6 +60,9 @@ class ListWebProject extends ExtendedController\ListController
         $this->createViewsBuild();
     }
 
+    /**
+     * Load Views for builds
+     */
     protected function createViewsBuild()
     {
         $this->addView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive-o');
@@ -64,6 +75,9 @@ class ListWebProject extends ExtendedController\ListController
         $this->addFilterCheckbox('ListWebBuild', 'stable', 'stable', 'stable');
     }
 
+    /**
+     * Load Views for doc pages
+     */
     protected function createViewsDocPages()
     {
         $this->addView('ListWebDocPage', 'WebDocPage', 'documentation', 'fa-book');
@@ -71,15 +85,20 @@ class ListWebProject extends ExtendedController\ListController
         $this->addOrderBy('ListWebDocPage', ['title']);
         $this->addOrderBy('ListWebDocPage', ['creationdate'], 'date');
         $this->addOrderBy('ListWebDocPage', ['lastmod'], 'last-update', 2);
-        $this->addOrderBy('ListWebDocPage', ['visitcount']);
+        $this->addOrderBy('ListWebDocPage', ['visitcount'], 'visit-counter');
 
-        $projects = $this->codeModel->all('webprojects', 'idproject', 'name');
+        $projects = $this->codeModel::all('webprojects', 'idproject', 'name');
         $this->addFilterSelect('ListWebDocPage', 'idproject', 'project', 'idproject', $projects);
 
-        $langValues = $this->codeModel->all('webdocpages', 'langcode', 'langcode');
+        $langValues = $this->codeModel::all('webdocpages', 'langcode', 'langcode');
         $this->addFilterSelect('ListWebDocPage', 'langcode', 'language', 'langcode', $langValues);
     }
 
+    /**
+     * Runs the controller actions after data read.
+     *
+     * @param string $action
+     */
     protected function execAfterAction($action)
     {
         if ($action === 'regen-permalinks') {
@@ -89,6 +108,11 @@ class ListWebProject extends ExtendedController\ListController
         parent::execAfterAction($action);
     }
 
+    /**
+     * Regenerates a permalink for a doc page.
+     *
+     * @param WebDocPage $docPage
+     */
     private function regenPermalinks(WebDocPage $docPage)
     {
         $docPage->permalink = null;
@@ -99,6 +123,9 @@ class ListWebProject extends ExtendedController\ListController
         }
     }
 
+    /**
+     * Code for regenerate permalinks action.
+     */
     private function regenPermalinksAction()
     {
         $docPageModel = new WebDocPage();

@@ -19,33 +19,51 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
+use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Description of AddPlugin
+ * This class allow us to manage new plugins.
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class AddPlugin extends PortalController
 {
 
+    /**
+     * * Runs the controller's private logic.
+     *
+     * @param Response              $response
+     * @param User                  $user
+     * @param ControllerPermissions $permissions
+     */
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
         $this->commonCore();
     }
 
+    /**
+     * Execute the public part of the controller.
+     *
+     * @param Response $response
+     */
     public function publicCore(&$response)
     {
         parent::publicCore($response);
         $this->commonCore();
     }
 
+    /**
+     * Execute common code between private and public core.
+     */
     protected function commonCore()
     {
         if (empty($this->contact) && !$this->user) {
@@ -61,6 +79,13 @@ class AddPlugin extends PortalController
         $this->setTemplate('AddPlugin');
     }
 
+    /**
+     * Return true if contact can add new plugins.
+     * If is a user, or is a accepted team member contact, can add new plugins, otherwise can't.
+     *
+     *
+     * @return bool
+     */
     protected function contactCanAdd(): bool
     {
         if ($this->user) {
@@ -86,6 +111,13 @@ class AddPlugin extends PortalController
         return $member->loadFromCode('', $where);
     }
 
+    /**
+     * Adds new plugin to the community.
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
     protected function newPlugin(string $name): bool
     {
         if (!$this->contactCanAdd()) {
@@ -113,6 +145,11 @@ class AddPlugin extends PortalController
         return false;
     }
 
+    /**
+     * Store a log detail for the plugin.
+     *
+     * @param WebProject $plugin
+     */
     protected function saveTeamLog(WebProject $plugin)
     {
         $idteamdev = AppSettings::get('community', 'idteamdev', '');
@@ -121,7 +158,7 @@ class AddPlugin extends PortalController
         }
 
         $teamLog = new WebTeamLog();
-        $teamLog->description = 'New plugin: ' . $plugin->name;
+        $teamLog->description = $this->i18n->trans('new-plugin', ['%pluginName%' => $plugin->name]);
         $teamLog->idcontacto = $plugin->idcontacto;
         $teamLog->idteam = $idteamdev;
         $teamLog->link = $plugin->url('public');

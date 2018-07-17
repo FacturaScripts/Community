@@ -59,7 +59,7 @@ class WebTeamMember extends Base\ModelClass
     public $idteam;
 
     /**
-     * Sets default values.
+     * Reset the values of all model properties.
      */
     public function clear()
     {
@@ -70,7 +70,7 @@ class WebTeamMember extends Base\ModelClass
 
     /**
      * Returns team.
-     * 
+     *
      * @return WebTeam
      */
     public function getTeam()
@@ -81,7 +81,8 @@ class WebTeamMember extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the column that is the primary key of the model.
+     *
      * @return string
      */
     public static function primaryColumn()
@@ -90,7 +91,8 @@ class WebTeamMember extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the name of the table that uses this model.
+     *
      * @return string
      */
     public static function tableName()
@@ -99,7 +101,8 @@ class WebTeamMember extends Base\ModelClass
     }
 
     /**
-     * 
+     * Returns the url where to see / modify the data.
+     *
      * @param string $type
      * @param string $list
      *
@@ -108,7 +111,7 @@ class WebTeamMember extends Base\ModelClass
     public function url(string $type = 'auto', string $list = 'List')
     {
         $team = new WebTeam();
-        if ($type == 'accept' && $team->loadFromCode($this->idteam)) {
+        if ($type === 'accept' && $team->loadFromCode($this->idteam)) {
             return $team->url('public') . '?action=accept-request&idrequest=' . $this->id;
         }
 
