@@ -256,7 +256,7 @@ class EditWebDocPage extends PortalController
     private function saveTeamLog(string $previousMod)
     {
         /// we only save a log the first time this doc is modified today
-        if (date('d-m-Y') === $previousMod) {
+        if (date('d-m-Y') == $previousMod) {
             return;
         }
 

@@ -19,6 +19,12 @@
         <div class="column">
             <form action="" method="post">
                 <input type="hidden" name="action" value="edit"/>
+                {% if fsc.user %}
+                    <div class="form-group">
+                        {{ i18n.trans('name') }}:
+                        <input type="text" name="name" value="{{ translation.name }}" class="form-input" required=""/>
+                    </div>
+                {% endif %}
                 <div class="form-group">
                     {{ i18n.trans('description') }}:
                     <input type="text" name="description" value="{{ translation.description }}" class="form-input" required=""/>

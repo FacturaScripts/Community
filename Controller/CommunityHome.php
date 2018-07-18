@@ -46,7 +46,7 @@ class CommunityHome extends SectionController
         parent::commonCore();
 
         /// hide sectionController template if all sections are empty
-        if ($this->getTemplate() === 'Master/SectionController.html.twig') {
+        if ($this->getTemplate() == 'Master/SectionController.html.twig') {
             $this->hideSections();
         }
     }

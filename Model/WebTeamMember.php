@@ -111,7 +111,7 @@ class WebTeamMember extends Base\ModelClass
     public function url(string $type = 'auto', string $list = 'List')
     {
         $team = new WebTeam();
-        if ($type === 'accept' && $team->loadFromCode($this->idteam)) {
+        if ($type == 'accept' && $team->loadFromCode($this->idteam)) {
             return $team->url('public') . '?action=accept-request&idrequest=' . $this->id;
         }
 
