@@ -104,6 +104,23 @@ class Translation extends Base\ModelClass
     }
 
     /**
+     * Returns equivalent translations.
+     * 
+     * @param string $name
+     *
+     * @return self[]
+     */
+    public function getEquivalents($name = '')
+    {
+        $findName = empty($name) ? $this->name : $name;
+        $where = [
+            new DataBaseWhere('name', $findName),
+            new DataBaseWhere('id', $this->id, '!=')
+        ];
+        return $this->all($where, [], 0, 0);
+    }
+
+    /**
      * This function is called when creating the model table. Returns the SQL
      * that will be executed after the creation of the table. Useful to insert values
      * default.
@@ -113,6 +130,7 @@ class Translation extends Base\ModelClass
     public function install()
     {
         new Language();
+        new WebProject();
         return parent::install();
     }
 
@@ -146,6 +164,12 @@ class Translation extends Base\ModelClass
         $this->description = Utils::noHtml($this->description);
         $this->name = Utils::noHtml($this->name);
         $this->translation = Utils::noHtml($this->translation);
+
+        if (!preg_match('/^[a-z0-9\-]{2,100}$/', $this->name)) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-name'));
+            return false;
+        }
+
         return parent::test();
     }
 

@@ -49,6 +49,7 @@ class TranslationList extends SectionController
         $this->addSearchOptions('translations', ['name', 'description', 'translation']);
         $this->addOrderOption('translations', 'name', 'code', 1);
         $this->addOrderOption('translations', 'lastmod', 'last-update');
+        $this->addButton('translations', 'AddTranslation', 'new', '');
     }
 
     /**

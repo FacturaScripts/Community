@@ -19,26 +19,57 @@
         <div class="column">
             <form action="" method="post">
                 <input type="hidden" name="action" value="edit"/>
-                {% if fsc.user %}
-                    <div class="form-group">
-                        {{ i18n.trans('name') }}:
-                        <input type="text" name="name" value="{{ translation.name }}" class="form-input" required=""/>
+                <div class="columns">
+                    {% if fsc.user %}
+                        <div class="column">
+                            <div class="form-group">
+                                {{ i18n.trans('name') }}:
+                                <input type="text" name="name" value="{{ translation.name | raw }}" class="form-input" required=""/>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="column">
+                        <div class="form-group">
+                            {{ i18n.trans('description') }}:
+                            <input type="text" name="description" value="{{ translation.description | raw }}" class="form-input" required=""/>
+                        </div>
                     </div>
-                {% endif %}
-                <div class="form-group">
-                    {{ i18n.trans('description') }}:
-                    <input type="text" name="description" value="{{ translation.description }}" class="form-input" required=""/>
                 </div>
                 <div class="form-group">
                     {{ i18n.trans('translation') }}:
-                    <input type="text" name="translation" value="{{ translation.translation }}" class="form-input" required=""/>
+                    <input type="text" name="translation" value="{{ translation.translation | raw }}" class="form-input" required=""/>
                 </div>
-                <button type="submit" class="btn btn-primary">
-                    {{ i18n.trans('save') }}
-                </button>
+                {% if fsc.contactCanEdit() %}
+                    <div class="btn-group">
+                        <a href="#" class="btn btn-error" onclick="return showModal('deleteTranslationModal');">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {{ i18n.trans('save') }}
+                        </button>
+                    </div>
+                {% endif %}
             </form>
         </div>
     </div>
 </div>
 <br/>
 <br/>
+
+<div class="modal modal-sm" id="deleteTranslationModal">
+    <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('deleteTranslationModal');"></a>
+    <div class="modal-container">
+        <div class="modal-header">
+            <a href="#close" onclick="return hideModal('deleteTranslationModal');" class="btn btn-clear float-right" aria-label="Close"></a>
+            <div class="modal-title h5">{{ i18n.trans('confirm-delete') }}</div>
+            <p>{{ i18n.trans('are-you-sure') }}</p>
+        </div>
+        <div class="modal-body">
+            <div class="content">
+                <a href="{{ translation.url() }}&action=delete" class="btn btn-error">
+                    <i class="fa fa-trash fa-fw" aria-hidden="true"></i> {{ i18n.trans('delete') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

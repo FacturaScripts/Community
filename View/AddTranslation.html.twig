@@ -1,0 +1,37 @@
+{% extends "Master/PortalTemplate.html.twig" %}
+
+{% block body %}
+    <div class="body-section">
+        <br/>
+        <div class="container grid-lg">
+            <div class="columns">
+                <div class="column col-12">
+                    <div class="empty">
+                        <div class="empty-icon">
+                            <i class="fa fa-language fa-3x" aria-hidden="true"></i>
+                        </div>
+                        <p class="empty-title h5">{{ i18n.trans('new-translation') }}</p>
+                        <p class="empty-subtitle">{{ i18n.trans('new-translation-paragraph') }}</p>
+                        <form action="{{ fsc.url() }}" method="post">
+                            <input type="hidden" name="action" value="new"/>
+                            <div class="empty-action input-group input-inline">
+                                <input type="text" name="name" class="form-input" maxlength="100" placeholder="{{ i18n.trans('name') }}" autocomplete="off" autofocus="" required="true"/>
+                            </div><br/>
+                            <div class="empty-action input-group input-inline">
+                                <input type="text" name="description" class="form-input" placeholder="{{ i18n.trans('description') }}" autocomplete="off" required="true"/>
+                            </div><br/>
+                            <div class="empty-action input-group input-inline">
+                                <input type="text" name="translation" class="form-input" placeholder="{{ i18n.trans('translation') }}" autocomplete="off" required="true"/>
+                            </div><br/>
+                            <div class="empty-action">
+                                <button type="submit" class="btn btn-primary">
+                                    {{ i18n.trans('save') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

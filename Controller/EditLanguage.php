@@ -23,7 +23,6 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
-use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
@@ -51,32 +50,11 @@ class EditLanguage extends SectionController
     private $mainTranslations = [];
 
     /**
-     * A list of available projects.
-     *
-     * @var WebProject
-     */
-    public $projects;
-
-    /**
      * Returns true if contact can edit this language.
      *
      * @return bool
      */
     public function contactCanEdit(): bool
-    {
-        if ($this->user) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns true if contact can add this language.
-     *
-     * @return bool
-     */
-    public function contactCanAdd(): bool
     {
         if ($this->user) {
             return true;
@@ -197,6 +175,7 @@ class EditLanguage extends SectionController
             $language = $this->getLanguageModel();
             $this->addButton('translations', $language->url() . '&action=import-trans', 'import', '');
         }
+        $this->addButton('translations', 'AddTranslation', 'new', '');
 
         $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fa-eye');
         $this->addSearchOptions('revisions', ['name', 'description', 'translation']);
@@ -243,51 +222,6 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * Code for action to add a new translation.
-     */
-    protected function addTranslationAction()
-    {
-        if (!$this->contactCanAdd()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-add'));
-            return;
-        }
-
-        // start transaction
-        $this->dataBase->beginTransaction();
-
-        // main save process
-        try {
-            $languages = new Language();
-            foreach ($languages->all([], [], 0, 0) as $lang) {
-                $trans = new Translation();
-                $name = $this->request->request->get('name');
-                if (!$trans->loadFromCode($name)) {
-                    $trans->langcode = $lang->langcode;
-                    $trans->name = $name;
-                    $trans->translation = $this->request->request->get('translation');
-                    $trans->description = $this->request->request->get('description', '');
-                    $trans->idproject = $this->request->request->get('idproject');
-
-                    if (!$trans->save()) {
-                        $this->miniLog->alert($this->i18n->trans('record-save-error'));
-                    }
-                } else {
-                    $this->miniLog->alert($this->i18n->trans('record-yet-exists'));
-                }
-            }
-            // confirm data
-            $this->dataBase->commit();
-            $this->miniLog->info($this->i18n->trans('data-saved'));
-        } catch (\Exception $e) {
-            $this->miniLog->alert($e->getMessage());
-        } finally {
-            if ($this->dataBase->inTransaction()) {
-                $this->dataBase->rollback();
-            }
-        }
-    }
-
-    /**
      * Run the actions that alter data before reading it.
      *
      * @param string $action
@@ -297,10 +231,6 @@ class EditLanguage extends SectionController
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
-            case 'add':
-                $this->addTranslationAction();
-                return true;
-
             case 'delete':
                 $this->deleteAction();
                 return true;
@@ -430,8 +360,6 @@ class EditLanguage extends SectionController
      */
     protected function loadData(string $sectionName)
     {
-        $this->projects = (new WebProject())->all([], [], 0, 0);
-
         switch ($sectionName) {
             case 'revisions':
                 $language = $this->getLanguageModel();

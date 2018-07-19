@@ -77,40 +77,6 @@ class EditTranslation extends SectionController
     }
 
     /**
-     * Returns true if contact can add new translation.
-     *
-     * @return bool
-     */
-    public function contactCanAdd(): bool
-    {
-        if ($this->user) {
-            return true;
-        }
-
-        if (null === $this->contact) {
-            return false;
-        }
-
-        // Contact is member of translation team?
-        $idteamtra = AppSettings::get('community', 'idteamtra');
-        $member = new WebTeamMember();
-        $where = [
-            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $idteamtra),
-            new DataBaseWhere('accepted', true)
-        ];
-        if (!$member->loadFromCode('', $where)) {
-            return false;
-        }
-
-        // This language has a mantainer?
-        $translation = $this->getTranslationModel();
-        $language = new Language();
-        $language->loadFromCode($translation->langcode);
-        return !($language->idcontacto && $language->idcontacto !== $this->contact->idcontacto);
-    }
-
-    /**
      * Returns the translation loaded by code.
      *
      * @return Translation
@@ -175,6 +141,28 @@ class EditTranslation extends SectionController
     }
 
     /**
+     * Code for delete action.
+     */
+    protected function deleteAction()
+    {
+        if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-delete'));
+            return;
+        }
+
+        $translation = $this->getTranslationModel();
+        foreach ($translation->getEquivalents() as $trans) {
+            $trans->delete();
+            $this->saveTeamLog($trans, 'Deleted');
+        }
+
+        if ($translation->delete()) {
+            $this->miniLog->info($this->i18n->trans('record-deleted-correctly'));
+            $this->saveTeamLog($translation, 'Deleted');
+        }
+    }
+
+    /**
      * Code for edit action.
      */
     protected function editAction()
@@ -190,22 +178,26 @@ class EditTranslation extends SectionController
         $translation->lastmod = date('d-m-Y H:i:s');
         $translation->needsrevision = false;
 
-        $oldTransName = '';
+        $oldTransName = $translation->name;
         if ($this->request->request->get('name', '') !== '') {
-            $oldTransName = $translation->name;
             $translation->name = $this->request->request->get('name', '');
-            $newTransName = $translation->name;
         }
 
-        if ($translation->save()) {
-            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
-            $this->checkRevisions($translation);
-            $this->updateLanguageStats($translation->langcode);
-            $this->saveTeamLog($translation);
-            $this->renameTranslation($oldTransName, $newTransName);
-        } else {
+        if (!$translation->save()) {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
         }
+
+        if ($oldTransName != $translation->name) {
+            foreach ($translation->getEquivalents($oldTransName) as $trans) {
+                $trans->name = $translation->name;
+                $trans->save();
+            }
+        }
+
+        $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+        $this->saveTeamLog($translation);
+        $this->checkRevisions($translation);
+        $this->updateLanguageStats($translation->langcode);
     }
 
     /**
@@ -218,6 +210,10 @@ class EditTranslation extends SectionController
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
+            case 'delete':
+                $this->deleteAction();
+                return true;
+
             case 'edit':
                 $this->editAction();
                 return true;
@@ -260,8 +256,9 @@ class EditTranslation extends SectionController
      * Store a log detail for the translation.
      *
      * @param Translation $translation
+     * @param string      $action
      */
-    private function saveTeamLog(Translation $translation)
+    private function saveTeamLog(Translation $translation, $action = 'Updated')
     {
         $idteamtra = AppSettings::get('community', 'idteamtra', '');
         if (empty($idteamtra)) {
@@ -269,7 +266,7 @@ class EditTranslation extends SectionController
         }
 
         $teamLog = new WebTeamLog();
-        $teamLog->description = 'Modified translation: ' . $translation->langcode . ' / ' . $translation->name;
+        $teamLog->description = $action . ' translation: ' . $translation->langcode . ' / ' . $translation->name;
         $teamLog->idteam = $idteamtra;
         $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
         $teamLog->link = $translation->url('public');
@@ -287,37 +284,6 @@ class EditTranslation extends SectionController
         if ($language->loadFromCode($langcode)) {
             $language->updateStats();
             $language->save();
-        }
-    }
-
-    /**
-     * Rename all translations to new name.
-     */
-    private function renameTranslation($oldTransName, $newTransName)
-    {
-        if ($newTransName !== $oldTransName) {
-            // start transaction
-            $this->dataBase->beginTransaction();
-
-            // main save process
-            try {
-                $translation = new Translation();
-                $where = [new DataBaseWhere('name', $oldTransName)];
-                foreach ($translation->all($where, [], 0, 0) as $pos => $trans) {
-                    $trans->name = $newTransName;
-                    if (!$trans->save()) {
-                        $this->miniLog->alert($this->i18n->trans('record-save-error'));
-                    }
-                }
-                // confirm data
-                $this->dataBase->commit();
-            } catch (\Exception $e) {
-                $this->miniLog->alert($e->getMessage());
-            } finally {
-                if ($this->dataBase->inTransaction()) {
-                    $this->dataBase->rollback();
-                }
-            }
         }
     }
 }
