@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Model;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
@@ -89,6 +90,12 @@ class Language extends Base\ModelClass
         $this->lastmod = date('d-m-Y H:i:s');
         $this->needsrevision = 0;
         $this->numtranslations = 0;
+    }
+    
+    public function install()
+    {
+        new Contacto();
+        return parent::install();
     }
 
     /**

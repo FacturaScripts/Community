@@ -20,6 +20,9 @@ namespace FacturaScripts\Plugins\Community;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Plugins\Community\Model\Language;
+use FacturaScripts\Plugins\Community\Model\WebProject;
+use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
@@ -60,5 +63,14 @@ class Init extends InitClass
             $webPage->title = $controller;
             $webPage->save();
         }
+
+        $this->initModels();
+    }
+
+    private function initModels()
+    {
+        new Language();
+        new WebTeam();
+        new WebProject();
     }
 }

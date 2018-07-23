@@ -166,7 +166,7 @@ class Translation extends Base\ModelClass
         $this->translation = Utils::noHtml($this->translation);
 
         if (!preg_match('/^[a-z0-9\-]{2,100}$/', $this->name)) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-name'));
+            self::$miniLog->alert(self::$i18n->trans('invalid-name') . ' ' . $this->name);
             return false;
         }
 

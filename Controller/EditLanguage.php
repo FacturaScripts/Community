@@ -350,7 +350,7 @@ class EditLanguage extends SectionController
         }
 
         $this->response->headers->set('Content-Type', 'application/json');
-        $this->response->setContent(json_encode($json));
+        $this->response->setContent(json_encode($json, JSON_UNESCAPED_UNICODE));
     }
 
     /**
