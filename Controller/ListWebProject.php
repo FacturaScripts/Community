@@ -65,7 +65,7 @@ class ListWebProject extends ExtendedController\ListController
      */
     protected function createViewsBuild()
     {
-        $this->addView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive-o');
+        $this->addView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive');
         $this->addSearchFields('ListWebBuild', ['path']);
         $this->addOrderBy('ListWebBuild', ['version']);
         $this->addOrderBy('ListWebBuild', ['date'], 'date', 2);
