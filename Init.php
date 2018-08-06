@@ -45,6 +45,7 @@ class Init extends InitClass
             'WebDocumentation' => '/doc*',
             'PluginList' => '/plugins',
             'TeamList' => '/teams',
+            'EditWebTeam' => '/teams/*',
             'TranslationList' => '/translations',
         ];
 
