@@ -35,7 +35,7 @@ class Cron extends CronClass
                     $emailTools = new EmailTools();
                     $mail = $emailTools->newMail();
 
-                    $mail->Subject = self::$i18n->trans('weekly-report-FacturaScript');
+                    $mail->Subject = self::$i18n->trans('weekly-report-FacturaScript-' . $team->name);
 
                     $mail->msgHTML($this->buildTableBody($logs));
 
