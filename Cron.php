@@ -20,7 +20,7 @@ class Cron extends CronClass
 
     public function run()
     {
-        if ($this->isTimeForJob(self::PLUGIN_NAME, 'send-reports-email', '1 second')) {
+        if ($this->isTimeForJob(self::PLUGIN_NAME, 'send-reports-email', '1 week')) {
             $team = new WebTeam();
             $teams = $team->all([], [], 0, 0);
 
