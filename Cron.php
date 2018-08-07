@@ -21,11 +21,11 @@ class Cron extends CronClass
     /**
      * Quantity of contact to simulate pagination to send email.
      */
-    const QUANTITY_CONTACT = 1;
+    const QUANTITY_CONTACT = 50;
 
     public function run()
     {
-        if ($this->isTimeForJob(self::PLUGIN_NAME, 'send-reports-email', '1 second')) {
+        if ($this->isTimeForJob(self::PLUGIN_NAME, 'send-reports-email', '1 week')) {
             $team = new WebTeam();
             $teams = $team->all([], [], 0, 0);
 
@@ -38,16 +38,14 @@ class Cron extends CronClass
                     $logs = $teamLogs->all([new DataBaseWhere('idteam', $team->idteam)], [], 0, 0);
 
                     $emailTools = new EmailTools();
-                    $mail = $emailTools->newMail();
 
-                    $mail->Subject = self::$i18n->trans('weekly-report-FacturaScript-' . $team->name);
-
-                    $mail->msgHTML($this->buildTableBody($logs));
+                    $mail = $this->loadMail($emailTools, $team->name, $logs);
 
                     $iterator = 0;
                     foreach ($members as $member) {
                         if (self::QUANTITY_CONTACT == $iterator) {
                             $emailTools->send($mail);
+                            $mail = $this->loadMail($emailTools, $team->name, $logs);
                             $iterator = 0;
                         } else {
                             $iterator++;
@@ -63,6 +61,25 @@ class Cron extends CronClass
             
             $this->jobDone(self::PLUGIN_NAME, 'send-reports-email');
         }
+    }
+
+    /**
+     * Create and load new object Mail.
+     *
+     * @param EmailTools $emailTools
+     * @param string $nameTeam
+     * @param array $logs Array of WebTeamLog objects.
+     * @return void
+     */
+    private function loadMail($emailTools, $nameTeam, $logs)
+    {
+        $mail = $emailTools->newMail();
+
+        $mail->Subject = self::$i18n->trans('weekly-report-FacturaScript-' . $nameTeam);
+
+        $mail->msgHTML($this->buildTableBody($logs));
+
+        return $mail;
     }
 
     /**
