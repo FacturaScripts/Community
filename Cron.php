@@ -18,9 +18,14 @@ class Cron extends CronClass
 {
     const PLUGIN_NAME = 'Community';
 
+    /**
+     * Quantity of contact to simulate pagination to send email.
+     */
+    const QUANTITY_CONTACT = 1;
+
     public function run()
     {
-        if ($this->isTimeForJob(self::PLUGIN_NAME, 'send-reports-email', '1 week')) {
+        if ($this->isTimeForJob(self::PLUGIN_NAME, 'send-reports-email', '1 second')) {
             $team = new WebTeam();
             $teams = $team->all([], [], 0, 0);
 
@@ -39,11 +44,20 @@ class Cron extends CronClass
 
                     $mail->msgHTML($this->buildTableBody($logs));
 
+                    $iterator = 0;
                     foreach ($members as $member) {
-                        $mail->addAddress($member->getContact()->email);
+                        if (self::QUANTITY_CONTACT == $iterator) {
+                            $emailTools->send($mail);
+                            $iterator = 0;
+                        } else {
+                            $iterator++;
+                        }
+                        $mail->addBCC($member->getContact()->email);
                     }
 
-                    $emailTools->send($mail);
+                    if ($iterator <= self::QUANTITY_CONTACT) {
+                        $emailTools->send($mail);
+                    }
                 }
             }
             
