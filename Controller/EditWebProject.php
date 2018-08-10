@@ -53,7 +53,7 @@ class EditWebProject extends ExtendedController\PanelController
     {
         $this->addEditView('EditWebProject', 'WebProject', 'project', 'fa-folder');
         $this->addListView('ListWebDocPage', 'WebDocPage', 'documentation', 'fa-book');
-        $this->addListView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive-o');
+        $this->addListView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive');
 
         $this->views['ListWebDocPage']->disableColumn('project', true);
         $this->views['ListWebBuild']->disableColumn('project', true);
