@@ -278,7 +278,15 @@ class EditIssue extends SectionController
         $mail = $emailTools->newMail();
         $mail->addAddress($contact->email, $contact->fullName());
         $mail->Subject = $title;
-        $mail->msgHTML($txt);
+
+        $params = [
+            'body' => $txt,
+            'company' => $title,
+            'footer' => $title,
+            'title' => $title,
+        ];
+        $mail->msgHTML($emailTools->getTemplateHtml($params));
+
         if ($mail->send()) {
             $this->miniLog->notice($this->i18n->trans('email-sent'));
         }
