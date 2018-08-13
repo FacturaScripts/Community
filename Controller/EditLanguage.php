@@ -346,6 +346,12 @@ class EditLanguage extends SectionController
         $translation = new Translation();
         $where = [new DataBaseWhere('langcode', $language->langcode)];
         foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $trans) {
+            if (!empty($trans->parentcode)) {
+                $where = [new DataBaseWhere('langcode', $trans->parentcode)];
+                foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $parentTrans) {
+                    $json[$parentTrans->name] = Utils::fixHtml($parentTrans->translation);
+                }
+            }
             $json[$trans->name] = Utils::fixHtml($trans->translation);
         }
 
