@@ -340,21 +340,21 @@ class EditLanguage extends SectionController
     protected function jsonExport()
     {
         $this->setTemplate(false);
-
         $json = [];
         $language = $this->getLanguageModel();
         $translation = new Translation();
+
+        if (!empty($language->parentcode)) {
+            $where = [new DataBaseWhere('langcode', $language->parentcode)];
+            foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $transParent) {
+                $json[$transParent->name] = Utils::fixHtml($transParent->translation);
+            }
+        }
+        
         $where = [new DataBaseWhere('langcode', $language->langcode)];
         foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $trans) {
-            if (!empty($trans->parentcode)) {
-                $where = [new DataBaseWhere('langcode', $trans->parentcode)];
-                foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $parentTrans) {
-                    $json[$parentTrans->name] = Utils::fixHtml($parentTrans->translation);
-                }
-            }
             $json[$trans->name] = Utils::fixHtml($trans->translation);
         }
-
         $this->response->headers->set('Content-Type', 'application/json');
         $this->response->setContent(json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
     }
