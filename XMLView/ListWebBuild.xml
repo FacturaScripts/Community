@@ -45,7 +45,7 @@
             <widget type="date" fieldname="hour" />
         </column>
         <column name="downloads" display="right" order="160">
-            <widget type="number" fieldname="downloads" />
+            <widget type="number" fieldname="downloads" decimal="0" />
         </column>
     </columns>
 </view>

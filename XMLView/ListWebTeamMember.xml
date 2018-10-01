@@ -37,9 +37,6 @@
         <column name="accepted" order="130">
             <widget type="checkbox" fieldname="accepted" />
         </column>
-        <column name="notes" order="140">
-            <widget type="text" fieldname="observations" />
-        </column>
         <column name="creation-date" display="right" order="150">
             <widget type="date" fieldname="creationdate" />
         </column>

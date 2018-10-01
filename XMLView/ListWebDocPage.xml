@@ -36,7 +36,7 @@
             <widget type="text" fieldname="title" />
         </column>
         <column name="visitcount" title="visit-counter" display="right" order="140">
-            <widget type="number" fieldname="visitcount" />
+            <widget type="number" fieldname="visitcount" decimal="0" />
         </column>
         <column name="lastmod" title="last-update" display="right" order="150">
             <widget type="date" fieldname="lastmod" />
@@ -44,7 +44,7 @@
     </columns>
     <rows>
         <row type="status">
-            <option color="table-success" fieldname="visitcount">&gt;100</option>
+            <option color="success" fieldname="visitcount">&gt;100</option>
         </row>
         <row type="footer">
             <group name="footer-actions" footer="specials-actions">
