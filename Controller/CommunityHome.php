@@ -74,7 +74,7 @@ class CommunityHome extends SectionController
         $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('issues', 'creationdate', 'date');
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o', 'teams');
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-alt', 'teams');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);
     }

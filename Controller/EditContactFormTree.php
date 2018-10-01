@@ -40,7 +40,7 @@ class EditContactFormTree extends ExtendedController\PanelController
         $pageData = parent::getPageData();
         $pageData['title'] = 'contact-form-tree';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-code-fork';
+        $pageData['icon'] = 'fa-code-branch';
         $pageData['showonmenu'] = false;
 
         return $pageData;
@@ -52,7 +52,7 @@ class EditContactFormTree extends ExtendedController\PanelController
     protected function createViews()
     {
         $this->addEditView('EditContactFormTree', 'ContactFormTree', 'edit', 'fa-edit');
-        $this->addListView('ListContactFormTree', 'ContactFormTree', 'children', 'fa-code-fork');
+        $this->addListView('ListContactFormTree', 'ContactFormTree', 'children', 'fa-code-branch');
 
         $this->views['ListContactFormTree']->disableColumn('parent', true);
     }
