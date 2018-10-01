@@ -16,32 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace FacturaScripts\Plugins\Community\Controller;
+namespace FacturaScripts\Plugins\Community\Lib\WebPortal;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
-use FacturaScripts\Plugins\webportal\Controller\WebSearch as ParentSearch;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\SearchEngine as ParentEngine;
 
 /**
- * Description of WebSearch
+ * Description of SearchEngine
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class WebSearch extends ParentSearch
+class SearchEngine extends ParentEngine
 {
 
-    /**
-     * Search the query on pages/plugins.
-     *
-     * @param string $query
-     */
-    protected function search(string $query)
+    protected function findResults(&$results, $query)
     {
-        parent::search($query);
-        $this->searchDocPages($query);
-        $this->searchPlugins($query);
+        parent::findResults($results, $query);
+        $this->findDocPages($results, $query);
+        $this->findPlugins($results, $query);
     }
 
     /**
@@ -49,14 +44,14 @@ class WebSearch extends ParentSearch
      *
      * @param string $query
      */
-    protected function searchDocPages(string $query)
+    protected function findDocPages(&$results, $query)
     {
         $defaultIdproject = AppSettings::get('community', 'idproject', '');
 
         $docPage = new WebDocPage();
         $where = [new DataBaseWhere('body|title', $query, 'LIKE')];
         foreach ($docPage->all($where, ['visitcount' => 'DESC']) as $docPage) {
-            $this->addSearchResults([
+            $this->addSearchResults($results, [
                 'icon' => 'fa-book',
                 'title' => $docPage->title,
                 'description' => $docPage->body,
@@ -71,7 +66,7 @@ class WebSearch extends ParentSearch
      *
      * @param string $query
      */
-    protected function searchPlugins(string $query)
+    protected function findPlugins(&$results, $query)
     {
         $pluginProject = new WebProject();
         $where = [
@@ -79,7 +74,7 @@ class WebSearch extends ParentSearch
             new DataBaseWhere('plugin', true)
         ];
         foreach ($pluginProject->all($where) as $plugin) {
-            $this->addSearchResults([
+            $this->addSearchResults($results, [
                 'icon' => 'fa-plug',
                 'title' => $plugin->name,
                 'description' => $plugin->description,
