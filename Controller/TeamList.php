@@ -33,12 +33,12 @@ class TeamList extends SectionController
      */
     protected function createSections()
     {
-        $this->addListSection('teams', 'WebTeam', 'Section/Teams', 'teams', 'fa-users');
+        $this->addListSection('teams', 'WebTeam', 'Section/Teams', 'teams', 'fas fa-users');
         $this->addOrderOption('teams', 'name', 'name');
         $this->addOrderOption('teams', 'nummembers', 'members');
         $this->addOrderOption('teams', 'nummembers', 'requests');
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o');
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fas fa-file-text-o');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);
     }

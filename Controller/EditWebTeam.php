@@ -150,14 +150,14 @@ class EditWebTeam extends SectionController
     {
         $this->addSection('team', ['fixed' => true, 'template' => 'Section/Team']);
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o');
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fas fa-file-text-o');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);
 
-        $this->addListSection('members', 'WebTeamMember', 'Section/TeamMembers', 'members', 'fa-users');
+        $this->addListSection('members', 'WebTeamMember', 'Section/TeamMembers', 'members', 'fas fa-users');
         $this->addOrderOption('members', 'creationdate', 'date', 2);
 
-        $this->addListSection('requests', 'WebTeamMember', 'Section/TeamMembers', 'requests', 'fa-address-card');
+        $this->addListSection('requests', 'WebTeamMember', 'Section/TeamMembers', 'requests', 'fas fa-address-card');
         $this->addOrderOption('requests', 'creationdate', 'date', 2);
     }
 

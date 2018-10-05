@@ -48,7 +48,7 @@ class EditWebBuild extends EditController
         $pageData = parent::getPageData();
         $pageData['title'] = 'build';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-file-archive';
+        $pageData['icon'] = 'fas fa-file-archive';
         $pageData['showonmenu'] = false;
 
         return $pageData;

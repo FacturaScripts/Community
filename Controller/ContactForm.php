@@ -89,7 +89,7 @@ class ContactForm extends PortalController
      * @param string $icon
      * @param string $observations
      */
-    protected function addEndAction(string $title, string $link = '', string $icon = 'fa-circle-o', string $observations = '')
+    protected function addEndAction(string $title, string $link = '', string $icon = 'fas fa-circle-o', string $observations = '')
     {
         $this->endActions[] = [
             'icon' => $icon,
@@ -164,7 +164,7 @@ class ContactForm extends PortalController
         $where = [new DataBaseWhere('plugin', true)];
         foreach ($pluginProject->all($where, ['name' => 'ASC'], 0, 0) as $plugin) {
             $link = self::SEND_ISSUE_CONTROLLER . '?idtree=' . $this->currentTree->idtree . '&idproject=' . $plugin->idproject;
-            $this->addEndAction($plugin->name, $link, 'fa-plug');
+            $this->addEndAction($plugin->name, $link, 'fas fa-plug');
         }
     }
 }

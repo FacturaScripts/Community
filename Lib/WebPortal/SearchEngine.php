@@ -52,7 +52,7 @@ class SearchEngine extends ParentEngine
         $where = [new DataBaseWhere('body|title', $query, 'LIKE')];
         foreach ($docPage->all($where, ['visitcount' => 'DESC']) as $docPage) {
             $this->addSearchResults($results, [
-                'icon' => 'fa-book',
+                'icon' => 'fas fa-book',
                 'title' => $docPage->title,
                 'description' => $docPage->body,
                 'link' => $docPage->url('public'),
@@ -75,7 +75,7 @@ class SearchEngine extends ParentEngine
         ];
         foreach ($pluginProject->all($where) as $plugin) {
             $this->addSearchResults($results, [
-                'icon' => 'fa-plug',
+                'icon' => 'fas fa-plug',
                 'title' => $plugin->name,
                 'description' => $plugin->description,
                 'link' => $plugin->url('public')

@@ -40,7 +40,7 @@ class ListWebProject extends ExtendedController\ListController
         $pageData = parent::getPageData();
         $pageData['title'] = 'projects';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-folder';
+        $pageData['icon'] = 'fas fa-folder';
 
         return $pageData;
     }
@@ -51,7 +51,7 @@ class ListWebProject extends ExtendedController\ListController
     protected function createViews()
     {
         /// projects
-        $this->addView('ListWebProject', 'WebProject', 'projects', 'fa-folder');
+        $this->addView('ListWebProject', 'WebProject', 'projects', 'fas fa-folder');
         $this->addSearchFields('ListWebProject', ['name']);
         $this->addOrderBy('ListWebProject', ['name']);
         $this->addOrderBy('ListWebProject', ['creationdate'], 'date');
@@ -65,7 +65,7 @@ class ListWebProject extends ExtendedController\ListController
      */
     protected function createViewsBuild()
     {
-        $this->addView('ListWebBuild', 'WebBuild', 'builds', 'fa-file-archive');
+        $this->addView('ListWebBuild', 'WebBuild', 'builds', 'fas fa-file-archive');
         $this->addSearchFields('ListWebBuild', ['path']);
         $this->addOrderBy('ListWebBuild', ['version']);
         $this->addOrderBy('ListWebBuild', ['date'], 'date', 2);
@@ -80,7 +80,7 @@ class ListWebProject extends ExtendedController\ListController
      */
     protected function createViewsDocPages()
     {
-        $this->addView('ListWebDocPage', 'WebDocPage', 'documentation', 'fa-book');
+        $this->addView('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
         $this->addSearchFields('ListWebDocPage', ['title', 'body']);
         $this->addOrderBy('ListWebDocPage', ['title']);
         $this->addOrderBy('ListWebDocPage', ['creationdate'], 'date');

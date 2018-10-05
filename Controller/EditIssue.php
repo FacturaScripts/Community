@@ -166,12 +166,12 @@ class EditIssue extends SectionController
     {
         $this->addSection('issue', ['fixed' => true, 'template' => 'Section/Issue']);
 
-        $this->addListSection('comments', 'IssueComment', 'Section/IssueComments', 'comments', 'fa-comments');
+        $this->addListSection('comments', 'IssueComment', 'Section/IssueComments', 'comments', 'fas fa-comments');
         $this->addOrderOption('comments', 'creationdate', 'date');
         $this->addOrderOption('comments', 'idcontacto', 'user');
-        $this->addButton('comments', $this->getIssue()->url('public'), 'reload', 'fa-sync');
+        $this->addButton('comments', $this->getIssue()->url('public'), 'reload', 'fas fa-sync');
 
-        $this->addListSection('userissues', 'Issue', 'Section/Issues', 'related', 'fa-question-circle');
+        $this->addListSection('userissues', 'Issue', 'Section/Issues', 'related', 'fas fa-question-circle');
         $this->addSearchOptions('userissues', ['body', 'creationroute']);
         $this->addOrderOption('userissues', 'creationdate', 'date', 2);
         $this->addOrderOption('userissues', 'lastmod', 'last-update');

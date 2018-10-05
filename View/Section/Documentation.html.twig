@@ -19,6 +19,6 @@
 
 {% if fsc.contactCanEdit() %}
     <a class="btn" href="{{ asset('EditWebDocPage?idproject=' ~ fsc.getProject().idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
-        <i class="fa fa-file-o fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
+        <i class="fas fa-file fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
     </a>
 {% endif %}

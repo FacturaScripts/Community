@@ -34,7 +34,7 @@ class TranslationList extends SectionController
      */
     protected function createSections()
     {
-        $this->addListSection('languages', 'Language', 'Section/Languages', 'languages', 'fa-language');
+        $this->addListSection('languages', 'Language', 'Section/Languages', 'languages', 'fas fa-language');
         $this->addSearchOptions('languages', ['langcode', 'description']);
         $this->addOrderOption('languages', 'langcode', 'code');
         $this->addOrderOption('languages', 'description', 'description');
@@ -45,7 +45,7 @@ class TranslationList extends SectionController
             $this->addButton('languages', $this->url() . '?action=import-lang', 'import', '');
         }
 
-        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fa-copy');
+        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fas fa-copy');
         $this->addSearchOptions('translations', ['name', 'description', 'translation']);
         $this->addOrderOption('translations', 'name', 'code', 1);
         $this->addOrderOption('translations', 'lastmod', 'last-update');

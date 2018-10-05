@@ -129,12 +129,12 @@ class EditTranslation extends SectionController
     {
         $this->addSection('translation', ['fixed' => true, 'template' => 'Section/Translation']);
 
-        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fa-copy');
+        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fas fa-copy');
         $this->addSearchOptions('translations', ['name', 'description', 'translation']);
         $this->addOrderOption('translations', 'name', 'code', 1);
         $this->addOrderOption('translations', 'lastmod', 'last-update');
 
-        $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fa-eye');
+        $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fas fa-eye');
         $this->addSearchOptions('revisions', ['name', 'description', 'translation']);
         $this->addOrderOption('revisions', 'name', 'code', 1);
         $this->addOrderOption('revisions', 'lastmod', 'last-update');

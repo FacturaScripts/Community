@@ -38,7 +38,7 @@ class ListContactFormTree extends ExtendedController\ListController
         $pageData = parent::getPageData();
         $pageData['title'] = 'contact-form';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-code-branch';
+        $pageData['icon'] = 'fas fa-code-branch';
 
         return $pageData;
     }
@@ -48,7 +48,7 @@ class ListContactFormTree extends ExtendedController\ListController
      */
     protected function createViews()
     {
-        $this->addView('ListContactFormTree', 'ContactFormTree', 'contact-form', 'fa-code-branch');
+        $this->addView('ListContactFormTree', 'ContactFormTree', 'contact-form', 'fas fa-code-branch');
         $this->addSearchFields('ListContactFormTree', ['title', 'body']);
         $this->addOrderBy('ListContactFormTree', ['idparent', 'ordernum'], 'sort');
         $this->addOrderBy('ListContactFormTree', ['title']);

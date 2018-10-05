@@ -61,20 +61,20 @@ class CommunityHome extends SectionController
             return;
         }
 
-        $this->addSection('home', ['icon' => 'fa-home', 'label' => $this->i18n->trans('home')]);
+        $this->addSection('home', ['icon' => 'fas fa-home', 'label' => $this->i18n->trans('home')]);
 
-        $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'your');
+        $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fas fa-question-circle', 'your');
         $this->addSearchOptions('myissues', ['body', 'creationroute']);
         $this->addOrderOption('myissues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('myissues', 'creationdate', 'date');
-        $this->addButton('myissues', 'ContactForm', 'new', 'fa-plus');
+        $this->addButton('myissues', 'ContactForm', 'new', 'fas fa-plus');
 
-        $this->addListSection('issues', 'Issue', 'Section/Issues', 'issues', 'fa-question-circle', 'teams');
+        $this->addListSection('issues', 'Issue', 'Section/Issues', 'issues', 'fas fa-question-circle', 'teams');
         $this->addSearchOptions('issues', ['body', 'creationroute']);
         $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
         $this->addOrderOption('issues', 'creationdate', 'date');
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-alt', 'teams');
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fas fa-file-alt', 'teams');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);
     }

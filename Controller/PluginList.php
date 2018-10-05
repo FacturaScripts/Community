@@ -34,12 +34,12 @@ class PluginList extends SectionController
      */
     protected function createSections()
     {
-        $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fa-plug', '2018');
+        $this->addListSection('plugins', 'WebProject', 'Section/Plugins', 'plugins', 'fas fa-plug', '2018');
         $this->addOrderOption('plugins', 'LOWER(name)', 'name', 1);
         $this->addSearchOptions('plugins', ['name', 'description']);
 
         if (!empty($this->contact) || $this->user) {
-            $this->addButton('plugins', 'AddPlugin', 'new', 'fa-plus');
+            $this->addButton('plugins', 'AddPlugin', 'new', 'fas fa-plus');
         }
     }
 

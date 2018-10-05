@@ -166,7 +166,7 @@ class EditLanguage extends SectionController
     {
         $this->addSection('language', ['fixed' => true, 'template' => 'Section/Language']);
 
-        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fa-copy');
+        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fas fa-copy');
         $this->addSearchOptions('translations', ['name', 'description', 'translation']);
         $this->addOrderOption('translations', 'name', 'code', 1);
         $this->addOrderOption('translations', 'lastmod', 'last-update');
@@ -177,7 +177,7 @@ class EditLanguage extends SectionController
         }
         $this->addButton('translations', 'AddTranslation', 'new', '');
 
-        $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fa-eye');
+        $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fas fa-eye');
         $this->addSearchOptions('revisions', ['name', 'description', 'translation']);
         $this->addOrderOption('revisions', 'name', 'code', 1);
         $this->addOrderOption('revisions', 'lastmod', 'last-update');

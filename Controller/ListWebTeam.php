@@ -38,7 +38,7 @@ class ListWebTeam extends ExtendedController\ListController
         $pageData = parent::getPageData();
         $pageData['title'] = 'teams';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-users';
+        $pageData['icon'] = 'fas fa-users';
 
         return $pageData;
     }
@@ -49,18 +49,18 @@ class ListWebTeam extends ExtendedController\ListController
     protected function createViews()
     {
         /// Teams
-        $this->addView('ListWebTeam', 'WebTeam', 'teams', 'fa-users');
+        $this->addView('ListWebTeam', 'WebTeam', 'teams', 'fas fa-users');
         $this->addSearchFields('ListWebTeam', ['name']);
         $this->addOrderBy('ListWebTeam', ['name']);
         $this->addOrderBy('ListWebTeam', ['creationdate'], 'date', 2);
 
         /// Members
-        $this->addView('ListWebTeamMember', 'WebTeamMember', 'members', 'fa-users');
+        $this->addView('ListWebTeamMember', 'WebTeamMember', 'members', 'fas fa-users');
         $this->addSearchFields('ListWebTeamMember', ['idcontacto']);
         $this->addOrderBy('ListWebTeamMember', ['creationdate'], 'date', 2);
 
         /// Members
-        $this->addView('ListWebTeamLog', 'WebTeamLog', 'logs', 'fa-file');
+        $this->addView('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file');
         $this->addSearchFields('ListWebTeamLog', ['description']);
         $this->addOrderBy('ListWebTeamLog', ['time'], 'date', 2);
     }

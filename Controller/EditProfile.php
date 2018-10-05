@@ -36,11 +36,11 @@ class EditProfile extends parentController
     {
         parent::createSections();
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fa-file-text-o');
+        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fas fa-file-text-o');
         $this->addSearchOptions('logs', ['description']);
         $this->addOrderOption('logs', 'time', 'date', 2);
 
-        $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fa-users');
+        $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fas fa-users');
         $this->addOrderOption('teams', 'creationdate', 'date', 2);
     }
 

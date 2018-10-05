@@ -50,7 +50,7 @@ class DownloadBuild extends PortalController
     {
         $pageData = parent::getPageData();
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fa-file-archive-o';
+        $pageData['icon'] = 'fas fa-file-archive-o';
         $pageData['showonmenu'] = false;
 
         return $pageData;
