@@ -164,17 +164,18 @@ class EditIssue extends SectionController
      */
     protected function createSections()
     {
-        $this->addSection('issue', ['fixed' => true, 'template' => 'Section/Issue']);
+        $this->fixedSection();
+        $this->addHtmlSection('issue', 'issue', 'Section/Issue');
 
-        $this->addListSection('comments', 'IssueComment', 'Section/IssueComments', 'comments', 'fas fa-comments');
-        $this->addOrderOption('comments', 'creationdate', 'date');
-        $this->addOrderOption('comments', 'idcontacto', 'user');
-        $this->addButton('comments', $this->getIssue()->url('public'), 'reload', 'fas fa-sync');
+        $this->addListSection('comments', 'IssueComment', 'comments', 'fas fa-comments');
+        $this->addOrderOption('comments', ['creationdate'], 'date');
+        $this->addOrderOption('comments', ['idcontacto'], 'user');
+        ///$this->addButton('comments', $this->getIssue()->url('public'), 'reload', 'fas fa-sync');
 
-        $this->addListSection('userissues', 'Issue', 'Section/Issues', 'related', 'fas fa-question-circle');
-        $this->addSearchOptions('userissues', ['body', 'creationroute']);
-        $this->addOrderOption('userissues', 'creationdate', 'date', 2);
-        $this->addOrderOption('userissues', 'lastmod', 'last-update');
+        $this->addListSection('ListIssue', 'Issue', 'related', 'fas fa-question-circle');
+        $this->addSearchOptions('ListIssue', ['body', 'creationroute']);
+        $this->addOrderOption('ListIssue', ['creationdate'], 'date', 2);
+        $this->addOrderOption('ListIssue', ['lastmod'], 'last-update');
     }
 
     /**
@@ -210,20 +211,20 @@ class EditIssue extends SectionController
             case 'comments':
                 $issue = $this->getIssue();
                 $where = [new DataBaseWhere('idissue', $issue->idissue)];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'issue':
                 $this->loadIssue();
                 break;
 
-            case 'userissues':
+            case 'ListIssue':
                 $issue = $this->getIssue();
                 $where = [
                     new DataBaseWhere('idcontacto', $issue->idcontacto),
                     new DataBaseWhere('idissue', $issue->idissue, '!=')
                 ];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
     }

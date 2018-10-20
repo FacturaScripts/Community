@@ -31,14 +31,6 @@ class CommunityHome extends SectionController
 {
 
     /**
-     * A list of teams.
-     * TODO: Unused.
-     *
-     * @var array
-     */
-    private $teams;
-
-    /**
      * Execute common code between private and public core.
      */
     protected function commonCore()
@@ -61,22 +53,28 @@ class CommunityHome extends SectionController
             return;
         }
 
-        $this->addSection('home', ['icon' => 'fas fa-home', 'label' => $this->i18n->trans('home')]);
+        $this->addHtmlSection('home', 'home');
 
-        $this->addListSection('myissues', 'Issue', 'Section/Issues', 'issues', 'fas fa-question-circle', 'your');
-        $this->addSearchOptions('myissues', ['body', 'creationroute']);
-        $this->addOrderOption('myissues', 'lastmod', 'last-update', 2);
-        $this->addOrderOption('myissues', 'creationdate', 'date');
-        $this->addButton('myissues', 'ContactForm', 'new', 'fas fa-plus');
+        $this->addListSection('ListIssue', 'Issue', 'issues', 'fas fa-question-circle', 'your');
+        $this->addSearchOptions('ListIssue', ['body', 'creationroute']);
+        $this->addOrderOption('ListIssue', ['lastmod'], 'last-update', 2);
+        $this->addOrderOption('ListIssue', ['creationdate'], 'date');
+        $contactButton = [
+            'action' => 'ContactForm',
+            'icon' => 'fas fa-plus',
+            'label' => 'new',
+            'type' => 'link',
+        ];
+        $this->addButton('ListIssue', $contactButton);
 
-        $this->addListSection('issues', 'Issue', 'Section/Issues', 'issues', 'fas fa-question-circle', 'teams');
-        $this->addSearchOptions('issues', ['body', 'creationroute']);
-        $this->addOrderOption('issues', 'lastmod', 'last-update', 2);
-        $this->addOrderOption('issues', 'creationdate', 'date');
+        $this->addListSection('ListIssue-teams', 'Issue', 'issues', 'fas fa-question-circle', 'teams');
+        $this->addSearchOptions('ListIssue-teams', ['body', 'creationroute']);
+        $this->addOrderOption('ListIssue-teams', ['lastmod'], 'last-update', 2);
+        $this->addOrderOption('ListIssue-teams', ['creationdate'], 'date');
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fas fa-file-alt', 'teams');
-        $this->addSearchOptions('logs', ['description']);
-        $this->addOrderOption('logs', 'time', 'date', 2);
+        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt', 'teams');
+        $this->addSearchOptions('ListWebTeamLog', ['description']);
+        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
     }
 
     /**
@@ -94,20 +92,20 @@ class CommunityHome extends SectionController
     /**
      * Return when was do it the last modification.
      *
-     * @param array $section
+     * @param object $section
      *
      * @return int
      */
-    protected function getSectionLastmod(array &$section): int
+    protected function getSectionLastmod(&$section): int
     {
         $lastMod = 0;
 
-        if (isset($section['cursor'][0]->creationdate) && strtotime($section['cursor'][0]->creationdate) > $lastMod) {
-            $lastMod = strtotime($section['cursor'][0]->creationdate);
+        if (isset($section->cursor[0]->creationdate) && strtotime($section->cursor[0]->creationdate) > $lastMod) {
+            $lastMod = strtotime($section->cursor[0]->creationdate);
         }
 
-        if (isset($section['cursor'][0]->lastmod) && strtotime($section['cursor'][0]->lastmod) > $lastMod) {
-            $lastMod = strtotime($section['cursor'][0]->lastmod);
+        if (isset($section->cursor[0]->lastmod) && strtotime($section->cursor[0]->lastmod) > $lastMod) {
+            $lastMod = strtotime($section->cursor[0]->lastmod);
         }
 
         return $lastMod;
@@ -125,10 +123,10 @@ class CommunityHome extends SectionController
         $empty = true;
         $lastMod = 0;
         foreach ($this->sections as $name => $section) {
-            if ($section['count'] > 0) {
+            if ($section->count > 0) {
                 $empty = false;
             } elseif ($name !== 'home') {
-                unset($this->sections[$name]);
+                $this->sections[$name]->settings['active'] = false;
             }
 
             if ($this->getSectionLastmod($section) > $lastMod) {
@@ -159,10 +157,10 @@ class CommunityHome extends SectionController
     {
         $where = [];
         switch ($sectionName) {
-            case 'issues':
+            case 'ListIssue-teams':
                 $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto, '!=');
-                /// no break
-            case 'logs':
+            /// no break
+            case 'ListWebTeamLog':
                 $idTeams = [];
                 foreach ($this->getTeams() as $member) {
                     if ($member->accepted) {
@@ -170,12 +168,12 @@ class CommunityHome extends SectionController
                     }
                 }
                 $where[] = new DataBaseWhere('idteam', implode(',', $idTeams), 'IN');
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
-            case 'myissues':
+            case 'ListIssue':
                 $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto);
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
     }

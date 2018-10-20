@@ -6,12 +6,12 @@
         <form action="" method="post">
             <div class="container grid-lg">
                 <div class="columns">
-                    <div class="column col-12">
+                    <div class="column">
                         <h1>{{ i18n.trans('send') }}:</h1>
                         {% for item in fsc.getTreeList() %}
                             <span class="label">{{ item }}</span>
                         {% endfor %}
-                        <div class="form-group">
+                        <div class="form-group mb-2">
                             <textarea name="body" class="form-input" placeholder="detalle su mensaje" rows="5" autofocus=""></textarea>
                         </div>
                     </div>

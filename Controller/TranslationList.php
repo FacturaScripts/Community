@@ -34,22 +34,38 @@ class TranslationList extends SectionController
      */
     protected function createSections()
     {
-        $this->addListSection('languages', 'Language', 'Section/Languages', 'languages', 'fas fa-language');
-        $this->addSearchOptions('languages', ['langcode', 'description']);
-        $this->addOrderOption('languages', 'langcode', 'code');
-        $this->addOrderOption('languages', 'description', 'description');
-        $this->addOrderOption('languages', 'lastmod', 'last-update');
-        $this->addOrderOption('languages', 'numtranslations', 'number-of-translations', 2);
+        /// translations
+        $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
+        $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
+        $this->addOrderOption('ListTranslation', ['name'], 'code');
+        $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update', 2);
 
-        if ($this->user) {
-            $this->addButton('languages', $this->url() . '?action=import-lang', 'import', '');
+        if ($this->contact) {
+            $addButton = [
+                'action' => 'AddTranslation',
+                'icon' => 'fas fa-plus',
+                'label' => 'new',
+                'type' => 'link',
+            ];
+            $this->addButton('ListTranslation', $addButton);
         }
 
-        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fas fa-copy');
-        $this->addSearchOptions('translations', ['name', 'description', 'translation']);
-        $this->addOrderOption('translations', 'name', 'code', 1);
-        $this->addOrderOption('translations', 'lastmod', 'last-update');
-        $this->addButton('translations', 'AddTranslation', 'new', '');
+        /// languages
+        $this->addListSection('ListLanguage', 'Language', 'languages', 'fas fa-language');
+        $this->addSearchOptions('ListLanguage', ['langcode', 'description']);
+        $this->addOrderOption('ListLanguage', ['langcode'], 'code');
+        $this->addOrderOption('ListLanguage', ['description'], 'description');
+        $this->addOrderOption('ListLanguage', ['lastmod'], 'last-update');
+        $this->addOrderOption('ListLanguage', ['numtranslations'], 'number-of-translations', 2);
+
+        if ($this->user) {
+            $importButton = [
+                'action' => $this->url() . '?action=import-lang',
+                'label' => 'import',
+                'type' => 'link',
+            ];
+            $this->addButton('ListLanguage', $importButton);
+        }
     }
 
     /**
@@ -86,24 +102,6 @@ class TranslationList extends SectionController
             $language->langcode = $key;
             $language->description = $value;
             $language->save();
-        }
-    }
-
-    /**
-     * Load section data procedure
-     *
-     * @param string $sectionName
-     */
-    protected function loadData(string $sectionName)
-    {
-        switch ($sectionName) {
-            case 'languages':
-                $this->loadListSection($sectionName);
-                break;
-
-            case 'translations':
-                $this->loadListSection($sectionName);
-                break;
         }
     }
 }

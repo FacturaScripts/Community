@@ -98,8 +98,9 @@ class ViewPlugin extends SectionController
      */
     protected function createSections()
     {
-        $this->addSection('plugin', ['fixed' => true, 'template' => 'Section/Plugin']);
-        $this->addListSection('docs', 'WebDocPage', 'Section/Documentation', 'documentation');
+        $this->fixedSection();
+        $this->addHtmlSection('plugin', 'plugin', 'Section/Plugin');
+        $this->addHtmlSection('docs', 'documentation', 'Section/Documentation');
     }
 
     /**
@@ -149,7 +150,7 @@ class ViewPlugin extends SectionController
                     new DataBaseWhere('idproject', $project->idproject),
                     new DataBaseWhere('idparent', null, 'IS'),
                 ];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'plugin':

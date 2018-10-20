@@ -36,12 +36,12 @@ class EditProfile extends parentController
     {
         parent::createSections();
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fas fa-file-text-o');
-        $this->addSearchOptions('logs', ['description']);
-        $this->addOrderOption('logs', 'time', 'date', 2);
+        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
+        $this->addSearchOptions('ListWebTeamLog', ['description']);
+        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
 
-        $this->addListSection('teams', 'WebTeamMember', 'Section/MyTeamRequests', 'teams', 'fas fa-users');
-        $this->addOrderOption('teams', 'creationdate', 'date', 2);
+        $this->addListSection('ListWebTeamMember', 'WebTeamMember', 'teams', 'fas fa-users');
+        $this->addOrderOption('ListWebTeamMember', ['creationdate'], 'date', 2);
     }
 
     /**
@@ -52,10 +52,10 @@ class EditProfile extends parentController
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
-            case 'logs':
-            case 'teams':
+            case 'ListWebTeamLog':
+            case 'ListWebTeamMember':
                 $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto);
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             default:

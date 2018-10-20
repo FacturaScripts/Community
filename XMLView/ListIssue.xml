@@ -21,16 +21,13 @@
 
 <view>
     <columns>
-        <column name="code" display="none" order="100">
-            <widget type="text" fieldname="idproject" onclick="EditWebProject" />
+        <column name="code" order="100">
+            <widget type="text" fieldname="idissue" />
         </column>
-        <column name="name" order="110">
-            <widget type="text" fieldname="name" />
+        <column name="body" order="110">
+            <widget type="textarea" fieldname="body" />
         </column>
-        <column name="description" order="120">
-            <widget type="textarea" fieldname="description" />
-        </column>
-        <column name="creation-date" display="right" order="130">
+        <column name="creation-date" display="right" order="120">
             <widget type="date" fieldname="creationdate" />
         </column>
     </columns>

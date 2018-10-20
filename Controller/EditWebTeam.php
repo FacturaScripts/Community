@@ -148,17 +148,18 @@ class EditWebTeam extends SectionController
      */
     protected function createSections()
     {
-        $this->addSection('team', ['fixed' => true, 'template' => 'Section/Team']);
+        $this->fixedSection();
+        $this->addHtmlSection('team', 'team', 'Section/Team');
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fas fa-file-text-o');
-        $this->addSearchOptions('logs', ['description']);
-        $this->addOrderOption('logs', 'time', 'date', 2);
+        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
+        $this->addSearchOptions('ListWebTeamLog', ['description']);
+        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
 
-        $this->addListSection('members', 'WebTeamMember', 'Section/TeamMembers', 'members', 'fas fa-users');
-        $this->addOrderOption('members', 'creationdate', 'date', 2);
+        $this->addListSection('ListWebTeamMember', 'WebTeamMember', 'members', 'fas fa-users');
+        $this->addOrderOption('ListWebTeamMember', ['creationdate'], 'date', 2);
 
-        $this->addListSection('requests', 'WebTeamMember', 'Section/TeamMembers', 'requests', 'fas fa-address-card');
-        $this->addOrderOption('requests', 'creationdate', 'date', 2);
+        $this->addListSection('ListWebTeamMember-req', 'WebTeamMember', 'requests', 'fas fa-address-card');
+        $this->addOrderOption('ListWebTeamMember-req', ['creationdate'], 'date', 2);
     }
 
     /**
@@ -299,25 +300,25 @@ class EditWebTeam extends SectionController
     {
         $team = $this->getTeam();
         switch ($sectionName) {
-            case 'logs':
+            case 'ListWebTeamLog':
                 $where = [new DataBaseWhere('idteam', $team->idteam)];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
-            case 'members':
+            case 'ListWebTeamMember':
                 $where = [
                     new DataBaseWhere('idteam', $team->idteam),
                     new DataBaseWhere('accepted', true),
                 ];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
-            case 'requests':
+            case 'ListWebTeamMember-req':
                 $where = [
                     new DataBaseWhere('idteam', $team->idteam),
                     new DataBaseWhere('accepted', false),
                 ];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'team':

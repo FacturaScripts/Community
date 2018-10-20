@@ -19,37 +19,38 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
+use FacturaScripts\Core\Controller\EditContacto as ParentController;
 
 /**
- * Description of PluginList
+ * Description of EditContacto
  *
- * @author Carlos García Gómez <carlos@facturascripts.com>
+ * @author carlos
  */
-class PluginList extends SectionController
+class EditContacto extends ParentController
 {
 
-    /**
-     * Load sections to the view.
-     */
-    protected function createSections()
+    protected function createViews()
     {
-        $this->addListSection('ListWebProject', 'WebProject', 'plugins', 'fas fa-plug', '2018');
-        $this->addOrderOption('ListWebProject', ['LOWER(name)'], 'name', 1);
-        $this->addSearchOptions('ListWebProject', ['name', 'description']);
+        parent::createViews();
+
+        /// tabs on top
+        $this->setTabsPosition('top');
+
+        $this->addListView('ListIssue', 'Issue', 'issues', 'fas fa-question-circle');
+        $this->setSettings('ListIssue', 'btnNew', false);
     }
 
-    /**
-     * Load section data procedure
-     *
-     * @param string $sectionName
-     */
-    protected function loadData(string $sectionName)
+    protected function loadData($viewName, $view)
     {
-        switch ($sectionName) {
-            case 'ListWebProject':
-                $where = [new DataBaseWhere('plugin', true)];
-                $this->sections[$sectionName]->loadData('', $where);
+        switch ($viewName) {
+            case 'ListIssue':
+                $code = $this->getViewModelValue('EditContacto', 'idcontacto');
+                $where = [new DataBaseWhere('idcontacto', $code)];
+                $view->loadData('', $where);
+                break;
+
+            default:
+                parent::loadData($viewName, $view);
                 break;
         }
     }

@@ -33,31 +33,12 @@ class TeamList extends SectionController
      */
     protected function createSections()
     {
-        $this->addListSection('teams', 'WebTeam', 'Section/Teams', 'teams', 'fas fa-users');
-        $this->addOrderOption('teams', 'name', 'name');
-        $this->addOrderOption('teams', 'nummembers', 'members');
-        $this->addOrderOption('teams', 'nummembers', 'requests');
+        $this->addListSection('ListWebTeam', 'WebTeam', 'teams', 'fas fa-users');
+        $this->addOrderOption('ListWebTeam', ['name'], 'name');
+        $this->addOrderOption('ListWebTeam', ['nummembers'], 'members');
 
-        $this->addListSection('logs', 'WebTeamLog', 'Section/TeamLogs', 'logs', 'fas fa-file-text-o');
-        $this->addSearchOptions('logs', ['description']);
-        $this->addOrderOption('logs', 'time', 'date', 2);
-    }
-
-    /**
-     * Load section data procedure
-     *
-     * @param string $sectionName
-     */
-    protected function loadData(string $sectionName)
-    {
-        switch ($sectionName) {
-            case 'logs':
-                $this->loadListSection($sectionName);
-                break;
-
-            case 'teams':
-                $this->loadListSection($sectionName);
-                break;
-        }
+        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
+        $this->addSearchOptions('ListWebTeamLog', ['description']);
+        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
     }
 }

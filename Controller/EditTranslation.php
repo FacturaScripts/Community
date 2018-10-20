@@ -127,17 +127,18 @@ class EditTranslation extends SectionController
      */
     protected function createSections()
     {
-        $this->addSection('translation', ['fixed' => true, 'template' => 'Section/Translation']);
+        $this->fixedSection();
+        $this->addHtmlSection('translation', 'translation', 'Section/Translation');
 
-        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fas fa-copy');
-        $this->addSearchOptions('translations', ['name', 'description', 'translation']);
-        $this->addOrderOption('translations', 'name', 'code', 1);
-        $this->addOrderOption('translations', 'lastmod', 'last-update');
+        $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
+        $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
+        $this->addOrderOption('ListTranslation', ['name'], 'code', 1);
+        $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update');
 
-        $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fas fa-eye');
-        $this->addSearchOptions('revisions', ['name', 'description', 'translation']);
-        $this->addOrderOption('revisions', 'name', 'code', 1);
-        $this->addOrderOption('revisions', 'lastmod', 'last-update');
+        $this->addListSection('ListTranslation-rev', 'Translation', 'needs-revisions', 'fas fa-eye');
+        $this->addSearchOptions('ListTranslation-rev', ['name', 'description', 'translation']);
+        $this->addOrderOption('ListTranslation-rev', ['name'], 'code', 1);
+        $this->addOrderOption('ListTranslation-rev', ['lastmod'], 'last-update');
     }
 
     /**
@@ -231,23 +232,23 @@ class EditTranslation extends SectionController
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
-            case 'revisions':
+            case 'ListTranslation-rev':
                 $translation = $this->getTranslationModel();
                 $where = [
                     new DataBaseWhere('langcode', $translation->langcode),
                     new DataBaseWhere('needsrevision', true),
                     new DataBaseWhere('id', $translation->id, '!=')
                 ];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
-            case 'translations':
+            case 'ListTranslation':
                 $translation = $this->getTranslationModel();
                 $where = [
                     new DataBaseWhere('name', $translation->name),
                     new DataBaseWhere('id', $translation->id, '!=')
                 ];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
     }

@@ -164,23 +164,24 @@ class EditLanguage extends SectionController
      */
     protected function createSections()
     {
-        $this->addSection('language', ['fixed' => true, 'template' => 'Section/Language']);
+        $this->fixedSection();
+        $this->addHtmlSection('language', 'language', 'Section/Language');
 
-        $this->addListSection('translations', 'Translation', 'Section/Translations', 'translations', 'fas fa-copy');
-        $this->addSearchOptions('translations', ['name', 'description', 'translation']);
-        $this->addOrderOption('translations', 'name', 'code', 1);
-        $this->addOrderOption('translations', 'lastmod', 'last-update');
+        $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
+        $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
+        $this->addOrderOption('ListTranslation', ['name'], 'code', 1);
+        $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update');
 
         if ($this->user) {
             $language = $this->getLanguageModel();
-            $this->addButton('translations', $language->url() . '&action=import-trans', 'import', '');
+            //$this->addButton('ListTranslation', $language->url() . '&action=import-trans', 'import', '');
         }
-        $this->addButton('translations', 'AddTranslation', 'new', '');
+        //$this->addButton('ListTranslation', 'AddTranslation', 'new', '');
 
-        $this->addListSection('revisions', 'Translation', 'Section/Translations', 'needs-revisions', 'fas fa-eye');
-        $this->addSearchOptions('revisions', ['name', 'description', 'translation']);
-        $this->addOrderOption('revisions', 'name', 'code', 1);
-        $this->addOrderOption('revisions', 'lastmod', 'last-update');
+        $this->addListSection('ListTranslation-rev', 'Translation', 'needs-revisions', 'fas fa-eye');
+        $this->addSearchOptions('ListTranslation-rev', ['name', 'description', 'translation']);
+        $this->addOrderOption('ListTranslation-rev', ['name'], 'code', 1);
+        $this->addOrderOption('ListTranslation-rev', ['lastmod'], 'last-update');
     }
 
     /**
@@ -367,19 +368,19 @@ class EditLanguage extends SectionController
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
-            case 'revisions':
+            case 'ListTranslation-rev':
                 $language = $this->getLanguageModel();
                 $where = [
                     new DataBaseWhere('langcode', $language->langcode),
                     new DataBaseWhere('needsrevision', true)
                 ];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
-            case 'translations':
+            case 'ListTranslation':
                 $language = $this->getLanguageModel();
                 $where = [new DataBaseWhere('langcode', $language->langcode)];
-                $this->loadListSection($sectionName, $where);
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
     }
