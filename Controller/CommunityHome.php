@@ -56,6 +56,7 @@ class CommunityHome extends SectionController
         $this->addHtmlSection('home', 'home');
 
         $this->addListSection('ListIssue', 'Issue', 'issues', 'fas fa-question-circle', 'your');
+        $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
         $this->addSearchOptions('ListIssue', ['body', 'creationroute']);
         $this->addOrderOption('ListIssue', ['lastmod'], 'last-update', 2);
         $this->addOrderOption('ListIssue', ['creationdate'], 'date');
@@ -68,11 +69,13 @@ class CommunityHome extends SectionController
         $this->addButton('ListIssue', $contactButton);
 
         $this->addListSection('ListIssue-teams', 'Issue', 'issues', 'fas fa-question-circle', 'teams');
+        $this->sections['ListIssue-teams']->template = 'Section/Issues.html.twig';
         $this->addSearchOptions('ListIssue-teams', ['body', 'creationroute']);
         $this->addOrderOption('ListIssue-teams', ['lastmod'], 'last-update', 2);
         $this->addOrderOption('ListIssue-teams', ['creationdate'], 'date');
 
         $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt', 'teams');
+        $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
         $this->addSearchOptions('ListWebTeamLog', ['description']);
         $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
     }

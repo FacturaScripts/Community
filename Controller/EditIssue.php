@@ -167,12 +167,14 @@ class EditIssue extends SectionController
         $this->fixedSection();
         $this->addHtmlSection('issue', 'issue', 'Section/Issue');
 
-        $this->addListSection('comments', 'IssueComment', 'comments', 'fas fa-comments');
-        $this->addOrderOption('comments', ['creationdate'], 'date');
-        $this->addOrderOption('comments', ['idcontacto'], 'user');
-        ///$this->addButton('comments', $this->getIssue()->url('public'), 'reload', 'fas fa-sync');
+        $this->addListSection('ListIssueComment', 'IssueComment', 'comments', 'fas fa-comments');
+        $this->sections['ListIssueComment']->template = 'Section/IssueComments.html.twig';
+        $this->addOrderOption('ListIssueComment', ['creationdate'], 'date');
+        $this->addOrderOption('ListIssueComment', ['idcontacto'], 'user');
+        ///$this->addButton('ListIssueComment', $this->getIssue()->url('public'), 'reload', 'fas fa-sync');
 
         $this->addListSection('ListIssue', 'Issue', 'related', 'fas fa-question-circle');
+        $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
         $this->addSearchOptions('ListIssue', ['body', 'creationroute']);
         $this->addOrderOption('ListIssue', ['creationdate'], 'date', 2);
         $this->addOrderOption('ListIssue', ['lastmod'], 'last-update');
@@ -208,7 +210,7 @@ class EditIssue extends SectionController
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
-            case 'comments':
+            case 'ListIssueComment':
                 $issue = $this->getIssue();
                 $where = [new DataBaseWhere('idissue', $issue->idissue)];
                 $this->sections[$sectionName]->loadData('', $where);

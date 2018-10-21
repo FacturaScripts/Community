@@ -1,40 +1,44 @@
-<table class="table table-hover">
-    <thead>
-        <tr>
-            {% if 'team' not in fsc.sections | keys %}
-                <th>{{ i18n.trans('team') }}</th>
-                {% endif %}
-            <th>{{ i18n.trans('name') }}</th>
-            <th>{{ i18n.trans('description') }}</th>
-            <th class="text-right">{{ i18n.trans('date') }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% set section = fsc.getCurrentSection() %}
-        {% for log in section.cursor %}
+{% extends "Section/ListSection.html.twig" %}
+
+{% block sectionBody %}
+    <table class="table table-hover">
+        <thead>
             <tr>
                 {% if 'team' not in fsc.sections | keys %}
-                    <td>
-                        {% set team = log.getTeam() %}
-                        <a href="{{ team.url('public') }}">{{ team.name }}</a>
-                    </td>
-                {% endif %}
-                <td>{{ log.getContactName() }}</td>
-                <td>
-                    {% if log.link %}
-                        <a href="{{ asset(log.link) }}">{{ log.description }}</a>
-                    {% else %}
-                        {{ log.description }}
+                    <th>{{ i18n.trans('team') }}</th>
                     {% endif %}
-                </td>
-                <td class="text-right">{{ log.time }}</td>
+                <th>{{ i18n.trans('name') }}</th>
+                <th>{{ i18n.trans('description') }}</th>
+                <th class="text-right">{{ i18n.trans('date') }}</th>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="4" class="bg-warning">
-                    {{ i18n.trans('no-data') }}
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% set section = fsc.getCurrentSection() %}
+            {% for log in section.cursor %}
+                <tr>
+                    {% if 'team' not in fsc.sections | keys %}
+                        <td>
+                            {% set team = log.getTeam() %}
+                            <a href="{{ team.url('public') }}">{{ team.name }}</a>
+                        </td>
+                    {% endif %}
+                    <td>{{ log.getContactName() }}</td>
+                    <td>
+                        {% if log.link %}
+                            <a href="{{ asset(log.link) }}">{{ log.description }}</a>
+                        {% else %}
+                            {{ log.description }}
+                        {% endif %}
+                    </td>
+                    <td class="text-right">{{ log.time }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="bg-warning">
+                        {{ i18n.trans('no-data') }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

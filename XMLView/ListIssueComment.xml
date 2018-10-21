@@ -21,22 +21,23 @@
 
 <view>
     <columns>
-        <column name="code" display="none" order="100">
-            <widget type="text" fieldname="idteam" onclick="EditWebTeam" />
+        <column name="code" order="100">
+            <widget type="text" fieldname="idcomment" />
         </column>
-        <column name="name" order="110">
-            <widget type="text" fieldname="name" />
+        <column name="issue" order="110">
+            <widget type="select" fieldname="idissue">
+                <values source="issues" fieldcode="idissue" fieldtitle="idissue"></values>
+            </widget>
         </column>
-        <column name="description" order="120">
-            <widget type="text" fieldname="description" />
+        <column name="contact" order="120">
+            <widget type="select" fieldname="idcontacto" onclick="EditContacto">
+                <values source="contactos" fieldcode="idcontacto" fieldtitle="nombre"></values>
+            </widget>
         </column>
-        <column name="members" display="right" order="130">
-            <widget type="number" fieldname="nummembers" decimal="0" />
+        <column name="body" order="130">
+            <widget type="textarea" fieldname="body" />
         </column>
-        <column name="requests" display="right" order="140">
-            <widget type="number" fieldname="numrequests" decimal="0" />
-        </column>
-        <column name="creation-date" display="right" order="150">
+        <column name="creation-date" display="right" order="140">
             <widget type="date" fieldname="creationdate" />
         </column>
     </columns>
