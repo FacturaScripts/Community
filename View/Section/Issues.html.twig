@@ -1,7 +1,7 @@
 {% extends "Section/ListSection.html.twig" %}
 
 {% block sectionBody %}
-    <table class="table table-hover">
+    <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th>{{ i18n.trans('title') }}</th>
@@ -13,17 +13,15 @@
             {% for issue in section.cursor %}
                 <tr>
                     <td>
-                        #{{ issue.idissue }}
-                        <a href="{{ issue.url('public') }}">{{ issue.description() | raw }}</a>
-                        <br/>
                         {% if issue.closed %}
-                            <span class="label label-error">{{ i18n.trans('closed') }}</span>&nbsp;
+                            <i class="fas fa-lock fa-fw" aria-hidden="true" title="{{ i18n.trans('closed') }}"></i>
                         {% endif %}
-                        <small>
-                            {% if issue.lastcommidcontacto %}
-                                <i class="fa fa-comments-o" aria-hidden="true"></i> {{ issue.getLastCommentContact().fullName() }}
-                            {% endif %}
-                        </small>
+                        #{{ issue.idissue }} {{ issue.getContact().fullName() }}
+                        {% if issue.lastcommidcontacto %}
+                            <i class="fas fa-comments" aria-hidden="true"></i> {{ issue.getLastCommentContact().fullName() }}
+                        {% endif %}
+                        <br/>
+                        <a href="{{ issue.url('public') }}">{{ issue.description() | raw }}</a>
                     </td>
                     <td class="text-right">{{ issue.creationdate }}</td>
                 </tr>
