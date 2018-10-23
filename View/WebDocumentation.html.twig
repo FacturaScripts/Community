@@ -26,7 +26,7 @@
                     </ul>
                     {% if fsc.contact or fsc.user %}
                         <a class="btn" href="{{ asset('EditWebDocPage?idproject=' ~ fsc.currentProject.idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
-                            <i class="fa fa-file fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
+                            <i class="fas fa-file fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
                         </a>
                     {% endif %}
                 </div>
@@ -37,10 +37,10 @@
                         {% for project in fsc.projects %}
                             <li class="menu-item">
                                 {% if project.idproject == fsc.currentProject.idproject %}
-                                    <i class="fa fa-folder-open fa-fw" aria-hidden="true"></i> <b>{{ project.name }}</b>
+                                    <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i> <b>{{ project.name }}</b>
                                 {% else %}
                                     <a href="{{ asset(fsc.getProjectUrl(project)) }}">
-                                        <i class="fa fa-folder fa-fw" aria-hidden="true"></i> {{ project.name }}
+                                        <i class="fas fa-folder fa-fw" aria-hidden="true"></i> {{ project.name }}
                                     </a>
                                 {% endif %}
                             </li>

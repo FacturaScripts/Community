@@ -67,7 +67,8 @@ class CommunityHome extends SectionController
         $this->addSearchOptions('ListIssue-teams', ['body', 'creationroute']);
         $this->addOrderOption('ListIssue-teams', ['lastmod'], 'last-update', 2);
         $this->addOrderOption('ListIssue-teams', ['creationdate'], 'date');
-        
+
+        /// buttons
         $contactButton = [
             'action' => 'ContactForm',
             'icon' => 'fas fa-plus',
@@ -75,6 +76,20 @@ class CommunityHome extends SectionController
             'type' => 'link',
         ];
         $this->addButton('ListIssue-teams', $contactButton);
+
+        /// filters
+        $this->addFilterDatePicker('ListIssue-teams', 'fromdate', 'from-date', 'creationdate', '>=');
+        $this->addFilterDatePicker('ListIssue-teams', 'untildate', 'until-date', 'creationdate', '<=');
+
+        $teams = [];
+        foreach ($this->getTeamsMemberData() as $member) {
+            $team = $member->getTeam();
+            $teams[] = ['code' => $team->idteam, 'description' => $team->name,];
+        }
+        $this->addFilterSelect('ListIssue-teams', 'idteam', 'team', 'idteam', $teams);
+
+        $where = [new DataBaseWhere('closed', false)];
+        $this->addFilterCheckbox('ListIssue-teams', 'closed', 'closed', 'closed', '=', true, $where);
     }
 
     protected function createTeamLogSection()
@@ -102,11 +117,11 @@ class CommunityHome extends SectionController
     }
 
     /**
-     * Return a list of team memebers.
+     * Return the list of team member relations of this contact.
      *
      * @return WebTeamMember[]
      */
-    protected function getTeams(): array
+    protected function getTeamsMemberData(): array
     {
         $teamMember = new WebTeamMember();
         $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];
@@ -186,7 +201,7 @@ class CommunityHome extends SectionController
             /// no break
             case 'ListWebTeamLog':
                 $idTeams = [];
-                foreach ($this->getTeams() as $member) {
+                foreach ($this->getTeamsMemberData() as $member) {
                     if ($member->accepted) {
                         $idTeams[] = $member->idteam;
                     }

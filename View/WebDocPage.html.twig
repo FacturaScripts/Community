@@ -10,22 +10,22 @@
                     <div class="show-xs">
                         <div class="dropdown">
                             <a href="#" class="btn dropdown-toggle" tabindex="0">
-                                <i class="fa fa-book fa-fw" aria-hidden="true"></i>
+                                <i class="fas fa-book fa-fw" aria-hidden="true"></i>
                                 {{ i18n.trans('index') }}
-                                <i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+                                <i class="fas fa-caret-down fa-fw" aria-hidden="true"></i>
                             </a>
                             {{ macros.showIndexUlMenu(fsc.docIndex) }}
                         </div>
                         <br/><br/>
                     </div>
                     <a class="btn hide-xs" href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">
-                        <i class="fa fa-folder-open fa-fw" aria-hidden="true"></i> {{ fsc.currentProject.name }}
+                        <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i> {{ fsc.currentProject.name }}
                     </a>
                 </div>
                 {% if fsc.contact or fsc.user %}
                     <div class="column text-right">
                         <a href="{{ asset(fsc.docPage.url()) }}" class="btn">
-                            <i class="fa fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
+                            <i class="fas fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                         </a>
                     </div>
                 {% endif %}
@@ -46,7 +46,7 @@
                     {{ fsc.parsedown(fsc.docPage.body) | raw }}
                     {% if fsc.docPages is not empty %}
                         <h5>
-                            <i class="fa fa-folder-open fa-fw" aria-hidden="true"></i> {{ i18n.trans('even-more') }}:
+                            <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i> {{ i18n.trans('even-more') }}:
                         </h5>
                     {% endif %}
                     <ul>
@@ -58,7 +58,7 @@
                     </ul>
                     {% if fsc.contact or fsc.user %}
                         <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn">
-                            <i class="fa fa-file fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
+                            <i class="fas fa-file fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
                         </a>
                     {% endif %}
                 </div>

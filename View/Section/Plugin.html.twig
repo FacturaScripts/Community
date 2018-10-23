@@ -4,7 +4,7 @@
 <div class="container">
     <div class="columns">
         <div class="column col-2 col-xs-12 text-right">
-            <i class="fa fa-plug fa-5x fa-fw" aria-hidden="true"></i>
+            <i class="fas fa-plug fa-5x fa-fw" aria-hidden="true"></i>
         </div>
         <div class="column col-10 col-xs-12">
             <h1 class="h3">
@@ -21,7 +21,7 @@
     <div class="columns">
         <div class="column col-2">
             <a href="{{ plugin.url('public-list') }}" class="btn">
-                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
                 <span class="hide-xs">{{ i18n.trans('all') }}</span>
             </a>
         </div>
@@ -31,7 +31,7 @@
         <div class="column text-right">
             {% if fsc.contactCanEdit() %}
                 <a href="#" class="btn" onclick="return showModal('editPluginModal');">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
+                    <i class="fas fa-edit" aria-hidden="true"></i>
                     <span class="hide-xs">{{ i18n.trans('edit') }}</span>
                 </a>
             {% endif %}

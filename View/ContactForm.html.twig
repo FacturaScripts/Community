@@ -18,7 +18,7 @@
 {% macro showFormTrees(fsc, i18n) %}
     {% if fsc.currentTree %}
         <h1 class="h2">
-            <i class="fa {{ fsc.currentTree.icon }}" aria-hidden="true"></i> {{ fsc.currentTree.title }}
+            <i class="{{ fsc.currentTree.icon }}" aria-hidden="true"></i> {{ fsc.currentTree.title }}
         </h1>
         {{ fsc.currentTree.body() | raw }}
     {% else %}
@@ -28,13 +28,13 @@
     <dl>
         {% for action in fsc.endActions %}
             <dd>
-                <i class="fa {{ action.icon }} fa-fw" aria-hidden="true"></i> <a href="{{ action.link }}">{{ action.title }}</a>
+                <i class="{{ action.icon }} fa-fw" aria-hidden="true"></i> <a href="{{ action.link }}">{{ action.title }}</a>
                 <small>{{ action.observations }}</small>
             </dd>
         {% endfor %}
         {% for tree in fsc.formTrees %}
             <dd>
-                <i class="fa {{ tree.icon }} fa-fw" aria-hidden="true"></i> <a href="{{ tree.url('public') }}">{{ tree.title }}</a>
+                <i class="{{ tree.icon }} fa-fw" aria-hidden="true"></i> <a href="{{ tree.url('public') }}">{{ tree.title }}</a>
                 {% if fsc.user %}
                     <span class="label">{{ tree.visitcount }}</span>
                 {% endif %}
