@@ -43,6 +43,48 @@ class CommunityHome extends SectionController
         }
     }
 
+    protected function createMyIssuesSection()
+    {
+        $this->addListSection('ListIssue', 'Issue', 'issues', 'fas fa-question-circle', 'your');
+        $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
+        $this->addSearchOptions('ListIssue', ['body', 'creationroute']);
+        $this->addOrderOption('ListIssue', ['lastmod'], 'last-update', 2);
+        $this->addOrderOption('ListIssue', ['creationdate'], 'date');
+
+        $contactButton = [
+            'action' => 'ContactForm',
+            'icon' => 'fas fa-plus',
+            'label' => 'new',
+            'type' => 'link',
+        ];
+        $this->addButton('ListIssue', $contactButton);
+    }
+
+    protected function createTeamIssuesSection()
+    {
+        $this->addListSection('ListIssue-teams', 'Issue', 'issues', 'fas fa-question-circle', 'teams');
+        $this->sections['ListIssue-teams']->template = 'Section/Issues.html.twig';
+        $this->addSearchOptions('ListIssue-teams', ['body', 'creationroute']);
+        $this->addOrderOption('ListIssue-teams', ['lastmod'], 'last-update', 2);
+        $this->addOrderOption('ListIssue-teams', ['creationdate'], 'date');
+        
+        $contactButton = [
+            'action' => 'ContactForm',
+            'icon' => 'fas fa-plus',
+            'label' => 'new',
+            'type' => 'link',
+        ];
+        $this->addButton('ListIssue-teams', $contactButton);
+    }
+
+    protected function createTeamLogSection()
+    {
+        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt', 'teams');
+        $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
+        $this->addSearchOptions('ListWebTeamLog', ['description']);
+        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
+    }
+
     /**
      * Load sections to the view.
      */
@@ -54,30 +96,9 @@ class CommunityHome extends SectionController
         }
 
         $this->addHtmlSection('home', 'home');
-
-        $this->addListSection('ListIssue', 'Issue', 'issues', 'fas fa-question-circle', 'your');
-        $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
-        $this->addSearchOptions('ListIssue', ['body', 'creationroute']);
-        $this->addOrderOption('ListIssue', ['lastmod'], 'last-update', 2);
-        $this->addOrderOption('ListIssue', ['creationdate'], 'date');
-        $contactButton = [
-            'action' => 'ContactForm',
-            'icon' => 'fas fa-plus',
-            'label' => 'new',
-            'type' => 'link',
-        ];
-        $this->addButton('ListIssue', $contactButton);
-
-        $this->addListSection('ListIssue-teams', 'Issue', 'issues', 'fas fa-question-circle', 'teams');
-        $this->sections['ListIssue-teams']->template = 'Section/Issues.html.twig';
-        $this->addSearchOptions('ListIssue-teams', ['body', 'creationroute']);
-        $this->addOrderOption('ListIssue-teams', ['lastmod'], 'last-update', 2);
-        $this->addOrderOption('ListIssue-teams', ['creationdate'], 'date');
-
-        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt', 'teams');
-        $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
-        $this->addSearchOptions('ListWebTeamLog', ['description']);
-        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
+        $this->createMyIssuesSection();
+        $this->createTeamIssuesSection();
+        $this->createTeamLogSection();
     }
 
     /**
