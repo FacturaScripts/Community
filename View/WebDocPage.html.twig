@@ -24,7 +24,7 @@
                 </div>
                 {% if fsc.contact or fsc.user %}
                     <div class="column text-right">
-                        <a href="{{ asset(fsc.docPage.url()) }}" class="btn">
+                        <a href="{{ asset(fsc.docPage.url()) }}" class="btn btn-success">
                             <i class="fas fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                         </a>
                     </div>
@@ -57,7 +57,7 @@
                         {% endfor %}
                     </ul>
                     {% if fsc.contact or fsc.user %}
-                        <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn">
+                        <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn btn-success">
                             <i class="fas fa-file fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
                         </a>
                     {% endif %}

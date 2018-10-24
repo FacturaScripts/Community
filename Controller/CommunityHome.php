@@ -53,6 +53,7 @@ class CommunityHome extends SectionController
 
         $contactButton = [
             'action' => 'ContactForm',
+            'color' => 'success',
             'icon' => 'fas fa-plus',
             'label' => 'new',
             'type' => 'link',
@@ -71,6 +72,7 @@ class CommunityHome extends SectionController
         /// buttons
         $contactButton = [
             'action' => 'ContactForm',
+            'color' => 'success',
             'icon' => 'fas fa-plus',
             'label' => 'new',
             'type' => 'link',

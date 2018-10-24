@@ -100,6 +100,10 @@ class ViewPlugin extends SectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('plugin', 'plugin', 'Section/Plugin');
+        $project = $this->getProject();
+        $this->addNavigationLink($project->url('public-list'), $this->i18n->trans('plugins'));
+        $this->addNavigationLink($project->url('public-list') . '#2018', '2018');
+
         $this->addHtmlSection('docs', 'documentation', 'Section/Documentation');
     }
 

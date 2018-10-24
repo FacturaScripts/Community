@@ -43,6 +43,7 @@ class TranslationList extends SectionController
         if ($this->contact) {
             $addButton = [
                 'action' => 'AddTranslation',
+                'color' => 'success',
                 'icon' => 'fas fa-plus',
                 'label' => 'new',
                 'type' => 'link',

@@ -70,10 +70,16 @@ class EditTranslation extends SectionController
         }
 
         // This language has a mantainer?
+        $language = $this->getLanguageModel();
+        return !($language->idcontacto && $language->idcontacto !== $this->contact->idcontacto);
+    }
+
+    public function getLanguageModel(): Language
+    {
         $translation = $this->getTranslationModel();
         $language = new Language();
         $language->loadFromCode($translation->langcode);
-        return !($language->idcontacto && $language->idcontacto !== $this->contact->idcontacto);
+        return $language;
     }
 
     /**
@@ -129,6 +135,9 @@ class EditTranslation extends SectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('translation', 'translation', 'Section/Translation');
+        $language = $this->getLanguageModel();
+        $this->addNavigationLink($language->url('public-list'), $this->i18n->trans('translations'));
+        $this->addNavigationLink($language->url('public'), $language->description);
 
         $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
         $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);

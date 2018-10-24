@@ -166,6 +166,8 @@ class EditLanguage extends SectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('language', 'language', 'Section/Language');
+        $language = $this->getLanguageModel();
+        $this->addNavigationLink($language->url('public-list'), $this->i18n->trans('languages'));
 
         $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
         $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
@@ -351,7 +353,7 @@ class EditLanguage extends SectionController
                 $json[$transParent->name] = Utils::fixHtml($transParent->translation);
             }
         }
-        
+
         $where = [new DataBaseWhere('langcode', $language->langcode)];
         foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $trans) {
             $json[$trans->name] = Utils::fixHtml($trans->translation);

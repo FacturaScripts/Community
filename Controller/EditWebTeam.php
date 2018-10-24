@@ -150,15 +150,20 @@ class EditWebTeam extends SectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('team', 'team', 'Section/Team');
+        $team = $this->getTeam();
+        $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
 
         $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
+        $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
         $this->addSearchOptions('ListWebTeamLog', ['description']);
         $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
 
         $this->addListSection('ListWebTeamMember', 'WebTeamMember', 'members', 'fas fa-users');
+        $this->sections['ListWebTeamMember']->template = 'Section/TeamMembers.html.twig';
         $this->addOrderOption('ListWebTeamMember', ['creationdate'], 'date', 2);
 
         $this->addListSection('ListWebTeamMember-req', 'WebTeamMember', 'requests', 'fas fa-address-card');
+        $this->sections['ListWebTeamMember-req']->template = 'Section/TeamMembers.html.twig';
         $this->addOrderOption('ListWebTeamMember-req', ['creationdate'], 'date', 2);
     }
 
