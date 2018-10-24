@@ -113,9 +113,7 @@ class AddTranslation extends PortalController
     protected function newTranslation(): bool
     {
         $name = $this->request->get('name', '');
-        $description = $this->request->get('description', '');
-        $translation = $this->request->get('translation', '');
-        if (empty($name) || empty($description) || empty($translation)) {
+        if (empty($name)) {
             return false;
         }
 
@@ -126,11 +124,11 @@ class AddTranslation extends PortalController
             }
 
             $newTrans = new Translation();
-            $newTrans->description = $description;
+            $newTrans->description = $name;
             $newTrans->idproject = (int) AppSettings::get('community', 'idproject');
             $newTrans->langcode = $language->langcode;
             $newTrans->name = $name;
-            $newTrans->translation = $translation;
+            $newTrans->translation = $name;
             if (!$newTrans->save()) {
                 return false;
             }

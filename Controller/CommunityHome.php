@@ -100,6 +100,17 @@ class CommunityHome extends SectionController
         $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
         $this->addSearchOptions('ListWebTeamLog', ['description']);
         $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
+
+        /// filters
+        $this->addFilterDatePicker('ListWebTeamLog', 'fromdate', 'from-date', 'creationdate', '>=');
+        $this->addFilterDatePicker('ListWebTeamLog', 'untildate', 'until-date', 'creationdate', '<=');
+
+        $teams = [];
+        foreach ($this->getTeamsMemberData() as $member) {
+            $team = $member->getTeam();
+            $teams[] = ['code' => $team->idteam, 'description' => $team->name,];
+        }
+        $this->addFilterSelect('ListWebTeamLog', 'idteam', 'team', 'idteam', $teams);
     }
 
     /**
