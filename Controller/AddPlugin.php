@@ -130,6 +130,7 @@ class AddPlugin extends PortalController
 
         $project = new WebProject();
         if ($project->loadFromCode($name)) {
+            $this->response->headers->set('Refresh', '0; ' . $project->url('public'));
             return false;
         }
 
