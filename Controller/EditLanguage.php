@@ -152,6 +152,7 @@ class EditLanguage extends SectionController
         $this->createSectionTranslations();
         $this->createSectionRevisions();
 
+        /// admin
         if ($this->contactCanEdit()) {
             $this->addEditSection('EditLanguage', 'Language', 'edit', 'fas fa-edit', 'admin');
         }

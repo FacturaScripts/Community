@@ -95,6 +95,7 @@ class ViewPlugin extends SectionController
 
         $this->addHtmlSection('docs', 'documentation', 'Section/Documentation');
 
+        /// admin
         if ($this->contactCanEdit()) {
             $this->addEditSection('EditWebProject', 'WebProject', 'edit', 'fas fa-edit', 'admin');
         }

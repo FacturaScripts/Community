@@ -39,6 +39,18 @@ class PluginList extends SectionController
         $this->addOrderOption('ListWebProject', ['LOWER(name)'], 'name', 1);
         $this->addSearchOptions('ListWebProject', ['name', 'description']);
 
+        /// buttons
+        $button = [
+            'action' => 'AddPlugin',
+            'color' => 'success',
+            'icon' => 'fas fa-plus',
+            'label' => 'new',
+            'type' => 'link'
+        ];
+        if ($this->contact) {
+            $this->addButton('ListWebProject', $button);
+        }
+
         /// your plugins
         if ($this->contact) {
             $this->addListSection('ListWebProject-you', 'WebProject', 'your', 'fas fa-plug', '2018');
@@ -46,13 +58,6 @@ class PluginList extends SectionController
             $this->addSearchOptions('ListWebProject-you', ['name', 'description']);
 
             /// buttons
-            $button = [
-                'action' => 'AddPlugin',
-                'color' => 'success',
-                'icon' => 'fas fa-plus',
-                'label' => 'new',
-                'type' => 'link'
-            ];
             $this->addButton('ListWebProject-you', $button);
         }
     }
