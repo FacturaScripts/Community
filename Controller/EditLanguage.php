@@ -60,7 +60,8 @@ class EditLanguage extends SectionController
             return true;
         }
 
-        return false;
+        $language = $this->getLanguageModel();
+        return ($language->idcontacto === $this->contact->idcontacto);
     }
 
     /**
@@ -111,28 +112,6 @@ class EditLanguage extends SectionController
     }
 
     /**
-     * Returns a list of team members for this language.
-     *
-     * @return array
-     */
-    public function getTeamMembers(): array
-    {
-        $idteamtra = AppSettings::get('community', 'idteamtra');
-        $memberModel = new WebTeamMember();
-        $where = [
-            new DataBaseWhere('idteam', $idteamtra),
-            new DataBaseWhere('accepted', true),
-        ];
-
-        $values = [];
-        foreach ($memberModel->all($where, [], 0, 0) as $member) {
-            $values[] = $member->getContact();
-        }
-
-        return $values;
-    }
-
-    /**
      * Check available translations with translation name.
      *
      * @param Language $language
@@ -165,62 +144,52 @@ class EditLanguage extends SectionController
     protected function createSections()
     {
         $this->fixedSection();
+
         $this->addHtmlSection('language', 'language', 'Section/Language');
         $language = $this->getLanguageModel();
-        $this->addNavigationLink($language->url('public-list'), $this->i18n->trans('languages'));
+        $this->addNavigationLink($language->url('public-list') . '?activetab=ListLanguage', $this->i18n->trans('languages'));
 
-        $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
-        $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
-        $this->addOrderOption('ListTranslation', ['name'], 'code', 1);
-        $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update');
+        $this->createSectionTranslations();
+        $this->createSectionRevisions();
 
-        if ($this->user) {
-            $language = $this->getLanguageModel();
-            //$this->addButton('ListTranslation', $language->url() . '&action=import-trans', 'import', '');
+        if ($this->contactCanEdit()) {
+            $this->addEditSection('EditLanguage', 'Language', 'edit', 'fas fa-edit', 'admin');
         }
-        //$this->addButton('ListTranslation', 'AddTranslation', 'new', '');
+    }
 
+    protected function createSectionRevisions()
+    {
         $this->addListSection('ListTranslation-rev', 'Translation', 'needs-revisions', 'fas fa-eye');
         $this->addSearchOptions('ListTranslation-rev', ['name', 'description', 'translation']);
         $this->addOrderOption('ListTranslation-rev', ['name'], 'code', 1);
         $this->addOrderOption('ListTranslation-rev', ['lastmod'], 'last-update');
     }
 
-    /**
-     * Code for delete action.
-     */
-    protected function deleteAction()
+    protected function createSectionTranslations()
     {
-        if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-delete'));
-            return;
-        }
+        $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
+        $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
+        $this->addOrderOption('ListTranslation', ['name'], 'code', 1);
+        $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update');
 
-        $language = $this->getLanguageModel();
-        if ($language->delete()) {
-            $this->miniLog->info($this->i18n->trans('record-deleted-correctly'));
-        }
-    }
+        /// buttons
+        $button = [
+            'action' => 'AddTranslation',
+            'color' => 'success',
+            'icon' => 'fas fa-plus',
+            'label' => 'new',
+            'type' => 'link',
+        ];
+        $this->addButton('ListTranslation', $button);
 
-    /**
-     * Code for edit action.
-     */
-    protected function editAction()
-    {
-        if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
-            return;
-        }
-
-        $language = $this->getLanguageModel();
-        $language->description = $this->request->request->get('description', '');
-        $language->idcontacto = ('' === $this->request->request->get('idcontacto', '')) ? null : $this->request->request->get('idcontacto', '');
-        $language->parentcode = ('' === $this->request->request->get('parentcode', '')) ? null : $this->request->request->get('parentcode', '');
-
-        if ($language->save()) {
-            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
-        } else {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        if ($this->user) {
+            $language = $this->getLanguageModel();
+            $button = [
+                'action' => $language->url(),
+                'label' => 'import',
+                'type' => 'link',
+            ];
+            $this->addButton('ListTranslation', $button);
         }
     }
 
@@ -234,14 +203,6 @@ class EditLanguage extends SectionController
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
-            case 'delete':
-                $this->deleteAction();
-                return true;
-
-            case 'edit':
-                $this->editAction();
-                return true;
-
             case 'import-trans':
                 $this->importTranslationsAction();
                 return true;
@@ -369,9 +330,13 @@ class EditLanguage extends SectionController
      */
     protected function loadData(string $sectionName)
     {
+        $language = $this->getLanguageModel();
         switch ($sectionName) {
+            case 'EditLanguage':
+                $this->sections[$sectionName]->loadData($language->primaryColumnValue());
+                break;
+
             case 'ListTranslation-rev':
-                $language = $this->getLanguageModel();
                 $where = [
                     new DataBaseWhere('langcode', $language->langcode),
                     new DataBaseWhere('needsrevision', true)
@@ -380,7 +345,6 @@ class EditLanguage extends SectionController
                 break;
 
             case 'ListTranslation':
-                $language = $this->getLanguageModel();
                 $where = [new DataBaseWhere('langcode', $language->langcode)];
                 $this->sections[$sectionName]->loadData('', $where);
                 break;

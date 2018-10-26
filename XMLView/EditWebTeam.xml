@@ -16,30 +16,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * @author Carlos García Gómez <carlos@facturascripts.com>
+ * @author Carlos García Gómez <carlos@facturascripts.com>  
 -->
 
 <view>
     <columns>
         <group name="data" numcolumns="12">
-            <column name="name" numcolumns="2" order="100">
-                <widget type="text" fieldname="name" required="true" />
+            <column name="name" order="100">
+                <widget type="text" fieldname="name" />
             </column>
-            <column name="public-repository" numcolumns="6" order="110">
-                <widget type="text" fieldname="publicrepo" />
-            </column>
-            <column name="admin" numcolumns="2" order="120">
-                <widget type="autocomplete" fieldname="idcontacto" required="true">
+            <column name="admin" order="110">
+                <widget type="autocomplete" fieldname="idcontacto">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
-            <column name="date" numcolumns="2" order="130">
-                <widget type="date" fieldname="creationdate" required="true" />
+            <column name="members" display="right" order="120">
+                <widget type="number" fieldname="nummembers" decimal="0" readonly="true" />
+            </column>
+            <column name="requests" display="right" order="130">
+                <widget type="number" fieldname="numrequests" decimal="0" readonly="true" />
+            </column>
+            <column name="creation-date" display="right" order="140">
+                <widget type="date" fieldname="creationdate" />
             </column>
         </group>
-        <group name="description" numcolumns="12">
-            <column name="description" numcolumns="12" order="100">
-                <widget type="textarea" fieldname="description" required="true" />
+        <group name="notes" numcolumns="12">
+            <column name="description" order="150">
+                <widget type="textarea" fieldname="description" />
             </column>
         </group>
     </columns>

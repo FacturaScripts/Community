@@ -18,7 +18,7 @@
 </ul>
 
 {% if fsc.contactCanEdit() %}
-    <a class="btn" href="{{ asset('EditWebDocPage?idproject=' ~ fsc.getProject().idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
+    <a class="btn btn-success" href="{{ asset('EditWebDocPage?idproject=' ~ fsc.getProject().idproject ~ '&langcode=' ~ fsc.webPage.langcode) }}">
         <i class="fas fa-file fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
     </a>
 {% endif %}

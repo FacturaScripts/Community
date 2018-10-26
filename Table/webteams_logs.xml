@@ -38,4 +38,8 @@
         <name>webteams_logs_pkey</name>
         <type>PRIMARY KEY (id)</type>
     </constraint>
+    <constraint>
+        <name>ca_webteams_logs_contactos</name>
+        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
 </table>

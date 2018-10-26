@@ -32,6 +32,7 @@ class WebTeam extends Base\ModelClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      * Creation date.

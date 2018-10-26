@@ -57,15 +57,8 @@ class EditWebTeam extends SectionController
             return false;
         }
 
-        $member = new WebTeamMember();
         $team = $this->getTeam();
-        $where = [
-            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $team->idteam),
-            new DataBaseWhere('accepted', true)
-        ];
-
-        return $member->loadFromCode('', $where);
+        return ($team->idcontacto === $this->contact->idcontacto);
     }
 
     /**
@@ -165,23 +158,10 @@ class EditWebTeam extends SectionController
         $this->addListSection('ListWebTeamMember-req', 'WebTeamMember', 'requests', 'fas fa-address-card');
         $this->sections['ListWebTeamMember-req']->template = 'Section/TeamMembers.html.twig';
         $this->addOrderOption('ListWebTeamMember-req', ['creationdate'], 'date', 2);
-    }
 
-    /**
-     * Code for edit action.
-     */
-    protected function editAction()
-    {
-        if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
-            return;
-        }
-
-        $this->team->description = $this->request->get('description', '');
-        if ($this->team->save()) {
-            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
-        } else {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        /// admin
+        if ($this->contactCanEdit()) {
+            $this->addEditSection('EditWebTeam', 'WebTeam', 'edit', 'fas fa-edit', 'admin');
         }
     }
 
@@ -200,9 +180,8 @@ class EditWebTeam extends SectionController
                 $this->team->save();
                 break;
 
-            case 'edit':
-                $this->editAction();
-                break;
+            default:
+                parent::execAfterAction($action);
         }
     }
 
@@ -229,7 +208,7 @@ class EditWebTeam extends SectionController
                 break;
         }
 
-        return true;
+        return parent::execPreviousAction($action);
     }
 
     /**
@@ -267,10 +246,7 @@ class EditWebTeam extends SectionController
      */
     protected function leaveAction()
     {
-        if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
-            return;
-        } elseif (empty($this->contact)) {
+        if (empty($this->contact)) {
             return;
         }
 
@@ -305,6 +281,10 @@ class EditWebTeam extends SectionController
     {
         $team = $this->getTeam();
         switch ($sectionName) {
+            case 'EditWebTeam':
+                $this->sections[$sectionName]->loadData($team->primaryColumnValue());
+                break;
+
             case 'ListWebTeamLog':
                 $where = [new DataBaseWhere('idteam', $team->idteam)];
                 $this->sections[$sectionName]->loadData('', $where);

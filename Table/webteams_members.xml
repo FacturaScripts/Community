@@ -39,7 +39,7 @@
         <type>UNIQUE (idteam,idcontacto)</type>
     </constraint>
     <constraint>
-        <name>ca_webteams_contactos</name>
+        <name>ca_webteams_members_contactos</name>
         <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
 </table>

@@ -15,6 +15,10 @@
         <type>text</type>
     </column>
     <column>
+        <name>idcontacto</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>idteam</name>
         <type>serial</type>
         <null>NO</null>
@@ -35,6 +39,10 @@
     <constraint>
         <name>webteams_pkey</name>
         <type>PRIMARY KEY (idteam)</type>
+    </constraint>
+    <constraint>
+        <name>ca_webteams_contactos</name>
+        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
         <name>uniq_webteams</name>

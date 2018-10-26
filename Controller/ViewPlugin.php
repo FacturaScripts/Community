@@ -55,19 +55,8 @@ class ViewPlugin extends SectionController
             return false;
         }
 
-        $idteamdev = AppSettings::get('community', 'idteamdev', '');
-        if (empty($idteamdev)) {
-            return false;
-        }
-
-        $member = new WebTeamMember();
-        $where = [
-            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $idteamdev),
-            new DataBaseWhere('accepted', true)
-        ];
-
-        return $member->loadFromCode('', $where);
+        $project = $this->getProject();
+        return ($this->contact->idcontacto === $project->idcontacto);
     }
 
     /**
@@ -102,41 +91,12 @@ class ViewPlugin extends SectionController
         $this->addHtmlSection('plugin', 'plugin', 'Section/Plugin');
         $project = $this->getProject();
         $this->addNavigationLink($project->url('public-list'), $this->i18n->trans('plugins'));
-        $this->addNavigationLink($project->url('public-list') . '#2018', '2018');
+        $this->addNavigationLink($project->url('public-list') . '?activetab=ListWebProject', '2018');
 
         $this->addHtmlSection('docs', 'documentation', 'Section/Documentation');
-    }
 
-    /**
-     * Code for edit action.
-     */
-    protected function editAction()
-    {
-        if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
-            return;
-        }
-
-        $this->project->description = $this->request->get('description', '');
-        $this->project->publicrepo = $this->request->get('publicrepo', '');
-        if ($this->project->save()) {
-            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
-        } else {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
-        }
-    }
-
-    /**
-     * Runs the controller actions after data read.
-     *
-     * @param string $action
-     */
-    protected function execAfterAction(string $action)
-    {
-        switch ($action) {
-            case 'edit':
-                $this->editAction();
-                break;
+        if ($this->contactCanEdit()) {
+            $this->addEditSection('EditWebProject', 'WebProject', 'edit', 'fas fa-edit', 'admin');
         }
     }
 
@@ -147,14 +107,18 @@ class ViewPlugin extends SectionController
      */
     protected function loadData(string $sectionName)
     {
+        $project = $this->getProject();
         switch ($sectionName) {
             case 'docs':
-                $project = $this->getProject();
                 $where = [
                     new DataBaseWhere('idproject', $project->idproject),
                     new DataBaseWhere('idparent', null, 'IS'),
                 ];
                 $this->sections[$sectionName]->loadData('', $where);
+                break;
+
+            case 'EditWebProject':
+                $this->sections[$sectionName]->loadData($project->primaryColumnValue());
                 break;
 
             case 'plugin':

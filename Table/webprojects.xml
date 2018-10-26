@@ -42,6 +42,10 @@
         <type>PRIMARY KEY (idproject)</type>
     </constraint>
     <constraint>
+        <name>ca_webprojects_contactos</name>
+        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
         <name>uniq_webprojects</name>
         <type>UNIQUE (name)</type>
     </constraint>
