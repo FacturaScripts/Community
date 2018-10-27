@@ -15,17 +15,16 @@
                     <br/><b>{{ i18n.trans('admin') }}</b>: {{ team.getContactName() }}
                 {% endif %}
             </p>
-        </div>
-    </div>
-    <div class="columns">
-        <div class="column col-2">
-        </div>
-        <div class="column">
-            {% if fsc.showJoinButton() %}
+            {% set status = fsc.getMemberStatus() %}
+            {% if status == 'out' %}
                 <a href="{{ team.url('public') }}?action=join" class="btn btn-success">
                     <i class="fas fa-sign-in-alt" aria-hidden="true"></i> {{ i18n.trans('join-team', {'%team%': team.name}) }}
                 </a>
-            {% elseif fsc.contact %}
+            {% elseif status == 'pending' %}
+                <a href="{{ team.url('public') }}" class="btn btn-success">
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i> {{ i18n.trans('request-send') }}
+                </a>
+            {% elseif status == 'in' %}
                 <a href="{{ team.url('public') }}?action=leave" class="btn btn-error">
                     <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ i18n.trans('leave-team') }}
                 </a>

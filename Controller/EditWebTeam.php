@@ -62,6 +62,31 @@ class EditWebTeam extends SectionController
     }
 
     /**
+     * Returns the status of this contact in this team: in|pendirg|out.
+     *
+     * @return string
+     */
+    public function getMemberStatus()
+    {
+        if (null === $this->contact) {
+            return 'out';
+        }
+
+        $member = new WebTeamMember();
+        $team = $this->getTeam();
+        $where = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+            new DataBaseWhere('idteam', $team->idteam),
+        ];
+
+        if ($member->loadFromCode('', $where)) {
+            return $member->accepted ? 'in' : 'pending';
+        }
+
+        return 'out';
+    }
+
+    /**
      * Return the team details.
      *
      * @return WebTeam
@@ -82,27 +107,6 @@ class EditWebTeam extends SectionController
         $uri = explode('/', $this->uri);
         $team->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
         return $team;
-    }
-
-    /**
-     * Returns if the join button must be showed for the current contact.
-     *
-     * @return bool
-     */
-    public function showJoinButton(): bool
-    {
-        if (null === $this->contact) {
-            return false;
-        }
-
-        $member = new WebTeamMember();
-        $team = $this->getTeam();
-        $where = [
-            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $team->idteam),
-        ];
-
-        return !$member->loadFromCode('', $where);
     }
 
     /**
@@ -216,7 +220,7 @@ class EditWebTeam extends SectionController
      */
     protected function joinAction()
     {
-        if (null === $this->contact) {
+        if (empty($this->contact)) {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
             return;
         }
