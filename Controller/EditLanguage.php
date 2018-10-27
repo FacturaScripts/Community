@@ -60,6 +60,10 @@ class EditLanguage extends SectionController
             return true;
         }
 
+        if (null === $this->contact) {
+            return false;
+        }
+
         $language = $this->getLanguageModel();
         return ($language->idcontacto === $this->contact->idcontacto);
     }

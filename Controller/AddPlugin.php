@@ -19,96 +19,29 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
-use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebProject;
-use FacturaScripts\Plugins\Community\Model\WebTeam;
-use FacturaScripts\Plugins\Community\Model\WebTeamLog;
-use FacturaScripts\Plugins\Community\Model\WebTeamMember;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
-use Symfony\Component\HttpFoundation\Response;
+use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 
 /**
  * This class allow us to manage new plugins.
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class AddPlugin extends PortalController
+class AddPlugin extends PortalControllerWizard
 {
-
-    /**
-     * * Runs the controller's private logic.
-     *
-     * @param Response              $response
-     * @param User                  $user
-     * @param ControllerPermissions $permissions
-     */
-    public function privateCore(&$response, $user, $permissions)
-    {
-        parent::privateCore($response, $user, $permissions);
-        $this->commonCore();
-    }
-
-    /**
-     * Execute the public part of the controller.
-     *
-     * @param Response $response
-     */
-    public function publicCore(&$response)
-    {
-        parent::publicCore($response);
-        $this->commonCore();
-    }
 
     /**
      * Execute common code between private and public core.
      */
     protected function commonCore()
     {
-        if (empty($this->contact) && !$this->user) {
-            $this->setTemplate('Master/LoginToContinue');
-            return;
-        }
+        $this->setTemplate('AddPlugin');
 
         $name = $this->request->get('name', '');
-        if ('' !== $name && $this->newPlugin($name)) {
-            return;
+        if (!empty($name)) {
+            $this->newPlugin($name);
         }
-
-        $this->setTemplate('AddPlugin');
-    }
-
-    /**
-     * Return true if contact can add new plugins.
-     * If is a user, or is a accepted team member contact, can add new plugins, otherwise can't.
-     *
-     *
-     * @return bool
-     */
-    protected function contactCanAdd(): bool
-    {
-        if ($this->user) {
-            return true;
-        }
-
-        if (null === $this->contact) {
-            return false;
-        }
-
-        $idteamdev = AppSettings::get('community', 'idteamdev', '');
-        if (empty($idteamdev)) {
-            return false;
-        }
-
-        $member = new WebTeamMember();
-        $where = [
-            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $idteamdev),
-            new DataBaseWhere('accepted', true)
-        ];
-
-        return $member->loadFromCode('', $where);
     }
 
     /**
@@ -120,49 +53,36 @@ class AddPlugin extends PortalController
      */
     protected function newPlugin(string $name): bool
     {
-        if (!$this->contactCanAdd()) {
-            $idteamdev = AppSettings::get('community', 'idteamdev', '');
-            $team = new WebTeam();
-            $team->loadFromCode($idteamdev);
-            $this->miniLog->error($this->i18n->trans('join-team', ['%team%' => $team->name]));
+        /// contact is in dev team?
+        $idteamdev = AppSettings::get('community', 'idteamdev', '');
+        if (!$this->contactInTeam($idteamdev)) {
+            $this->contactNotInTeamError($idteamdev);
             return false;
         }
 
+        /// plugin exist?
         $project = new WebProject();
-        if ($project->loadFromCode($name)) {
+        $where = [new DataBaseWhere('name', $name)];
+        if ($project->loadFromCode('', $where)) {
+            /// redir to existing plugin
             $this->response->headers->set('Refresh', '0; ' . $project->url('public'));
             return false;
         }
 
+        /// save new plugin
         $project->name = $name;
         $project->description = $name;
-        $project->idcontacto = empty($this->contact) ? null : $this->contact->idcontacto;
+        $project->idcontacto = $this->contact->idcontacto;
         if ($project->save()) {
-            $this->saveTeamLog($project);
-            $this->response->headers->set('Refresh', '0; ' . $project->url('public'));
+            $description = $this->i18n->trans('new-plugin', ['%pluginName%' => $project->name]);
+            $link = $project->url('public');
+            $this->saveTeamLog($idteamdev, $description, $link);
+
+            /// redir to new plugin
+            $this->response->headers->set('Refresh', '0; ' . $link);
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * Store a log detail for the plugin.
-     *
-     * @param WebProject $plugin
-     */
-    protected function saveTeamLog(WebProject $plugin)
-    {
-        $idteamdev = AppSettings::get('community', 'idteamdev', '');
-        if (empty($idteamdev)) {
-            return;
-        }
-
-        $teamLog = new WebTeamLog();
-        $teamLog->description = $this->i18n->trans('new-plugin', ['%pluginName%' => $plugin->name]);
-        $teamLog->idcontacto = $plugin->idcontacto;
-        $teamLog->idteam = $idteamdev;
-        $teamLog->link = $plugin->url('public');
-        $teamLog->save();
     }
 }

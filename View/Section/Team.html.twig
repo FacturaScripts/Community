@@ -23,7 +23,7 @@
         <div class="column">
             {% if fsc.showJoinButton() %}
                 <a href="{{ team.url('public') }}?action=join" class="btn btn-success">
-                    <i class="fas fa-sign-in" aria-hidden="true"></i> {{ i18n.trans('join-team') }}
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i> {{ i18n.trans('join-team', {'%team%': team.name}) }}
                 </a>
             {% elseif fsc.contact %}
                 <a href="{{ team.url('public') }}?action=leave" class="btn btn-error">

@@ -19,23 +19,23 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
-use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
-use FacturaScripts\Plugins\Community\Model\WebTeam;
-use FacturaScripts\Plugins\Community\Model\WebTeamLog;
-use FacturaScripts\Plugins\Community\Model\WebTeamMember;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
-use Symfony\Component\HttpFoundation\Response;
+use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 
 /**
  * Description of EditWebDocPage controller.
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class EditWebDocPage extends PortalController
+class EditWebDocPage extends PortalControllerWizard
 {
+
+    /**
+     *
+     * @var string
+     */
+    protected $idteamdoc;
 
     /**
      * This doc page.
@@ -98,82 +98,15 @@ class EditWebDocPage extends PortalController
         return $this->webDocPage->all($where, ['LOWER(title)' => 'ASC'], 0, 0);
     }
 
-    /**
-     * * Runs the controller's private logic.
-     *
-     * @param Response              $response
-     * @param User                  $user
-     * @param ControllerPermissions $permissions
-     */
-    public function privateCore(&$response, $user, $permissions)
+    protected function commonCore()
     {
-        parent::privateCore($response, $user, $permissions);
-        $this->loadWebDocPage();
-    }
-
-    /**
-     * Execute the public part of the controller.
-     *
-     * @param Response $response
-     */
-    public function publicCore(&$response)
-    {
-        parent::publicCore($response);
-
-        /// can this contact edit this page?
-        $continue = false;
-        $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
-        if (null === $this->contact) {
-            $this->setTemplate('Master/LoginToContinue');
-        } elseif (!empty($idteamdoc)) {
-            $member = new WebTeamMember();
-            $where = [
-                new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-                new DataBaseWhere('idteam', $idteamdoc),
-                new DataBaseWhere('accepted', true)
-            ];
-
-            if ($member->loadFromCode('', $where)) {
-                $continue = true;
-            } else {
-                $team = new WebTeam();
-                $team->loadFromCode($idteamdoc);
-                $this->miniLog->alert($this->i18n->trans('join-team', ['%team%' => $team->name]));
-                $this->setTemplate('Master/AccessDenied');
-            }
-        }
-
-        if ($continue) {
-            $this->loadWebDocPage();
-        }
-    }
-
-    /**
-     * Code for delete action.
-     */
-    private function deleteAction()
-    {
-        if ($this->webDocPage->exists() && $this->webDocPage->delete()) {
-            $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
-        }
-
-        $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
-        if (empty($idteamdoc)) {
+        /// contact is in doc team?
+        $this->idteamdoc = AppSettings::get('community', 'idteamdoc', '');
+        if (!$this->contactInTeam($this->idteamdoc)) {
+            $this->contactNotInTeamError($this->idteamdoc);
             return;
         }
 
-        $teamLog = new WebTeamLog();
-        $teamLog->description = 'Deleted documentation page: ' . $this->webDocPage->title;
-        $teamLog->idteam = $idteamdoc;
-        $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
-        $teamLog->save();
-    }
-
-    /**
-     * Loads the doc page data.
-     */
-    private function loadWebDocPage()
-    {
         $this->setTemplate('EditWebDocPage');
 
         $code = $this->request->get('code', '');
@@ -207,6 +140,21 @@ class EditWebDocPage extends PortalController
     }
 
     /**
+     * Code for delete action.
+     */
+    private function deleteAction()
+    {
+        if ($this->webDocPage->exists() && $this->webDocPage->delete()) {
+            $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
+            $description = 'Deleted documentation page: ' . $this->webDocPage->title;
+            $this->saveTeamLog($this->idteamdoc, $description, '');
+            return;
+        }
+
+        $this->miniLog->alert($this->i18n->trans('record-delete-error'));
+    }
+
+    /**
      * Adds a new page as children of another page.
      *
      * @param int $idParent
@@ -224,8 +172,8 @@ class EditWebDocPage extends PortalController
     /**
      * Code for save action.
      *
-     * @param $idParent
-     * @param $title
+     * @param string $idParent
+     * @param string $title
      */
     private function saveAction($idParent, $title)
     {
@@ -239,37 +187,18 @@ class EditWebDocPage extends PortalController
         $this->webDocPage->idparent = empty($idParent) ? null : $idParent;
         $this->webDocPage->ordernum = (int) $this->request->get('ordernum', '100');
         $this->webDocPage->title = $title;
-
         if ($this->webDocPage->save()) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-            $this->saveTeamLog($previousMod);
-        } else {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
-        }
-    }
 
-    /**
-     * Store a log detail for the previous modification.
-     *
-     * @param string $previousMod
-     */
-    private function saveTeamLog(string $previousMod)
-    {
-        /// we only save a log the first time this doc is modified today
-        if (date('d-m-Y') == $previousMod) {
+            /// we only save a log the first time this doc is modified today
+            if (date('d-m-Y') != $previousMod) {
+                $description = 'Modified documentation page: ' . $this->webDocPage->title;
+                $link = $this->webDocPage->url('public');
+                $this->saveTeamLog($this->idteamdoc, $description, $link);
+            }
             return;
         }
 
-        $idteamdoc = AppSettings::get('community', 'idteamdoc', '');
-        if (empty($idteamdoc)) {
-            return;
-        }
-
-        $teamLog = new WebTeamLog();
-        $teamLog->description = 'Modified documentation page: ' . $this->webDocPage->title;
-        $teamLog->idteam = $idteamdoc;
-        $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
-        $teamLog->link = $this->webDocPage->url('public');
-        $teamLog->save();
+        $this->miniLog->alert($this->i18n->trans('record-save-error'));
     }
 }

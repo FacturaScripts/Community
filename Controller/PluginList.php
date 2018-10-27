@@ -29,15 +29,11 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class PluginList extends SectionController
 {
 
-    /**
-     * Load sections to the view.
-     */
-    protected function createSections()
+    protected function createPluginSection($name, $title)
     {
-        /// all plugins
-        $this->addListSection('ListWebProject', 'WebProject', 'plugins', 'fas fa-plug', '2018');
-        $this->addOrderOption('ListWebProject', ['LOWER(name)'], 'name', 1);
-        $this->addSearchOptions('ListWebProject', ['name', 'description']);
+        $this->addListSection($name, 'WebProject', $title, 'fas fa-plug', '2018');
+        $this->addOrderOption($name, ['LOWER(name)'], 'name', 1);
+        $this->addSearchOptions($name, ['name', 'description']);
 
         /// buttons
         $button = [
@@ -48,17 +44,21 @@ class PluginList extends SectionController
             'type' => 'link'
         ];
         if ($this->contact) {
-            $this->addButton('ListWebProject', $button);
+            $this->addButton($name, $button);
         }
+    }
+
+    /**
+     * Load sections to the view.
+     */
+    protected function createSections()
+    {
+        /// all plugins
+        $this->createPluginSection('ListWebProject', 'plugins');
 
         /// your plugins
         if ($this->contact) {
-            $this->addListSection('ListWebProject-you', 'WebProject', 'your', 'fas fa-plug', '2018');
-            $this->addOrderOption('ListWebProject-you', ['LOWER(name)'], 'name', 1);
-            $this->addSearchOptions('ListWebProject-you', ['name', 'description']);
-
-            /// buttons
-            $this->addButton('ListWebProject-you', $button);
+            $this->createPluginSection('ListWebProject-you', 'your');
         }
     }
 
@@ -69,17 +69,14 @@ class PluginList extends SectionController
      */
     protected function loadData(string $sectionName)
     {
+        $where = [new DataBaseWhere('plugin', true)];
         switch ($sectionName) {
             case 'ListWebProject':
-                $where = [new DataBaseWhere('plugin', true)];
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'ListWebProject-you':
-                $where = [
-                    new DataBaseWhere('plugin', true),
-                    new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-                ];
+                $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto);
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
