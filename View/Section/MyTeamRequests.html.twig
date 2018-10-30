@@ -1,28 +1,31 @@
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>{{ i18n.trans('team') }}</th>
-            <th>{{ i18n.trans('accepted') }}</th>
-            <th class="text-right">{{ i18n.trans('date') }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% set section = fsc.getCurrentSection() %}
-        {% for member in section.cursor %}
+{% set section = fsc.getCurrentSection() %}
+
+<div class="custom-scroll">
+    <table class="table table-hover">
+        <thead>
             <tr>
-                <td>
-                    {% set team = member.getTeam() %}
-                    <a href="{{ team.url('public') }}">{{ team.name }}</a>
-                </td>
-                <td>{{ member.accepted ? i18n.trans('yes') : '-' }}</td>
-                <td class="text-right">{{ member.creationdate }}</td>
+                <th>{{ i18n.trans('team') }}</th>
+                <th>{{ i18n.trans('accepted') }}</th>
+                <th class="text-right">{{ i18n.trans('date') }}</th>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="3" class="bg-warning">
-                    {{ i18n.trans('no-data') }}
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for member in section.cursor %}
+                <tr>
+                    <td>
+                        {% set team = member.getTeam() %}
+                        <a href="{{ team.url('public') }}">{{ team.name }}</a>
+                    </td>
+                    <td>{{ member.accepted ? i18n.trans('yes') : '-' }}</td>
+                    <td class="text-right">{{ member.creationdate }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="bg-warning">
+                        {{ i18n.trans('no-data') }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
