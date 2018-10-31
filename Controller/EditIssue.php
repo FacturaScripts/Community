@@ -125,7 +125,7 @@ class EditIssue extends SectionController
      *
      * @return bool
      */
-    protected function contactCanEdit(): bool
+    public function contactCanEdit(): bool
     {
         if (null === $this->contact) {
             return false;

@@ -17,11 +17,13 @@
                     {{ comment.body | raw | nl2br }}
                 </div>
             </div>
-            <div>
+            {% if fsc.contactCanEdit() %}
+            <div class="tile-content text-right">
                 <button type="submit" name="delete" class="btn btn-error">
                     {{ i18n.trans('delete') }}
                 </button>
             </div>
+            {% endif %}
         </form>
     {% endfor %}
 </div>
