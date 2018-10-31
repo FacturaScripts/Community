@@ -226,7 +226,8 @@ class EditIssue extends SectionController
                 return true;
             
             case 'delete-comment':
-                return $this->deleteComment();
+                $this->deleteComment();
+                return true;
         }
 
         return parent::execPreviousAction($action);
