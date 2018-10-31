@@ -4,9 +4,6 @@
     {% for comment in section.cursor %}
         {% set contact = comment.getContact() %}
         <div class="divider text-center" data-content="{{ contact.fullName() }} - {{ comment.creationdate }}"></div>
-        <form action="" method="post">
-            <input type="hidden" name="action" value="delete-comment" />
-            <input type="hidden" name="idcomment" value="{{ comment.idcomment }}" />
             <div class="tile">
                 <div class="tile-icon">
                     <figure class="avatar avatar-xl">
@@ -18,13 +15,12 @@
                 </div>
             </div>
             {% if fsc.contactCanEdit() %}
-            <div class="tile-content text-right">
-                <button type="submit" name="delete" class="btn btn-error">
-                    {{ i18n.trans('delete') }}
-                </button>
-            </div>
+                <div class="tile-content text-right">
+                    <div name="delete" class="btn btn-error" onclick="deleteComment({{ comment.idcomment }})">
+                        {{ i18n.trans('delete') }}
+                    </div>
+                </div>
             {% endif %}
-        </form>
     {% endfor %}
 </div>
 
@@ -53,3 +49,21 @@
         </div>
     </form>
 {% endif %}
+
+{% block javascripts %}
+    <script>
+        function deleteComment(idcomment)
+        {
+            var form = $('<form action="#" method="post"></form>');
+            form.append(`<input type="hidden" name="action" value="delete-comment" />`);
+            form.append(`<input type="hidden" name="idcomment" value="${idcomment}" />`);
+            form.append(`<button type="submit"></button>`);
+            
+            $("body").append(form);
+
+            if (confirm("{{ i18n.trans('are-you-sure') }}", false)) {
+                form.submit();
+            }
+        }
+    </script>
+{% endblock %}
