@@ -206,6 +206,6 @@ class Issue extends WebPageClass
             return self::$urls[$type];
         }
 
-        return '#';
+        return $controller . '?code=';
     }
 }
