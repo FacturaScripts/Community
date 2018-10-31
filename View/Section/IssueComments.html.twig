@@ -4,16 +4,25 @@
     {% for comment in section.cursor %}
         {% set contact = comment.getContact() %}
         <div class="divider text-center" data-content="{{ contact.fullName() }} - {{ comment.creationdate }}"></div>
-        <div class="tile">
-            <div class="tile-icon">
-                <figure class="avatar avatar-xl">
-                    <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ fsc.obfuscateEmail(contact.email) }}"/>
-                </figure>
+        <form action="" method="post">
+            <input type="hidden" name="action" value="delete-comment" />
+            <input type="hidden" name="idcomment" value="{{ comment.idcomment }}" />
+            <div class="tile">
+                <div class="tile-icon">
+                    <figure class="avatar avatar-xl">
+                        <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ fsc.obfuscateEmail(contact.email) }}"/>
+                    </figure>
+                </div>
+                <div class="tile-content">
+                    {{ comment.body | raw | nl2br }}
+                </div>
             </div>
-            <div class="tile-content">
-                {{ comment.body | raw | nl2br }}
+            <div>
+                <button type="submit" name="delete" class="btn btn-error">
+                    {{ i18n.trans('delete') }}
+                </button>
             </div>
-        </div>
+        </form>
     {% endfor %}
 </div>
 
