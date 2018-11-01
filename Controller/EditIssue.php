@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Description of EditIssue
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
+ * @author Cristo M. Estévez Hernández <cristom.estevez@gmail.com>
  */
 class EditIssue extends SectionController
 {
@@ -124,7 +125,7 @@ class EditIssue extends SectionController
      *
      * @return bool
      */
-    protected function contactCanEdit(): bool
+    public function contactCanEdit(): bool
     {
         if (null === $this->contact) {
             return false;
@@ -181,6 +182,32 @@ class EditIssue extends SectionController
     }
 
     /**
+     * Delete the comment specify by the user.
+     *
+     * @return bool
+     */
+    protected function deleteComment()
+    {
+        if (!$this->contactCanEdit()) {
+            return false;
+        }
+
+        $idComment = $this->request->request->get('idcomment', '');
+
+        $issueComment = new IssueComment();
+        $issueComment->loadFromCode($idComment);
+        
+        if (!$issueComment->delete()) {
+            $this->miniLog->alert($this->i18n->trans('delete-comment-error'));
+            return false;
+        }
+
+        $this->miniLog->notice($this->i18n->trans('comment-deleted-correctly'));
+
+        return true;
+    }
+
+    /**
      * Run the actions that alter data before reading it.
      *
      * @param string $action
@@ -196,6 +223,10 @@ class EditIssue extends SectionController
 
             case 're-open':
                 $this->reopenAction();
+                return true;
+            
+            case 'delete-comment':
+                $this->deleteComment();
                 return true;
         }
 
