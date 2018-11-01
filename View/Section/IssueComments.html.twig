@@ -4,23 +4,23 @@
     {% for comment in section.cursor %}
         {% set contact = comment.getContact() %}
         <div class="divider text-center" data-content="{{ contact.fullName() }} - {{ comment.creationdate }}"></div>
-            <div class="tile">
-                <div class="tile-icon">
-                    <figure class="avatar avatar-xl">
-                        <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ fsc.obfuscateEmail(contact.email) }}"/>
-                    </figure>
-                </div>
-                <div class="tile-content">
-                    {{ comment.body | raw | nl2br }}
-                </div>
+        <div class="tile">
+            <div class="tile-icon">
+                <figure class="avatar avatar-xl">
+                    <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ fsc.obfuscateEmail(contact.email) }}"/>
+                </figure>
+            </div>
+            <div class="tile-content">
+                {{ comment.body | raw | nl2br }}
             </div>
             {% if fsc.contactCanEdit() %}
-                <div class="tile-content text-right">
-                    <div name="delete" class="btn btn-error" onclick="deleteComment({{ comment.idcomment }})">
-                        {{ i18n.trans('delete') }}
-                    </div>
+                <div class="tile-action">
+                    <button class="btn btn-sm btn-error" onclick="deleteComment('{{ comment.idcomment }}');" title="{{ i18n.trans('delete') }}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </div>
             {% endif %}
+        </div>
     {% endfor %}
 </div>
 
@@ -58,7 +58,6 @@
             form.append(`<input type="hidden" name="action" value="delete-comment" />`);
             form.append(`<input type="hidden" name="idcomment" value="${idcomment}" />`);
             form.append(`<button type="submit"></button>`);
-            
             $("body").append(form);
 
             if (confirm("{{ i18n.trans('are-you-sure') }}", false)) {

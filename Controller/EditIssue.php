@@ -44,6 +44,46 @@ class EditIssue extends SectionController
     protected $issue;
 
     /**
+     * Returns true if contact can edit this issue.
+     *
+     * @return bool
+     */
+    public function contactCanEdit(): bool
+    {
+        if (null === $this->contact) {
+            return false;
+        }
+
+        $issue = $this->getIssue();
+        if ($issue->idcontacto === $this->contact->idcontacto) {
+            return true;
+        }
+
+        $member = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+            new DataBaseWhere('idteam', $issue->idteam),
+            new DataBaseWhere('accepted', true)
+        ];
+
+        return $member->loadFromCode('', $where);
+    }
+
+    /**
+     * Returns true if contact can see this issue.
+     *
+     * @return bool
+     */
+    public function contactCanSee(): bool
+    {
+        if ($this->contactCanEdit()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Return the gravatar url to show email avatar.
      *
      * @param string $email
@@ -121,46 +161,6 @@ class EditIssue extends SectionController
     }
 
     /**
-     * Returns true if contact can edit this issue.
-     *
-     * @return bool
-     */
-    public function contactCanEdit(): bool
-    {
-        if (null === $this->contact) {
-            return false;
-        }
-
-        $issue = $this->getIssue();
-        if ($issue->idcontacto === $this->contact->idcontacto) {
-            return true;
-        }
-
-        $member = new WebTeamMember();
-        $where = [
-            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $issue->idteam),
-            new DataBaseWhere('accepted', true)
-        ];
-
-        return $member->loadFromCode('', $where);
-    }
-
-    /**
-     * Returns true if contact can see this issue.
-     *
-     * @return bool
-     */
-    protected function contactCanSee(): bool
-    {
-        if ($this->contactCanEdit()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Load sections to the view.
      */
     protected function createSections()
@@ -193,18 +193,14 @@ class EditIssue extends SectionController
         }
 
         $idComment = $this->request->request->get('idcomment', '');
-
         $issueComment = new IssueComment();
-        $issueComment->loadFromCode($idComment);
-        
-        if (!$issueComment->delete()) {
-            $this->miniLog->alert($this->i18n->trans('delete-comment-error'));
-            return false;
+        if ($issueComment->loadFromCode($idComment) && $issueComment->delete()) {
+            $this->miniLog->notice($this->i18n->trans('comment-deleted-correctly'));
+            return true;
         }
 
-        $this->miniLog->notice($this->i18n->trans('comment-deleted-correctly'));
-
-        return true;
+        $this->miniLog->alert($this->i18n->trans('delete-comment-error'));
+        return false;
     }
 
     /**
@@ -217,16 +213,16 @@ class EditIssue extends SectionController
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
+            case 'delete-comment':
+                $this->deleteComment();
+                return true;
+
             case 'new-comment':
                 $this->addNewComment();
                 return true;
 
             case 're-open':
                 $this->reopenAction();
-                return true;
-            
-            case 'delete-comment':
-                $this->deleteComment();
                 return true;
         }
 
@@ -240,9 +236,9 @@ class EditIssue extends SectionController
      */
     protected function loadData(string $sectionName)
     {
+        $issue = $this->getIssue();
         switch ($sectionName) {
             case 'ListIssueComment':
-                $issue = $this->getIssue();
                 $where = [new DataBaseWhere('idissue', $issue->idissue)];
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
@@ -252,7 +248,6 @@ class EditIssue extends SectionController
                 break;
 
             case 'ListIssue':
-                $issue = $this->getIssue();
                 $where = [
                     new DataBaseWhere('idcontacto', $issue->idcontacto),
                     new DataBaseWhere('idissue', $issue->idissue, '!=')
