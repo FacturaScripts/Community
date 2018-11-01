@@ -53,6 +53,7 @@ class TranslationList extends SectionController
 
         /// languages
         $this->addListSection('ListLanguage', 'Language', 'languages', 'fas fa-language');
+        $this->sections['ListLanguage']->template = 'Section/Languages.html.twig';
         $this->addSearchOptions('ListLanguage', ['langcode', 'description']);
         $this->addOrderOption('ListLanguage', ['langcode'], 'code');
         $this->addOrderOption('ListLanguage', ['description'], 'description');
