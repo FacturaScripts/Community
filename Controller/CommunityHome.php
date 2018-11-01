@@ -83,10 +83,12 @@ class CommunityHome extends SectionController
         $this->addFilterDatePicker('ListIssue-teams', 'fromdate', 'from-date', 'creationdate', '>=');
         $this->addFilterDatePicker('ListIssue-teams', 'untildate', 'until-date', 'creationdate', '<=');
 
-        $teams = [];
+        $teams = [
+            $teams[] = ['code' => '', 'description' => '------']
+        ];
         foreach ($this->getTeamsMemberData() as $member) {
             $team = $member->getTeam();
-            $teams[] = ['code' => $team->idteam, 'description' => $team->name,];
+            $teams[] = ['code' => $team->idteam, 'description' => $team->name];
         }
         $this->addFilterSelect('ListIssue-teams', 'idteam', 'team', 'idteam', $teams);
 

@@ -172,7 +172,6 @@ class EditIssue extends SectionController
         $this->sections['ListIssueComment']->template = 'Section/IssueComments.html.twig';
         $this->addOrderOption('ListIssueComment', ['creationdate'], 'date');
         $this->addOrderOption('ListIssueComment', ['idcontacto'], 'user');
-        ///$this->addButton('ListIssueComment', $this->getIssue()->url('public'), 'reload', 'fas fa-sync');
 
         $this->addListSection('ListIssue', 'Issue', 'related', 'fas fa-question-circle');
         $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
