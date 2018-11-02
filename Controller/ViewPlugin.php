@@ -93,7 +93,8 @@ class ViewPlugin extends SectionController
         $this->addNavigationLink($project->url('public-list'), $this->i18n->trans('plugins'));
         $this->addNavigationLink($project->url('public-list') . '?activetab=ListWebProject', '2018');
 
-        $this->addHtmlSection('docs', 'documentation', 'Section/Documentation');
+        $this->addListSection('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
+        $this->sections['ListWebDocPage']->template = 'Section/Documentation.html.twig';
 
         /// admin
         if ($this->contactCanEdit()) {
@@ -110,16 +111,16 @@ class ViewPlugin extends SectionController
     {
         $project = $this->getProject();
         switch ($sectionName) {
-            case 'docs':
+            case 'EditWebProject':
+                $this->sections[$sectionName]->loadData($project->primaryColumnValue());
+                break;
+
+            case 'ListWebDocPage':
                 $where = [
                     new DataBaseWhere('idproject', $project->idproject),
                     new DataBaseWhere('idparent', null, 'IS'),
                 ];
                 $this->sections[$sectionName]->loadData('', $where);
-                break;
-
-            case 'EditWebProject':
-                $this->sections[$sectionName]->loadData($project->primaryColumnValue());
                 break;
 
             case 'plugin':
