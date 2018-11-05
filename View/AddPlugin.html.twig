@@ -6,21 +6,44 @@
         <div class="container grid-lg">
             <div class="columns">
                 <div class="column col-12">
-                    <div class="empty">
-                        <div class="empty-icon">
-                            <i class="fas fa-plug fa-3x" aria-hidden="true"></i>
-                        </div>
-                        <p class="empty-title h5">{{ i18n.trans('new-plugin', {'%pluginName%': ''}) }}</p>
-                        <form action="{{ fsc.url() }}" method="post">
-                            <input type="hidden" name="action" value="new"/>
-                            <div class="empty-action input-group input-inline">
-                                <input type="text" name="name" class="form-input" maxlength="50" placeholder="{{ i18n.trans('name') }}" autocomplete="off" autofocus="" required="true"/>
-                                <button type="submit" class="btn btn-primary input-group-btn">
+                    <form method="post">
+                        <input type="hidden" name="action" value="new"/>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title text-center">
+                                    <i class="fas fa-plug fa-3x" aria-hidden="true"></i>
+                                    <p class="empty-title h5">{{ i18n.trans('new-plugin', {'%pluginName%': ''}) }}</p>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="columns">
+                                    <div class="column col mb-2">
+                                        {{ i18n.trans('name') }}:
+                                        <input type="text" name="name" class="form-input" maxlength="50" autocomplete="off" autofocus="" required="true"/>
+                                    </div>
+                                    <div class="column col mb-2">
+                                        {{ i18n.trans('license') }}:
+                                        <select name="license" class="form-select">
+                                            {% for key, license in fsc.licenses() %}
+                                                <option value="{{ key }}">{{ license }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="columns">
+                                    <div class="column col">
+                                        {{ i18n.trans('description') }}:
+                                        <textarea name="description" class="form-input" required="true"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer text-right">
+                                <button type="submit" class="btn btn-primary">
                                     {{ i18n.trans('save') }}
                                 </button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

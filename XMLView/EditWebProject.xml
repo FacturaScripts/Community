@@ -23,7 +23,7 @@
     <columns>
         <group name="data" numcolumns="12">
             <column name="name" numcolumns="2" order="100">
-                <widget type="text" fieldname="name" required="true" />
+                <widget type="text" fieldname="name" required="true" readonly="true" />
             </column>
             <column name="public-repository" numcolumns="6" order="110">
                 <widget type="text" fieldname="publicrepo" />

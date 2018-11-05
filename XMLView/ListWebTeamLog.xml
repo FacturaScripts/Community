@@ -30,15 +30,15 @@
             </widget>
         </column>
         <column name="contact" order="120">
-            <widget type="select" fieldname="idcontacto" onclick="EditContacto">
-                <values source="contactos" fieldcode="idcontacto" fieldtitle="nombre"></values>
+            <widget type="autocomplete" fieldname="idcontacto" onclick="EditContacto">
+                <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
             </widget>
         </column>
         <column name="description" order="130">
             <widget type="text" fieldname="description" />
         </column>
         <column name="link" order="140">
-            <widget type="text" fieldname="link" />
+            <widget type="link" fieldname="link" />
         </column>
         <column name="time" display="right" order="150">
             <widget type="date" fieldname="time" />

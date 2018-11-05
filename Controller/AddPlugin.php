@@ -31,6 +31,17 @@ use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 class AddPlugin extends PortalControllerWizard
 {
 
+    public function licenses()
+    {
+        return [
+            'AGPL' => 'AGPL',
+            'EULA' => 'EULA (Software Privativo)',
+            'GPL' => 'GPL',
+            'LGPL' => 'LGPL',
+            'MIT' => 'MIT',
+        ];
+    }
+
     /**
      * Execute common code between private and public core.
      */
@@ -71,10 +82,10 @@ class AddPlugin extends PortalControllerWizard
 
         /// save new plugin
         $project->name = $name;
-        $project->description = $name;
+        $project->description = $this->request->request->get('description', $name);
         $project->idcontacto = $this->contact->idcontacto;
         if ($project->save()) {
-            $description = $this->i18n->trans('new-plugin', ['%pluginName%' => $project->name]);
+            $description = $this->i18n->trans('new-plugin', ['%pluginName%' => $name]);
             $link = $project->url('public');
             $this->saveTeamLog($idteamdev, $description, $link);
 

@@ -50,12 +50,7 @@ class ListWebProject extends ExtendedController\ListController
      */
     protected function createViews()
     {
-        /// projects
-        $this->addView('ListWebProject', 'WebProject', 'projects', 'fas fa-folder');
-        $this->addSearchFields('ListWebProject', ['name']);
-        $this->addOrderBy('ListWebProject', ['name']);
-        $this->addOrderBy('ListWebProject', ['creationdate'], 'date');
-
+        $this->createViewProjects();
         $this->createViewsDocPages();
         $this->createViewsBuild();
     }
@@ -63,35 +58,47 @@ class ListWebProject extends ExtendedController\ListController
     /**
      * Load Views for builds
      */
-    protected function createViewsBuild()
+    protected function createViewsBuild($viewName = 'ListWebBuild')
     {
-        $this->addView('ListWebBuild', 'WebBuild', 'builds', 'fas fa-file-archive');
-        $this->addSearchFields('ListWebBuild', ['path']);
-        $this->addOrderBy('ListWebBuild', ['version']);
-        $this->addOrderBy('ListWebBuild', ['date'], 'date', 2);
-        $this->addOrderBy('ListWebBuild', ['downloads']);
+        $this->addView($viewName, 'WebBuild', 'builds', 'fas fa-file-archive');
+        $this->addSearchFields($viewName, ['path']);
+        $this->addOrderBy($viewName, ['version']);
+        $this->addOrderBy($viewName, ['date'], 'date', 2);
+        $this->addOrderBy($viewName, ['downloads']);
 
-        $this->addFilterCheckbox('ListWebBuild', 'beta', 'beta', 'beta');
-        $this->addFilterCheckbox('ListWebBuild', 'stable', 'stable', 'stable');
+        $this->addFilterCheckbox($viewName, 'beta', 'beta', 'beta');
+        $this->addFilterCheckbox($viewName, 'stable', 'stable', 'stable');
     }
 
     /**
      * Load Views for doc pages
      */
-    protected function createViewsDocPages()
+    protected function createViewsDocPages($viewName = 'ListWebDocPage')
     {
-        $this->addView('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
-        $this->addSearchFields('ListWebDocPage', ['title', 'body']);
-        $this->addOrderBy('ListWebDocPage', ['title']);
-        $this->addOrderBy('ListWebDocPage', ['creationdate'], 'date');
-        $this->addOrderBy('ListWebDocPage', ['lastmod'], 'last-update', 2);
-        $this->addOrderBy('ListWebDocPage', ['visitcount'], 'visit-counter');
+        $this->addView($viewName, 'WebDocPage', 'documentation', 'fas fa-book');
+        $this->addSearchFields($viewName, ['title', 'body']);
+        $this->addOrderBy($viewName, ['title']);
+        $this->addOrderBy($viewName, ['creationdate'], 'date');
+        $this->addOrderBy($viewName, ['lastmod'], 'last-update', 2);
+        $this->addOrderBy($viewName, ['visitcount'], 'visit-counter');
 
         $projects = $this->codeModel::all('webprojects', 'idproject', 'name');
-        $this->addFilterSelect('ListWebDocPage', 'idproject', 'project', 'idproject', $projects);
+        $this->addFilterSelect($viewName, 'idproject', 'project', 'idproject', $projects);
 
         $langValues = $this->codeModel::all('webdocpages', 'langcode', 'langcode');
-        $this->addFilterSelect('ListWebDocPage', 'langcode', 'language', 'langcode', $langValues);
+        $this->addFilterSelect($viewName, 'langcode', 'language', 'langcode', $langValues);
+    }
+
+    /**
+     * 
+     * @param string $viewName
+     */
+    protected function createViewProjects($viewName = 'ListWebProject')
+    {
+        $this->addView($viewName, 'WebProject', 'projects', 'fas fa-folder');
+        $this->addSearchFields($viewName, ['name', 'description']);
+        $this->addOrderBy($viewName, ['name']);
+        $this->addOrderBy($viewName, ['creationdate'], 'date');
     }
 
     /**

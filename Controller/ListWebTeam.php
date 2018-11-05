@@ -60,7 +60,7 @@ class ListWebTeam extends ExtendedController\ListController
         $this->addOrderBy('ListWebTeamMember', ['creationdate'], 'date', 2);
 
         /// Members
-        $this->addView('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file');
+        $this->addView('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
         $this->addSearchFields('ListWebTeamLog', ['description']);
         $this->addOrderBy('ListWebTeamLog', ['time'], 'date', 2);
     }
