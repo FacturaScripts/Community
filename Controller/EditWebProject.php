@@ -40,7 +40,7 @@ class EditWebProject extends ExtendedController\PanelController
         $pageData = parent::getPageData();
         $pageData['title'] = 'project';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fas fa-folder';
+        $pageData['icon'] = 'fas fa-folder-open';
         $pageData['showonmenu'] = false;
 
         return $pageData;
@@ -51,7 +51,7 @@ class EditWebProject extends ExtendedController\PanelController
      */
     protected function createViews()
     {
-        $this->addEditView('EditWebProject', 'WebProject', 'project', 'fas fa-folder');
+        $this->addEditView('EditWebProject', 'WebProject', 'project', 'fas fa-folder-open');
         $this->addListView('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
         $this->addListView('ListWebBuild', 'WebBuild', 'builds', 'fas fa-file-archive');
 

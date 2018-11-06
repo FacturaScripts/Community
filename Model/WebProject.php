@@ -55,6 +55,18 @@ class WebProject extends Base\ModelClass
     public $idproject;
 
     /**
+     *
+     * @var string
+     */
+    public $lastmod;
+
+    /**
+     *
+     * @var string
+     */
+    public $license;
+
+    /**
      * Project name.
      *
      * @var string
@@ -75,6 +87,12 @@ class WebProject extends Base\ModelClass
 
     /**
      *
+     * @var string
+     */
+    public $version;
+
+    /**
+     *
      * @var array
      */
     private static $urls = [];
@@ -86,7 +104,10 @@ class WebProject extends Base\ModelClass
     {
         parent::clear();
         $this->creationdate = date('d-m-Y');
+        $this->lastmod = date('d-m-Y');
+        $this->license = 'LGPL';
         $this->plugin = true;
+        $this->version = 0.0;
     }
 
     /**

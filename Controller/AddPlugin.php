@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Dinamic\Model\CodeModel;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 
@@ -33,13 +34,8 @@ class AddPlugin extends PortalControllerWizard
 
     public function licenses()
     {
-        return [
-            'AGPL' => 'AGPL',
-            'EULA' => 'EULA (Software Privativo)',
-            'GPL' => 'GPL',
-            'LGPL' => 'LGPL',
-            'MIT' => 'MIT',
-        ];
+        $codeModel = new CodeModel();
+        return $codeModel->all('licenses', 'name', 'title');
     }
 
     /**
@@ -83,6 +79,7 @@ class AddPlugin extends PortalControllerWizard
         /// save new plugin
         $project->name = $name;
         $project->description = $this->request->request->get('description', $name);
+        $project->license = $this->request->request->get('license');
         $project->idcontacto = $this->contact->idcontacto;
         if ($project->save()) {
             $description = $this->i18n->trans('new-plugin', ['%pluginName%' => $name]);

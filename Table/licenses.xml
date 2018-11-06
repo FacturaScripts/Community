@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : licenses.xml
+    Author     : Carlos Garcia Gomez
+    Description:
+        Structure for the licenses table.
+-->
+<table>
+    <column>
+        <name>description</name>
+        <type>text</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>name</name>
+        <type>character varying(10)</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>title</name>
+        <type>character varying(50)</type>
+    </column>
+    <constraint>
+        <name>licenses_pkey</name>
+        <type>PRIMARY KEY (name)</type>
+    </constraint>
+</table>

@@ -53,7 +53,7 @@ class EditWebTeam extends SectionController
             return true;
         }
 
-        if (null === $this->contact) {
+        if (empty($this->contact)) {
             return false;
         }
 
@@ -68,7 +68,7 @@ class EditWebTeam extends SectionController
      */
     public function getMemberStatus()
     {
-        if (null === $this->contact) {
+        if (empty($this->contact)) {
             return 'out';
         }
 

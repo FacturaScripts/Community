@@ -35,6 +35,10 @@ class PluginList extends SectionController
         $this->addOrderOption($name, ['LOWER(name)'], 'name', 1);
         $this->addSearchOptions($name, ['name', 'description']);
 
+        /// filters
+        $licenses = $this->codeModel->all('licenses', 'name', 'title');
+        $this->addFilterSelect($name, 'license', 'license', 'license', $licenses);
+
         /// buttons
         $button = [
             'action' => 'AddPlugin',

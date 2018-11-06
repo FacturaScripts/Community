@@ -120,7 +120,7 @@ class CommunityHome extends SectionController
      */
     protected function createSections()
     {
-        if (null === $this->contact) {
+        if (empty($this->contact)) {
             $this->setTemplate('Master/PortalTemplate');
             return;
         }

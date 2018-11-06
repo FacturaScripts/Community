@@ -60,7 +60,7 @@ class EditLanguage extends SectionController
             return true;
         }
 
-        if (null === $this->contact) {
+        if (empty($this->contact)) {
             return false;
         }
 

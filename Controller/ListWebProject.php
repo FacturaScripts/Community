@@ -40,7 +40,7 @@ class ListWebProject extends ExtendedController\ListController
         $pageData = parent::getPageData();
         $pageData['title'] = 'projects';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fas fa-folder';
+        $pageData['icon'] = 'fas fa-folder-open';
 
         return $pageData;
     }
@@ -51,6 +51,7 @@ class ListWebProject extends ExtendedController\ListController
     protected function createViews()
     {
         $this->createViewProjects();
+        $this->createViewLicenses();
         $this->createViewsDocPages();
         $this->createViewsBuild();
     }
@@ -93,9 +94,20 @@ class ListWebProject extends ExtendedController\ListController
      * 
      * @param string $viewName
      */
+    protected function createViewLicenses($viewName = 'ListLicense')
+    {
+        $this->addView($viewName, 'License', 'licenses', 'fas fa-file-signature');
+        $this->addSearchFields($viewName, ['name', 'description']);
+        $this->addOrderBy($viewName, ['name']);
+    }
+
+    /**
+     * 
+     * @param string $viewName
+     */
     protected function createViewProjects($viewName = 'ListWebProject')
     {
-        $this->addView($viewName, 'WebProject', 'projects', 'fas fa-folder');
+        $this->addView($viewName, 'WebProject', 'projects', 'fas fa-folder-open');
         $this->addSearchFields($viewName, ['name', 'description']);
         $this->addOrderBy($viewName, ['name']);
         $this->addOrderBy($viewName, ['creationdate'], 'date');

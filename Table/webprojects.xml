@@ -25,6 +25,14 @@
         <default>nextval('webprojects_idproject_seq'::regclass)</default>
     </column>
     <column>
+        <name>lastmod</name>
+        <type>date</type>
+    </column>
+    <column>
+        <name>license</name>
+        <type>character varying(10)</type>
+    </column>
+    <column>
         <name>name</name>
         <type>character varying(50)</type>
     </column>
@@ -36,6 +44,11 @@
     <column>
         <name>publicrepo</name>
         <type>character varying(300)</type>
+    </column>
+    <column>
+        <name>version</name>
+        <type>double precision</type>
+        <default>0</default>
     </column>
     <constraint>
         <name>webprojects_pkey</name>

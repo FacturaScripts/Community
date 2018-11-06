@@ -211,7 +211,7 @@ class WebBuild extends Base\ModelClass
      */
     public function test()
     {
-        if (null === $this->idfile) {
+        if (empty($this->idfile)) {
             $attachedFile = new AttachedFile();
             $attachedFile->path = $this->path;
             if (!$attachedFile->save()) {

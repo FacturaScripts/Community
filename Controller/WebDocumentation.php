@@ -259,7 +259,7 @@ class WebDocumentation extends PortalController
         $this->docPage = new WebDocPage();
 
         /// doc page permalink?
-        if (null === $docPermalink) {
+        if (empty($docPermalink)) {
             /// project doc pages
             $this->loadProject();
         } elseif ($this->docPage->loadFromCode('', [new DataBaseWhere('permalink', $docPermalink)])) {

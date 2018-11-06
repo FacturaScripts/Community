@@ -23,28 +23,10 @@
     <columns>
         <group name="data" numcolumns="12">
             <column name="name" order="100">
-                <widget type="text" fieldname="name" required="true" readonly="dinamic" />
+                <widget type="text" fieldname="name" required="true" />
             </column>
-            <column name="admin" level="2" order="110">
-                <widget type="autocomplete" fieldname="idcontacto" required="true">
-                    <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
-                </widget>
-            </column>
-            <column name="license" order="120">
-                <widget type="select" fieldname="license" required="true">
-                    <values source="licenses" fieldcode="name" fieldtitle="title"></values>
-                </widget>
-            </column>
-            <column name="version" order="130">
-                <widget type="number" fieldname="version" readonly="true" />
-            </column>
-            <column name="last-update" order="140">
-                <widget type="date" fieldname="lastmod" readonly="true" />
-            </column>
-        </group>
-        <group name="github" numcolumns="12">
-            <column name="public-repository" order="100">
-                <widget type="text" fieldname="publicrepo" icon="fab fa-git" />
+            <column name="title" order="110">
+                <widget type="text" fieldname="title" required="true" />
             </column>
         </group>
         <group name="description" numcolumns="12">

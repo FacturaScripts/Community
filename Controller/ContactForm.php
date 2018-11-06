@@ -104,7 +104,7 @@ class ContactForm extends PortalController
      */
     protected function commonCore()
     {
-        if (null === $this->contact) {
+        if (empty($this->contact)) {
             $this->setTemplate('Master/LoginToContinue');
             return;
         }

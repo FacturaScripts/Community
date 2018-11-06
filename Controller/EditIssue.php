@@ -50,7 +50,7 @@ class EditIssue extends SectionController
      */
     public function contactCanEdit(): bool
     {
-        if (null === $this->contact) {
+        if (empty($this->contact)) {
             return false;
         }
 
@@ -275,7 +275,7 @@ class EditIssue extends SectionController
             $this->response->setStatusCode(Response::HTTP_FORBIDDEN);
             $this->webPage->noindex = true;
 
-            $template = (null === $this->contact) ? 'Master/LoginToContinue' : 'Master/AccessDenied';
+            $template = empty($this->contact) ? 'Master/LoginToContinue' : 'Master/AccessDenied';
             $this->setTemplate($template);
             return;
         }
