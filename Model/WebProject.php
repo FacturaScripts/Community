@@ -161,8 +161,14 @@ class WebProject extends Base\ModelClass
     {
         $this->description = Utils::noHtml($this->description);
         $this->name = Utils::noHtml($this->name);
-        if (strlen($this->name) < 1) {
+        if (strlen($this->name) < 1 || strlen($this->name) > 50) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']));
+            return false;
+        }
+
+        if (!preg_match("/^[a-z0-9_-]+$/i", $this->name)) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-name'));
+            return false;
         }
 
         return parent::test();

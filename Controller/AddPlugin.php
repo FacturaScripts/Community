@@ -35,7 +35,7 @@ class AddPlugin extends PortalControllerWizard
     public function licenses()
     {
         $codeModel = new CodeModel();
-        return $codeModel->all('licenses', 'name', 'title');
+        return $codeModel->all('licenses', 'name', 'title', false);
     }
 
     /**
