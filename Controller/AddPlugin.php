@@ -80,6 +80,7 @@ class AddPlugin extends PortalControllerWizard
         $project->name = $name;
         $project->description = $this->request->request->get('description', $name);
         $project->license = $this->request->request->get('license');
+        $project->publicrepo = $this->request->request->get('git');
         $project->idcontacto = $this->contact->idcontacto;
         if ($project->save()) {
             $description = $this->i18n->trans('new-plugin', ['%pluginName%' => $name]);
