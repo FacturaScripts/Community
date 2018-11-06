@@ -1,0 +1,41 @@
+{% extends "Section/ListSection.html.twig" %}
+{% set section = fsc.getCurrentSection() %}
+
+{% block sectionBody %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>{{ i18n.trans('langcode') }}</th>
+                <th>{{ i18n.trans('name') }}</th>
+                <th>{{ i18n.trans('translation') }}</th>
+                <th class="text-right">{{ i18n.trans('last-update') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for translation in section.cursor %}
+                <tr>
+                    <td>{{ translation.langcode }}</td>
+                    <td>
+                        <a href="{{ translation.url() }}">{{ translation.name }}</a>
+                    </td>
+                    {% if translation.needsrevision %}
+                        <td class="bg-warning">
+                            {{ translation.translation | raw }}
+                        </td>
+                    {% else %}
+                        <td class="bg-success">
+                            {{ translation.translation | raw }}
+                        </td>
+                    {% endif %}
+                    <td class="text-right">{{ translation.lastmod }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="bg-warning">
+                        {{ i18n.trans('no-data') }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -140,11 +140,13 @@ class EditTranslation extends SectionController
         $this->addNavigationLink($language->url('public'), $language->description);
 
         $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
+        $this->sections['ListTranslation']->template = 'Section/Translations.html.twig';
         $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
         $this->addOrderOption('ListTranslation', ['name'], 'code', 1);
         $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update');
 
         $this->addListSection('ListTranslation-rev', 'Translation', 'needs-revisions', 'fas fa-eye');
+        $this->sections['ListTranslation-rev']->template = 'Section/Translations.html.twig';
         $this->addSearchOptions('ListTranslation-rev', ['name', 'description', 'translation']);
         $this->addOrderOption('ListTranslation-rev', ['name'], 'code', 1);
         $this->addOrderOption('ListTranslation-rev', ['lastmod'], 'last-update');

@@ -29,16 +29,42 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class TranslationList extends SectionController
 {
 
+    protected function createSectionLanguages($name = 'ListLanguage')
+    {
+        $this->addListSection($name, 'Language', 'languages', 'fas fa-language');
+        $this->sections[$name]->template = 'Section/Languages.html.twig';
+        $this->addSearchOptions($name, ['langcode', 'description']);
+        $this->addOrderOption($name, ['langcode'], 'code');
+        $this->addOrderOption($name, ['description'], 'description');
+        $this->addOrderOption($name, ['lastmod'], 'last-update');
+        $this->addOrderOption($name, ['numtranslations'], 'number-of-translations', 2);
+
+        if ($this->user) {
+            $importButton = [
+                'action' => $this->url() . '?action=import-lang',
+                'label' => 'import',
+                'type' => 'link',
+            ];
+            $this->addButton($name, $importButton);
+        }
+    }
+
     /**
      * Load sections to the view.
      */
     protected function createSections()
     {
-        /// translations
-        $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
-        $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
-        $this->addOrderOption('ListTranslation', ['name'], 'code');
-        $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update', 2);
+        $this->createSectionLanguages();
+        $this->createSectionTranslations();
+    }
+
+    protected function createSectionTranslations($name = 'ListTranslation')
+    {
+        $this->addListSection($name, 'Translation', 'translations', 'fas fa-copy');
+        $this->sections[$name]->template = 'Section/Translations.html.twig';
+        $this->addSearchOptions($name, ['name', 'description', 'translation']);
+        $this->addOrderOption($name, ['name'], 'code');
+        $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
 
         if ($this->contact) {
             $addButton = [
@@ -48,25 +74,7 @@ class TranslationList extends SectionController
                 'label' => 'new',
                 'type' => 'link',
             ];
-            $this->addButton('ListTranslation', $addButton);
-        }
-
-        /// languages
-        $this->addListSection('ListLanguage', 'Language', 'languages', 'fas fa-language');
-        $this->sections['ListLanguage']->template = 'Section/Languages.html.twig';
-        $this->addSearchOptions('ListLanguage', ['langcode', 'description']);
-        $this->addOrderOption('ListLanguage', ['langcode'], 'code');
-        $this->addOrderOption('ListLanguage', ['description'], 'description');
-        $this->addOrderOption('ListLanguage', ['lastmod'], 'last-update');
-        $this->addOrderOption('ListLanguage', ['numtranslations'], 'number-of-translations', 2);
-
-        if ($this->user) {
-            $importButton = [
-                'action' => $this->url() . '?action=import-lang',
-                'label' => 'import',
-                'type' => 'link',
-            ];
-            $this->addButton('ListLanguage', $importButton);
+            $this->addButton($name, $addButton);
         }
     }
 

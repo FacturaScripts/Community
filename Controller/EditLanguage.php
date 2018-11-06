@@ -162,20 +162,22 @@ class EditLanguage extends SectionController
         }
     }
 
-    protected function createSectionRevisions()
+    protected function createSectionRevisions($name = 'ListTranslation-rev')
     {
-        $this->addListSection('ListTranslation-rev', 'Translation', 'needs-revisions', 'fas fa-eye');
-        $this->addSearchOptions('ListTranslation-rev', ['name', 'description', 'translation']);
-        $this->addOrderOption('ListTranslation-rev', ['name'], 'code', 1);
-        $this->addOrderOption('ListTranslation-rev', ['lastmod'], 'last-update');
+        $this->addListSection($name, 'Translation', 'needs-revisions', 'fas fa-eye');
+        $this->sections[$name]->template = 'Section/Translations.html.twig';
+        $this->addSearchOptions($name, ['name', 'description', 'translation']);
+        $this->addOrderOption($name, ['name'], 'code', 1);
+        $this->addOrderOption($name, ['lastmod'], 'last-update');
     }
 
-    protected function createSectionTranslations()
+    protected function createSectionTranslations($name = 'ListTranslation')
     {
-        $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
-        $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
-        $this->addOrderOption('ListTranslation', ['name'], 'code', 1);
-        $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update');
+        $this->addListSection($name, 'Translation', 'translations', 'fas fa-copy');
+        $this->sections[$name]->template = 'Section/Translations.html.twig';
+        $this->addSearchOptions($name, ['name', 'description', 'translation']);
+        $this->addOrderOption($name, ['name'], 'code', 1);
+        $this->addOrderOption($name, ['lastmod'], 'last-update');
 
         /// buttons
         $button = [
@@ -185,7 +187,7 @@ class EditLanguage extends SectionController
             'label' => 'new',
             'type' => 'link',
         ];
-        $this->addButton('ListTranslation', $button);
+        $this->addButton($name, $button);
 
         if ($this->user) {
             $language = $this->getLanguageModel();
@@ -194,7 +196,7 @@ class EditLanguage extends SectionController
                 'label' => 'import',
                 'type' => 'link',
             ];
-            $this->addButton('ListTranslation', $button);
+            $this->addButton($name, $button);
         }
     }
 
