@@ -43,31 +43,13 @@ class CommunityHome extends SectionController
         }
     }
 
-    protected function createMyIssuesSection()
+    protected function createMyIssuesSection($name = 'ListIssue')
     {
-        $this->addListSection('ListIssue', 'Issue', 'issues', 'fas fa-question-circle', 'your');
-        $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
-        $this->addSearchOptions('ListIssue', ['body', 'creationroute']);
-        $this->addOrderOption('ListIssue', ['lastmod'], 'last-update', 2);
-        $this->addOrderOption('ListIssue', ['creationdate'], 'date');
-
-        $contactButton = [
-            'action' => 'ContactForm',
-            'color' => 'success',
-            'icon' => 'fas fa-plus',
-            'label' => 'new',
-            'type' => 'link',
-        ];
-        $this->addButton('ListIssue', $contactButton);
-    }
-
-    protected function createTeamIssuesSection()
-    {
-        $this->addListSection('ListIssue-teams', 'Issue', 'issues', 'fas fa-question-circle', 'teams');
-        $this->sections['ListIssue-teams']->template = 'Section/Issues.html.twig';
-        $this->addSearchOptions('ListIssue-teams', ['body', 'creationroute']);
-        $this->addOrderOption('ListIssue-teams', ['lastmod'], 'last-update', 2);
-        $this->addOrderOption('ListIssue-teams', ['creationdate'], 'date');
+        $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle', 'your');
+        $this->sections[$name]->template = 'Section/Issues.html.twig';
+        $this->addSearchOptions($name, ['body', 'creationroute']);
+        $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
+        $this->addOrderOption($name, ['creationdate'], 'date');
 
         /// buttons
         $contactButton = [
@@ -77,11 +59,30 @@ class CommunityHome extends SectionController
             'label' => 'new',
             'type' => 'link',
         ];
-        $this->addButton('ListIssue-teams', $contactButton);
+        $this->addButton($name, $contactButton);
+    }
+
+    protected function createTeamIssuesSection($name = 'ListIssue-teams')
+    {
+        $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle', 'teams');
+        $this->sections[$name]->template = 'Section/Issues.html.twig';
+        $this->addSearchOptions($name, ['body', 'creationroute']);
+        $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
+        $this->addOrderOption($name, ['creationdate'], 'date');
+
+        /// buttons
+        $contactButton = [
+            'action' => 'ContactForm',
+            'color' => 'success',
+            'icon' => 'fas fa-plus',
+            'label' => 'new',
+            'type' => 'link',
+        ];
+        $this->addButton($name, $contactButton);
 
         /// filters
-        $this->addFilterDatePicker('ListIssue-teams', 'fromdate', 'from-date', 'creationdate', '>=');
-        $this->addFilterDatePicker('ListIssue-teams', 'untildate', 'until-date', 'creationdate', '<=');
+        $this->addFilterDatePicker($name, 'fromdate', 'from-date', 'creationdate', '>=');
+        $this->addFilterDatePicker($name, 'untildate', 'until-date', 'creationdate', '<=');
 
         $teams = [
             $teams[] = ['code' => '', 'description' => '------']
@@ -90,29 +91,29 @@ class CommunityHome extends SectionController
             $team = $member->getTeam();
             $teams[] = ['code' => $team->idteam, 'description' => $team->name];
         }
-        $this->addFilterSelect('ListIssue-teams', 'idteam', 'team', 'idteam', $teams);
+        $this->addFilterSelect($name, 'idteam', 'team', 'idteam', $teams);
 
         $where = [new DataBaseWhere('closed', false)];
-        $this->addFilterCheckbox('ListIssue-teams', 'closed', 'closed', 'closed', '=', true, $where);
+        $this->addFilterCheckbox($name, 'closed', 'closed', 'closed', '=', true, $where);
     }
 
-    protected function createTeamLogSection()
+    protected function createTeamLogSection($name = 'ListWebTeamLog')
     {
-        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt', 'teams');
-        $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
-        $this->addSearchOptions('ListWebTeamLog', ['description']);
-        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
+        $this->addListSection($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt', 'teams');
+        $this->sections[$name]->template = 'Section/TeamLogs.html.twig';
+        $this->addSearchOptions($name, ['description']);
+        $this->addOrderOption($name, ['time'], 'date', 2);
 
         /// filters
-        $this->addFilterDatePicker('ListWebTeamLog', 'fromdate', 'from-date', 'creationdate', '>=');
-        $this->addFilterDatePicker('ListWebTeamLog', 'untildate', 'until-date', 'creationdate', '<=');
+        $this->addFilterDatePicker($name, 'fromdate', 'from-date', 'creationdate', '>=');
+        $this->addFilterDatePicker($name, 'untildate', 'until-date', 'creationdate', '<=');
 
         $teams = [];
         foreach ($this->getTeamsMemberData() as $member) {
             $team = $member->getTeam();
             $teams[] = ['code' => $team->idteam, 'description' => $team->name,];
         }
-        $this->addFilterSelect('ListWebTeamLog', 'idteam', 'team', 'idteam', $teams);
+        $this->addFilterSelect($name, 'idteam', 'team', 'idteam', $teams);
     }
 
     /**

@@ -27,8 +27,17 @@ use FacturaScripts\Dinamic\Lib\ExtendedController;
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class EditWebProject extends ExtendedController\PanelController
+class EditWebProject extends ExtendedController\EditController
 {
+
+    /**
+     * 
+     * @return string
+     */
+    public function getModelClassName()
+    {
+        return 'WebProject';
+    }
 
     /**
      * Returns basic page attributes
@@ -51,12 +60,11 @@ class EditWebProject extends ExtendedController\PanelController
      */
     protected function createViews()
     {
-        $this->addEditView('EditWebProject', 'WebProject', 'project', 'fas fa-folder-open');
+        parent::createViews();
         $this->addListView('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
-        $this->addListView('ListWebBuild', 'WebBuild', 'builds', 'fas fa-file-archive');
+        $this->addEditListView('EditWebBuild', 'WebBuild', 'builds', 'fas fa-file-archive');
 
         $this->views['ListWebDocPage']->disableColumn('project', true);
-        $this->views['ListWebBuild']->disableColumn('project', true);
     }
 
     /**
@@ -67,17 +75,18 @@ class EditWebProject extends ExtendedController\PanelController
      */
     protected function loadData($viewName, $view)
     {
+        $idproject = $this->getViewModelValue('EditWebProject', 'idproject');
         switch ($viewName) {
-            case 'EditWebProject':
-                $code = $this->request->get('code');
-                $view->loadData($code);
-                break;
-
             case 'ListWebDocPage':
-            case 'ListWebBuild':
-                $idproject = $this->getViewModelValue('EditWebProject', 'idproject');
                 $view->loadData(false, [new DataBaseWhere('idproject', $idproject)]);
                 break;
+
+            case 'EditWebBuild':
+                $view->loadData(false, [new DataBaseWhere('idproject', $idproject)], ['version' => 'DESC']);
+                break;
+
+            default:
+                parent::loadData($viewName, $view);
         }
     }
 }

@@ -16,13 +16,13 @@
                     <br/><b>{{ i18n.trans('mantainer') }}</b>: {{ plugin.getContactName() }}
                 {% endif %}
             </p>
+            {{ macros.downloadButton(plugin, i18n, fsc) }}
+            <br/><br/>
         </div>
     </div>
     <div class="columns">
-        <div class="column col-2">
-        </div>
         <div class="column">
-            {{ macros.downloadButton(plugin, i18n, fsc) }}
+            {{ macros.healthTable(plugin, i18n, fsc) }}
         </div>
     </div>
 </div>
@@ -37,4 +37,51 @@
             </a>
         </div>
     {% endif %}
+{% endmacro %}
+
+{% macro healthTable(plugin, i18n, fsc) %}
+    {% set license = fsc.getLicense(plugin.license) %}
+    <div class="custom-scroll">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        {{ i18n.trans('version') }}
+                    </th>
+                    <th>
+                        {{ i18n.trans('last-update') }}
+                    </th>
+                    <th>
+                        {{ i18n.trans('license') }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    {% set tdClass = (plugin.version > 1) ? 'bg-success' : 'bg-error' %}
+                    <td class="{{ tdClass }}">{{ plugin.version }}</td>
+                    {% set tdClass = fsc.isDateOld(plugin.lastmod) ? 'bg-error' : 'bg-success' %}
+                    <td class="{{ tdClass }}">{{ plugin.lastmod }}</td>
+                    {% set tdClass = (license.name == 'EULA') ? 'bg-error' : 'bg-success' %}
+                    <td class="{{ tdClass }} c-hand" onclick="showModal('modalLicense');">
+                        {{ license.title }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal" id="modalLicense">
+        <a href="#close" class="modal-overlay" aria-label="Close"></a>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a href="#close" onclick="return hideModal('modalLicense');" class="btn btn-clear float-right" aria-label="Close"></a>
+                <div class="modal-title h5">{{ license.title }}</div>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    {{ license.description | raw | nl2br }}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endmacro %}

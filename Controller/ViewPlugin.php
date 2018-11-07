@@ -18,10 +18,9 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Model\License;
 use FacturaScripts\Plugins\Community\Model\WebProject;
-use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -60,6 +59,19 @@ class ViewPlugin extends SectionController
     }
 
     /**
+     * 
+     * @param string $licenseCode
+     *
+     * @return License
+     */
+    public function getLicense($licenseCode)
+    {
+        $license = new License();
+        $license->loadFromCode($licenseCode);
+        return $license;
+    }
+
+    /**
      * Return the project by code.
      *
      * @return WebProject
@@ -80,6 +92,17 @@ class ViewPlugin extends SectionController
         $uri = explode('/', $this->uri);
         $project->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
         return $project;
+    }
+
+    /**
+     * 
+     * @param string $date
+     *
+     * @return bool
+     */
+    public function isDateOld($date)
+    {
+        return strtotime($date) < strtotime('-9 months');
     }
 
     /**
