@@ -23,7 +23,6 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
-use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
@@ -80,7 +79,7 @@ class EditLanguage extends SectionController
         }
 
         $language = new Language();
-        $code = $this->request->get('code', '');
+        $code = $this->request->query->get('code', '');
         if (!empty($code)) {
             $language->loadFromCode($code);
             return $language;

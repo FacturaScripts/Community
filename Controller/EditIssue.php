@@ -108,12 +108,6 @@ class EditIssue extends SectionController
         }
 
         $issue = new Issue();
-        $code = $this->request->get('code', '');
-        if (!empty($code)) {
-            $issue->loadFromCode($code);
-            return $issue;
-        }
-
         $uri = explode('/', $this->uri);
         $issue->loadFromCode(end($uri));
         return $issue;

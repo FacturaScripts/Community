@@ -18,14 +18,12 @@
             </p>
             {{ macros.downloadButton(plugin, i18n, fsc) }}
             <br/><br/>
-        </div>
-    </div>
-    <div class="columns">
-        <div class="column">
             {{ macros.healthTable(plugin, i18n, fsc) }}
         </div>
     </div>
 </div>
+<br/>
+<div class="divider"></div>
 <br/>
 
 {% macro downloadButton(plugin, i18n, fsc) %}
@@ -62,7 +60,7 @@
                     <td class="{{ tdClass }}">{{ plugin.version }}</td>
                     {% set tdClass = fsc.isDateOld(plugin.lastmod) ? 'bg-error' : 'bg-success' %}
                     <td class="{{ tdClass }}">{{ plugin.lastmod }}</td>
-                    {% set tdClass = (license.name == 'EULA') ? 'bg-error' : 'bg-success' %}
+                    {% set tdClass = (license.name == 'EULA') ? 'bg-warning' : 'bg-success' %}
                     <td class="{{ tdClass }} c-hand" onclick="showModal('modalLicense');">
                         {{ license.title }}
                     </td>

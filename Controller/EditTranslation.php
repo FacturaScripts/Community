@@ -94,7 +94,7 @@ class EditTranslation extends SectionController
         }
 
         $translation = new Translation();
-        $code = $this->request->get('code', '');
+        $code = $this->request->query->get('code', '');
         if (!empty($code)) {
             $translation->loadFromCode($code);
             return $translation;

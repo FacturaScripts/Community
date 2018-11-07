@@ -98,12 +98,6 @@ class EditWebTeam extends SectionController
         }
 
         $team = new WebTeam();
-        $idteam = $this->request->get('code', '');
-        if (!empty($idteam)) {
-            $team->loadFromCode($idteam);
-            return $team;
-        }
-
         $uri = explode('/', $this->uri);
         $team->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
         return $team;

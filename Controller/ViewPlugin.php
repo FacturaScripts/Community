@@ -83,12 +83,6 @@ class ViewPlugin extends SectionController
         }
 
         $project = new WebProject();
-        $code = $this->request->get('code', '');
-        if (!empty($code)) {
-            $project->loadFromCode($code);
-            return $project;
-        }
-
         $uri = explode('/', $this->uri);
         $project->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
         return $project;
@@ -122,6 +116,7 @@ class ViewPlugin extends SectionController
         /// admin
         if ($this->contactCanEdit()) {
             $this->addEditSection('EditWebProject', 'WebProject', 'edit', 'fas fa-edit', 'admin');
+            $this->addEditListSection('EditWebBuild', 'WebBuild', 'builds', 'fas fa-file-archive', 'admin');
         }
     }
 
@@ -134,6 +129,12 @@ class ViewPlugin extends SectionController
     {
         $project = $this->getProject();
         switch ($sectionName) {
+            case 'EditWebBuild':
+                $where = [new DataBaseWhere('idproject', $project->idproject)];
+                $this->sections[$sectionName]->loadData('', $where, ['version' => 'DESC']);
+                $this->updatePluginVersion($sectionName);
+                break;
+
             case 'EditWebProject':
                 $this->sections[$sectionName]->loadData($project->primaryColumnValue());
                 break;
@@ -168,5 +169,21 @@ class ViewPlugin extends SectionController
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');
+    }
+
+    /**
+     * Updates plugin version with the top build version.
+     *
+     * @param string $sectionName
+     */
+    protected function updatePluginVersion(string $sectionName)
+    {
+        $plugin = $this->getProject();
+        foreach ($this->sections[$sectionName]->cursor as $model) {
+            $plugin->version = $model->version;
+            $plugin->lastmod = $model->date;
+            $plugin->save();
+            break;
+        }
     }
 }
