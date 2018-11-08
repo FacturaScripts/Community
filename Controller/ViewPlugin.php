@@ -100,6 +100,32 @@ class ViewPlugin extends SectionController
     }
 
     /**
+     * Returns true if we can edit this model object.
+     *
+     * @param object $model
+     *
+     * @return bool
+     */
+    protected function checkModelSecurity($model)
+    {
+        if (!$this->contactCanEdit()) {
+            return false;
+        }
+
+        $project = $this->getProject();
+        switch ($model->modelClassName()) {
+            case 'WebBuild':
+                return $model->idproject == $project->primaryColumnValue();
+
+            case 'WebProject':
+                return $model->primaryColumnValue() == $project->primaryColumnValue();
+
+            default:
+                return parent::checkModelSecurity($model);
+        }
+    }
+
+    /**
      * Load sections to the view.
      */
     protected function createSections()
