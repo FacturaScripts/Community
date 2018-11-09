@@ -27,14 +27,18 @@
 <br/>
 
 {% macro downloadButton(plugin, i18n, fsc) %}
-    {% if plugin.publicrepo %}
-        <div class="btn-group">
-            <a href="{{ plugin.publicrepo }}" target="_blank" rel="nofollow" class="btn btn-success">
+    <div class="btn-group">
+        <a href="{{ asset('DownloadBuild/' ~ plugin.idproject ~ '/stable') }}" class="btn btn-success">
+            <i class="fas fa-download fa-fw" aria-hidden="true"></i>
+            <span class="hide-xs">{{ i18n.trans('download') }}</span>
+        </a>
+        {% if plugin.publicrepo %}
+            <a href="{{ plugin.publicrepo }}" target="_blank" rel="nofollow" class="btn">
                 <i class="fab fa-git fa-fw" aria-hidden="true"></i>
                 <span class="hide-xs">{{ i18n.trans('source-code') }}</span>
             </a>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 {% endmacro %}
 
 {% macro healthTable(plugin, i18n, fsc) %}
