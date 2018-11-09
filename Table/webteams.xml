@@ -41,8 +41,8 @@
         <type>PRIMARY KEY (idteam)</type>
     </constraint>
     <constraint>
-        <name>ca_webteams_contactos</name>
-        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
+        <name>ca_webteams_contactos2</name>
+        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
         <name>uniq_webteams</name>
