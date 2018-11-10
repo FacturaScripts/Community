@@ -204,12 +204,24 @@ class ViewPlugin extends SectionController
      */
     protected function updatePluginVersion(string $sectionName)
     {
+        $version = 0;
+        $lastmod = null;
+        $downloads = 0;
+
         $plugin = $this->getProject();
         foreach ($this->sections[$sectionName]->cursor as $model) {
-            $plugin->version = $model->version;
-            $plugin->lastmod = $model->date;
+            $downloads += $model->downloads;
+            if ($model->version > $version) {
+                $version = $model->version;
+                $lastmod = $model->date;
+            }
+        }
+
+        if ($version != $plugin->version || $downloads != $plugin->downloads) {
+            $plugin->downloads = $downloads;
+            $plugin->version = $version;
+            $plugin->lastmod = $lastmod;
             $plugin->save();
-            break;
         }
     }
 }

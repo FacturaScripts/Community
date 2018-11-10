@@ -15,6 +15,10 @@
         <type>text</type>
     </column>
     <column>
+        <name>downloads</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>idcontacto</name>
         <type>integer</type>
     </column>

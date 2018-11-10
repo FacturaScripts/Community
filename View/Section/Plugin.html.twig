@@ -28,10 +28,12 @@
 
 {% macro downloadButton(plugin, i18n, fsc) %}
     <div class="btn-group">
-        <a href="{{ asset('DownloadBuild/' ~ plugin.idproject ~ '/stable') }}" class="btn btn-success">
-            <i class="fas fa-download fa-fw" aria-hidden="true"></i>
-            <span class="hide-xs">{{ i18n.trans('download') }}</span>
-        </a>
+        {% if plugin.version > 0 %}
+            <a href="{{ asset('DownloadBuild/' ~ plugin.idproject ~ '/stable') }}" class="btn btn-success">
+                <i class="fas fa-download fa-fw" aria-hidden="true"></i>
+                <span class="hide-xs">{{ i18n.trans('download') }}</span>
+            </a>
+        {% endif %}
         {% if plugin.publicrepo %}
             <a href="{{ plugin.publicrepo }}" target="_blank" rel="nofollow" class="btn">
                 <i class="fab fa-git fa-fw" aria-hidden="true"></i>
@@ -54,6 +56,9 @@
                         {{ i18n.trans('last-update') }}
                     </th>
                     <th>
+                        {{ i18n.trans('downloads') }}
+                    </th>
+                    <th>
                         {{ i18n.trans('license') }}
                     </th>
                 </tr>
@@ -64,6 +69,8 @@
                     <td class="{{ tdClass }}">{{ plugin.version }}</td>
                     {% set tdClass = fsc.isDateOld(plugin.lastmod) ? 'bg-error' : 'bg-success' %}
                     <td class="{{ tdClass }}">{{ plugin.lastmod }}</td>
+                    {% set tdClass = (plugin.downloads < 1000) ? 'bg-error' : 'bg-success' %}
+                    <td class="{{ tdClass }}">{{ plugin.downloads }}</td>
                     {% set tdClass = (license.name == 'EULA') ? 'bg-warning' : 'bg-success' %}
                     <td class="{{ tdClass }} c-hand" onclick="showModal('modalLicense');">
                         {{ license.title }}

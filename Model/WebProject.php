@@ -48,6 +48,12 @@ class WebProject extends Base\ModelClass
     public $description;
 
     /**
+     *
+     * @var int
+     */
+    public $downloads;
+
+    /**
      * Primary key.
      *
      * @var int
@@ -104,6 +110,7 @@ class WebProject extends Base\ModelClass
     {
         parent::clear();
         $this->creationdate = date('d-m-Y');
+        $this->downloads = 0;
         $this->lastmod = date('d-m-Y');
         $this->license = 'LGPL';
         $this->plugin = true;
