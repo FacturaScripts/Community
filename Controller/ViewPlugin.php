@@ -18,9 +18,11 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\License;
 use FacturaScripts\Plugins\Community\Model\WebProject;
+use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -146,6 +148,31 @@ class ViewPlugin extends SectionController
         }
     }
 
+    protected function deleteAction()
+    {
+        $return = parent::deleteAction();
+        if ($return && $this->active === 'EditWebProject') {
+            /// adds delete plugin message to team log
+            $uri = explode('/', $this->uri);
+            $this->saveTeamLog('Deleted plugin ' . end($uri), '');
+        }
+
+        return $return;
+    }
+
+    protected function insertAction()
+    {
+        $return = parent::insertAction();
+        if ($return && $this->active === 'EditWebBuild') {
+            /// adds new plugin version message to team log
+            $plugin = $this->getProject();
+            $version = $this->request->request->get('version', $plugin->version);
+            $this->saveTeamLog('Uploaded plugin ' . $plugin->name . ' v' . $version, $plugin->url('public'));
+        }
+
+        return $return;
+    }
+
     /**
      * Load section data procedure
      *
@@ -195,6 +222,23 @@ class ViewPlugin extends SectionController
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');
+    }
+
+    /**
+     * 
+     * @param string $description
+     * @param string $link
+     *
+     * @return bool
+     */
+    protected function saveTeamLog($description, $link)
+    {
+        $teamLog = new WebTeamLog();
+        $teamLog->description = $description;
+        $teamLog->idcontacto = $this->contact->idcontacto;
+        $teamLog->idteam = AppSettings::get('community', 'idteamdev');
+        $teamLog->link = $link;
+        return $teamLog->save();
     }
 
     /**
