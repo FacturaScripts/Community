@@ -22,7 +22,7 @@ use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Core\Model\AttachedFile;
 
 /**
- * Description of WebFile
+ * Description of WebBuild
  *
  * @author Carlos García Gómez
  */
@@ -107,7 +107,7 @@ class WebBuild extends Base\ModelClass
         $this->downloads = 0;
         $this->hour = date('H:i:s');
         $this->stable = false;
-        $this->version = 1.0;
+        $this->version = 0.1;
     }
 
     /**

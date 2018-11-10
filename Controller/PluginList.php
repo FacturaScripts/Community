@@ -32,7 +32,11 @@ class PluginList extends SectionController
     protected function createPluginSection($name, $title)
     {
         $this->addListSection($name, 'WebProject', $title, 'fas fa-plug', '2018');
-        $this->addOrderOption($name, ['LOWER(name)'], 'name', 1);
+        $this->sections[$name]->template = 'Section/Plugins.html.twig';
+        $this->addOrderOption($name, ['LOWER(name)'], 'name');
+        $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
+        $this->addOrderOption($name, ['version'], 'version');
+        $this->addOrderOption($name, ['downloads'], 'downloads');
         $this->addSearchOptions($name, ['name', 'description']);
 
         /// filters
