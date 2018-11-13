@@ -11,7 +11,7 @@
                 Plugin {{ plugin.name }}
             </h1>
             <p>
-                {{ plugin.description }}
+                {{ plugin.description | raw | nl2br }}
                 {% if plugin.idcontacto %}
                     <br/><b>{{ i18n.trans('mantainer') }}</b>: {{ plugin.getContactName() }}
                 {% endif %}
@@ -80,7 +80,7 @@
         </table>
     </div>
     <div class="modal" id="modalLicense">
-        <a href="#close" class="modal-overlay" aria-label="Close"></a>
+        <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('modalLicense');"></a>
         <div class="modal-container">
             <div class="modal-header">
                 <a href="#close" onclick="return hideModal('modalLicense');" class="btn btn-clear float-right" aria-label="Close"></a>

@@ -17,7 +17,7 @@
                             <a href="{{ plugin.url('public') }}">{{ plugin.name }}</a>
                             <span class="label">v{{ plugin.version }}</span>
                             <br/>
-                            {{ plugin.description | raw | slice(0, 200) }}
+                            {{ plugin.description | slice(0, 200) | raw }}
                         </td>
                         <td class="text-right">{{ plugin.lastmod }}</td>
                     </tr>
