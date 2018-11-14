@@ -155,6 +155,8 @@ class ViewPlugin extends SectionController
             /// adds delete plugin message to team log
             $uri = explode('/', $this->uri);
             $this->saveTeamLog('Deleted plugin ' . end($uri), '');
+        } elseif ($return && $this->active === 'EditWebBuild') {
+            $this->sections[$this->active]->model->clear();
         }
 
         return $return;
@@ -168,6 +170,8 @@ class ViewPlugin extends SectionController
             $plugin = $this->getProject();
             $version = $this->request->request->get('version', $plugin->version);
             $this->saveTeamLog('Uploaded plugin ' . $plugin->name . ' v' . $version, $plugin->url('public'));
+        } elseif (false === $return && $this->active === 'EditWebBuild') {
+            $this->sections[$this->active]->model->clear();
         }
 
         return $return;
@@ -267,5 +271,7 @@ class ViewPlugin extends SectionController
             $plugin->lastmod = $lastmod;
             $plugin->save();
         }
+
+        $this->sections['EditWebBuild']->model->version = $version + 0.1;
     }
 }

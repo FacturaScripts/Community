@@ -39,7 +39,7 @@
             <column name="hour" numcolumns="2" order="140">
                 <widget type="text" fieldname="hour" readonly="true" />
             </column>
-            <column name="full-path" numcolumns="8" order="150">
+            <column name="full-path" numcolumns="12" order="150">
                 <widget type="file" fieldname="path" required="true" readonly="dinamic" />
             </column>
             <column name="stable" display="center" order="160">
