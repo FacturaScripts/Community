@@ -51,9 +51,9 @@ class ListWebProject extends ExtendedController\ListController
     protected function createViews()
     {
         $this->createViewProjects();
-        $this->createViewLicenses();
-        $this->createViewsDocPages();
         $this->createViewsBuild();
+        $this->createViewsDocPages();
+        $this->createViewLicenses();
     }
 
     /**
