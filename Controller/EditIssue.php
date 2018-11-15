@@ -30,8 +30,8 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Description of EditIssue
  *
- * @author Carlos García Gómez <carlos@facturascripts.com>
- * @author Cristo M. Estévez Hernández <cristom.estevez@gmail.com>
+ * @author Carlos García Gómez          <carlos@facturascripts.com>
+ * @author Cristo M. Estévez Hernández  <cristom.estevez@gmail.com>
  */
 class EditIssue extends SectionController
 {
@@ -48,7 +48,7 @@ class EditIssue extends SectionController
      *
      * @return bool
      */
-    public function contactCanEdit(): bool
+    public function contactCanEdit()
     {
         if (empty($this->contact)) {
             return false;
@@ -74,13 +74,9 @@ class EditIssue extends SectionController
      *
      * @return bool
      */
-    public function contactCanSee(): bool
+    public function contactCanSee()
     {
-        if ($this->contactCanEdit()) {
-            return true;
-        }
-
-        return false;
+        return $this->contactCanEdit();
     }
 
     /**

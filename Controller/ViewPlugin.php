@@ -23,7 +23,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\License;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class ViewPlugin extends SectionController
+class ViewPlugin extends EditSectionController
 {
 
     /**
@@ -42,11 +42,11 @@ class ViewPlugin extends SectionController
     protected $project;
 
     /**
-     * * Returns true if contact can edit this plugin.
+     * Returns true if contact can edit this plugin.
      *
      * @return bool
      */
-    public function contactCanEdit(): bool
+    public function contactCanEdit()
     {
         if ($this->user) {
             return true;
@@ -56,8 +56,17 @@ class ViewPlugin extends SectionController
             return false;
         }
 
-        $project = $this->getProject();
+        $project = $this->getMainModel();
         return ($this->contact->idcontacto === $project->idcontacto);
+    }
+    
+    /**
+     * 
+     * @return bool
+     */
+    public function contactCanSee()
+    {
+        return true;
     }
 
     /**
@@ -72,13 +81,12 @@ class ViewPlugin extends SectionController
         $license->loadFromCode($licenseCode);
         return $license;
     }
-
+    
     /**
-     * Return the project by code.
-     *
+     * 
      * @return WebProject
      */
-    public function getProject(): WebProject
+    public function getMainModel()
     {
         if (isset($this->project)) {
             return $this->project;
@@ -114,7 +122,7 @@ class ViewPlugin extends SectionController
             return false;
         }
 
-        $project = $this->getProject();
+        $project = $this->getMainModel();
         switch ($model->modelClassName()) {
             case 'WebBuild':
                 return $model->idproject == $project->primaryColumnValue();
@@ -134,7 +142,7 @@ class ViewPlugin extends SectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('plugin', 'plugin', 'Section/Plugin');
-        $project = $this->getProject();
+        $project = $this->getMainModel();
         $this->addNavigationLink($project->url('public-list'), $this->i18n->trans('plugins'));
         $this->addNavigationLink($project->url('public-list') . '?activetab=ListWebProject', '2018');
 
@@ -167,7 +175,7 @@ class ViewPlugin extends SectionController
         $return = parent::insertAction();
         if ($return && $this->active === 'EditWebBuild') {
             /// adds new plugin version message to team log
-            $plugin = $this->getProject();
+            $plugin = $this->getMainModel();
             $version = $this->request->request->get('version', $plugin->version);
             $this->saveTeamLog('Uploaded plugin ' . $plugin->name . ' v' . $version, $plugin->url('public'));
         } elseif (false === $return && $this->active === 'EditWebBuild') {
@@ -184,7 +192,7 @@ class ViewPlugin extends SectionController
      */
     protected function loadData(string $sectionName)
     {
-        $project = $this->getProject();
+        $project = $this->getMainModel();
         switch ($sectionName) {
             case 'EditWebBuild':
                 $where = [new DataBaseWhere('idproject', $project->idproject)];
@@ -215,7 +223,7 @@ class ViewPlugin extends SectionController
      */
     protected function loadPlugin()
     {
-        $this->project = $this->getProject();
+        $this->project = $this->getMainModel();
         if ($this->project->exists() && $this->project->plugin) {
             $this->title = 'Plugin ' . $this->project->name;
             $this->description = $this->project->description();
@@ -256,7 +264,7 @@ class ViewPlugin extends SectionController
         $lastmod = null;
         $downloads = 0;
 
-        $plugin = $this->getProject();
+        $plugin = $this->getMainModel();
         foreach ($this->sections[$sectionName]->cursor as $model) {
             $downloads += $model->downloads;
             if ($model->version > $version) {

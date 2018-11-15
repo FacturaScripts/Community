@@ -24,7 +24,7 @@ use FacturaScripts\Dinamic\Lib\EmailTools;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class EditWebTeam extends SectionController
+class EditWebTeam extends EditSectionController
 {
 
     /**
@@ -47,7 +47,7 @@ class EditWebTeam extends SectionController
      *
      * @return bool
      */
-    public function contactCanEdit(): bool
+    public function contactCanEdit()
     {
         if ($this->user) {
             return true;
@@ -57,8 +57,17 @@ class EditWebTeam extends SectionController
             return false;
         }
 
-        $team = $this->getTeam();
+        $team = $this->getMainModel();
         return ($team->idcontacto === $this->contact->idcontacto);
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function contactCanSee()
+    {
+        return true;
     }
 
     /**
@@ -73,7 +82,7 @@ class EditWebTeam extends SectionController
         }
 
         $member = new WebTeamMember();
-        $team = $this->getTeam();
+        $team = $this->getMainModel();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
             new DataBaseWhere('idteam', $team->idteam),
@@ -91,7 +100,7 @@ class EditWebTeam extends SectionController
      *
      * @return WebTeam
      */
-    public function getTeam(): WebTeam
+    public function getMainModel()
     {
         if (isset($this->team)) {
             return $this->team;
@@ -141,7 +150,7 @@ class EditWebTeam extends SectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('team', 'team', 'Section/Team');
-        $team = $this->getTeam();
+        $team = $this->getMainModel();
         $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
 
         $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
@@ -219,7 +228,7 @@ class EditWebTeam extends SectionController
             return;
         }
 
-        $team = $this->getTeam();
+        $team = $this->getMainModel();
         $member = new WebTeamMember();
         $member->idcontacto = $this->contact->idcontacto;
         $member->idteam = $team->idteam;
@@ -249,7 +258,7 @@ class EditWebTeam extends SectionController
         }
 
         $member = new WebTeamMember();
-        $team = $this->getTeam();
+        $team = $this->getMainModel();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
             new DataBaseWhere('idteam', $team->idteam),
@@ -277,7 +286,7 @@ class EditWebTeam extends SectionController
      */
     protected function loadData(string $sectionName)
     {
-        $team = $this->getTeam();
+        $team = $this->getMainModel();
         switch ($sectionName) {
             case 'EditWebTeam':
                 $this->sections[$sectionName]->loadData($team->primaryColumnValue());
@@ -315,7 +324,7 @@ class EditWebTeam extends SectionController
      */
     protected function loadTeam()
     {
-        $this->team = $this->getTeam();
+        $this->team = $this->getMainModel();
         if ($this->team->exists()) {
             $this->title = $this->team->name;
             $this->description = $this->team->description();
@@ -336,7 +345,7 @@ class EditWebTeam extends SectionController
     protected function notifyAccept(WebTeamMember $member)
     {
         $contact = $member->getContact();
-        $team = $this->getTeam();
+        $team = $this->getMainModel();
         $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
         $title = $this->i18n->trans('accepted-to-team', ['%teamName%' => $team->name]);
         $txt = $this->i18n->trans('accepted-to-team-msg', ['%link%' => $link, '%teamName%' => $team->name, '%teamDescription%' => $team->description]);

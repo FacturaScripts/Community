@@ -23,15 +23,15 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 
 /**
  * Class to manage an existing language.
  *
- * @author Carlos García Gómez <carlos@facturascripts.com>
- * @author Francesc Pineda Segarra <francesc.pineda@x-netdigital.com>
+ * @author Carlos García Gómez      <carlos@facturascripts.com>
+ * @author Francesc Pineda Segarra  <francesc.pineda@x-netdigital.com>
  */
-class EditLanguage extends SectionController
+class EditLanguage extends EditSectionController
 {
 
     /**
@@ -53,7 +53,7 @@ class EditLanguage extends SectionController
      *
      * @return bool
      */
-    public function contactCanEdit(): bool
+    public function contactCanEdit()
     {
         if ($this->user) {
             return true;
@@ -63,8 +63,17 @@ class EditLanguage extends SectionController
             return false;
         }
 
-        $language = $this->getLanguageModel();
+        $language = $this->getMainModel();
         return ($language->idcontacto === $this->contact->idcontacto);
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function contactCanSee()
+    {
+        return true;
     }
 
     /**
@@ -72,7 +81,7 @@ class EditLanguage extends SectionController
      *
      * @return Language
      */
-    public function getLanguageModel(): Language
+    public function getMainModel()
     {
         if (isset($this->languageModel)) {
             return $this->languageModel;
@@ -97,7 +106,7 @@ class EditLanguage extends SectionController
      */
     public function getParentLanguages(): array
     {
-        $current = $this->getLanguageModel();
+        $current = $this->getMainModel();
         $languages = [];
         foreach ($current->all([], ['langcode' => 'ASC'], 0, 0) as $language) {
             if ($language->langcode == $current->langcode) {
@@ -149,7 +158,7 @@ class EditLanguage extends SectionController
         $this->fixedSection();
 
         $this->addHtmlSection('language', 'language', 'Section/Language');
-        $language = $this->getLanguageModel();
+        $language = $this->getMainModel();
         $this->addNavigationLink($language->url('public-list') . '?activetab=ListLanguage', $this->i18n->trans('languages'));
 
         $this->createSectionTranslations();
@@ -189,7 +198,7 @@ class EditLanguage extends SectionController
         $this->addButton($name, $button);
 
         if ($this->user) {
-            $language = $this->getLanguageModel();
+            $language = $this->getMainModel();
             $button = [
                 'action' => $language->url(),
                 'label' => 'import',
@@ -232,7 +241,7 @@ class EditLanguage extends SectionController
             return;
         }
 
-        $language = $this->getLanguageModel();
+        $language = $this->getMainModel();
         if ($language->parentcode) {
             $this->miniLog->alert("You can't import a language with parent.");
             return;
@@ -311,7 +320,7 @@ class EditLanguage extends SectionController
     {
         $this->setTemplate(false);
         $json = [];
-        $language = $this->getLanguageModel();
+        $language = $this->getMainModel();
         $translation = new Translation();
 
         if (!empty($language->parentcode)) {
@@ -336,7 +345,7 @@ class EditLanguage extends SectionController
      */
     protected function loadData(string $sectionName)
     {
-        $language = $this->getLanguageModel();
+        $language = $this->getMainModel();
         switch ($sectionName) {
             case 'EditLanguage':
                 $this->sections[$sectionName]->loadData($language->primaryColumnValue());

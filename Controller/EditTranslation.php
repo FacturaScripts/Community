@@ -24,15 +24,15 @@ use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 
 /**
  * Class to manage an existing translation.
  *
- * @author Carlos García Gómez <carlos@facturascripts.com>
- * @author Francesc Pineda Segarra <francesc.pineda@x-netdigital.com>
+ * @author Carlos García Gómez      <carlos@facturascripts.com>
+ * @author Francesc Pineda Segarra  <francesc.pineda@x-netdigital.com>
  */
-class EditTranslation extends SectionController
+class EditTranslation extends EditSectionController
 {
 
     /**
@@ -47,7 +47,7 @@ class EditTranslation extends SectionController
      *
      * @return bool
      */
-    public function contactCanEdit(): bool
+    public function contactCanEdit()
     {
         if ($this->user) {
             return true;
@@ -74,9 +74,22 @@ class EditTranslation extends SectionController
         return !($language->idcontacto && $language->idcontacto !== $this->contact->idcontacto);
     }
 
+    /**
+     * 
+     * @return bool
+     */
+    public function contactCanSee()
+    {
+        return true;
+    }
+
+    /**
+     * 
+     * @return Language
+     */
     public function getLanguageModel(): Language
     {
-        $translation = $this->getTranslationModel();
+        $translation = $this->getMainModel();
         $language = new Language();
         $language->loadFromCode($translation->langcode);
         return $language;
@@ -87,7 +100,7 @@ class EditTranslation extends SectionController
      *
      * @return Translation
      */
-    public function getTranslationModel(): Translation
+    public function getMainModel()
     {
         if (isset($this->translationModel)) {
             return $this->translationModel;
@@ -162,7 +175,7 @@ class EditTranslation extends SectionController
             return;
         }
 
-        $translation = $this->getTranslationModel();
+        $translation = $this->getMainModel();
         foreach ($translation->getEquivalents() as $trans) {
             $trans->delete();
             $this->saveTeamLog($trans, 'Deleted');
@@ -184,7 +197,7 @@ class EditTranslation extends SectionController
             return;
         }
 
-        $translation = $this->getTranslationModel();
+        $translation = $this->getMainModel();
         $translation->description = $this->request->request->get('description', '');
         $translation->translation = $this->request->request->get('translation', '');
         $translation->lastmod = date('d-m-Y H:i:s');
@@ -242,9 +255,9 @@ class EditTranslation extends SectionController
      */
     protected function loadData(string $sectionName)
     {
+        $translation = $this->getMainModel();
         switch ($sectionName) {
             case 'ListTranslation-rev':
-                $translation = $this->getTranslationModel();
                 $where = [
                     new DataBaseWhere('langcode', $translation->langcode),
                     new DataBaseWhere('needsrevision', true),
@@ -254,7 +267,6 @@ class EditTranslation extends SectionController
                 break;
 
             case 'ListTranslation':
-                $translation = $this->getTranslationModel();
                 $where = [
                     new DataBaseWhere('name', $translation->name),
                     new DataBaseWhere('id', $translation->id, '!=')
