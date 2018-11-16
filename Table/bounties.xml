@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : bounties.xml
+    Author     : Cristo M. Estévez Hernández
+    Description:
+        Structure for the bounty table.
+-->
+<table>
+    <column>
+        <name>author</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>assigned</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>closed</name>
+        <type>bool</type>
+        <default>false</default>
+    </column>
+    <column>
+        <name>date</name>
+        <type>date</type>
+    </column>
+    <column>
+        <name>description</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>difficulty</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>idbounty</name>
+        <type>serial</type>
+        <null>NO</null>
+        <default>nextval('bounties_idbounty_seq'::regclass)</default>
+    </column>
+    <column>
+        <name>idproject</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>idteam</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>points</name>
+        <type>integer</type>
+        <default>0</default>
+    </column>
+    <column>
+        <name>status</name>
+        <type>character varying(250)</type>
+    </column>
+    <column>
+        <name>title</name>
+        <type>character varying(250)</type>
+    </column>
+    <constraint>
+        <name>bounties_pkey</name>
+        <type>PRIMARY KEY (idbounty)</type>
+    </constraint>
+    <constraint>
+        <name>ca_bounties_contactos_author</name>
+        <type>FOREIGN KEY (author) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_bounties_contactos_assigned</name>
+        <type>FOREIGN KEY (assigned) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_bounties_webprojects</name>
+        <type>FOREIGN KEY (idproject) REFERENCES webprojects (idproject) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_bounties_webteams</name>
+        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+</table>
