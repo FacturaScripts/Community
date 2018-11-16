@@ -46,13 +46,6 @@ class WebProjectReview extends Base\ModelClass
     public $id;
 
     /**
-     * Foreign key reference contactos table.
-     *
-     * @var integer
-     */
-    public $idcontacto;
-
-    /**
      * Foreign key reference webprojects table.
      *
      * @var integer
@@ -115,6 +108,8 @@ class WebProjectReview extends Base\ModelClass
      */
     public function test()
     {
+        $this->observations = Utils::noHtml($this->observations);
+
         if ($this->version < 0.0) {
             self::$miniLog->alert(self::$i18n->trans('invalid-quantity', ['%column%' => 'version', '%min%' => '0']));
             return false;

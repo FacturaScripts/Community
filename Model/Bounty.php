@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 
 /**
@@ -29,6 +30,7 @@ class Bounty extends Base\ModelClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      * Foreign key with table contactos
@@ -108,6 +110,7 @@ class Bounty extends Base\ModelClass
     {
         parent::clear();
         $this->closed = false;
+        $this->date = date('d-m-Y');
         $this->points = 0;
     }
 
@@ -131,4 +134,11 @@ class Bounty extends Base\ModelClass
         return 'bounties';
     }
 
+    public function test()
+    {
+        $this->description = Utils::noHtml($this->description);
+        $this->title = Utils::noHtml($this->title);
+
+        return parent::test();
+    }
 }

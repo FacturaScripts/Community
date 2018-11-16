@@ -30,6 +30,7 @@ class Publication extends Base\ModelClass
 {
 
     use Base\ModelTrait;
+    use Common\ContactTrait;
 
     /**
      *
@@ -42,13 +43,6 @@ class Publication extends Base\ModelClass
      * @var string
      */
     public $date;
-
-    /**
-     * Foreign key with Contactos table.
-     *
-     * @var integer
-     */
-    public $idcontacto;
 
     /**
      * Primary key.
@@ -76,7 +70,13 @@ class Publication extends Base\ModelClass
      * @var string
      */
     public $title;
-    
+
+    public function clear()
+    {
+        parent::clear();
+        $this->date = date('d-m-Y');
+    }
+
     /**
      * Returns the name of the column that is the primary key of the model.
      *
@@ -104,6 +104,7 @@ class Publication extends Base\ModelClass
      */
     public function test()
     {
+        $this->body = Utils::noHtml($this->body);
         $this->title = Utils::noHtml($this->title);
 
         return parent::test();
