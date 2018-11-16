@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : publications.xml
+    Author     : Cristo Manuel Estévez Hernández
+    Description:
+        Structure for the publications table.
+-->
+<table>
+    <column>
+        <name>body</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>date</name>
+        <type>timestamp</type>
+    </column>
+    <column>
+        <name>idcontacto</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>idpublication</name>
+        <type>serial</type>
+        <null>NO</null>
+        <default>nextval('publications_idpublication_seq'::regclass)</default>
+    </column>
+    <column>
+        <name>idproject</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>idteam</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>title</name>
+        <type>character varying(140)</type>
+    </column>
+    <constraint>
+        <name>publications_pkey</name>
+        <type>PRIMARY KEY (idpublication)</type>
+    </constraint>
+    <constraint>
+        <name>ca_publications_contactos</name>
+        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_publications_webprojects</name>
+        <type>FOREIGN KEY (idproject) REFERENCES webprojects (idproject) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_publications_webteams</name>
+        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+</table>
