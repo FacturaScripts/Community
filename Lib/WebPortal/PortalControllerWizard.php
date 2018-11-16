@@ -103,7 +103,7 @@ abstract class PortalControllerWizard extends PortalController
     {
         $team = new WebTeam();
         $team->loadFromCode($idteam);
-        $this->miniLog->alert('<a href="' . $team->url() . '">' . $this->i18n->trans('join-team', ['%team%' => $team->name]) . '</a>');
+        $this->miniLog->alert('<a href="' . $team->url('public') . '">' . $this->i18n->trans('join-team', ['%team%' => $team->name]) . '</a>');
         $this->setTemplate('Master/AccessDenied');
     }
 

@@ -38,7 +38,7 @@
                 {% if fsc.contactCanEdit() %}
                     <div class="btn-group">
                         <a href="#" class="btn btn-error" onclick="return showModal('deleteTranslationModal');">
-                            <i class="fas fa-trash" aria-hidden="true"></i>
+                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
                         </a>
                         <button type="submit" class="btn btn-primary">
                             {{ i18n.trans('save') }}
@@ -63,7 +63,7 @@
         <div class="modal-body">
             <div class="content">
                 <a href="{{ translation.url() }}&action=delete" class="btn btn-error">
-                    <i class="fas fa-trash fa-fw" aria-hidden="true"></i> {{ i18n.trans('delete') }}
+                    <i class="fas fa-trash-alt fa-fw" aria-hidden="true"></i> {{ i18n.trans('delete') }}
                 </a>
             </div>
         </div>

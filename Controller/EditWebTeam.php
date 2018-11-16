@@ -71,6 +71,28 @@ class EditWebTeam extends EditSectionController
     }
 
     /**
+     * Return the team details.
+     *
+     * @return WebTeam
+     */
+    public function getMainModel()
+    {
+        if (isset($this->team)) {
+            return $this->team;
+        }
+
+        $team = new WebTeam();
+        $uri = explode('/', $this->uri);
+        if ($team->loadFromCode('', [new DataBaseWhere('name', end($uri))])) {
+            return $team;
+        }
+
+        $code = $this->request->query->get('code', '');
+        $team->loadFromCode($code);
+        return $team;
+    }
+
+    /**
      * Returns the status of this contact in this team: in|pendirg|out.
      *
      * @return string
@@ -93,23 +115,6 @@ class EditWebTeam extends EditSectionController
         }
 
         return 'out';
-    }
-
-    /**
-     * Return the team details.
-     *
-     * @return WebTeam
-     */
-    public function getMainModel()
-    {
-        if (isset($this->team)) {
-            return $this->team;
-        }
-
-        $team = new WebTeam();
-        $uri = explode('/', $this->uri);
-        $team->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
-        return $team;
     }
 
     /**
