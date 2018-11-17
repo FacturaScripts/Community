@@ -1,4 +1,5 @@
 {% extends "Section/ListSection.html.twig" %}
+{% set issue = fsc.getMainModel() %}
 {% set section = fsc.getCurrentSection() %}
 
 {% block sectionBody %}
@@ -26,9 +27,9 @@
         {% endfor %}
     </div>
 
-    {% if fsc.getIssue().closed %}
+    {% if issue.closed %}
         <div class="divider text-center"></div>
-        <form action="" method="post">
+        <form method="post">
             <input type="hidden" name="action" value="re-open"/>
             <button type="submit" class="btn btn-block btn-success">
                 {{ i18n.trans('open') }}
@@ -36,7 +37,7 @@
         </form>
     {% else %}
         <br/>
-        <form action="" method="post">
+        <form method="post">
             <input type="hidden" name="action" value="new-comment"/>
             <div class="form-group">
                 <textarea name="newComment" class="form-input" placeholder="new comment" rows="6"></textarea>

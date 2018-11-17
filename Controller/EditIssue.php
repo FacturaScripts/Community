@@ -21,7 +21,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Lib\EmailTools;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\IssueComment;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @author Carlos García Gómez          <carlos@facturascripts.com>
  * @author Cristo M. Estévez Hernández  <cristom.estevez@gmail.com>
  */
-class EditIssue extends SectionController
+class EditIssue extends EditSectionController
 {
 
     /**
@@ -54,7 +54,7 @@ class EditIssue extends SectionController
             return false;
         }
 
-        $issue = $this->getIssue();
+        $issue = $this->getMainModel();
         if ($issue->idcontacto === $this->contact->idcontacto) {
             return true;
         }
@@ -97,7 +97,7 @@ class EditIssue extends SectionController
      *
      * @return Issue
      */
-    public function getIssue(): Issue
+    public function getMainModel()
     {
         if (isset($this->issue)) {
             return $this->issue;
@@ -117,6 +117,7 @@ class EditIssue extends SectionController
     protected function addNewComment(): bool
     {
         if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('login-to-continue'));
             return false;
         }
 
@@ -130,7 +131,7 @@ class EditIssue extends SectionController
             return false;
         }
 
-        $issue = $this->getIssue();
+        $issue = $this->getMainModel();
         $comment = new IssueComment();
         $comment->body = $text;
         $comment->idcontacto = $this->contact->idcontacto;
@@ -225,7 +226,7 @@ class EditIssue extends SectionController
      */
     protected function loadData(string $sectionName)
     {
-        $issue = $this->getIssue();
+        $issue = $this->getMainModel();
         switch ($sectionName) {
             case 'ListIssueComment':
                 $where = [new DataBaseWhere('idissue', $issue->idissue)];
@@ -251,7 +252,7 @@ class EditIssue extends SectionController
      */
     protected function loadIssue()
     {
-        $this->issue = $this->getIssue();
+        $this->issue = $this->getMainModel();
         if (!$this->issue->exists()) {
             $this->miniLog->alert($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
@@ -316,7 +317,7 @@ class EditIssue extends SectionController
     protected function reopenAction()
     {
         if ($this->contactCanEdit()) {
-            $issue = $this->getIssue();
+            $issue = $this->getMainModel();
             $issue->closed = false;
             $issue->save();
         }

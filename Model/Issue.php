@@ -156,6 +156,7 @@ class Issue extends WebPageClass
     public function test()
     {
         $this->body = Utils::noHtml($this->body);
+
         return parent::test();
     }
 
