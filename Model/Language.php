@@ -94,7 +94,9 @@ class Language extends Base\ModelClass
     
     public function install()
     {
+        /// needed dependencies
         new Contacto();
+        
         return parent::install();
     }
 

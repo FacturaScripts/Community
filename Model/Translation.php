@@ -129,8 +129,10 @@ class Translation extends Base\ModelClass
      */
     public function install()
     {
+        /// needed dependencies
         new Language();
         new WebProject();
+        
         return parent::install();
     }
 
@@ -165,7 +167,7 @@ class Translation extends Base\ModelClass
         $this->name = Utils::noHtml($this->name);
         $this->translation = Utils::noHtml($this->translation);
 
-        if (!preg_match('/^[a-zA-Z0-9_\-]{2,100}$/', $this->name)) {
+        if (!preg_match('/^[a-zA-Z0-9_\-\+]{2,100}$/', $this->name)) {
             self::$miniLog->alert(self::$i18n->trans('invalid-name') . ' ' . $this->name);
             return false;
         }

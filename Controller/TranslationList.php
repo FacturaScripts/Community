@@ -35,11 +35,21 @@ class TranslationList extends SectionController
         $this->sections[$name]->template = 'Section/Languages.html.twig';
         $this->addSearchOptions($name, ['langcode', 'description']);
         $this->addOrderOption($name, ['langcode'], 'code');
-        $this->addOrderOption($name, ['description'], 'description');
+        $this->addOrderOption($name, ['description'], 'description', 1);
         $this->addOrderOption($name, ['lastmod'], 'last-update');
-        $this->addOrderOption($name, ['numtranslations'], 'number-of-translations', 2);
+        $this->addOrderOption($name, ['numtranslations'], 'number-of-translations');
 
+        /// buttons
         if ($this->user) {
+            $addButton = [
+                'action' => 'AddTranslation',
+                'color' => 'success',
+                'icon' => 'fas fa-plus',
+                'label' => 'new',
+                'type' => 'link',
+            ];
+            $this->addButton($name, $addButton);
+
             $importButton = [
                 'action' => $this->url() . '?action=import-lang',
                 'label' => 'import',
@@ -66,6 +76,7 @@ class TranslationList extends SectionController
         $this->addOrderOption($name, ['name'], 'code');
         $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
 
+        /// buttons
         if ($this->contact) {
             $addButton = [
                 'action' => 'AddTranslation',

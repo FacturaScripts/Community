@@ -39,10 +39,76 @@ class AddTranslation extends PortalControllerWizard
     {
         $this->setTemplate('AddTranslation');
 
-        $name = $this->request->get('name', '');
-        if (!empty($name)) {
-            $this->newTranslation($name);
+        $action = $this->request->request->get('action', '');
+        switch ($action) {
+            case 'new':
+                $name = $this->request->request->get('name', '');
+                if (!empty($name)) {
+                    $this->newTranslation($name);
+                }
+                break;
+
+            case 'new-language':
+                $code = $this->request->request->get('code', '');
+                if ($this->user && !empty($code)) {
+                    $this->newLanguage($code);
+                }
+                break;
         }
+    }
+
+    /**
+     * 
+     * @param string $langCode
+     */
+    protected function cloneTranslations(string $langCode)
+    {
+        $mainLangcode = AppSettings::get('community', 'mainlanguage');
+        $mainProjectId = (int) AppSettings::get('community', 'idproject');
+
+        $translationModel = new Translation();
+        $where = [new DataBaseWhere('langcode', $mainLangcode)];
+        foreach ($translationModel->all($where, [], 0, 0) as $trans) {
+            $newTrans = new Translation();
+            $newTrans->description = $trans->description;
+            $newTrans->idproject = $mainProjectId;
+            $newTrans->langcode = $langCode;
+            $newTrans->name = $trans->name;
+            $newTrans->translation = $trans->translation;
+            $newTrans->save();
+        }
+    }
+
+    /**
+     * 
+     * @param string $code
+     *
+     * @return bool
+     */
+    protected function newLanguage(string $code): bool
+    {
+        $language = new Language();
+
+        /// language already exists?
+        $where = [new DataBaseWhere('langcode', $code)];
+        if ($language->loadFromCode('', $where)) {
+            return true;
+        }
+
+        /// save new language
+        $language->description = $code;
+        $language->langcode = $code;
+        if ($language->save()) {
+            $this->cloneTranslations($code);
+            $language->updateStats();
+            $language->save();
+
+            /// redit to new language
+            $this->response->headers->set('Refresh', '0; ' . $language->url('public'));
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -75,10 +141,6 @@ class AddTranslation extends PortalControllerWizard
         $mainLangcode = AppSettings::get('community', 'mainlanguage');
         $mainProjectId = (int) AppSettings::get('community', 'idproject');
         foreach ($langModel->all([], [], 0, 0) as $language) {
-            if ($language->numtranslations === 0) {
-                continue;
-            }
-
             $newTrans = new Translation();
             $newTrans->description = $name;
             $newTrans->idproject = $mainProjectId;

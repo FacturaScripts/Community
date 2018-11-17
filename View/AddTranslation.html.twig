@@ -16,7 +16,8 @@
                             <input type="hidden" name="action" value="new"/>
                             <div class="empty-action input-group input-inline">
                                 <input type="text" name="name" class="form-input" maxlength="100" placeholder="{{ i18n.trans('name') }}" autocomplete="off" autofocus="" required="true"/>
-                            </div><br/>
+                            </div>
+                            <br/>
                             <div class="empty-action">
                                 <button type="submit" class="btn btn-primary">
                                     {{ i18n.trans('save') }}
@@ -24,6 +25,27 @@
                             </div>
                         </form>
                     </div>
+                    {% if fsc.user %}
+                        <br/>
+                        <div class="empty">
+                            <div class="empty-icon">
+                                <i class="fas fa-language fa-3x" aria-hidden="true"></i>
+                            </div>
+                            <p class="empty-title h5">{{ i18n.trans('new-language') }}</p>
+                            <form action="{{ fsc.url() }}" method="post">
+                                <input type="hidden" name="action" value="new-language"/>
+                                <div class="empty-action input-group input-inline">
+                                    <input type="text" name="code" class="form-input" maxlength="100" placeholder="{{ i18n.trans('code') }}" autocomplete="off" required="true"/>
+                                </div>
+                                <br/>
+                                <div class="empty-action">
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ i18n.trans('save') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

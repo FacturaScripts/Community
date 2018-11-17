@@ -19,161 +19,38 @@
 namespace FacturaScripts\Plugins\Community;
 
 use FacturaScripts\Core\Base\CronClass;
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Dinamic\Lib\EmailTools;
-use FacturaScripts\Dinamic\Model\Contacto;
-use FacturaScripts\Plugins\Community\Model\WebTeam;
-use FacturaScripts\Plugins\Community\Model\WebTeamLog;
-use FacturaScripts\Plugins\Community\Model\WebTeamMember;
+use FacturaScripts\Plugins\Community\Lib\WebTeamReport;
+use FacturaScripts\Plugins\Community\Model\Language;
 
 /**
  * Define the taks of Community's crons.
  * 
- * @author Cristo M. Estévez Hernández <cristom.estevez@gmail.com>
+ * @author Cristo M. Estévez Hernández  <cristom.estevez@gmail.com>
+ * @author Carlos Garcia Gomez          <carlos@facturascripts.com>
  */
 class Cron extends CronClass
 {
 
-    /**
-     * Quantity of contact to simulate pagination to send email.
-     */
-    const MAX_EMAIL_BCC = 50;
-
-    /**
-     * 
-     */
-    const REPORT_PERIOD = '1 week';
-
-    /**
-     *
-     * @var EmailTools
-     */
-    protected $emailTools;
-
-    /**
-     * 
-     * @param string $pluginName
-     */
-    public function __construct(string $pluginName)
-    {
-        parent::__construct($pluginName);
-        $this->emailTools = new EmailTools();
-    }
-
-    /**
-     * 
-     */
     public function run()
     {
-        if ($this->isTimeForJob('send-mail-to-team-members', self::REPORT_PERIOD)) {
-            $this->sendMailToTeamMembers();
+        if ($this->isTimeForJob('send-mail-to-team-members', '1 week')) {
+            $teamReport = new WebTeamReport();
+            $teamReport->sendMail('1 week');
             $this->jobDone('send-mail-to-team-members');
         }
-    }
 
-    /**
-     * Build the body of the tabla for the email.
-     * 
-     * @param array  $logs
-     * @param string $title
-     *
-     * @return string
-     */
-    protected function buildTableBody(array $logs, string $title): string
-    {
-        $content = '<ul>';
-        foreach ($logs as $log) {
-            $content .= '<li>';
-            if (empty($log->link)) {
-                $content .= $log->description . ' - ' . $log->time;
-            } else {
-                $content .= '<a href="' . $log->link . '">' . $log->description . '</a> - ' . $log->time;
-            }
-
-            $contact = new Contacto();
-            if ($contact->loadFromCode($log->idcontacto)) {
-                $content .= ' - ' . $contact->nombre;
-            }
-
-            $content .= '</li>';
+        if ($this->isTimeForJob('fix-translations', '1 week')) {
+            $this->fixTranslations();
+            $this->jobDone('fix-translations');
         }
-        $content .= '</ul>';
-
-        $params = [
-            'body' => $content,
-            'company' => $title,
-            'footer' => $title,
-            'title' => $title,
-        ];
-        return $this->emailTools->getTemplateHtml($params);
     }
 
-    /**
-     * 
-     * @param WebTeam $team
-     * 
-     * @return array
-     */
-    protected function getTeamLogs(WebTeam $team): array
+    protected function fixTranslations()
     {
-        $teamLogs = new WebTeamLog();
-        $where = [
-            new DataBaseWhere('idteam', $team->idteam),
-            new DataBaseWhere('time', date('d-m-Y H:i:s', strtotime('-' . self::REPORT_PERIOD)), '>')
-        ];
-
-        return $teamLogs->all($where, [], 0, 0);
-    }
-
-    /**
-     * Create and load new object Mail.
-     *
-     * @param string $teamName
-     * @param array  $logs Array of WebTeamLog objects.
-     */
-    protected function loadMail(string $teamName, array $logs)
-    {
-        $mail = $this->emailTools->newMail();
-        $mail->Subject = self::$i18n->trans('weekly-report', ['%teamName%' => $teamName]);
-        $mail->msgHTML($this->buildTableBody($logs, $mail->Subject));
-
-        return $mail;
-    }
-
-    protected function sendMailToTeamMembers()
-    {
-        $teamModel = new WebTeam();
-        $memberTeam = new WebTeamMember();
-
-        foreach ($teamModel->all([], [], 0, 0) as $team) {
-            $members = $memberTeam->all([new DataBaseWhere('idteam', $team->idteam)], [], 0, 0);
-            if (empty($members)) {
-                continue;
-            }
-
-            $logs = $this->getTeamLogs($team);
-            if (empty($logs)) {
-                continue;
-            }
-
-            /// we send an email to every MAX_EMAIL_BCC people
-            $iterator = 0;
-            $mail = $this->loadMail($team->name, $logs);
-            foreach ($members as $member) {
-                if (self::MAX_EMAIL_BCC == $iterator) {
-                    $this->emailTools->send($mail);
-                    $mail = $this->loadMail($team->name, $logs);
-                    $iterator = 0;
-                } else {
-                    $iterator++;
-                }
-
-                $mail->addBCC($member->getContact()->email);
-            }
-
-            if ($iterator <= self::MAX_EMAIL_BCC) {
-                $this->emailTools->send($mail);
-            }
+        $languageModel = new Language();
+        foreach ($languageModel->all() as $lang) {
+            $lang->updateStats();
+            $lang->save();
         }
     }
 }

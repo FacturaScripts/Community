@@ -35,7 +35,7 @@ class Init extends InitClass
 
     public function init()
     {
-        
+        ;
     }
 
     public function update()
