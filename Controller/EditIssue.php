@@ -151,6 +151,33 @@ class EditIssue extends EditSectionController
         return true;
     }
 
+    protected function createSectionComments($name = 'ListIssueComment')
+    {
+        $this->addListSection($name, 'IssueComment', 'comments', 'fas fa-comments');
+        $this->sections[$name]->template = 'Section/IssueComments.html.twig';
+        $this->addOrderOption($name, ['creationdate'], 'date');
+        $this->addOrderOption($name, ['idcontacto'], 'user');
+    }
+
+    protected function createSectionEditComments($name = 'EditIssueComment')
+    {
+        $this->addEditListSection($name, 'IssueComment', 'comments', 'fas fa-edit', 'edit');
+    }
+
+    protected function createSectionEditIssue($name = 'EditIssue')
+    {
+        $this->addEditSection($name, 'Issue', 'issue', 'fas fa-edit', 'edit');
+    }
+
+    protected function createSectionRelatedIssues($name = 'ListIssue')
+    {
+        $this->addListSection($name, 'Issue', 'related', 'fas fa-question-circle');
+        $this->sections[$name]->template = 'Section/Issues.html.twig';
+        $this->addSearchOptions($name, ['body', 'creationroute']);
+        $this->addOrderOption($name, ['creationdate'], 'date', 2);
+        $this->addOrderOption($name, ['lastmod'], 'last-update');
+    }
+
     /**
      * Load sections to the view.
      */
@@ -159,16 +186,13 @@ class EditIssue extends EditSectionController
         $this->fixedSection();
         $this->addHtmlSection('issue', 'issue', 'Section/Issue');
 
-        $this->addListSection('ListIssueComment', 'IssueComment', 'comments', 'fas fa-comments');
-        $this->sections['ListIssueComment']->template = 'Section/IssueComments.html.twig';
-        $this->addOrderOption('ListIssueComment', ['creationdate'], 'date');
-        $this->addOrderOption('ListIssueComment', ['idcontacto'], 'user');
+        $this->createSectionComments();
+        $this->createSectionRelatedIssues();
 
-        $this->addListSection('ListIssue', 'Issue', 'related', 'fas fa-question-circle');
-        $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
-        $this->addSearchOptions('ListIssue', ['body', 'creationroute']);
-        $this->addOrderOption('ListIssue', ['creationdate'], 'date', 2);
-        $this->addOrderOption('ListIssue', ['lastmod'], 'last-update');
+        if ($this->user) {
+            $this->createSectionEditIssue();
+            $this->createSectionEditComments();
+        }
     }
 
     /**
@@ -228,13 +252,18 @@ class EditIssue extends EditSectionController
     {
         $issue = $this->getMainModel();
         switch ($sectionName) {
-            case 'ListIssueComment':
-                $where = [new DataBaseWhere('idissue', $issue->idissue)];
-                $this->sections[$sectionName]->loadData('', $where);
+            case 'EditIssue':
+                $this->sections[$sectionName]->loadData($issue->primaryColumnValue());
                 break;
 
             case 'issue':
                 $this->loadIssue();
+                break;
+
+            case 'EditIssueComment':
+            case 'ListIssueComment':
+                $where = [new DataBaseWhere('idissue', $issue->idissue)];
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'ListIssue':
