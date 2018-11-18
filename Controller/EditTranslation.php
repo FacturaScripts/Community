@@ -178,7 +178,6 @@ class EditTranslation extends EditSectionController
         $translation = $this->getMainModel();
         foreach ($translation->getEquivalents() as $trans) {
             $trans->delete();
-            $this->saveTeamLog($trans, 'Deleted');
         }
 
         if ($translation->delete()) {
@@ -293,7 +292,10 @@ class EditTranslation extends EditSectionController
         $teamLog->description = $action . ' translation: ' . $translation->langcode . ' / ' . $translation->name;
         $teamLog->idteam = $idteamtra;
         $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
-        $teamLog->link = $translation->url('public');
+        if ($action !== 'Deleted') {
+            $teamLog->link = $translation->url('public');
+        }
+
         $teamLog->save();
     }
 

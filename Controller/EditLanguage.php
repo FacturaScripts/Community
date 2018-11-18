@@ -197,7 +197,7 @@ class EditLanguage extends EditSectionController
         ];
         $this->addButton($name, $button);
 
-        if ($this->user) {
+        if ($this->contact) {
             $language = $this->getMainModel();
             $button = [
                 'action' => $language->url(),
