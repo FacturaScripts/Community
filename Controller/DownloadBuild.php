@@ -130,6 +130,11 @@ class DownloadBuild extends PortalController
             }
         }
 
+        /// none selected? We chose the first one
+        foreach ($buildModel->all($where, ['version' => 'DESC']) as $build) {
+            return $this->downloadBuild($build);
+        }
+
         $this->response->setContent('BUILD-NOT-FOUND');
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
     }
