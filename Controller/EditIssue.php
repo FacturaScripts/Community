@@ -117,7 +117,7 @@ class EditIssue extends EditSectionController
     protected function addNewComment(): bool
     {
         if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('login-to-continue'));
+            $this->miniLog->warning($this->i18n->trans('login-to-continue'));
             return false;
         }
 

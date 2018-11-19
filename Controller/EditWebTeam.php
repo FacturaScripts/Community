@@ -229,7 +229,7 @@ class EditWebTeam extends EditSectionController
     protected function joinAction()
     {
         if (empty($this->contact)) {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+            $this->miniLog->warning($this->i18n->trans('login-to-continue'));
             return;
         }
 

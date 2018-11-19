@@ -23,22 +23,17 @@
     <columns>
         <group name="main">
             <column name="code" order="100">
-                <widget type="text" fieldname="idcomment" />
+                <widget type="text" fieldname="idcomment" readonly="true" />
             </column>
-            <column name="issue" order="110">
-                <widget type="select" fieldname="idissue">
-                    <values source="issues" fieldcode="idissue" fieldtitle="idissue"></values>
-                </widget>
-            </column>
-            <column name="contact" order="120">
+            <column name="contact" order="110">
                 <widget type="autocomplete" fieldname="idcontacto" onclick="EditContacto">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="nombre"></values>
                 </widget>
             </column>
-            <column name="creation-date" display="right" order="130">
+            <column name="creation-date" display="right" order="120">
                 <widget type="date" fieldname="creationdate" />
             </column>
-            <column name="body" numcolumns="12" order="140">
+            <column name="body" numcolumns="12" order="130">
                 <widget type="textarea" fieldname="body" />
             </column>
         </group>
