@@ -78,13 +78,8 @@ trait ContactTrait
      */
     public function getContactAlias(): string
     {
-        if (empty($this->idcontacto)) {
-            return '-';
-        }
-
         $contact = $this->getContact();
-        $aux = explode('@', $contact->email);
-        return (count($aux) == 2) ? $aux[0] . '_' . $contact->idcontacto : '-';
+        return $contact->alias();
     }
 
     /**

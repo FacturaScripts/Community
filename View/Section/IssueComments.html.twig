@@ -5,13 +5,13 @@
 {% block sectionBody %}
     <div class="custom-scroll">
         {% for comment in section.cursor %}
-            {% set contact = comment.getContact() %}
-            <div class="divider text-center" data-content="{{ contact.fullName() }} - {{ comment.creationdate }}"></div>
+            <div class="divider text-center" data-content="{{ comment.getContactAlias() }} - {{ comment.creationdate }}"></div>
             <div class="tile">
                 <div class="tile-icon">
-                    <figure class="avatar avatar-xl">
+                    <a href="{{ asset(comment.getContactProfile()) }}" class="avatar avatar-xl">
+                        {% set contact = comment.getContact() %}
                         <img src="{{ contact.gravatar() }}" alt="{{ comment.getContactAlias() }}"/>
-                    </figure>
+                    </a>
                 </div>
                 <div class="tile-content">
                     {{ comment.body | raw | nl2br }}

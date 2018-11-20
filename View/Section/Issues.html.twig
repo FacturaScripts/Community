@@ -17,9 +17,9 @@
                             {% if issue.closed %}
                                 <i class="fas fa-lock fa-fw" aria-hidden="true" title="{{ i18n.trans('closed') }}"></i>
                             {% endif %}
-                            #{{ issue.idissue }} {{ issue.getContact().fullName() }}
+                            #{{ issue.idissue }} {{ issue.getContactAlias() }}
                             {% if issue.lastcommidcontacto %}
-                                <i class="fas fa-comments" aria-hidden="true"></i> {{ issue.getLastCommentContact().fullName() }}
+                                <i class="fas fa-comments" aria-hidden="true"></i> {{ issue.getLastCommentContact().alias() }}
                             {% endif %}
                             <br/>
                             <a href="{{ issue.url('public') }}">{{ issue.description() | raw }}</a>

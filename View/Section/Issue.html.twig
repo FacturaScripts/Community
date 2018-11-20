@@ -4,11 +4,10 @@
 <div class="container">
     <div class="columns">
         <div class="column col-2 col-xs-12 text-right">
-            <span class="label">{{ contact.fullName() }}</span><br/>
-            {% if contact.empresa %}
-                <span class="label">{{ contact.empresa }}</span><br/>
-            {% endif %}
-            <img src="{{ contact.gravatar() }}" alt="{{ issue.getContactAlias() }}" class="custom-img-responsive"/>
+            <span class="label">{{ issue.getContactAlias() }}</span><br/>
+            <a href="{{ asset(issue.getContactProfile()) }}">
+                <img src="{{ contact.gravatar() }}" alt="{{ issue.getContactAlias() }}" class="custom-img-responsive"/>
+            </a>
         </div>
         <div class="column">
             {% if issue.closed %}
