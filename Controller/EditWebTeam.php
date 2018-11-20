@@ -174,6 +174,7 @@ class EditWebTeam extends EditSectionController
         /// admin
         if ($this->contactCanEdit()) {
             $this->addEditSection('EditWebTeam', 'WebTeam', 'edit', 'fas fa-edit', 'admin');
+            $this->addEditListSection('EditWebTeamMember', 'WebTeamMember', 'members', 'fas fa-users', 'admin');
         }
     }
 
@@ -302,6 +303,7 @@ class EditWebTeam extends EditSectionController
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
 
+            case 'EditWebTeamMember':
             case 'ListWebTeamMember':
                 $where = [
                     new DataBaseWhere('idteam', $team->idteam),
