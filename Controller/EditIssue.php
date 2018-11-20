@@ -80,19 +80,6 @@ class EditIssue extends EditSectionController
     }
 
     /**
-     * Return the gravatar url to show email avatar.
-     *
-     * @param string $email
-     * @param int    $size
-     *
-     * @return string
-     */
-    public function getGravatar(string $email, int $size = 80): string
-    {
-        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($email))) . '?s=' . $size;
-    }
-
-    /**
      * Return the related issue.
      *
      * @return Issue

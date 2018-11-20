@@ -10,7 +10,7 @@
             <div class="tile">
                 <div class="tile-icon">
                     <figure class="avatar avatar-xl">
-                        <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ fsc.obfuscateEmail(contact.email) }}"/>
+                        <img src="{{ contact.gravatar() }}" alt="{{ comment.getContactAlias() }}"/>
                     </figure>
                 </div>
                 <div class="tile-content">

@@ -8,7 +8,7 @@
             {% if contact.empresa %}
                 <span class="label">{{ contact.empresa }}</span><br/>
             {% endif %}
-            <img src="{{ fsc.getGravatar(contact.email) }}" alt="{{ contact.fullName() }}" class="custom-img-responsive"/>
+            <img src="{{ contact.gravatar() }}" alt="{{ issue.getContactAlias() }}" class="custom-img-responsive"/>
         </div>
         <div class="column">
             {% if issue.closed %}
