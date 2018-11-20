@@ -72,7 +72,7 @@ class ViewProfile extends EditSectionController
 
     protected function createPluginSection($name = 'ListWebProject')
     {
-        $this->addListSection($name, 'WebProject', 'plugins', 'fas fa-plug', '2018');
+        $this->addListSection($name, 'WebProject', 'plugins', 'fas fa-plug');
         $this->sections[$name]->template = 'Section/Plugins.html.twig';
         $this->addOrderOption($name, ['LOWER(name)'], 'name');
         $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
