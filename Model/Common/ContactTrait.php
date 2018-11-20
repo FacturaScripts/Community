@@ -18,7 +18,9 @@
  */
 namespace FacturaScripts\Plugins\Community\Model\Common;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Model\Contacto;
+use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Trait to use in models with idcontact column.
@@ -42,37 +44,84 @@ trait ContactTrait
     private static $contacts = [];
 
     /**
+     *
+     * @var string
+     */
+    private static $profileUrl;
+
+    /**
      * Return the actual contact.
      *
      * @return Contacto
      */
     public function getContact()
     {
+        if (empty($this->idcontacto)) {
+            return new Contacto();
+        }
+
+        if (isset(self::$contacts[$this->idcontacto])) {
+            return self::$contacts[$this->idcontacto];
+        }
+
         $contact = new Contacto();
-        $contact->loadFromCode($this->idcontacto);
+        if ($contact->loadFromCode($this->idcontacto)) {
+            self::$contacts[$this->idcontacto] = $contact;
+        }
+
         return $contact;
     }
 
     /**
-     * Returns contact name.
-     *
+     * 
      * @return string
      */
-    public function getContactName(): string
+    public function getContactAlias(): string
     {
         if (empty($this->idcontacto)) {
             return '-';
         }
 
-        if (isset(self::$contacts[$this->idcontacto])) {
-            return self::$contacts[$this->idcontacto]->fullName();
+        $contact = $this->getContact();
+        $aux = explode('@', $contact->email);
+        return (count($aux) == 2) ? $aux[0] . '_' . $contact->idcontacto : '-';
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getContactProfile(): string
+    {
+        if (empty($this->idcontacto)) {
+            return '#';
         }
 
-        self::$contacts[$this->idcontacto] = new Contacto();
-        if (self::$contacts[$this->idcontacto]->loadFromCode($this->idcontacto)) {
-            return self::$contacts[$this->idcontacto]->fullName();
+        $contact = $this->getContact();
+        return $this->getProfileUrl($contact);
+    }
+
+    /**
+     * 
+     * @param Contacto $contact
+     *
+     * @return string
+     */
+    private function getProfileUrl($contact)
+    {
+        if (isset(self::$profileUrl)) {
+            return self::$profileUrl . $contact->idcontacto;
         }
 
-        return '-';
+        $controller = 'ViewProfile';
+        self::$profileUrl = $controller;
+
+        $webPage = new WebPage();
+        foreach ($webPage->all([new DataBaseWhere('customcontroller', $controller)]) as $wpage) {
+            self::$profileUrl = $wpage->url('public');
+            break;
+        }
+
+        return self::$profileUrl . $contact->idcontacto;
     }
 }

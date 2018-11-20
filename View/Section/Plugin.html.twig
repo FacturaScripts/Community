@@ -13,7 +13,8 @@
             <p>
                 {{ plugin.description | raw | nl2br }}
                 {% if plugin.idcontacto %}
-                    <br/><b>{{ i18n.trans('mantainer') }}</b>: {{ plugin.getContactName() }}
+                    <br/><b>{{ i18n.trans('mantainer') }}</b>:
+                    <a href="{{ asset(plugin.getContactProfile()) }}">{{ plugin.getContactAlias() }}</a>
                 {% endif %}
             </p>
             {{ macros.downloadButton(plugin, i18n, fsc) }}

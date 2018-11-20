@@ -12,7 +12,7 @@
             <p>
                 {{ team.description | raw | nl2br }}
                 {% if team.idcontacto %}
-                    <br/><b>{{ i18n.trans('admin') }}</b>: {{ team.getContactName() }}
+                    <br/><b>{{ i18n.trans('admin') }}</b>: {{ team.getContactAlias() }}
                 {% endif %}
             </p>
             {% set status = fsc.getMemberStatus() %}
@@ -22,7 +22,7 @@
                 </a>
             {% elseif status == 'pending' %}
                 <a href="{{ team.url('public') }}" class="btn btn-success">
-                    <i class="fas fa-paper-plane" aria-hidden="true"></i> {{ i18n.trans('request-send') }}
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i> {{ i18n.trans('request-sent') }}
                 </a>
             {% elseif status == 'in' %}
                 <a href="{{ team.url('public') }}?action=leave" class="btn btn-error">

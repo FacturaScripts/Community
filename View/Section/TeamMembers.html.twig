@@ -12,7 +12,12 @@
         <tbody>
             {% for member in section.cursor %}
                 <tr>
-                    <td>{{ member.getContactName() }}</td>
+                    <td>
+                        {% set contact = member.getContact() %}
+                        {% if contact %}
+                            <a href="{{ asset(member.getContactProfile()) }}">{{ member.getContactAlias() }}</a>
+                        {% endif %}
+                    </td>
                     <td class="text-right">
                         {% if member.accepted == false and fsc.contactCanEdit() %}
                             <a href="{{ member.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>

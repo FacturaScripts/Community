@@ -10,7 +10,8 @@
             <p>
                 {{ language.description }}
                 {% if language.idcontacto %}
-                    <br/><b>{{ i18n.trans('mantainer') }}</b>: {{ language.getContactName() }}
+                    <br/><b>{{ i18n.trans('mantainer') }}</b>:
+                    <a href="{{ asset(language.getContactProfile()) }}">{{ language.getContactAlias() }}</a>
                 {% endif %}
             </p>
         </div>

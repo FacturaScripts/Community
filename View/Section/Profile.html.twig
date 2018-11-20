@@ -1,0 +1,45 @@
+{% set profile = fsc.getMainModel() %}
+
+<div class="container">
+    <div class="columns">
+        <div class="column col-2 col-xs-12 text-right">
+            <img src="{{ fsc.getGravatar(profile.email) }}" alt="{{ fsc.getProfileAlias() }}" class="custom-img-responsive"/>
+        </div>
+        <div class="column col-10 col-xs-12">
+            <h1 class="h3">
+                {{ fsc.getProfileAlias() }}
+                <br/>
+                {{ profile.fullName() }}
+            </h1>
+            <div class="custom-scroll">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                {{ i18n.trans('points') }}
+                            </th>
+                            <th>
+                                {{ i18n.trans('create-date') }}
+                            </th>
+                            <th>
+                                {{ i18n.trans('verified') }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% set tdClass = (profile.puntos > 0) ? 'bg-success' : 'bg-warning' %}
+                            <td class="{{ tdClass }}">{{ profile.puntos }}</td>
+                            {% set tdClass = profile.verificado ? 'bg-success' : 'bg-error' %}
+                            <td class="{{ tdClass }}">{{ profile.fechaalta }}</td>
+                            <td class="{{ tdClass }}">{{ profile.verificado ? i18n.trans('yes') : i18n.trans('no') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="divider"></div>
+<br/>
