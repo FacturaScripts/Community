@@ -18,12 +18,11 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
+use FacturaScripts\Dinamic\Model\CodeModel;
 use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
@@ -254,7 +253,7 @@ class WebDocumentation extends PortalController
         }
 
         /// all projects
-        $this->projects = $this->currentProject->all([], ['name' => 'ASC'], 0, 0);
+        $this->loadProjects();
 
         $this->docPage = new WebDocPage();
 
@@ -302,5 +301,16 @@ class WebDocumentation extends PortalController
             new DataBaseWhere('langcode', $this->webPage->langcode)
         ];
         $this->docPages = $this->docPage->all($where, ['ordernum' => 'ASC'], 0, 0);
+    }
+
+    protected function loadProjects()
+    {
+        $codeModel = new CodeModel();
+        foreach ($codeModel->all('webdocpages', 'idproject', 'idproject', false) as $item) {
+            $project = new WebProject();
+            if ($project->loadFromCode($item->code)) {
+                $this->projects[] = $project;
+            }
+        }
     }
 }

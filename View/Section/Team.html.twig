@@ -12,7 +12,10 @@
             <p>
                 {{ team.description | raw | nl2br }}
                 {% if team.idcontacto %}
-                    <br/><b>{{ i18n.trans('admin') }}</b>: {{ team.getContactAlias() }}
+                    <br/><b>{{ i18n.trans('admin') }}</b>:
+                    <a href="{{ asset(team.getContactProfile()) }}">
+                        {{ team.getContactAlias() }}
+                    </a>
                 {% endif %}
             </p>
             {% set status = fsc.getMemberStatus() %}

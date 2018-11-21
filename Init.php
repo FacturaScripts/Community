@@ -18,6 +18,8 @@
  */
 namespace FacturaScripts\Plugins\Community;
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Plugins\Community\Model\Language;
