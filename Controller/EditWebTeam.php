@@ -148,6 +148,41 @@ class EditWebTeam extends EditSectionController
         }
     }
 
+    protected function createSectionLogs($name = 'ListWebTeamLog')
+    {
+        $this->addListSection($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
+        $this->sections[$name]->template = 'Section/TeamLogs.html.twig';
+        $this->addSearchOptions($name, ['description']);
+        $this->addOrderOption($name, ['time'], 'date', 2);
+    }
+
+    protected function createSectionMembers($name, $label, $icon)
+    {
+        $this->addListSection($name, 'WebTeamMember', $label, $icon);
+        $this->sections[$name]->template = 'Section/TeamMembers.html.twig';
+        $this->addOrderOption($name, ['creationdate'], 'date', 2);
+    }
+
+    protected function createSectionPublications($name = 'ListPublication')
+    {
+        $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper');
+        $this->addOrderOption($name, ['creationdate'], 'date', 2);
+        $this->addSearchOptions($name, ['title', 'body']);
+
+        /// buttons
+        $team = $this->getMainModel();
+        if ($this->contact && $this->contact->idcontacto == $team->idcontacto) {
+            $button = [
+                'action' => 'AddPublication?idteam=' . $team->idteam,
+                'color' => 'success',
+                'icon' => 'fas fa-plus',
+                'label' => 'new',
+                'type' => 'link'
+            ];
+            $this->addButton($name, $button);
+        }
+    }
+
     /**
      * Load sections to the view.
      */
@@ -158,18 +193,10 @@ class EditWebTeam extends EditSectionController
         $team = $this->getMainModel();
         $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
 
-        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
-        $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
-        $this->addSearchOptions('ListWebTeamLog', ['description']);
-        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
-
-        $this->addListSection('ListWebTeamMember', 'WebTeamMember', 'members', 'fas fa-users');
-        $this->sections['ListWebTeamMember']->template = 'Section/TeamMembers.html.twig';
-        $this->addOrderOption('ListWebTeamMember', ['creationdate'], 'date', 2);
-
-        $this->addListSection('ListWebTeamMember-req', 'WebTeamMember', 'requests', 'fas fa-address-card');
-        $this->sections['ListWebTeamMember-req']->template = 'Section/TeamMembers.html.twig';
-        $this->addOrderOption('ListWebTeamMember-req', ['creationdate'], 'date', 2);
+        $this->createSectionPublications();
+        $this->createSectionLogs();
+        $this->createSectionMembers('ListWebTeamMember', 'members', 'fas fa-users');
+        $this->createSectionMembers('ListWebTeamMember-req', 'requests', 'fas fa-address-card');
 
         /// admin
         if ($this->contactCanEdit()) {
@@ -298,6 +325,7 @@ class EditWebTeam extends EditSectionController
                 $this->sections[$sectionName]->loadData($team->primaryColumnValue());
                 break;
 
+            case 'ListPublication':
             case 'ListWebTeamLog':
                 $where = [new DataBaseWhere('idteam', $team->idteam)];
                 $this->sections[$sectionName]->loadData('', $where);

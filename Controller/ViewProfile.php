@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Model\Contacto;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,6 +32,10 @@ use Symfony\Component\HttpFoundation\Response;
 class ViewProfile extends EditSectionController
 {
 
+    /**
+     *
+     * @var Contacto
+     */
     protected $mainModel;
 
     public function contactCanEdit()
@@ -91,7 +96,13 @@ class ViewProfile extends EditSectionController
         $this->addHtmlSection('profile', 'profile', 'Section/Profile');
 
         $this->createLogSection();
+        $this->createTeamSection();
         $this->createPluginSection();
+    }
+
+    protected function createTeamSection($name = 'ListWebTeam')
+    {
+        $this->addListSection($name, 'WebTeam', 'teams', 'fas fa-users');
     }
 
     protected function loadData(string $sectionName)
@@ -104,6 +115,10 @@ class ViewProfile extends EditSectionController
                     new DataBaseWhere('idcontacto', $contacto->idcontacto)
                 ];
                 $this->sections[$sectionName]->loadData('', $where);
+                break;
+
+            case 'ListWebTeam':
+                $this->loadTeams($sectionName);
                 break;
 
             case 'ListWebTeamLog':
@@ -133,5 +148,22 @@ class ViewProfile extends EditSectionController
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');
+    }
+
+    protected function loadTeams($sectionName)
+    {
+        $teamMember = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idcontacto', $this->mainModel->idcontacto),
+            new DataBaseWhere('accepted', true),
+        ];
+
+        $ids = [];
+        foreach ($teamMember->all($where) as $member) {
+            $ids[] = $member->idteam;
+        }
+
+        $finalWhere = [new DataBaseWhere('idteam', implode(',', $ids), 'IN')];
+        $this->sections[$sectionName]->loadData('', $finalWhere);
     }
 }

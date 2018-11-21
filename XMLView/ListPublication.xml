@@ -21,23 +21,14 @@
 
 <view>
     <columns>
-        <column name="code" display="none" order="100">
-            <widget type="text" fieldname="idteam" onclick="EditWebTeam" />
+        <column name="title" order="100">
+            <widget type="text" fieldname="title" />
         </column>
-        <column name="name" order="110">
-            <widget type="text" fieldname="name" />
-        </column>
-        <column name="description" order="120">
-            <widget type="textarea" fieldname="description" />
-        </column>
-        <column name="members" display="right" order="130">
-            <widget type="number" fieldname="nummembers" decimal="0" />
-        </column>
-        <column name="requests" display="right" order="140">
-            <widget type="number" fieldname="numrequests" decimal="0" />
-        </column>
-        <column name="visit-counter" display="right" order="150">
+        <column name="visit-counter" display="right" order="110">
             <widget type="number" fieldname="visitcount" decimal="0" />
+        </column>
+        <column name="creation-date" display="right" order="120">
+            <widget type="date" fieldname="creationdate" />
         </column>
     </columns>
 </view>

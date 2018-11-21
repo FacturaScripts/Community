@@ -168,8 +168,8 @@ class WebDocPage extends WebPageClass
         $this->body = Utils::noHtml($this->body);
         $this->title = Utils::noHtml($this->title);
 
-        if (strlen($this->title) < 1) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '100']));
+        if (strlen($this->title) < 1 || strlen($this->title) > 200) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '200']));
         }
 
         $this->permalink = is_null($this->permalink) ? $this->newPermalink() : $this->permalink;
@@ -243,12 +243,12 @@ class WebDocPage extends WebPageClass
         }
 
         /// Are there more pages with this permalink?
-        $coincidences = $this->all([new DataBaseWhere('permalink', $permalink)]);
-        if (empty($coincidences) || (\count($coincidences) === 1 && $coincidences[0]->iddoc === $this->iddoc)) {
-            /// no
-            return $permalink;
+        foreach ($this->all([new DataBaseWhere('permalink', $permalink)]) as $coincidence) {
+            if ($coincidence->iddoc != $this->iddoc) {
+                return $permalink . '-' . mt_rand(2, 999);
+            }
         }
 
-        return $permalink . '-' . mt_rand(2, 999);
+        return $permalink;
     }
 }

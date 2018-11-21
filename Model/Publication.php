@@ -18,9 +18,12 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
+use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of Publication
@@ -32,6 +35,8 @@ class Publication extends WebPageClass
 
     use Base\ModelTrait;
     use Common\ContactTrait;
+    
+    const PERMALINK_LENGTH = 90;
 
     /**
      *
@@ -64,7 +69,19 @@ class Publication extends WebPageClass
      *
      * @var string
      */
+    public $permalink;
+
+    /**
+     *
+     * @var string
+     */
     public $title;
+
+    /**
+     *
+     * @var array
+     */
+    private static $urls = [];
 
     /**
      * Returns the name of the column that is the primary key of the model.
@@ -96,6 +113,66 @@ class Publication extends WebPageClass
         $this->body = Utils::noHtml($this->body);
         $this->title = Utils::noHtml($this->title);
 
+        if (strlen($this->title) < 1 || strlen($this->title) > 200) {
+            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '200']));
+        }
+
+        $this->permalink = is_null($this->permalink) ? $this->newPermalink() : $this->permalink;
         return parent::test();
+    }
+
+    public function url(string $type = 'auto', string $list = 'List')
+    {
+        switch ($type) {
+            case 'public-list':
+                return $this->getCustomUrl($type);
+
+            case 'public':
+                return $this->getCustomUrl($type) . $this->permalink;
+        }
+
+        return parent::url($type, $list);
+    }
+
+    /**
+     * Return the public url from custom controller.
+     *
+     * @param string $type
+     *
+     * @return string
+     */
+    protected function getCustomUrl(string $type): string
+    {
+        if (isset(self::$urls[$type])) {
+            return self::$urls[$type];
+        }
+
+        $controller = ('public-list' === $type) ? 'TeamList' : 'EditPublication';
+        $webPage = new WebPage();
+        foreach ($webPage->all([new DataBaseWhere('customcontroller', $controller)]) as $wpage) {
+            self::$urls[$type] = $wpage->url('public');
+            return self::$urls[$type];
+        }
+
+        return '#';
+    }
+
+    /**
+     * Generates a new permalink.
+     *
+     * @return string
+     */
+    private function newPermalink()
+    {
+        $permalink = Permalink::get($this->title, self::PERMALINK_LENGTH);
+
+        /// Are there more pages with this permalink?
+        foreach ($this->all([new DataBaseWhere('permalink', $permalink)]) as $coincidence) {
+            if ($coincidence->idpublication != $this->idpublication) {
+                return $permalink . '-' . mt_rand(2, 999);
+            }
+        }
+
+        return $permalink;
     }
 }

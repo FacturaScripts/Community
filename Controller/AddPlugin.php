@@ -92,6 +92,7 @@ class AddPlugin extends PortalControllerWizard
             return true;
         }
 
+        $this->miniLog->alert($this->i18n->trans('record-save-error'));
         return false;
     }
 }

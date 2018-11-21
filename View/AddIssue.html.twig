@@ -3,11 +3,13 @@
 {% block body %}
     <div class="body-section">
         <br/>
-        <form action="" method="post">
+        <form method="post">
             <div class="container grid-lg">
                 <div class="columns">
                     <div class="column">
-                        <h1>{{ i18n.trans('send') }}:</h1>
+                        <h1 class="text-capitalize">
+                            <i class="fas fa-envelope fa-fw"></i> {{ i18n.trans('send') }}
+                        </h1>
                         {% for item in fsc.getTreeList() %}
                             <span class="label">{{ item }}</span>
                         {% endfor %}

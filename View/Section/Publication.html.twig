@@ -1,0 +1,26 @@
+{% set publication = fsc.getMainModel() %}
+{% set contact = publication.getContact() %}
+
+<div class="container">
+    <div class="columns">
+        <div class="column col-2 text-right">
+            <span class="label">{{ publication.getContactAlias() }}</span><br/>
+            <a href="{{ asset(publication.getContactProfile()) }}">
+                <img src="{{ contact.gravatar() }}" alt="{{ publication.getContactAlias() }}" class="custom-img-responsive"/>
+            </a>
+        </div>
+        <div class="column">
+            <h1 class="h3">
+                {{ publication.title }}
+            </h1>
+            <p>
+                {{ publication.body | raw | nl2br }}
+            </p>
+            <small>
+                <i class="fas fa-calendar" aria-hidden="true"></i> {{ publication.creationdate }} |
+                <i class="fas fa-clock" aria-hidden="true"></i> {{ publication.lastmod }}
+            </small>
+        </div>
+    </div>
+</div>
+<br/>

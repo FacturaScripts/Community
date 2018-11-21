@@ -21,23 +21,13 @@
 
 <view>
     <columns>
-        <column name="code" display="none" order="100">
-            <widget type="text" fieldname="idteam" onclick="EditWebTeam" />
-        </column>
-        <column name="name" order="110">
-            <widget type="text" fieldname="name" />
-        </column>
-        <column name="description" order="120">
-            <widget type="textarea" fieldname="description" />
-        </column>
-        <column name="members" display="right" order="130">
-            <widget type="number" fieldname="nummembers" decimal="0" />
-        </column>
-        <column name="requests" display="right" order="140">
-            <widget type="number" fieldname="numrequests" decimal="0" />
-        </column>
-        <column name="visit-counter" display="right" order="150">
-            <widget type="number" fieldname="visitcount" decimal="0" />
-        </column>
+        <group name="main">
+            <column name="title" numcolumns="12" order="100">
+                <widget type="text" fieldname="title" />
+            </column>
+            <column name="body" numcolumns="12" order="110">
+                <widget type="textarea" fieldname="body" />
+            </column>
+        </group>
     </columns>
 </view>

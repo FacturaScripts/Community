@@ -28,19 +28,37 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class TeamList extends SectionController
 {
 
+    protected function createLogSection($name = 'ListWebTeamLog')
+    {
+        $this->addListSection($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
+        $this->sections[$name]->template = 'Section/TeamLogs.html.twig';
+        $this->addSearchOptions($name, ['description']);
+        $this->addOrderOption($name, ['time'], 'date', 2);
+    }
+
+    protected function createPublicationSection($name = 'ListPublication')
+    {
+        $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper');
+        $this->addSearchOptions($name, ['title', 'body']);
+        $this->addOrderOption($name, ['creationdate'], 'date', 2);
+        $this->addOrderOption($name, ['visitcount'], 'visit-counter');
+    }
+
     /**
      * Load sections to the view.
      */
     protected function createSections()
     {
-        $this->addListSection('ListWebTeam', 'WebTeam', 'teams', 'fas fa-users');
-        $this->addOrderOption('ListWebTeam', ['name'], 'name');
-        $this->addOrderOption('ListWebTeam', ['nummembers'], 'members');
-        $this->addOrderOption('ListWebTeam', ['visitcount'], 'visit-counter');
+        $this->createTeamSection();
+        $this->createPublicationSection();
+        $this->createLogSection();
+    }
 
-        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
-        $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
-        $this->addSearchOptions('ListWebTeamLog', ['description']);
-        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
+    protected function createTeamSection($name = 'ListWebTeam')
+    {
+        $this->addListSection($name, 'WebTeam', 'teams', 'fas fa-users');
+        $this->addOrderOption($name, ['name'], 'name');
+        $this->addOrderOption($name, ['nummembers'], 'members');
+        $this->addOrderOption($name, ['visitcount'], 'visit-counter');
     }
 }
