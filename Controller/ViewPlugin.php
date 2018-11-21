@@ -59,7 +59,7 @@ class ViewPlugin extends EditSectionController
         $project = $this->getMainModel();
         return ($this->contact->idcontacto === $project->idcontacto);
     }
-    
+
     /**
      * 
      * @return bool
@@ -81,7 +81,7 @@ class ViewPlugin extends EditSectionController
         $license->loadFromCode($licenseCode);
         return $license;
     }
-    
+
     /**
      * 
      * @return WebProject
@@ -227,6 +227,9 @@ class ViewPlugin extends EditSectionController
         if ($this->project->exists() && $this->project->plugin) {
             $this->title = 'Plugin ' . $this->project->name;
             $this->description = $this->project->description();
+
+            $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+            $this->project->increaseVisitCount($ipAddress);
             return;
         }
 

@@ -335,6 +335,9 @@ class EditWebTeam extends EditSectionController
         if ($this->team->exists()) {
             $this->title = $this->team->name;
             $this->description = $this->team->description();
+
+            $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+            $this->team->increaseVisitCount($ipAddress);
             return;
         }
 

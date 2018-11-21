@@ -11,7 +11,7 @@
         <type>text</type>
     </column>
     <column>
-        <name>date</name>
+        <name>creationdate</name>
         <type>timestamp</type>
     </column>
     <column>
@@ -33,8 +33,20 @@
         <type>integer</type>
     </column>
     <column>
+        <name>lastip</name>
+        <type>character varying(40)</type>
+    </column>
+    <column>
+        <name>lastmod</name>
+        <type>date</type>
+    </column>
+    <column>
         <name>title</name>
         <type>character varying(140)</type>
+    </column>
+    <column>
+        <name>visitcount</name>
+        <type>integer</type>
     </column>
     <constraint>
         <name>publications_pkey</name>
@@ -42,7 +54,7 @@
     </constraint>
     <constraint>
         <name>ca_publications_contactos</name>
-        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
+        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
         <name>ca_publications_webprojects</name>

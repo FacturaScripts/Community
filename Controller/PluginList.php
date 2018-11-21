@@ -37,6 +37,7 @@ class PluginList extends SectionController
         $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
         $this->addOrderOption($name, ['version'], 'version');
         $this->addOrderOption($name, ['downloads'], 'downloads');
+        $this->addOrderOption($name, ['visitcount'], 'visit-counter');
         $this->addSearchOptions($name, ['name', 'description']);
 
         /// filters

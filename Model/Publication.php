@@ -20,13 +20,14 @@ namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 
 /**
  * Description of Publication
  *
  * @author Cristo M. Estévez Hernández <cristom.estevez@gmail.com>
  */
-class Publication extends Base\ModelClass
+class Publication extends WebPageClass
 {
 
     use Base\ModelTrait;
@@ -37,12 +38,6 @@ class Publication extends Base\ModelClass
      * @var string
      */
     public $body;
-
-    /**
-     *
-     * @var string
-     */
-    public $date;
 
     /**
      * Primary key.
@@ -70,12 +65,6 @@ class Publication extends Base\ModelClass
      * @var string
      */
     public $title;
-
-    public function clear()
-    {
-        parent::clear();
-        $this->date = date('d-m-Y');
-    }
 
     /**
      * Returns the name of the column that is the primary key of the model.

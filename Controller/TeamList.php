@@ -36,6 +36,7 @@ class TeamList extends SectionController
         $this->addListSection('ListWebTeam', 'WebTeam', 'teams', 'fas fa-users');
         $this->addOrderOption('ListWebTeam', ['name'], 'name');
         $this->addOrderOption('ListWebTeam', ['nummembers'], 'members');
+        $this->addOrderOption('ListWebTeam', ['visitcount'], 'visit-counter');
 
         $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
         $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';

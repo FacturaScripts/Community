@@ -22,24 +22,18 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
+use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 
 /**
  * Description of WebProject model.
  *
  * @author Carlos García Gómez
  */
-class WebProject extends Base\ModelClass
+class WebProject extends WebPageClass
 {
 
     use Base\ModelTrait;
     use Common\ContactTrait;
-
-    /**
-     * Creation date.
-     *
-     * @var string
-     */
-    public $creationdate;
 
     /**
      *
@@ -59,12 +53,6 @@ class WebProject extends Base\ModelClass
      * @var int
      */
     public $idproject;
-
-    /**
-     *
-     * @var string
-     */
-    public $lastmod;
 
     /**
      *
@@ -109,9 +97,7 @@ class WebProject extends Base\ModelClass
     public function clear()
     {
         parent::clear();
-        $this->creationdate = date('d-m-Y');
         $this->downloads = 0;
-        $this->lastmod = date('d-m-Y');
         $this->license = 'LGPL';
         $this->plugin = true;
         $this->version = 0.0;

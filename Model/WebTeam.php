@@ -22,24 +22,18 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
+use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 
 /**
  * Description of WebTeam
  *
  * @author carlos
  */
-class WebTeam extends Base\ModelClass
+class WebTeam extends WebPageClass
 {
 
     use Base\ModelTrait;
     use Common\ContactTrait;
-
-    /**
-     * Creation date.
-     *
-     * @var string
-     */
-    public $creationdate;
 
     /**
      *
@@ -84,7 +78,6 @@ class WebTeam extends Base\ModelClass
     public function clear()
     {
         parent::clear();
-        $this->creationdate = date('d-m-Y');
         $this->nummembers = 0;
         $this->numrequests = 0;
     }
@@ -133,10 +126,6 @@ class WebTeam extends Base\ModelClass
         if (strlen($this->name) < 1) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']));
             return false;
-        }
-
-        if (empty($this->creationdate)) {
-            $this->creationdate = date('d-m-Y');
         }
 
         $this->updateStats();

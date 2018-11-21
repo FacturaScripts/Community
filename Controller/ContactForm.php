@@ -132,8 +132,10 @@ class ContactForm extends PortalController
             return;
         }
 
+        $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+        $this->currentTree->increaseVisitCount($ipAddress);
+
         $this->formTrees = $this->currentTree->getChildrenPages();
-        $this->currentTree->increaseVisitCount($this->request->getClientIp());
         switch ($this->currentTree->endaction) {
             case 'send-issue':
                 $this->response->headers->set('Refresh', '0; ' . self::SEND_ISSUE_CONTROLLER . '?idtree=' . $this->currentTree->idtree);
