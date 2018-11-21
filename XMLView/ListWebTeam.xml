@@ -36,8 +36,8 @@
         <column name="requests" display="right" order="140">
             <widget type="number" fieldname="numrequests" decimal="0" />
         </column>
-        <column name="creation-date" display="right" order="150">
-            <widget type="date" fieldname="creationdate" />
+        <column name="visit-counter" display="right" order="150">
+            <widget type="number" fieldname="visitcount" decimal="0" />
         </column>
     </columns>
 </view>
