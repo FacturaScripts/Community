@@ -62,6 +62,14 @@ class CommunityHome extends SectionController
         $this->addButton($name, $contactButton);
     }
 
+    protected function createPublicationsSection($name = 'ListPublication')
+    {
+        $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper', 'teams');
+        $this->addSearchOptions($name, ['title', 'body']);
+        $this->addOrderOption($name, ['creationdate'], 'date', 2);
+        $this->addOrderOption($name, ['visitcount'], 'visit-counter');
+    }
+
     protected function createTeamIssuesSection($name = 'ListIssue-teams')
     {
         $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle', 'teams');
@@ -130,6 +138,7 @@ class CommunityHome extends SectionController
         $this->createMyIssuesSection();
 
         if (count($this->getTeamsMemberData()) > 0) {
+            $this->createPublicationsSection();
             $this->createTeamIssuesSection();
             $this->createTeamLogSection();
         }
@@ -218,6 +227,7 @@ class CommunityHome extends SectionController
             case 'ListIssue-teams':
                 $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto, '!=');
             /// no break
+            case 'ListPublication':
             case 'ListWebTeamLog':
                 $idTeams = [];
                 foreach ($this->getTeamsMemberData() as $member) {
