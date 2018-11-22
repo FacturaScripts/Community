@@ -45,22 +45,6 @@ class EditWebDocPage extends PortalControllerWizard
     public $webDocPage;
 
     /**
-     * Undo html scape from Utils::noHtml() method, BUT without undo scape of <
-     * We do this to prevent html inyections on the markdown javascript editor.
-     *
-     * @param string $txt
-     *
-     * @return null|string
-     */
-    public function fixHtml($txt)
-    {
-        $original = ['&gt;', '&quot;', '&#39;'];
-        $final = ['>', "'", "'"];
-
-        return ($txt === null) ? null : trim(str_replace($original, $final, $txt));
-    }
-
-    /**
      * Returns the back url.
      *
      * @return string

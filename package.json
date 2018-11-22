@@ -4,7 +4,7 @@
   "description": "Community plugin for FacturaScripts.",
   "main": "index.js",
   "dependencies": {
-    "simplemde": "^1.11.2"
+    "easymde": "^2.4.2"
   },
   "devDependencies": {},
   "scripts": {

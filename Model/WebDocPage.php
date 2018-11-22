@@ -87,6 +87,21 @@ class WebDocPage extends WebPageClass
     private static $urls = [];
 
     /**
+     * 
+     * @return string
+     */
+    public function body($mode = 'raw')
+    {
+        switch ($mode) {
+            case 'raw':
+                return Utils::fixHtml($this->body);
+
+            default:
+                return $this->body;
+        }
+    }
+
+    /**
      * Returns a maximun legth of $legth form the body property of this block.
      *
      * @param int $length

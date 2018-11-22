@@ -2,14 +2,14 @@
 
 {% block css %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('Plugins/Community/node_modules/simplemde/dist/simplemde.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('Plugins/Community/node_modules/easymde/dist/easymde.min.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('Plugins/Community/node_modules/simplemde/dist/simplemde.min.js') }}"></script>
+    <script src="{{ asset('Plugins/Community/node_modules/easymde/dist/easymde.min.js') }}"></script>
     <script>
-        var simplemde = new SimpleMDE();
+        var easymde = new EasyMDE();
     </script>
 {% endblock %}
 
@@ -82,7 +82,7 @@
                 <div class="columns">
                     <div class="column">
                         <div class="form-group">
-                            <textarea name="body" class="form-input">{{ fsc.fixHtml(fsc.webDocPage.body) }}</textarea>
+                            <textarea name="body" class="form-input">{{ fsc.webDocPage.body('raw') }}</textarea>
                         </div>
                     </div>
                 </div>
