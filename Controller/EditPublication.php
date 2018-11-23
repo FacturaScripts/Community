@@ -22,6 +22,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of EditPublication
