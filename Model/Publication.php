@@ -22,20 +22,22 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\Widget\Markdown;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of Publication
  *
- * @author Cristo M. Estévez Hernández <cristom.estevez@gmail.com>
+ * @author Cristo M. Estévez Hernández  <cristom.estevez@gmail.com>
+ * @author Carlos García Gómez          <carlos@facturascripts.com>
  */
 class Publication extends WebPageClass
 {
 
     use Base\ModelTrait;
     use Common\ContactTrait;
-    
+
     const PERMALINK_LENGTH = 90;
 
     /**
@@ -82,6 +84,24 @@ class Publication extends WebPageClass
      * @var array
      */
     private static $urls = [];
+
+    /**
+     * 
+     * @return string
+     */
+    public function body($mode = 'raw')
+    {
+        switch ($mode) {
+            case 'html':
+                return Markdown::render($this->body);
+
+            case 'raw':
+                return Utils::fixHtml($this->body);
+
+            default:
+                return $this->body;
+        }
+    }
 
     /**
      * Returns the name of the column that is the primary key of the model.

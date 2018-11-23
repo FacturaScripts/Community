@@ -26,7 +26,7 @@
                 <widget type="text" fieldname="title" />
             </column>
             <column name="body" numcolumns="12" order="110">
-                <widget type="textarea" fieldname="body" />
+                <widget type="markdown" fieldname="body" />
             </column>
         </group>
     </columns>

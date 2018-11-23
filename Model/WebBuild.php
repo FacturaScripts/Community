@@ -25,7 +25,7 @@ use FacturaScripts\Plugins\Community\Lib\PluginBuildValidator;
 /**
  * Description of WebBuild
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class WebBuild extends Base\ModelClass
 {

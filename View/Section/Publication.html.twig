@@ -14,7 +14,7 @@
                 {{ publication.title }}
             </h1>
             <p>
-                {{ publication.body | raw | nl2br }}
+                {{ publication.body('html') | raw }}
             </p>
             <small>
                 <i class="fas fa-calendar" aria-hidden="true"></i> {{ publication.creationdate }} |

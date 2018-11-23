@@ -21,14 +21,12 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Dinamic\Model\CodeModel;
 use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
-use Parsedown;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -105,23 +103,7 @@ class WebDocumentation extends PortalController
     }
 
     /**
-     * Parse the MarkDown code.
-     *
-     * @param string $txt
-     *
-     * @return string
-     */
-    public function parsedown(string $txt): string
-    {
-        $parser = new Parsedown();
-        $html = $parser->text(Utils::fixHtml($txt));
-
-        /// some html fixes
-        return str_replace(['<p>', '<pre>', '<img '], ['<p class="text-justify">', '<pre class="code">', '<img class="img-responsive" '], $html);
-    }
-
-    /**
-     * * Runs the controller's private logic.
+     * Runs the controller's private logic.
      *
      * @param Response              $response
      * @param User                  $user

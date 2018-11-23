@@ -26,7 +26,8 @@ use FacturaScripts\Plugins\webportal\Model\WebPage;
 /**
  * Description of Translation
  *
- * @author Raul Jimenez <raul.jimenez@nazcanetworks.com>
+ * @author Raul Jimenez         <raul.jimenez@nazcanetworks.com>
+ * @author Carlos García Gómez  <carlos@facturascripts.com>
  */
 class Translation extends Base\ModelClass
 {

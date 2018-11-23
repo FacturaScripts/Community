@@ -22,13 +22,14 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\Widget\Markdown;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
  * Description of WebDocPage model.
  *
- * @author Carlos García Gómez
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class WebDocPage extends WebPageClass
 {
@@ -93,6 +94,9 @@ class WebDocPage extends WebPageClass
     public function body($mode = 'raw')
     {
         switch ($mode) {
+            case 'html':
+                return Markdown::render($this->body);
+
             case 'raw':
                 return Utils::fixHtml($this->body);
 
