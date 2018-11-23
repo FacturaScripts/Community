@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 use FacturaScripts\Plugins\Community\Model\Publication;
+use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 
@@ -37,6 +38,17 @@ class AddPublication extends PortalControllerWizard
      * @var Publication
      */
     public $publication;
+
+    public function myProjects()
+    {
+        $project = new WebProject();
+        if ($this->user) {
+            return $project->all([], ['name' => 'ASC'], 0, 0);
+        }
+
+        $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];
+        return $project->all($where, ['name' => 'ASC'], 0, 0);
+    }
 
     /**
      * 
@@ -67,6 +79,7 @@ class AddPublication extends PortalControllerWizard
     {
         $this->setTemplate('AddPublication');
         $this->publication = new Publication();
+        $this->publication->idproject = $this->request->get('idproject');
         $this->publication->idteam = $this->request->get('idteam');
 
         $action = $this->request->request->get('action');
@@ -81,7 +94,12 @@ class AddPublication extends PortalControllerWizard
         $this->publication->idcontacto = $this->contact->idcontacto;
         $this->publication->title = $this->request->request->get('title', '');
         $this->publication->body = $this->request->request->get('body', '');
-        $this->publication->idteam = $this->request->request->get('idteam');
+
+        foreach (['idproject', 'idteam'] as $key) {
+            $value = $this->request->request->get($key);
+            $this->publication->{$key} = empty($value) ? null : $value;
+        }
+
         if ($this->publication->save()) {
             /// redir to existing plugin
             $this->response->headers->set('Refresh', '0; ' . $this->publication->url('public'));

@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\Publication;
+use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
@@ -99,7 +100,10 @@ class EditPublication extends EditSectionController
         $this->mainModel = $this->getMainModel();
         if ($this->mainModel->exists()) {
             $this->title = $this->mainModel->title;
-            $this->description = $this->mainModel->title;
+            $this->description = $this->mainModel->description();
+
+            $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+            $this->mainModel->increaseVisitCount($ipAddress);
             return;
         }
 
@@ -112,14 +116,19 @@ class EditPublication extends EditSectionController
     protected function setNavigationLinks()
     {
         $publication = $this->getMainModel();
-        if (empty($publication->idteam)) {
-            return;
+        if ($publication->idteam) {
+            $team = new WebTeam();
+            if ($team->loadFromCode($publication->idteam)) {
+                $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
+                $this->addNavigationLink($team->url('public'), $team->name);
+            }
         }
 
-        $team = new WebTeam();
-        if ($team->loadFromCode($publication->idteam)) {
-            $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
-            $this->addNavigationLink($team->url('public'), $team->name);
+        if ($publication->idproject) {
+            $project = new WebProject();
+            if ($project->loadFromCode($publication->idproject) && $project->plugin) {
+                $this->addNavigationLink($project->url('public'), $project->name);
+            }
         }
     }
 }

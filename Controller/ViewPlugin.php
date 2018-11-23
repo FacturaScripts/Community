@@ -138,6 +138,30 @@ class ViewPlugin extends EditSectionController
     }
 
     /**
+     * 
+     * @param string $name
+     */
+    protected function createSectionPublications($name = 'ListPublication')
+    {
+        $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper');
+        $this->addOrderOption($name, ['creationdate'], 'date', 2);
+        $this->addSearchOptions($name, ['title', 'body']);
+
+        /// buttons
+        $plugin = $this->getMainModel();
+        if ($this->contactCanEdit()) {
+            $button = [
+                'action' => 'AddPublication?idproject=' . $plugin->idproject,
+                'color' => 'success',
+                'icon' => 'fas fa-plus',
+                'label' => 'new',
+                'type' => 'link'
+            ];
+            $this->addButton($name, $button);
+        }
+    }
+
+    /**
      * Load sections to the view.
      */
     protected function createSections()
@@ -148,6 +172,7 @@ class ViewPlugin extends EditSectionController
         $this->addNavigationLink($project->url('public-list'), $this->i18n->trans('plugins'));
         $this->addNavigationLink($project->url('public-list') . '?activetab=ListWebProject', '2018');
 
+        $this->createSectionPublications();
         $this->addListSection('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
         $this->sections['ListWebDocPage']->template = 'Section/Documentation.html.twig';
 
@@ -204,6 +229,11 @@ class ViewPlugin extends EditSectionController
 
             case 'EditWebProject':
                 $this->sections[$sectionName]->loadData($project->primaryColumnValue());
+                break;
+
+            case 'ListPublication':
+                $where = [new DataBaseWhere('idproject', $project->idproject)];
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'ListWebDocPage':
