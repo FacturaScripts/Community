@@ -173,7 +173,7 @@ class EditWebTeam extends EditSectionController
 
         /// buttons
         $team = $this->getMainModel();
-        if ($this->contact && $this->contact->idcontacto == $team->idcontacto) {
+        if ($this->contactCanEdit()) {
             $button = [
                 'action' => 'AddPublication?idteam=' . $team->idteam,
                 'color' => 'success',
