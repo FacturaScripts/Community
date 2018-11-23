@@ -52,9 +52,7 @@ class PluginList extends SectionController
             'label' => 'new',
             'type' => 'link'
         ];
-        if ($this->contact) {
-            $this->addButton($name, $button);
-        }
+        $this->addButton($name, $button);
     }
 
     /**

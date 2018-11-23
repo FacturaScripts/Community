@@ -199,10 +199,10 @@ class EditLanguage extends EditSectionController
         ];
         $this->addButton($name, $button);
 
-        if ($this->contact) {
+        if ($this->contactCanEdit()) {
             $language = $this->getMainModel();
             $button = [
-                'action' => $language->url(),
+                'action' => $language->url() . '&action=import-trans',
                 'label' => 'import',
                 'type' => 'link',
             ];

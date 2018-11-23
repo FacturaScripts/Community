@@ -209,7 +209,8 @@ class EditTranslation extends EditSectionController
     protected function editAction()
     {
         if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            $idteam = AppSettings::get('community', 'idteamtra');
+            $this->contactNotInTeamError($idteam);
             return;
         }
 

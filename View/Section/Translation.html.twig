@@ -35,16 +35,16 @@
                     {{ i18n.trans('translation') }}:
                     <input type="text" name="translation" value="{{ translation.translation | raw }}" class="form-input" required=""/>
                 </div>
-                {% if fsc.contactCanEdit() %}
-                    <div class="btn-group">
+                <div class="btn-group">
+                    {% if fsc.contactCanEdit() %}
                         <a href="#" class="btn btn-error" onclick="return showModal('deleteTranslationModal');">
                             <i class="fas fa-trash-alt" aria-hidden="true"></i>
                         </a>
-                        <button type="submit" class="btn btn-primary">
-                            {{ i18n.trans('save') }}
-                        </button>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary">
+                        {{ i18n.trans('save') }}
+                    </button>
+                </div>
             </form>
         </div>
     </div>
