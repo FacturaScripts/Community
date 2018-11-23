@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Lib\WebPortal;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SearchEngine as ParentEngine;
@@ -32,16 +33,23 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SearchEngine as ParentEngine;
 class SearchEngine extends ParentEngine
 {
 
+    /**
+     * 
+     * @param array  $results
+     * @param string $query
+     */
     protected function findResults(&$results, $query)
     {
         parent::findResults($results, $query);
         $this->findDocPages($results, $query);
         $this->findPlugins($results, $query);
+        $this->findPublications($results, $query);
     }
 
     /**
      * Search the query on pages.
-     *
+     * 
+     * @param array  $results
      * @param string $query
      */
     protected function findDocPages(&$results, $query)
@@ -62,8 +70,9 @@ class SearchEngine extends ParentEngine
     }
 
     /**
-     * Search the query on the plugins.
-     *
+     * Search the query on plugins.
+     * 
+     * @param array  $results
      * @param string $query
      */
     protected function findPlugins(&$results, $query)
@@ -79,6 +88,26 @@ class SearchEngine extends ParentEngine
                 'title' => $plugin->name,
                 'description' => $plugin->description,
                 'link' => $plugin->url('public')
+                ], $query);
+        }
+    }
+
+    /**
+     * Search the query on publications.
+     *
+     * @param array  $results
+     * @param string $query
+     */
+    protected function findPublications(&$results, $query)
+    {
+        $publication = new Publication();
+        $where = [new DataBaseWhere('title|body', $query, 'LIKE')];
+        foreach ($publication->all($where) as $pub) {
+            $this->addSearchResults($results, [
+                'icon' => 'fas fa-newspaper',
+                'title' => $pub->title,
+                'description' => $pub->body,
+                'link' => $pub->url('public')
                 ], $query);
         }
     }

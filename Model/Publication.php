@@ -104,6 +104,18 @@ class Publication extends WebPageClass
     }
 
     /**
+     * Returns a maximun legth of $legth form the body property of this block.
+     *
+     * @param int $length
+     *
+     * @return string
+     */
+    public function description(int $length = 300): string
+    {
+        return Utils::trueTextBreak($this->body, $length);
+    }
+
+    /**
      * Returns the name of the column that is the primary key of the model.
      *
      * @return string
