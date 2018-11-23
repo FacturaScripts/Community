@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 use FacturaScripts\Plugins\Community\Model\Publication;
+use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 
 /**
@@ -43,6 +44,11 @@ class AddPublication extends PortalControllerWizard
      */
     public function myTeams()
     {
+        if ($this->user) {
+            $team = new WebTeam();
+            return $team->all();
+        }
+
         $teamMember = new WebTeamMember();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
