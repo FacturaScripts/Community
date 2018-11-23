@@ -78,12 +78,14 @@ class EditLanguage extends EditSectionController
 
     /**
      * Returns the language loaded by code.
+     * 
+     * @param bool $reload
      *
      * @return Language
      */
-    public function getMainModel()
+    public function getMainModel($reload = false)
     {
-        if (isset($this->languageModel)) {
+        if (isset($this->languageModel) && !$reload) {
             return $this->languageModel;
         }
 

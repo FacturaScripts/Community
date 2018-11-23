@@ -56,9 +56,9 @@ class EditPublication extends EditSectionController
         return true;
     }
 
-    public function getMainModel()
+    public function getMainModel($reload = false)
     {
-        if (isset($this->mainModel)) {
+        if (isset($this->mainModel) && !$reload) {
             return $this->mainModel;
         }
 

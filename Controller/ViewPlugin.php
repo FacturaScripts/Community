@@ -84,11 +84,13 @@ class ViewPlugin extends EditSectionController
 
     /**
      * 
+     * @param bool $reload
+     *
      * @return WebProject
      */
-    public function getMainModel()
+    public function getMainModel($reload = false)
     {
-        if (isset($this->project)) {
+        if (isset($this->project) && !$reload) {
             return $this->project;
         }
 

@@ -20,169 +20,174 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
-use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 
 /**
  * Description of EditWebDocPage controller.
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class EditWebDocPage extends PortalControllerWizard
+class EditWebDocPage extends EditSectionController
 {
 
-    /**
-     *
-     * @var string
-     */
-    protected $idteamdoc;
+    use Lib\WebTeamMethodsTrait;
 
     /**
-     * This doc page.
      *
      * @var WebDocPage
      */
-    public $webDocPage;
+    protected $mainModel;
 
     /**
-     * Returns the back url.
-     *
-     * @return string
+     * 
+     * @return bool
      */
-    public function getBackUrl(): string
+    public function contactCanEdit()
     {
-        if ($this->webDocPage->exists()) {
-            return $this->webDocPage->url('public');
+        if ($this->user) {
+            return true;
         }
 
-        $parent = $this->webDocPage->getParentPage();
-        if ($parent) {
-            return $parent->url('public');
+        if (empty($this->contact)) {
+            return false;
         }
 
-        return $this->webDocPage->url('public-list');
+        $idteam = AppSettings::get('community', 'idteamdoc', '');
+        return $this->contactInTeam($idteam);
     }
 
     /**
-     * Returns a list of doc pages.
-     *
-     * @return array
+     * 
+     * @return bool
      */
-    public function getProjectDocPages(): array
+    public function contactCanSee()
     {
-        $where = [
-            new DataBaseWhere('idproject', $this->webDocPage->idproject),
-            new DataBaseWhere('langcode', $this->webDocPage->langcode)
-        ];
+        return $this->contactCanEdit();
+    }
 
-        if (null !== $this->webDocPage->iddoc) {
-            $where[] = new DataBaseWhere('iddoc', $this->webDocPage->iddoc, '!=');
+    /**
+     * 
+     * @param bool $reload
+     *
+     * @return WebDocPage
+     */
+    public function getMainModel($reload = false)
+    {
+        if (isset($this->mainModel) && !$reload) {
+            return $this->mainModel;
         }
 
-        return $this->webDocPage->all($where, ['LOWER(title)' => 'ASC'], 0, 0);
+        $this->mainModel = new WebDocPage();
+        $code = $this->request->request->get('code', $this->request->query->get('code', ''));
+        $this->mainModel->loadFromCode($code);
+        return $this->mainModel;
     }
 
     protected function commonCore()
     {
-        /// contact is in doc team?
-        $this->idteamdoc = AppSettings::get('community', 'idteamdoc', '');
-        if (!$this->contactInTeam($this->idteamdoc)) {
-            $this->contactNotInTeamError($this->idteamdoc);
-            return;
+        parent::commonCore();
+        $this->loadNavigationLinks();
+    }
+
+    protected function createSections()
+    {
+        $this->addEditSection('EditWebDocPage', 'WebDocPage', 'documentation');
+
+        /// log
+        $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'log', 'fas fa-file-medical-alt');
+        $this->sections['ListWebTeamLog']->template = 'Section/TeamLogs.html.twig';
+        $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
+    }
+
+    protected function deleteAction()
+    {
+        $original = $this->getMainModel();
+        $result = parent::deleteAction();
+        if ($result && $this->active === 'EditWebDocPage') {
+            $idteam = AppSettings::get('community', 'idteamdoc', '');
+            $description = 'Deleted documentation page: ' . $original->title;
+            $this->saveTeamLog($idteam, $description);
         }
 
-        $this->setTemplate('EditWebDocPage');
+        return $result;
+    }
 
-        $code = $this->request->get('code', '');
-        $idParent = $this->request->get('idparent');
-        $title = $this->request->request->get('title', '');
-        $this->webDocPage = new WebDocPage();
+    protected function editAction()
+    {
+        $result = parent::editAction();
+        if ($result && $this->active === 'EditWebDocPage') {
+            $idteam = AppSettings::get('community', 'idteamdoc', '');
+            $description = 'Modified documentation page: ' . $this->getMainModel()->title;
+            $link = $this->getMainModel()->url('public');
 
-        /// loads doc page
-        if (!$this->webDocPage->loadFromCode($code)) {
-            /// if it's a new doc page, then use the idproject and langcode
-            $this->webDocPage->idproject = $this->request->get('idproject', $this->webDocPage->idproject);
-            $this->webDocPage->langcode = $this->request->get('langcode', $this->webDocPage->langcode);
-
-            if (!empty($idParent)) {
-                $this->newChildrenPage($idParent);
+            /// we only save one log per day
+            $logs = $this->searchTeamLog($idteam, $this->contact->idcontacto, $link);
+            if (empty($logs) || time() - strtotime($logs[0]->time) > 86400) {
+                $this->saveTeamLog($idteam, $description, $link);
             }
         }
 
-        $action = $this->request->get('action', '');
-        switch ($action) {
-            case 'delete':
-                $this->deleteAction();
-                break;
-
-            case 'save':
-                $this->saveAction($idParent, $title);
-                break;
-        }
-
-        $this->title = $this->webDocPage->title . ' - ' . $this->i18n->trans('edit');
+        return $result;
     }
 
-    /**
-     * Code for delete action.
-     */
-    private function deleteAction()
+    protected function insertAction()
     {
-        if ($this->webDocPage->exists() && $this->webDocPage->delete()) {
-            $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
-            $description = 'Deleted documentation page: ' . $this->webDocPage->title;
-            $this->saveTeamLog($this->idteamdoc, $description, '');
-            return;
-        }
+        $result = parent::insertAction();
+        if ($result && $this->active === 'EditWebDocPage') {
+            /// load new data
+            $this->getMainModel();
+            $this->mainModel->loadFromCode($this->sections[$this->active]->newCode);
 
-        $this->miniLog->alert($this->i18n->trans('record-delete-error'));
-    }
+            $idteam = AppSettings::get('community', 'idteamdoc', '');
+            $description = 'Created documentation page: ' . $this->getMainModel()->title;
+            $link = $this->getMainModel()->url('public');
 
-    /**
-     * Adds a new page as children of another page.
-     *
-     * @param int $idParent
-     */
-    private function newChildrenPage(int $idParent)
-    {
-        $parentDocPage = $this->webDocPage->get($idParent);
-        if ($parentDocPage) {
-            $this->webDocPage->idparent = $idParent;
-            $this->webDocPage->idproject = $parentDocPage->idproject;
-            $this->webDocPage->langcode = $parentDocPage->langcode;
-        }
-    }
-
-    /**
-     * Code for save action.
-     *
-     * @param string $idParent
-     * @param string $title
-     */
-    private function saveAction($idParent, $title)
-    {
-        if ('' === $title) {
-            return;
-        }
-
-        $previousMod = $this->webDocPage->lastmod;
-
-        $this->webDocPage->body = $this->request->request->get('body', '');
-        $this->webDocPage->idparent = empty($idParent) ? null : $idParent;
-        $this->webDocPage->ordernum = (int) $this->request->get('ordernum', '100');
-        $this->webDocPage->title = $title;
-        if ($this->webDocPage->save()) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-
-            /// we only save a log the first time this doc is modified today
-            if (date('d-m-Y') != $previousMod) {
-                $description = 'Modified documentation page: ' . $this->webDocPage->title;
-                $link = $this->webDocPage->url('public');
-                $this->saveTeamLog($this->idteamdoc, $description, $link);
+            /// we only save one log per day
+            $logs = $this->searchTeamLog($idteam, $this->contact->idcontacto, $link);
+            if (empty($logs) || time() - strtotime($logs[0]->time) > 86400) {
+                $this->saveTeamLog($idteam, $description, $link);
             }
+        }
+
+        return $result;
+    }
+
+    protected function loadData(string $sectionName)
+    {
+        switch ($sectionName) {
+            case 'EditWebDocPage':
+                $this->loadDocPage($sectionName);
+                break;
+
+            case 'ListWebTeamLog':
+                $docPage = $this->getMainModel();
+                $where = [new DataBaseWhere('link', $docPage->url('public'))];
+                $this->sections[$sectionName]->loadData('', $where);
+                break;
+        }
+    }
+
+    protected function loadDocPage(string $sectionName)
+    {
+        if (!$this->contactCanEdit()) {
+            $idteam = AppSettings::get('community', 'idteamdoc', '');
+            $this->contactNotInTeamError($idteam);
             return;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        $this->sections[$sectionName]->loadData($this->getMainModel()->primaryColumnValue());
+        $this->title = $this->getMainModel()->title;
+        $this->description = $this->getMainModel()->title;
+    }
+
+    protected function loadNavigationLinks()
+    {
+        $docPage = $this->getMainModel();
+        $this->addNavigationLink($docPage->url('public-list'), $this->i18n->trans('documentation'));
+        if ($docPage->exists()) {
+            $this->addNavigationLink($docPage->url('public'), $docPage->title);
+        }
     }
 }

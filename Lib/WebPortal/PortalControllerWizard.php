@@ -19,11 +19,8 @@
 namespace FacturaScripts\Plugins\Community\Lib\WebPortal;
 
 use FacturaScripts\Core\Base\ControllerPermissions;
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Model\User;
-use FacturaScripts\Plugins\Community\Model\WebTeam;
-use FacturaScripts\Plugins\Community\Model\WebTeamLog;
-use FacturaScripts\Plugins\Community\Model\WebTeamMember;
+use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,6 +31,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class PortalControllerWizard extends PortalController
 {
+
+    use Lib\WebTeamMethodsTrait;
 
     abstract protected function commonCore();
 
@@ -69,60 +68,5 @@ abstract class PortalControllerWizard extends PortalController
         }
 
         $this->commonCore();
-    }
-
-    /**
-     * Return true if contact is member of team $idteam.
-     * 
-     * @param WebTeam $idteam
-     *
-     * @return bool
-     */
-    protected function contactInTeam($idteam): bool
-    {
-        if (empty($this->contact) && empty($idteam)) {
-            return false;
-        }
-
-        $member = new WebTeamMember();
-        $where = [
-            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $idteam),
-            new DataBaseWhere('accepted', true)
-        ];
-
-        return $member->loadFromCode('', $where);
-    }
-
-    /**
-     * Shows an error message to the contact. Contact must join team $idteam.
-     *
-     * @param string $idteam
-     */
-    protected function contactNotInTeamError($idteam)
-    {
-        $team = new WebTeam();
-        $team->loadFromCode($idteam);
-        $this->miniLog->warning('<a href="' . $team->url('public') . '">' . $this->i18n->trans('join-team', ['%team%' => $team->name]) . '</a>');
-        $this->setTemplate('Master/AccessDenied');
-    }
-
-    /**
-     * Puts a new line in team's log.
-     *
-     * @param string $idteam
-     * @param string $description
-     * @param string $link
-     *
-     * @return bool
-     */
-    protected function saveTeamLog($idteam, $description, $link)
-    {
-        $teamLog = new WebTeamLog();
-        $teamLog->description = $description;
-        $teamLog->idcontacto = $this->contact->idcontacto;
-        $teamLog->idteam = $idteam;
-        $teamLog->link = $link;
-        return $teamLog->save();
     }
 }

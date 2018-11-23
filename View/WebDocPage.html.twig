@@ -57,7 +57,8 @@
                         {% endfor %}
                     </ul>
                     {% if fsc.contact or fsc.user %}
-                        <a href="{{ asset('EditWebDocPage?idparent=' ~ fsc.docPage.iddoc) }}" class="btn btn-success">
+                        {% set addUrl = 'EditWebDocPage?idparent=' ~ fsc.docPage.iddoc ~ '&idproject=' ~ fsc.docPage.idproject ~ '&langcode=' ~ fsc.docPage.langcode %}
+                        <a href="{{ asset(addUrl) }}" class="btn btn-success">
                             <i class="fas fa-file fa-fw" aria-hidden="true"></i> {{ i18n.trans('add') }}
                         </a>
                     {% endif %}

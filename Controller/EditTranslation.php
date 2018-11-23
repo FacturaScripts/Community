@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
@@ -34,6 +35,8 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
  */
 class EditTranslation extends EditSectionController
 {
+
+    use Lib\WebTeamMethodsTrait;
 
     /**
      * This translation.
@@ -58,14 +61,8 @@ class EditTranslation extends EditSectionController
         }
 
         // Contact is member of translation team?
-        $idteamtra = AppSettings::get('community', 'idteamtra');
-        $member = new WebTeamMember();
-        $where = [
-            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $idteamtra),
-            new DataBaseWhere('accepted', true)
-        ];
-        if (!$member->loadFromCode('', $where)) {
+        $idteam = AppSettings::get('community', 'idteamtra');
+        if (!$this->contactInTeam($idteam)) {
             return false;
         }
 
@@ -97,12 +94,14 @@ class EditTranslation extends EditSectionController
 
     /**
      * Returns the translation loaded by code.
+     * 
+     * @param bool $reload
      *
      * @return Translation
      */
-    public function getMainModel()
+    public function getMainModel($reload = false)
     {
-        if (isset($this->translationModel)) {
+        if (isset($this->translationModel) && !$reload) {
             return $this->translationModel;
         }
 
@@ -142,6 +141,17 @@ class EditTranslation extends EditSectionController
     }
 
     /**
+     * 
+     * @param string $name
+     */
+    protected function createLogSection($name = 'ListWebTeamLog')
+    {
+        $this->addListSection($name, 'WebTeamLog', 'log', 'fas fa-file-medical-alt');
+        $this->sections[$name]->template = 'Section/TeamLogs.html.twig';
+        $this->addOrderOption($name, ['time'], 'date', 2);
+    }
+
+    /**
      * Load sections to the view.
      */
     protected function createSections()
@@ -152,17 +162,24 @@ class EditTranslation extends EditSectionController
         $this->addNavigationLink($language->url('public-list'), $this->i18n->trans('translations'));
         $this->addNavigationLink($language->url('public'), $language->description);
 
-        $this->addListSection('ListTranslation', 'Translation', 'translations', 'fas fa-copy');
-        $this->sections['ListTranslation']->template = 'Section/Translations.html.twig';
-        $this->addSearchOptions('ListTranslation', ['name', 'description', 'translation']);
-        $this->addOrderOption('ListTranslation', ['name'], 'code', 1);
-        $this->addOrderOption('ListTranslation', ['lastmod'], 'last-update');
+        $this->createTranslationSection('ListTranslation', 'translations', 'fas fa-copy');
+        $this->createTranslationSection('ListTranslation-rev', 'needs-revisions', 'fas fa-eye');
+        $this->createLogSection();
+    }
 
-        $this->addListSection('ListTranslation-rev', 'Translation', 'needs-revisions', 'fas fa-eye');
-        $this->sections['ListTranslation-rev']->template = 'Section/Translations.html.twig';
-        $this->addSearchOptions('ListTranslation-rev', ['name', 'description', 'translation']);
-        $this->addOrderOption('ListTranslation-rev', ['name'], 'code', 1);
-        $this->addOrderOption('ListTranslation-rev', ['lastmod'], 'last-update');
+    /**
+     * 
+     * @param string $name
+     * @param string $label
+     * @param string $icon
+     */
+    protected function createTranslationSection($name, $label, $icon)
+    {
+        $this->addListSection($name, 'Translation', $label, $icon);
+        $this->sections[$name]->template = 'Section/Translations.html.twig';
+        $this->addSearchOptions($name, ['name', 'description', 'translation']);
+        $this->addOrderOption($name, ['name'], 'code', 1);
+        $this->addOrderOption($name, ['lastmod'], 'last-update');
     }
 
     /**
@@ -182,7 +199,9 @@ class EditTranslation extends EditSectionController
 
         if ($translation->delete()) {
             $this->miniLog->info($this->i18n->trans('record-deleted-correctly'));
-            $this->saveTeamLog($translation, 'Deleted');
+            $idteam = AppSettings::get('community', 'idteamtra');
+            $description = 'Deleted translation: ' . $translation->langcode . ' / ' . $translation->name;
+            $this->saveTeamLog($idteam, $description);
         }
     }
 
@@ -219,7 +238,10 @@ class EditTranslation extends EditSectionController
         }
 
         $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
-        $this->saveTeamLog($translation);
+        $idteam = AppSettings::get('community', 'idteamtra');
+        $description = 'Updated translation: ' . $translation->langcode . ' / ' . $translation->name;
+        $this->saveTeamLog($idteam, $description, $translation->url('public'));
+
         $this->checkRevisions($translation);
         $this->updateLanguageStats($translation->langcode);
     }
@@ -256,6 +278,11 @@ class EditTranslation extends EditSectionController
     {
         $translation = $this->getMainModel();
         switch ($sectionName) {
+            case 'ListWebTeamLog':
+                $where = [new DataBaseWhere('link', $translation->url('public'))];
+                $this->sections[$sectionName]->loadData('', $where);
+                break;
+
             case 'ListTranslation-rev':
                 $where = [
                     new DataBaseWhere('langcode', $translation->langcode),
@@ -273,30 +300,6 @@ class EditTranslation extends EditSectionController
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
-    }
-
-    /**
-     * Store a log detail for the translation.
-     *
-     * @param Translation $translation
-     * @param string      $action
-     */
-    private function saveTeamLog(Translation $translation, $action = 'Updated')
-    {
-        $idteamtra = AppSettings::get('community', 'idteamtra', '');
-        if (empty($idteamtra)) {
-            return;
-        }
-
-        $teamLog = new WebTeamLog();
-        $teamLog->description = $action . ' translation: ' . $translation->langcode . ' / ' . $translation->name;
-        $teamLog->idteam = $idteamtra;
-        $teamLog->idcontacto = is_null($this->contact) ? null : $this->contact->idcontacto;
-        if ($action !== 'Deleted') {
-            $teamLog->link = $translation->url('public');
-        }
-
-        $teamLog->save();
     }
 
     /**

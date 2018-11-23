@@ -71,13 +71,15 @@ class EditWebTeam extends EditSectionController
     }
 
     /**
-     * Return the team details.
+     * Returns the team details.
+     * 
+     * @param bool $reload
      *
      * @return WebTeam
      */
-    public function getMainModel()
+    public function getMainModel($reload = false)
     {
-        if (isset($this->team)) {
+        if (isset($this->team) && !$reload) {
             return $this->team;
         }
 

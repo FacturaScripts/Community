@@ -81,12 +81,14 @@ class EditIssue extends EditSectionController
 
     /**
      * Return the related issue.
+     * 
+     * @param bool $reload
      *
      * @return Issue
      */
-    public function getMainModel()
+    public function getMainModel($reload = false)
     {
-        if (isset($this->issue)) {
+        if (isset($this->issue) && !$reload) {
             return $this->issue;
         }
 
