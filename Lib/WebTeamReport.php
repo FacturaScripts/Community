@@ -18,12 +18,15 @@
  */
 namespace FacturaScripts\Plugins\Community\Lib;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Dinamic\Model\Contacto;
+use FacturaScripts\Core\Base\Translator;
 use FacturaScripts\Dinamic\Lib\EmailTools;
+use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * Description of WebTeamReport
@@ -44,9 +47,16 @@ class WebTeamReport
      */
     protected $emailTools;
 
+    /**
+     *
+     * @var Translator
+     */
+    protected $i18n;
+
     public function __construct()
     {
         $this->emailTools = new EmailTools();
+        $this->i18n = new Translator();
     }
 
     /**
@@ -64,18 +74,19 @@ class WebTeamReport
                 continue;
             }
 
+            $publication = $this->getPublications($team, $period);
             $logs = $this->getTeamLogs($team, $period);
-            if (empty($logs)) {
+            if (empty($publication) && empty($logs)) {
                 continue;
             }
 
             /// we send an email to every MAX_EMAIL_BCC people
             $iterator = 0;
-            $mail = $this->loadMail($team->name, $logs);
+            $mail = $this->loadMail($team->name, $publication, $logs);
             foreach ($members as $member) {
                 if (self::MAX_EMAIL_BCC == $iterator) {
                     $this->emailTools->send($mail);
-                    $mail = $this->loadMail($team->name, $logs);
+                    $mail = $this->loadMail($team->name, $publication, $logs);
                     $iterator = 0;
                 } else {
                     $iterator++;
@@ -93,30 +104,43 @@ class WebTeamReport
     /**
      * Build the body of the tabla for the email.
      * 
-     * @param array  $logs
      * @param string $title
+     * @param Publication[] $publications
+     * @param WebTeamLog[]  $logs
      *
      * @return string
      */
-    protected function buildTableBody(array $logs, string $title): string
+    protected function buildTableBody($title, $publications, $logs): string
     {
-        $content = '<ul>';
-        foreach ($logs as $log) {
-            $content .= '<li>';
-            if (empty($log->link)) {
-                $content .= $log->description . ' - ' . $log->time;
-            } else {
-                $content .= '<a href="' . $log->link . '">' . $log->description . '</a> - ' . $log->time;
-            }
+        $content = '';
+        $url = AppSettings::get('webportal', 'url', '');
 
-            $contact = new Contacto();
-            if ($contact->loadFromCode($log->idcontacto)) {
-                $content .= ' - ' . $contact->nombre;
+        /// publications
+        if (!empty($publications)) {
+            $content .= '<h1>' . $this->i18n->trans('publications') . '</h1>'
+                . '<ul>';
+            foreach ($publications as $pub) {
+                $content .= '<li><a href="' . $url . $pub->url('public') . '">' . $pub->title . '</a></li>';
             }
-
-            $content .= '</li>';
+            $content .= '</ul>';
         }
-        $content .= '</ul>';
+
+        /// logs
+        if (!empty($logs)) {
+            $content .= '<h2>' . $this->i18n->trans('logs') . '</h2>'
+                . '<ul>';
+            foreach ($logs as $log) {
+                $content .= '<li>';
+                if (empty($log->link)) {
+                    $content .= $log->description . ' - ' . $log->time;
+                } else {
+                    $content .= '<a href="' . $url . $log->link . '">' . $log->description . '</a> - ' . $log->time;
+                }
+
+                $content .= ' - ' . $log->getContactAlias() . '</li>';
+            }
+            $content .= '</ul>';
+        }
 
         $params = [
             'body' => $content,
@@ -132,30 +156,51 @@ class WebTeamReport
      * @param WebTeam $team
      * @param string  $period
      *
-     * @return array
+     * @return Publication[]
+     */
+    protected function getPublications(WebTeam $team, string $period): array
+    {
+        $publication = new Publication();
+        $where = [
+            new DataBaseWhere('idteam', $team->idteam),
+            new DataBaseWhere('creationdate', date('d-m-Y H:i:s', strtotime('-' . $period)), '>')
+        ];
+
+        return $publication->all($where, ['creationdate' => 'DESC'], 0, 0);
+    }
+
+    /**
+     * 
+     * @param WebTeam $team
+     * @param string  $period
+     *
+     * @return WebTeamLog[]
      */
     protected function getTeamLogs(WebTeam $team, string $period): array
     {
-        $teamLogs = new WebTeamLog();
+        $teamLog = new WebTeamLog();
         $where = [
             new DataBaseWhere('idteam', $team->idteam),
             new DataBaseWhere('time', date('d-m-Y H:i:s', strtotime('-' . $period)), '>')
         ];
 
-        return $teamLogs->all($where, [], 0, 0);
+        return $teamLog->all($where, ['time' => 'DESC'], 0, 0);
     }
 
     /**
      * Create and load new object Mail.
      *
      * @param string $teamName
-     * @param array  $logs Array of WebTeamLog objects.
+     * @param Publication[] $publications
+     * @param WebTeamLog    $logs
+     *
+     * @return PHPMailer
      */
-    protected function loadMail(string $teamName, array $logs)
+    protected function loadMail($teamName, $publications, $logs)
     {
         $mail = $this->emailTools->newMail();
-        $mail->Subject = self::$i18n->trans('weekly-report', ['%teamName%' => $teamName]);
-        $mail->msgHTML($this->buildTableBody($logs, $mail->Subject));
+        $mail->Subject = $this->i18n->trans('weekly-report', ['%teamName%' => $teamName]);
+        $mail->msgHTML($this->buildTableBody($mail->Subject, $publications, $logs));
 
         return $mail;
     }

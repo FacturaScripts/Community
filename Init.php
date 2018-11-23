@@ -48,6 +48,7 @@ class Init extends InitClass
             'EditWebTeam' => '/teams/*',
             'EditPublication' => '/publications/*',
             'TranslationList' => '/translations',
+            'ViewProfile' => '/profiles/*',
         ];
 
         $webPage = new WebPage();

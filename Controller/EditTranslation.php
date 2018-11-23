@@ -239,7 +239,13 @@ class EditTranslation extends EditSectionController
         $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
         $idteam = AppSettings::get('community', 'idteamtra');
         $description = 'Updated translation: ' . $translation->langcode . ' / ' . $translation->name;
-        $this->saveTeamLog($idteam, $description, $translation->url('public'));
+        $link = $translation->url('public');
+
+        /// we only save one log per day
+        $logs = $this->searchTeamLog($idteam, $this->contact->idcontacto, $link);
+        if (empty($logs) || time() - strtotime($logs[0]->time) > 86400) {
+            $this->saveTeamLog($idteam, $description, $link);
+        }
 
         $this->checkRevisions($translation);
         $this->updateLanguageStats($translation->langcode);
