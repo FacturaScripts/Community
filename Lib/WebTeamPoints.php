@@ -66,19 +66,17 @@ class WebTeamPoints
         /// how much points per contact?
         $contacts = [];
         foreach ($teamLog->all($where, ['time' => 'ASC'], 0, 0) as $tLog) {
-            if (isset($contacts[$tLog->idcontacto])) {
-                $contacts[$tLog->idcontacto] += $teams[$tLog->idteam];
-                continue;
+            if (!isset($contacts[$tLog->idcontacto])) {
+                $contacts[$tLog->idcontacto] = 0;
             }
 
-            /// the first one doesn't count
-            $contacts[$tLog->idcontacto] = 0;
+            $contacts[$tLog->idcontacto] += $teams[$tLog->idteam];
         }
         $this->savePoints($contacts);
     }
 
     /**
-     * Distribute points by team. More logs, less points per one
+     * Distribute points by team. More logs, less points per one.
      *
      * @param array $teams
      */
@@ -87,9 +85,12 @@ class WebTeamPoints
         $webTeam = new WebTeam();
         $max = $total / $webTeam->count();
         foreach ($teams as $key => $value) {
-            if ($value > 0) {
+            if ($value > $max) {
                 $teams[$key] = (int) $max / $value;
+                continue;
             }
+
+            $teams[$key] = 1;
         }
     }
 
