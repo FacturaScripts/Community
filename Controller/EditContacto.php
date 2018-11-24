@@ -36,17 +36,33 @@ class EditContacto extends ParentController
         /// tabs on top
         $this->setTabsPosition('top');
 
-        $this->addListView('ListIssue', 'Issue', 'issues', 'fas fa-question-circle');
-        $this->setSettings('ListIssue', 'btnNew', false);
+        $this->createViewIssues();
+        $this->createViewTeamLogs();
+    }
+
+    protected function createViewIssues($name = 'ListIssue')
+    {
+        $this->addListView($name, 'Issue', 'issues', 'fas fa-question-circle');
+        $this->setSettings($name, 'btnNew', false);
+    }
+
+    protected function createViewTeamLogs($name = 'ListWebTeamLog')
+    {
+        $this->addListView($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
     }
 
     protected function loadData($viewName, $view)
     {
+        $code = $this->getViewModelValue('EditContacto', 'idcontacto');
+        $where = [new DataBaseWhere('idcontacto', $code)];
+
         switch ($viewName) {
             case 'ListIssue':
-                $code = $this->getViewModelValue('EditContacto', 'idcontacto');
-                $where = [new DataBaseWhere('idcontacto', $code)];
-                $view->loadData('', $where);
+                $view->loadData('', $where, ['creationdate' => 'DESC']);
+                break;
+
+            case 'ListWebTeamLog':
+                $view->loadData('', $where, ['time' => 'DESC']);
                 break;
 
             default:

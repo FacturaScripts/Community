@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\Community;
 
 use FacturaScripts\Core\Base\CronClass;
+use FacturaScripts\Plugins\Community\Lib\WebTeamPoints;
 use FacturaScripts\Plugins\Community\Lib\WebTeamReport;
 use FacturaScripts\Plugins\Community\Model\Language;
 
@@ -33,15 +34,21 @@ class Cron extends CronClass
 
     public function run()
     {
+        if ($this->isTimeForJob('fix-translations', '1 week')) {
+            $this->fixTranslations();
+            $this->jobDone('fix-translations');
+        }
+
+        if ($this->isTimeForJob('team-points', '1 week')) {
+            $manager = new WebTeamPoints();
+            $manager->run('52 weeks');
+            $this->jobDone('team-points');
+        }
+
         if ($this->isTimeForJob('send-mail-to-team-members', '1 week')) {
             $teamReport = new WebTeamReport();
             $teamReport->sendMail('1 week');
             $this->jobDone('send-mail-to-team-members');
-        }
-
-        if ($this->isTimeForJob('fix-translations', '1 week')) {
-            $this->fixTranslations();
-            $this->jobDone('fix-translations');
         }
     }
 

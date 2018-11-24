@@ -140,7 +140,7 @@ class EditWebTeam extends EditSectionController
         if ($member->save()) {
             $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
 
-            $nick = is_null($this->contact) ? $this->user->nick : $this->contact->fullName();
+            $nick = is_null($this->contact) ? $this->user->nick : $this->contact->alias();
             $teamLog = new WebTeamLog();
             $teamLog->description = 'Accepted as new member by ' . $nick . '.';
             $teamLog->idcontacto = $member->idcontacto;
