@@ -19,8 +19,12 @@
                         {% endif %}
                     </td>
                     <td class="text-right">
-                        {% if member.accepted == false and fsc.contactCanEdit() %}
-                            <a href="{{ member.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
+                        {% if fsc.contactCanEdit() %}
+                            {% if member.accepted == false %}
+                                <a href="{{ member.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
+                            {% else %}
+                                <a href="{{ member.url('expel') }}" class="btn btn-sm btn-error">{{ i18n.trans('expel') }}</a>
+                            {% endif %}
                         {% endif %}
                     </td>
                     <td class="text-right">{{ member.creationdate }}</td>

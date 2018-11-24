@@ -241,6 +241,10 @@ class EditWebTeam extends EditSectionController
                 $this->acceptAction();
                 break;
 
+            case 'expel':
+                $this->expelAction();
+                break;
+
             case 'join':
                 $this->joinAction();
                 break;
@@ -251,6 +255,30 @@ class EditWebTeam extends EditSectionController
         }
 
         return parent::execPreviousAction($action);
+    }
+
+    protected function expelAction()
+    {
+        if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            return;
+        }
+
+        $member = new WebTeamMember();
+        $code = $this->request->get('idrequest');
+        if (!$member->loadFromCode($code)) {
+            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+            return;
+        }
+
+        if ($member->delete()) {
+            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $teamLog = new WebTeamLog();
+            $teamLog->description = 'Expelled from this team.';
+            $teamLog->idcontacto = $member->idcontacto;
+            $teamLog->idteam = $member->idteam;
+            $teamLog->save();
+        }
     }
 
     /**
