@@ -38,16 +38,30 @@ class ViewProfile extends EditSectionController
      */
     protected $mainModel;
 
+    /**
+     * 
+     * @return boolean
+     */
     public function contactCanEdit()
     {
         return false;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public function contactCanSee()
     {
         return true;
     }
 
+    /**
+     * 
+     * @param bool $reload
+     *
+     * @return Contacto
+     */
     public function getMainModel($reload = false)
     {
         if (isset($this->mainModel) && !$reload) {
@@ -58,6 +72,18 @@ class ViewProfile extends EditSectionController
         $uri = explode('/', $this->uri);
         $this->mainModel->loadFromCode('', [new DataBaseWhere('idcontacto', end($uri))]);
         return $this->mainModel;
+    }
+
+    /**
+     * 
+     * @param string $date
+     * @param string $max
+     *
+     * @return bool
+     */
+    public function isDateOld($date, $max)
+    {
+        return strtotime($date) < strtotime($max);
     }
 
     protected function createLogSection($name = 'ListWebTeamLog')

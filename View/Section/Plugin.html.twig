@@ -68,7 +68,7 @@
                 <tr>
                     {% set tdClass = (plugin.version > 1) ? 'bg-success' : 'bg-error' %}
                     <td class="{{ tdClass }}">{{ plugin.version }}</td>
-                    {% set tdClass = fsc.isDateOld(plugin.lastmod) ? 'bg-error' : 'bg-success' %}
+                    {% set tdClass = fsc.isDateOld(plugin.lastmod, '-6 months') ? 'bg-error' : 'bg-success' %}
                     <td class="{{ tdClass }}">{{ plugin.lastmod }}</td>
                     {% set tdClass = (plugin.downloads < 1000) ? 'bg-error' : 'bg-success' %}
                     <td class="{{ tdClass }}">{{ plugin.downloads }}</td>

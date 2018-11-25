@@ -22,6 +22,9 @@
                                 {{ i18n.trans('create-date') }}
                             </th>
                             <th>
+                                {{ i18n.trans('last-activity') }}
+                            </th>
+                            <th>
                                 {{ i18n.trans('verified') }}
                             </th>
                         </tr>
@@ -30,8 +33,11 @@
                         <tr>
                             {% set tdClass = (profile.puntos > 0) ? 'bg-success' : 'bg-warning' %}
                             <td class="{{ tdClass }}">{{ profile.puntos }}</td>
-                            {% set tdClass = profile.verificado ? 'bg-success' : 'bg-error' %}
+                            {% set tdClass = fsc.isDateOld(profile.fechaalta, '-3 months') ? 'bg-success' : 'bg-error' %}
                             <td class="{{ tdClass }}">{{ profile.fechaalta }}</td>
+                            {% set tdClass = fsc.isDateOld(profile.lastactivity, '-2 months') ? 'bg-error' : 'bg-success' %}
+                            <td class="{{ tdClass }}">{{ profile.lastactivity | date('d-m-Y') }}</td>
+                            {% set tdClass = profile.verificado ? 'bg-success' : 'bg-error' %}
                             <td class="{{ tdClass }}">{{ profile.verificado ? i18n.trans('yes') : i18n.trans('no') }}</td>
                         </tr>
                     </tbody>

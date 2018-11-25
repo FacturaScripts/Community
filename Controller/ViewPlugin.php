@@ -103,12 +103,13 @@ class ViewPlugin extends EditSectionController
     /**
      * 
      * @param string $date
+     * @param string $max
      *
      * @return bool
      */
-    public function isDateOld($date)
+    public function isDateOld($date, $max)
     {
-        return strtotime($date) < strtotime('-9 months');
+        return strtotime($date) < strtotime($max);
     }
 
     /**
