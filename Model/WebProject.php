@@ -164,6 +164,7 @@ class WebProject extends WebPageClass
             return false;
         }
 
+        $this->lastmoddisable = true;
         return parent::test();
     }
 
