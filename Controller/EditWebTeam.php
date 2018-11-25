@@ -83,15 +83,15 @@ class EditWebTeam extends EditSectionController
             return $this->team;
         }
 
-        $team = new WebTeam();
+        $this->team = new WebTeam();
         $uri = explode('/', $this->uri);
-        if ($team->loadFromCode('', [new DataBaseWhere('name', end($uri))])) {
-            return $team;
+        if ($this->team->loadFromCode('', [new DataBaseWhere('name', end($uri))])) {
+            return $this->team;
         }
 
         $code = $this->request->query->get('code', '');
-        $team->loadFromCode($code);
-        return $team;
+        $this->team->loadFromCode($code);
+        return $this->team;
     }
 
     /**
@@ -126,6 +126,7 @@ class EditWebTeam extends EditSectionController
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return;
         }
 
@@ -261,6 +262,7 @@ class EditWebTeam extends EditSectionController
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return;
         }
 
@@ -288,6 +290,7 @@ class EditWebTeam extends EditSectionController
     {
         if (empty($this->contact)) {
             $this->miniLog->warning($this->i18n->trans('login-to-continue'));
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return;
         }
 
@@ -297,7 +300,7 @@ class EditWebTeam extends EditSectionController
         $member->idteam = $team->idteam;
         $member->observations = $this->request->request->get('observations', '');
         if ($this->user) {
-            //$member->accepted = true;
+            $member->accepted = true;
         }
 
         if ($member->save()) {
@@ -390,8 +393,7 @@ class EditWebTeam extends EditSectionController
      */
     protected function loadTeam()
     {
-        $this->team = $this->getMainModel();
-        if ($this->team->exists()) {
+        if ($this->getMainModel(true)->exists()) {
             $this->title = $this->team->name;
             $this->description = $this->team->description();
 

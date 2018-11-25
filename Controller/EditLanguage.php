@@ -24,6 +24,7 @@ use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class to manage an existing language.
@@ -89,16 +90,16 @@ class EditLanguage extends EditSectionController
             return $this->languageModel;
         }
 
-        $language = new Language();
+        $this->languageModel = new Language();
         $code = $this->request->query->get('code', '');
         if (!empty($code)) {
-            $language->loadFromCode($code);
-            return $language;
+            $this->languageModel->loadFromCode($code);
+            return $this->languageModel;
         }
 
         $uri = explode('/', $this->uri);
-        $language->loadFromCode(end($uri));
-        return $language;
+        $this->languageModel->loadFromCode(end($uri));
+        return $this->languageModel;
     }
 
     /**
@@ -240,6 +241,7 @@ class EditLanguage extends EditSectionController
     {
         if (!$this->user) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return;
         }
 
@@ -353,6 +355,10 @@ class EditLanguage extends EditSectionController
                 $this->sections[$sectionName]->loadData($language->primaryColumnValue());
                 break;
 
+            case 'language':
+                $this->loadLanguage();
+                break;
+
             case 'ListTranslation-rev':
                 $where = [
                     new DataBaseWhere('langcode', $language->langcode),
@@ -366,5 +372,19 @@ class EditLanguage extends EditSectionController
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
+    }
+
+    protected function loadLanguage()
+    {
+        if (!$this->getMainModel(true)->exists()) {
+            $this->miniLog->alert($this->i18n->trans('no-data'));
+            $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
+            $this->webPage->noindex = true;
+            $this->setTemplate('Master/Portal404');
+            return;
+        }
+
+        $this->title = $this->languageModel->langcode;
+        $this->description = $this->languageModel->description;
     }
 }

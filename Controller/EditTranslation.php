@@ -24,6 +24,7 @@ use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class to manage an existing translation.
@@ -103,16 +104,16 @@ class EditTranslation extends EditSectionController
             return $this->translationModel;
         }
 
-        $translation = new Translation();
+        $this->translationModel = new Translation();
         $code = $this->request->query->get('code', '');
         if (!empty($code)) {
-            $translation->loadFromCode($code);
-            return $translation;
+            $this->translationModel->loadFromCode($code);
+            return $this->translationModel;
         }
 
         $uri = explode('/', $this->uri);
-        $translation->loadFromCode(end($uri));
-        return $translation;
+        $this->translationModel->loadFromCode(end($uri));
+        return $this->translationModel;
     }
 
     /**
@@ -187,6 +188,7 @@ class EditTranslation extends EditSectionController
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-delete'));
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return;
         }
 
@@ -304,7 +306,25 @@ class EditTranslation extends EditSectionController
                 ];
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
+
+            case 'translation':
+                $this->loadTranslation();
+                break;
         }
+    }
+
+    protected function loadTranslation()
+    {
+        if (!$this->getMainModel(true)->exists()) {
+            $this->miniLog->alert($this->i18n->trans('no-data'));
+            $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
+            $this->webPage->noindex = true;
+            $this->setTemplate('Master/Portal404');
+            return;
+        }
+
+        $this->title = $this->translationModel->name;
+        $this->description = $this->translationModel->description;
     }
 
     /**

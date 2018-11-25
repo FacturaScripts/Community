@@ -52,20 +52,22 @@
 <br/>
 <br/>
 
-<div class="modal modal-sm" id="deleteTranslationModal">
-    <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('deleteTranslationModal');"></a>
-    <div class="modal-container">
-        <div class="modal-header">
-            <a href="#close" onclick="return hideModal('deleteTranslationModal');" class="btn btn-clear float-right" aria-label="Close"></a>
-            <div class="modal-title h5">{{ i18n.trans('confirm-delete') }}</div>
-            <p>{{ i18n.trans('are-you-sure') }}</p>
-        </div>
-        <div class="modal-body">
-            <div class="content">
-                <a href="{{ translation.url() }}&action=delete" class="btn btn-error">
-                    <i class="fas fa-trash-alt fa-fw" aria-hidden="true"></i> {{ i18n.trans('delete') }}
-                </a>
+{% if fsc.contactCanEdit() %}
+    <div class="modal modal-sm" id="deleteTranslationModal">
+        <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('deleteTranslationModal');"></a>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a href="#close" onclick="return hideModal('deleteTranslationModal');" class="btn btn-clear float-right" aria-label="Close"></a>
+                <div class="modal-title h5">{{ i18n.trans('confirm-delete') }}</div>
+                <p>{{ i18n.trans('are-you-sure') }}</p>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <a href="{{ translation.url() }}&action=delete" class="btn btn-error">
+                        <i class="fas fa-trash-alt fa-fw" aria-hidden="true"></i> {{ i18n.trans('delete') }}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
+{% endif %}

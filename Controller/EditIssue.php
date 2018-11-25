@@ -92,10 +92,10 @@ class EditIssue extends EditSectionController
             return $this->issue;
         }
 
-        $issue = new Issue();
+        $this->issue = new Issue();
         $uri = explode('/', $this->uri);
-        $issue->loadFromCode(end($uri));
-        return $issue;
+        $this->issue->loadFromCode(end($uri));
+        return $this->issue;
     }
 
     /**
@@ -107,6 +107,7 @@ class EditIssue extends EditSectionController
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->warning($this->i18n->trans('login-to-continue'));
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return false;
         }
 
@@ -192,6 +193,8 @@ class EditIssue extends EditSectionController
     protected function deleteComment()
     {
         if (!$this->contactCanEdit()) {
+            $this->miniLog->alert($this->i18n->trans('not-allowed-delete'));
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return false;
         }
 
@@ -270,8 +273,7 @@ class EditIssue extends EditSectionController
      */
     protected function loadIssue()
     {
-        $this->issue = $this->getMainModel();
-        if (!$this->issue->exists()) {
+        if (!$this->getMainModel(true)->exists()) {
             $this->miniLog->alert($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
@@ -291,7 +293,9 @@ class EditIssue extends EditSectionController
 
         $this->title = $this->issue->title();
         $this->description = $this->issue->description();
-        $this->issue->increaseVisitCount($this->request->getClientIp());
+
+        $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+        $this->issue->increaseVisitCount($ipAddress);
     }
 
     /**

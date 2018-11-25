@@ -94,10 +94,10 @@ class ViewPlugin extends EditSectionController
             return $this->project;
         }
 
-        $project = new WebProject();
+        $this->project = new WebProject();
         $uri = explode('/', $this->uri);
-        $project->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
-        return $project;
+        $this->project->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
+        return $this->project;
     }
 
     /**
@@ -255,8 +255,7 @@ class ViewPlugin extends EditSectionController
      */
     protected function loadPlugin()
     {
-        $this->project = $this->getMainModel();
-        if ($this->project->exists() && $this->project->plugin) {
+        if ($this->getMainModel(true)->exists() && $this->project->plugin) {
             $this->title = 'Plugin ' . $this->project->name;
             $this->description = $this->project->description();
 

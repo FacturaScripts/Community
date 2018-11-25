@@ -3,11 +3,11 @@
 <div class="container">
     <div class="columns">
         <div class="column col-2 col-xs-12 text-right">
-            <img src="{{ profile.gravatar() }}" alt="{{ fsc.getProfileAlias() }}" class="custom-img-responsive"/>
+            <img src="{{ profile.gravatar() }}" alt="{{ profile.alias() }}" class="custom-img-responsive"/>
         </div>
         <div class="column col-10 col-xs-12">
             <h1 class="h3">
-                {{ fsc.getProfileAlias() }}
+                {{ profile.alias() }}
                 <br/>
                 {{ profile.fullName() }}
             </h1>

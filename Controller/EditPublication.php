@@ -64,10 +64,10 @@ class EditPublication extends EditSectionController
             return $this->mainModel;
         }
 
-        $publication = new Publication();
+        $this->mainModel = new Publication();
         $uri = explode('/', $this->uri);
-        $publication->loadFromCode('', [new DataBaseWhere('permalink', end($uri))]);
-        return $publication;
+        $this->mainModel->loadFromCode('', [new DataBaseWhere('permalink', end($uri))]);
+        return $this->mainModel;
     }
 
     protected function createSections()
@@ -97,8 +97,7 @@ class EditPublication extends EditSectionController
 
     protected function loadPublication()
     {
-        $this->mainModel = $this->getMainModel();
-        if ($this->mainModel->exists()) {
+        if ($this->getMainModel(true)->exists()) {
             $this->title = $this->mainModel->title;
             $this->description = $this->mainModel->description();
 

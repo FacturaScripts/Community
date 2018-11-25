@@ -22,6 +22,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
+use Symfony\Component\HttpFoundation\Response;
 
 trait WebTeamMethodsTrait
 {
@@ -60,6 +61,7 @@ trait WebTeamMethodsTrait
         $team->loadFromCode($idteam);
         $this->miniLog->warning('<a href="' . $team->url('public') . '">' . $this->i18n->trans('join-team', ['%team%' => $team->name]) . '</a>');
         $this->setTemplate('Master/AccessDenied');
+        $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
     }
 
     /**

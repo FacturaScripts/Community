@@ -54,17 +54,10 @@ class ViewProfile extends EditSectionController
             return $this->mainModel;
         }
 
-        $contact = new Contacto();
+        $this->mainModel = new Contacto();
         $uri = explode('/', $this->uri);
-        $contact->loadFromCode('', [new DataBaseWhere('idcontacto', end($uri))]);
-        return $contact;
-    }
-
-    public function getProfileAlias()
-    {
-        $contact = $this->getMainModel();
-        $aux = explode('@', $contact->email);
-        return (count($aux) == 2) ? $aux[0] . '_' . $contact->idcontacto : '-';
+        $this->mainModel->loadFromCode('', [new DataBaseWhere('idcontacto', end($uri))]);
+        return $this->mainModel;
     }
 
     protected function createLogSection($name = 'ListWebTeamLog')
@@ -137,9 +130,8 @@ class ViewProfile extends EditSectionController
 
     protected function loadProfile()
     {
-        $this->mainModel = $this->getMainModel();
-        if ($this->mainModel->exists()) {
-            $this->title = $this->getProfileAlias();
+        if ($this->getMainModel()->exists()) {
+            $this->title = $this->mainModel->alias();
             $this->description = $this->mainModel->fullName();
             return;
         }
