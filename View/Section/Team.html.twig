@@ -20,9 +20,36 @@
             </p>
             {% set status = fsc.getMemberStatus() %}
             {% if status == 'out' %}
-                <a href="{{ team.url('public') }}?action=join" class="btn btn-success">
+                <a href="#" class="btn btn-success" onclick="return showModal('modalJoinTeam');">
                     <i class="fas fa-sign-in-alt" aria-hidden="true"></i> {{ i18n.trans('join-team', {'%team%': team.name}) }}
                 </a>
+                <form action="{{ team.url('public') }}" method="post">
+                    <input type="hidden" name="action" value="join"/>
+                    <div class="modal" id="modalJoinTeam">
+                        <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('modalJoinTeam');"></a>
+                        <div class="modal-container">
+                            <div class="modal-header">
+                                <a href="#close" class="btn btn-clear float-right" aria-label="Close" onclick="return hideModal('modalJoinTeam');"></a>
+                                <div class="modal-title h5">{{ i18n.trans('join-team', {'%team%': team.name}) }}</div>
+                            </div>
+                            <div class="modal-body">
+                                <div class="content">
+                                    <div class="form-group">
+                                        <b>¿Por qué motivo desea unirse a este equipo?</b>
+                                        <br/>
+                                        Ayúdenos a comprobar que no es un bot.
+                                        <textarea name="observations" class="form-input" rows="3" required=""></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">
+                                    {{ i18n.trans('accept') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             {% elseif status == 'pending' %}
                 <a href="{{ team.url('public') }}" class="btn btn-success">
                     <i class="fas fa-paper-plane" aria-hidden="true"></i> {{ i18n.trans('request-sent') }}

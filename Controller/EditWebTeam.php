@@ -295,8 +295,9 @@ class EditWebTeam extends EditSectionController
         $member = new WebTeamMember();
         $member->idcontacto = $this->contact->idcontacto;
         $member->idteam = $team->idteam;
+        $member->observations = $this->request->request->get('observations', '');
         if ($this->user) {
-            $member->accepted = true;
+            //$member->accepted = true;
         }
 
         if ($member->save()) {

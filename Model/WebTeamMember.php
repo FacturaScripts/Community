@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 
 /**
@@ -59,6 +60,12 @@ class WebTeamMember extends Base\ModelClass
     public $idteam;
 
     /**
+     *
+     * @var string
+     */
+    public $observations;
+
+    /**
      * Reset the values of all model properties.
      */
     public function clear()
@@ -98,6 +105,17 @@ class WebTeamMember extends Base\ModelClass
     public static function tableName()
     {
         return 'webteams_members';
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function test()
+    {
+        $this->observations = Utils::noHtml($this->observations);
+
+        return parent::test();
     }
 
     /**
