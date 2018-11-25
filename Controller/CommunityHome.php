@@ -175,6 +175,10 @@ class CommunityHome extends SectionController
         if (isset($section->cursor[0]->lastmod) && strtotime($section->cursor[0]->lastmod) > $lastMod) {
             $lastMod = strtotime($section->cursor[0]->lastmod);
         }
+        
+        if (isset($section->cursor[0]->actualizado) && $section->cursor[0]->actualizado > $lastMod) {
+            $lastMod = $section->cursor[0]->actualizado;
+        }
 
         return $lastMod;
     }
