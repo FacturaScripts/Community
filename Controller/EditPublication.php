@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebProject;
@@ -39,6 +40,10 @@ class EditPublication extends EditSectionController
      */
     protected $mainModel;
 
+    /**
+     * 
+     * @return boolean
+     */
     public function contactCanEdit()
     {
         if ($this->user) {
@@ -53,11 +58,21 @@ class EditPublication extends EditSectionController
         return $publication->idcontacto === $this->contact->idcontacto;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public function contactCanSee()
     {
         return true;
     }
 
+    /**
+     * 
+     * @param bool $reload
+     *
+     * @return Publication
+     */
     public function getMainModel($reload = false)
     {
         if (isset($this->mainModel) && !$reload) {
@@ -110,6 +125,11 @@ class EditPublication extends EditSectionController
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');
+
+        if ('/' == substr($this->uri, -1)) {
+            /// redit to homepage
+            $this->response->headers->set('Refresh', '0; ' . AppSettings::get('webportal', 'url'));
+        }
     }
 
     protected function setNavigationLinks()

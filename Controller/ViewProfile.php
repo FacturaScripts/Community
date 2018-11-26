@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
@@ -166,6 +167,11 @@ class ViewProfile extends EditSectionController
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');
+
+        if ('/' == substr($this->uri, -1)) {
+            /// redit to homepage
+            $this->response->headers->set('Refresh', '0; ' . AppSettings::get('webportal', 'url'));
+        }
     }
 
     protected function loadTeams($sectionName)

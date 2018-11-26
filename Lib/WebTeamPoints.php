@@ -31,6 +31,9 @@ use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 class WebTeamPoints
 {
 
+    const MAX_POINTS_CONTACT_PER_WEEK = 5;
+    const MAX_POINTS_PER_LOG = 0.5;
+
     /**
      * 
      * @param string $period
@@ -86,11 +89,11 @@ class WebTeamPoints
         $max = $total / $webTeam->count();
         foreach ($teams as $key => $value) {
             if ($value > $max) {
-                $teams[$key] = (int) $max / $value;
+                $teams[$key] = min([$max / $value, self::MAX_POINTS_PER_LOG]);
                 continue;
             }
 
-            $teams[$key] = 1;
+            $teams[$key] = self::MAX_POINTS_PER_LOG;
         }
     }
 
@@ -107,7 +110,7 @@ class WebTeamPoints
 
             $contact = new Contacto();
             if ($contact->loadFromCode($idcontacto)) {
-                $contact->puntos += (int) $points;
+                $contact->puntos += (int) min([$points, self::MAX_POINTS_CONTACT_PER_WEEK]);
                 $contact->save();
             }
         }
