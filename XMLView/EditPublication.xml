@@ -22,10 +22,13 @@
 <view>
     <columns>
         <group name="main">
-            <column name="title" numcolumns="12" order="100">
+            <column name="title" numcolumns="10" order="100">
                 <widget type="text" fieldname="title" />
             </column>
-            <column name="body" numcolumns="12" order="110">
+            <column name="sort" numcolumns="2" order="110">
+                <widget type="number" fieldname="ordernum" />
+            </column>
+            <column name="body" numcolumns="12" order="120">
                 <widget type="markdown" fieldname="body" />
             </column>
         </group>

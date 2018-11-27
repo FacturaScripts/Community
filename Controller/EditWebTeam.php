@@ -220,7 +220,7 @@ class EditWebTeam extends EditSectionController
             case 'join':
             case 'leave':
                 /// we force save to update number of members and requests
-                $this->team->save();
+                $this->getMainModel(true)->save();
                 break;
 
             default:
@@ -354,31 +354,31 @@ class EditWebTeam extends EditSectionController
     protected function loadData(string $sectionName)
     {
         $team = $this->getMainModel();
+        $where = [new DataBaseWhere('idteam', $team->idteam)];
         switch ($sectionName) {
             case 'EditWebTeam':
                 $this->sections[$sectionName]->loadData($team->primaryColumnValue());
                 break;
 
             case 'ListPublication':
+                $this->sections[$sectionName]->loadData('', $where, ['ordernum' => 'ASC', 'creationdate' => 'DESC']);
+                break;
+
             case 'ListWebTeamLog':
-                $where = [new DataBaseWhere('idteam', $team->idteam)];
-                $this->sections[$sectionName]->loadData('', $where);
+                $this->sections[$sectionName]->loadData('', $where, ['time' => 'DESC']);
                 break;
 
             case 'EditWebTeamMember':
+                $this->sections[$sectionName]->loadData('', $where);
+                break;
+
             case 'ListWebTeamMember':
-                $where = [
-                    new DataBaseWhere('idteam', $team->idteam),
-                    new DataBaseWhere('accepted', true),
-                ];
+                $where[] = new DataBaseWhere('accepted', true);
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'ListWebTeamMember-req':
-                $where = [
-                    new DataBaseWhere('idteam', $team->idteam),
-                    new DataBaseWhere('accepted', false),
-                ];
+                $where[] = new DataBaseWhere('accepted', false);
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
 

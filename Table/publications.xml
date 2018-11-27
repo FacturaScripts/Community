@@ -41,6 +41,12 @@
         <type>date</type>
     </column>
     <column>
+        <name>ordernum</name>
+        <type>integer</type>
+        <null>NO</null>
+        <default>100</default>
+    </column>
+    <column>
         <name>permalink</name>
         <type>character varying(200)</type>
         <null>NO</null>
