@@ -92,6 +92,7 @@ class AddTranslation extends PortalControllerWizard
         /// language already exists?
         $where = [new DataBaseWhere('langcode', $code)];
         if ($language->loadFromCode('', $where)) {
+            $this->miniLog->error($this->i18n->trans('duplicate-record'));
             return true;
         }
 
@@ -131,8 +132,7 @@ class AddTranslation extends PortalControllerWizard
         $transModel = new Translation();
         $where = [new DataBaseWhere('name', $name)];
         if ($transModel->loadFromCode('', $where)) {
-            /// redir to existing translation
-            $this->response->headers->set('Refresh', '0; ' . $transModel->url('public'));
+            $this->miniLog->error($this->i18n->trans('duplicate-record'));
             return true;
         }
 

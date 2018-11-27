@@ -173,8 +173,8 @@ class EditWebTeam extends EditSectionController
         $this->addSearchOptions($name, ['title', 'body']);
 
         /// buttons
-        $team = $this->getMainModel();
         if ($this->contactCanEdit()) {
+            $team = $this->getMainModel();
             $button = [
                 'action' => 'AddPublication?idteam=' . $team->idteam,
                 'color' => 'success',

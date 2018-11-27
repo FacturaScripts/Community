@@ -30,18 +30,12 @@
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
-            <column name="members" display="right" order="120">
-                <widget type="number" fieldname="nummembers" decimal="0" readonly="true" />
-            </column>
-            <column name="requests" display="right" order="130">
-                <widget type="number" fieldname="numrequests" decimal="0" readonly="true" />
-            </column>
-            <column name="creation-date" display="right" order="140">
+            <column name="creation-date" display="right" order="120">
                 <widget type="date" fieldname="creationdate" />
             </column>
         </group>
         <group name="notes" numcolumns="12">
-            <column name="description" order="150">
+            <column name="description" order="100">
                 <widget type="textarea" fieldname="description" />
             </column>
         </group>

@@ -60,5 +60,17 @@ class TeamList extends SectionController
         $this->addOrderOption($name, ['name'], 'name');
         $this->addOrderOption($name, ['nummembers'], 'members');
         $this->addOrderOption($name, ['visitcount'], 'visit-counter');
+
+        /// buttons
+        if ($this->contact) {
+            $button = [
+                'action' => 'AddTeam',
+                'color' => 'success',
+                'icon' => 'fas fa-plus',
+                'label' => 'new',
+                'type' => 'link'
+            ];
+            $this->addButton($name, $button);
+        }
     }
 }

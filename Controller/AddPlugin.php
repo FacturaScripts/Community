@@ -71,8 +71,7 @@ class AddPlugin extends PortalControllerWizard
         $project = new WebProject();
         $where = [new DataBaseWhere('name', $name)];
         if ($project->loadFromCode('', $where)) {
-            /// redir to existing plugin
-            $this->response->headers->set('Refresh', '0; ' . $project->url('public'));
+            $this->miniLog->error($this->i18n->trans('duplicate-record'));
             return false;
         }
 
