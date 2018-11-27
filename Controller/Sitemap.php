@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
@@ -41,6 +42,10 @@ class Sitemap extends parentController
         $items = parent::getSitemapItems();
 
         foreach ($this->getPluginItems() as $item) {
+            $items[] = $item;
+        }
+
+        foreach ($this->getPublications() as $item) {
             $items[] = $item;
         }
 
@@ -87,7 +92,19 @@ class Sitemap extends parentController
                 continue;
             }
 
-            $items[] = $this->createItem($project->url('public'), strtotime($project->creationdate));
+            $items[] = $this->createItem($project->url('public'), strtotime($project->lastmod));
+        }
+
+        return $items;
+    }
+
+    protected function getPublications(): array
+    {
+        $items = [];
+
+        $publicationModel = new Publication();
+        foreach ($publicationModel->all([], [], 0, 0) as $publication) {
+            $items[] = $this->createItem($publication->url('public'), strtotime($publication->lastmod));
         }
 
         return $items;
