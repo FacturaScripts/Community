@@ -94,7 +94,12 @@ class EditIssue extends EditSectionController
 
         $this->issue = new Issue();
         $uri = explode('/', $this->uri);
-        $this->issue->loadFromCode(end($uri));
+        if ($this->issue->loadFromCode(end($uri))) {
+            return $this->issue;
+        }
+
+        $code = $this->request->query->get('code', '');
+        $this->issue->loadFromCode($code);
         return $this->issue;
     }
 
@@ -141,6 +146,10 @@ class EditIssue extends EditSectionController
         return true;
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionComments($name = 'ListIssueComment')
     {
         $this->addListSection($name, 'IssueComment', 'comments', 'fas fa-comments');
@@ -149,16 +158,28 @@ class EditIssue extends EditSectionController
         $this->addOrderOption($name, ['idcontacto'], 'user');
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionEditComments($name = 'EditIssueComment')
     {
         $this->addEditListSection($name, 'IssueComment', 'comments', 'fas fa-edit', 'edit');
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionEditIssue($name = 'EditIssue')
     {
         $this->addEditSection($name, 'Issue', 'issue', 'fas fa-edit', 'edit');
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionRelatedIssues($name = 'ListIssue')
     {
         $this->addListSection($name, 'Issue', 'related', 'fas fa-question-circle');

@@ -41,7 +41,7 @@ class ViewProfile extends EditSectionController
 
     /**
      * 
-     * @return boolean
+     * @return bool
      */
     public function contactCanEdit()
     {
@@ -50,7 +50,7 @@ class ViewProfile extends EditSectionController
 
     /**
      * 
-     * @return boolean
+     * @return bool
      */
     public function contactCanSee()
     {

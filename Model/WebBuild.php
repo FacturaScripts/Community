@@ -251,7 +251,7 @@ class WebBuild extends Base\ModelClass
 
     /**
      * 
-     * @return boolean
+     * @return bool
      */
     protected function testPlugin()
     {

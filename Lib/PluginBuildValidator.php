@@ -45,7 +45,7 @@ class PluginBuildValidator
      * @param string $path
      * @param array  $params
      *
-     * @return boolean
+     * @return bool
      */
     public function validateIni($path, $params)
     {
@@ -70,7 +70,7 @@ class PluginBuildValidator
      * @param string $path
      * @param array  $params
      *
-     * @return boolean
+     * @return bool
      */
     public function validateZip($path, $params)
     {

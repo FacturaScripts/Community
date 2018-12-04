@@ -56,7 +56,7 @@ class AddTeam extends PortalControllerWizard
      * @param string $name
      * @param string $description
      *
-     * @return boolean
+     * @return bool
      */
     protected function newWebTeam($name, $description)
     {

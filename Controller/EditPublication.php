@@ -42,7 +42,7 @@ class EditPublication extends EditSectionController
 
     /**
      * 
-     * @return boolean
+     * @return bool
      */
     public function contactCanEdit()
     {
@@ -60,7 +60,7 @@ class EditPublication extends EditSectionController
 
     /**
      * 
-     * @return boolean
+     * @return bool
      */
     public function contactCanSee()
     {

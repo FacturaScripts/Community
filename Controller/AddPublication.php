@@ -39,6 +39,10 @@ class AddPublication extends PortalControllerWizard
      */
     public $publication;
 
+    /**
+     * 
+     * @return WebProject[]
+     */
     public function myProjects()
     {
         $project = new WebProject();
@@ -52,7 +56,7 @@ class AddPublication extends PortalControllerWizard
 
     /**
      * 
-     * @return array
+     * @return WebTeam[]
      */
     public function myTeams()
     {
@@ -86,9 +90,14 @@ class AddPublication extends PortalControllerWizard
         switch ($action) {
             case 'save':
                 $this->saveAction();
+                break;
         }
     }
 
+    /**
+     * 
+     * @return bool
+     */
     protected function saveAction()
     {
         $this->publication->idcontacto = $this->contact->idcontacto;
@@ -101,7 +110,7 @@ class AddPublication extends PortalControllerWizard
         }
 
         if ($this->publication->save()) {
-            /// redir to existing plugin
+            /// redir to existing publication
             $this->response->headers->set('Refresh', '0; ' . $this->publication->url('public'));
             return true;
         }
