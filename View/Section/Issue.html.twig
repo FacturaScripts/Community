@@ -17,7 +17,10 @@
             <small>{{ issue.creationroute }}</small>
             <p>{{ issue.body | raw | nl2br }}</p>
             <small>
-                <i class="fas fa-calendar" aria-hidden="true"></i> {{ issue.creationdate }} |
+                <i class="fas fa-globe-americas" aria-hidden="true"></i> {{ contact.country() }}
+                &nbsp;
+                <i class="far fa-calendar-alt" aria-hidden="true"></i> {{ issue.creationdate }}
+                &nbsp;
                 <i class="fas fa-clock" aria-hidden="true"></i> {{ issue.lastmod }}
             </small>
         </div>

@@ -19,6 +19,9 @@
                                 {{ i18n.trans('points') }}
                             </th>
                             <th>
+                                {{ i18n.trans('country') }}
+                            </th>
+                            <th>
                                 {{ i18n.trans('create-date') }}
                             </th>
                             <th>
@@ -33,6 +36,7 @@
                         <tr>
                             {% set tdClass = (profile.puntos > 0) ? 'bg-success' : 'bg-warning' %}
                             <td class="{{ tdClass }}">{{ profile.puntos }}</td>
+                            <td class="bg-success">{{ profile.country() }}</td>
                             {% set tdClass = fsc.isDateOld(profile.fechaalta, '-3 months') ? 'bg-success' : 'bg-error' %}
                             <td class="{{ tdClass }}">{{ profile.fechaalta }}</td>
                             {% set tdClass = fsc.isDateOld(profile.lastactivity, '-2 months') ? 'bg-error' : 'bg-success' %}

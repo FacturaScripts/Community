@@ -69,7 +69,11 @@ class WebTeamReport
         $memberTeam = new WebTeamMember();
 
         foreach ($teamModel->all([], [], 0, 0) as $team) {
-            $members = $memberTeam->all([new DataBaseWhere('idteam', $team->idteam)], [], 0, 0);
+            $where = [
+                new DataBaseWhere('idteam', $team->idteam),
+                new DataBaseWhere('accepted', true),
+            ];
+            $members = $memberTeam->all($where, [], 0, 0);
             if (empty($members)) {
                 continue;
             }
