@@ -38,7 +38,7 @@ class CommunityHome extends SectionController
         parent::commonCore();
 
         /// hide sectionController template if all sections are empty
-        if ($this->getTemplate() == 'Master/SectionController.html.twig') {
+        if ($this->getTemplate() == 'Master/SectionController.html.twig' && '' == $this->request->get('activetab', '')) {
             $this->hideSections();
         }
     }
@@ -175,7 +175,7 @@ class CommunityHome extends SectionController
         if (isset($section->cursor[0]->lastmod) && strtotime($section->cursor[0]->lastmod) > $lastMod) {
             $lastMod = strtotime($section->cursor[0]->lastmod);
         }
-        
+
         if (isset($section->cursor[0]->actualizado) && $section->cursor[0]->actualizado > $lastMod) {
             $lastMod = $section->cursor[0]->actualizado;
         }
