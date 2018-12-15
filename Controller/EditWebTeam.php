@@ -139,7 +139,7 @@ class EditWebTeam extends EditSectionController
 
         $member->accepted = true;
         if ($member->save()) {
-            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
 
             $nick = is_null($this->contact) ? $this->user->nick : $this->contact->alias();
             $teamLog = new WebTeamLog();
@@ -274,7 +274,7 @@ class EditWebTeam extends EditSectionController
         }
 
         if ($member->delete()) {
-            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
             $teamLog = new WebTeamLog();
             $teamLog->description = 'Expelled from this team.';
             $teamLog->idcontacto = $member->idcontacto;
@@ -304,7 +304,7 @@ class EditWebTeam extends EditSectionController
         }
 
         if ($member->save()) {
-            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
             $teamLog = new WebTeamLog();
             $teamLog->idcontacto = $member->idcontacto;
             $teamLog->idteam = $member->idteam;
@@ -337,7 +337,7 @@ class EditWebTeam extends EditSectionController
         }
 
         if ($member->delete()) {
-            $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
             $teamLog = new WebTeamLog();
             $teamLog->description = 'Leaves this team.';
             $teamLog->idcontacto = $member->idcontacto;
@@ -425,7 +425,15 @@ class EditWebTeam extends EditSectionController
         $mail = $emailTools->newMail();
         $mail->addAddress($contact->email, $contact->fullName());
         $mail->Subject = $title;
-        $mail->msgHTML($txt);
+
+        $params = [
+            'body' => $txt,
+            'company' => $this->empresa->nombrecorto,
+            'footer' => AppSettings::get('webportal', 'copyright'),
+            'title' => $title,
+        ];
+        $mail->msgHTML($emailTools->getTemplateHtml($params));
+
         if ($mail->send()) {
             $this->miniLog->notice($this->i18n->trans('email-sent'));
         }
