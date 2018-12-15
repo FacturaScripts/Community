@@ -333,8 +333,11 @@ class EditIssue extends EditSectionController
 
         $contact = $issue->getContact();
         $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
-        $title = 'Issue #' . $issue->idissue . ': comentario de ' . $issue->getLastCommentContact()->fullName();
-        $txt = '<a href="' . $link . '">Issue #' . $issue->idissue . '</a><br/>' . $comment->body;
+        $title = 'Issue #' . $issue->idissue . ': comentario de ' . $issue->getLastCommentContact()->alias();
+        $txt = '<h4>' . $issue->title() . '</h4>'
+            . '<p>' . nl2br($issue->description()) . '</p>'
+            . '<h4>Comentario de ' . $comment->getContactAlias() . '</h4>'
+            . '<p>' . nl2br($comment->body) . ' - <a href="' . $link . '">Leer más...</a></p>';
 
         $emailTools = new EmailTools();
         $mail = $emailTools->newMail();
@@ -343,8 +346,8 @@ class EditIssue extends EditSectionController
 
         $params = [
             'body' => $txt,
-            'company' => $title,
-            'footer' => $title,
+            'company' => $this->empresa->nombrecorto,
+            'footer' => AppSettings::get('webportal', 'copyright'),
             'title' => $title,
         ];
         $mail->msgHTML($emailTools->getTemplateHtml($params));
