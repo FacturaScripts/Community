@@ -34,14 +34,14 @@ class Cron extends CronClass
 
     public function run()
     {
-        if ($this->isTimeForJob('fix-translations', '1 week')) {
+        if ($this->isTimeForJob('fix-translations', '1 day')) {
             $this->fixTranslations();
             $this->jobDone('fix-translations');
         }
 
         if ($this->isTimeForJob('team-points', '1 week')) {
             $manager = new WebTeamPoints();
-            $manager->run('52 weeks');
+            $manager->run('1 week');
             $this->jobDone('team-points');
         }
 
