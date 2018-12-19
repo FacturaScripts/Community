@@ -121,7 +121,7 @@ class EditPublication extends EditSectionController
             return;
         }
 
-        $this->miniLog->alert($this->i18n->trans('no-data'));
+        $this->miniLog->warning($this->i18n->trans('no-data'));
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');

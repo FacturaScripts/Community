@@ -295,7 +295,7 @@ class EditIssue extends EditSectionController
     protected function loadIssue()
     {
         if (!$this->getMainModel(true)->exists()) {
-            $this->miniLog->alert($this->i18n->trans('no-data'));
+            $this->miniLog->warning($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/Portal404');
@@ -303,7 +303,7 @@ class EditIssue extends EditSectionController
         }
 
         if (!$this->contactCanSee()) {
-            $this->miniLog->alert($this->i18n->trans('access-denied'));
+            $this->miniLog->warning($this->i18n->trans('access-denied'));
             $this->response->setStatusCode(Response::HTTP_FORBIDDEN);
             $this->webPage->noindex = true;
 
@@ -346,7 +346,7 @@ class EditIssue extends EditSectionController
 
         $params = [
             'body' => $txt,
-            'company' => $this->empresa->nombrecorto,
+            'company' => AppSettings::get('webportal', 'title'),
             'footer' => AppSettings::get('webportal', 'copyright'),
             'title' => $title,
         ];
