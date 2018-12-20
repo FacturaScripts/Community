@@ -52,5 +52,10 @@
                 <widget type="textarea" fieldname="description" required="true" />
             </column>
         </group>
+        <group name="advanced" numcolumns="12">
+            <column name="plugin" order="100" level="10">
+                <widget type="checkbox" fieldname="plugin" />
+            </column>
+        </group>
     </columns>
 </view>
