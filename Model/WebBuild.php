@@ -223,12 +223,6 @@ class WebBuild extends Base\ModelClass
                 return false;
             }
 
-            if ($attachedFile->mimetype !== 'application/zip') {
-                self::$miniLog->alert(self::$i18n->trans('only-zip-files'));
-                $attachedFile->delete();
-                return false;
-            }
-
             $this->idfile = $attachedFile->idfile;
             $this->path = $attachedFile->path;
         }
