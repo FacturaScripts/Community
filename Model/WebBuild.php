@@ -19,7 +19,7 @@
 namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Model\Base;
-use FacturaScripts\Core\Model\AttachedFile;
+use FacturaScripts\Dinamic\Model\AttachedFile;
 use FacturaScripts\Plugins\Community\Lib\PluginBuildValidator;
 
 /**
@@ -133,12 +133,19 @@ class WebBuild extends Base\ModelClass
      */
     public function fileName(): string
     {
-        $project = new WebProject();
-        if ($project->loadFromCode($this->idproject)) {
-            return $project->name . '-' . $this->version . '.zip';
+        $extension = 'zip';
+        $atFile = $this->getAttachedFile();
+        if ($atFile) {
+            $parts = explode('.', $atFile->filename);
+            $extension = end($parts);
         }
 
-        return $this->idbuild . '.zip';
+        $project = new WebProject();
+        if ($project->loadFromCode($this->idproject)) {
+            return $project->name . '-' . $this->version . '.' . $extension;
+        }
+
+        return $this->idbuild . '.' . $extension;
     }
 
     /**
@@ -213,13 +220,16 @@ class WebBuild extends Base\ModelClass
     public function test()
     {
         if (empty($this->idfile)) {
-            if (!$this->testPlugin()) {
+            $filePath = FS_FOLDER . DIRECTORY_SEPARATOR . 'MyFiles' . DIRECTORY_SEPARATOR . $this->path;
+            if (!$this->testPlugin($filePath)) {
+                unlink($filePath);
                 return false;
             }
 
             $attachedFile = new AttachedFile();
             $attachedFile->path = $this->path;
             if (!$attachedFile->save()) {
+                unlink($filePath);
                 return false;
             }
 
@@ -245,9 +255,11 @@ class WebBuild extends Base\ModelClass
 
     /**
      * 
+     * @param string $filePath
+     *
      * @return bool
      */
-    protected function testPlugin()
+    protected function testPlugin($filePath)
     {
         $project = new WebProject();
         if (!$project->loadFromCode($this->idproject)) {
@@ -258,14 +270,19 @@ class WebBuild extends Base\ModelClass
             return true;
         }
 
-        $filePath = FS_FOLDER . DIRECTORY_SEPARATOR . 'MyFiles' . DIRECTORY_SEPARATOR . $this->path;
+        /// is a zip file?
+        if (mime_content_type($filePath) !== 'application/zip') {
+            self::$miniLog->alert(self::$i18n->trans('only-zip-files'));
+            return false;
+        }
+
+        /// is zip file ok?
         $params = ['version' => $this->version, 'name' => $project->name];
         $validator = new PluginBuildValidator();
         if ($validator->validateZip($filePath, $params)) {
             return true;
         }
 
-        unlink($filePath);
         return false;
     }
 }
