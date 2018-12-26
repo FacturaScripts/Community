@@ -42,6 +42,18 @@ class TeamList extends SectionController
         $this->addSearchOptions($name, ['title', 'body']);
         $this->addOrderOption($name, ['creationdate'], 'date', 2);
         $this->addOrderOption($name, ['visitcount'], 'visit-counter');
+        
+        /// buttons
+        if ($this->user) {
+            $button = [
+                'action' => 'AddPublication',
+                'color' => 'success',
+                'icon' => 'fas fa-plus',
+                'label' => 'new',
+                'type' => 'link'
+            ];
+            $this->addButton($name, $button);
+        }
     }
 
     /**
