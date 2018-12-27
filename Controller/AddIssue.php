@@ -69,6 +69,15 @@ class AddIssue extends PortalControllerWizard
     }
 
     /**
+     * 
+     * @return int
+     */
+    public function pointCost()
+    {
+        return 0;
+    }
+
+    /**
      * Execute common code between private and public core.
      */
     protected function commonCore()
@@ -90,6 +99,7 @@ class AddIssue extends PortalControllerWizard
         $this->issue->idtree = $this->request->get('idtree');
         if ($this->issue->save()) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $this->subtractPoints();
 
             /// redit to new issue
             $this->response->headers->set('Refresh', '0; ' . $this->issue->url('public'));
@@ -97,5 +107,11 @@ class AddIssue extends PortalControllerWizard
         }
 
         $this->miniLog->alert($this->i18n->trans('record-save-error'));
+    }
+
+    protected function subtractPoints()
+    {
+        $this->contact->puntos -= $this->pointCost();
+        $this->contact->save();
     }
 }
