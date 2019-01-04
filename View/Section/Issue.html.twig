@@ -9,7 +9,7 @@
                 <img src="{{ contact.gravatar() }}" alt="{{ issue.getContactAlias() }}" class="custom-img-responsive"/>
             </a>
         </div>
-        <div class="column">
+        <div class="column col-10 col-xs-12">
             {% if issue.closed %}
                 <span class="label label-error">{{ i18n.trans('closed') }}</span>
             {% endif %}
