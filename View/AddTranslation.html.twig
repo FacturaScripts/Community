@@ -15,7 +15,7 @@
                         <form action="{{ fsc.url() }}" method="post">
                             <input type="hidden" name="action" value="new"/>
                             <div class="empty-action input-group input-inline">
-                                <input type="text" name="name" class="form-input" maxlength="100" placeholder="{{ i18n.trans('name') }}" autocomplete="off" autofocus="" required="true"/>
+                                <input type="text" name="name" class="form-input" maxlength="100" placeholder="{{ i18n.trans('code') }}" autocomplete="off" autofocus="" required="true"/>
                             </div>
                             <br/>
                             <div class="empty-action">
@@ -27,24 +27,38 @@
                     </div>
                     {% if fsc.user %}
                         <br/>
-                        <div class="empty">
-                            <div class="empty-icon">
-                                <i class="fas fa-language fa-3x" aria-hidden="true"></i>
-                            </div>
-                            <p class="empty-title h5">{{ i18n.trans('new-language') }}</p>
-                            <form action="{{ fsc.url() }}" method="post">
-                                <input type="hidden" name="action" value="new-language"/>
-                                <div class="empty-action input-group input-inline">
-                                    <input type="text" name="code" class="form-input" maxlength="100" placeholder="{{ i18n.trans('code') }}" autocomplete="off" required="true"/>
+                        <form action="{{ fsc.url() }}" method="post">
+                            <input type="hidden" name="action" value="new-language"/>
+                            <div class="panel">
+                                <div class="panel-header">
+                                    <div class="panel-title text-center">
+                                        <i class="fas fa-language fa-3x" aria-hidden="true"></i>
+                                        <p class="empty-title h5">{{ i18n.trans('new-language') }}</p>
+                                    </div>
                                 </div>
-                                <br/>
-                                <div class="empty-action">
+                                <div class="panel-body">
+                                    <div class="columns">
+                                        <div class="column col mb-2">
+                                            {{ i18n.trans('name') }}:
+                                            <input type="text" name="code" class="form-input" maxlength="100" placeholder="{{ i18n.trans('code') }}" autocomplete="off" required="true"/>
+                                        </div>
+                                        <div class="column col mb-2">
+                                            {{ i18n.trans('parent') }}:
+                                            <select name="parent" class="form-select">
+                                                {% for language in fsc.language.all({}, {}, 0, 0) %}
+                                                    <option value="{{ language.langcode }}">{{ language.description }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-footer text-right">
                                     <button type="submit" class="btn btn-primary">
                                         {{ i18n.trans('save') }}
                                     </button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     {% endif %}
                 </div>
             </div>

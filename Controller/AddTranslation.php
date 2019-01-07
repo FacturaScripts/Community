@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,7 +25,7 @@ use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 
 /**
- * This class allow us to manage new plugins.
+ * This class allow us to add translations and languages to manage.
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
@@ -33,11 +33,31 @@ class AddTranslation extends PortalControllerWizard
 {
 
     /**
+     *
+     * @var Language
+     */
+    public $language;
+
+    /**
+     * 
+     * @return array
+     */
+    public function getPageData()
+    {
+        $data = parent::getPageData();
+        $data['title'] = 'new-translation';
+
+        return $data;
+    }
+
+    /**
      * Execute common code between private and public core.
      */
     protected function commonCore()
     {
         $this->setTemplate('AddTranslation');
+
+        $this->language = new Language();
 
         $action = $this->request->request->get('action', '');
         switch ($action) {
@@ -50,8 +70,9 @@ class AddTranslation extends PortalControllerWizard
 
             case 'new-language':
                 $code = $this->request->request->get('code', '');
+                $parentCode = $this->request->request->get('parent', '');
                 if ($this->user && !empty($code)) {
-                    $this->newLanguage($code);
+                    $this->newLanguage($code, $parentCode);
                 }
                 break;
         }
@@ -60,18 +81,16 @@ class AddTranslation extends PortalControllerWizard
     /**
      * 
      * @param string $langCode
+     * @param string $parentCode
      */
-    protected function cloneTranslations(string $langCode)
+    protected function cloneTranslations(string $langCode, string $parentCode)
     {
-        $mainLangcode = AppSettings::get('community', 'mainlanguage');
-        $mainProjectId = (int) AppSettings::get('community', 'idproject');
-
         $translationModel = new Translation();
-        $where = [new DataBaseWhere('langcode', $mainLangcode)];
+        $where = [new DataBaseWhere('langcode', $parentCode)];
         foreach ($translationModel->all($where, [], 0, 0) as $trans) {
             $newTrans = new Translation();
             $newTrans->description = $trans->description;
-            $newTrans->idproject = $mainProjectId;
+            $newTrans->idproject = $trans->idproject;
             $newTrans->langcode = $langCode;
             $newTrans->name = $trans->name;
             $newTrans->translation = $trans->translation;
@@ -82,10 +101,11 @@ class AddTranslation extends PortalControllerWizard
     /**
      * 
      * @param string $code
+     * @param string $parentCode
      *
      * @return bool
      */
-    protected function newLanguage(string $code): bool
+    protected function newLanguage(string $code, string $parentCode): bool
     {
         $language = new Language();
 
@@ -99,8 +119,9 @@ class AddTranslation extends PortalControllerWizard
         /// save new language
         $language->description = $code;
         $language->langcode = $code;
+        $language->parentcode = $parentCode;
         if ($language->save()) {
-            $this->cloneTranslations($code);
+            $this->cloneTranslations($code, $parentCode);
             $language->updateStats();
             $language->save();
 

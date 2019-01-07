@@ -158,7 +158,7 @@ class EditTranslation extends EditSectionController
         $this->fixedSection();
         $this->addHtmlSection('translation', 'translation', 'Section/Translation');
         $language = $this->getLanguageModel();
-        $this->addNavigationLink($language->url('public-list'), $this->i18n->trans('translations'));
+        $this->addNavigationLink($language->url('public-list') . '?activetab=ListTranslation', $this->i18n->trans('translations'));
         $this->addNavigationLink($language->url('public'), $language->description);
 
         $this->createTranslationSection('ListTranslation', 'translations', 'fas fa-copy');
