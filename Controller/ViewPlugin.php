@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -66,7 +66,12 @@ class ViewPlugin extends EditSectionController
      */
     public function contactCanSee()
     {
-        return true;
+        $project = $this->getMainModel();
+        if (!$project->private) {
+            return true;
+        }
+
+        return $this->contactCanEdit();
     }
 
     /**
@@ -256,19 +261,27 @@ class ViewPlugin extends EditSectionController
      */
     protected function loadPlugin()
     {
-        if ($this->getMainModel(true)->exists() && $this->project->plugin) {
-            $this->title = 'Plugin ' . $this->project->name;
-            $this->description = $this->project->description();
-
-            $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
-            $this->project->increaseVisitCount($ipAddress);
+        if (!$this->getMainModel(true)->exists() || !$this->getMainModel()->plugin) {
+            $this->miniLog->warning($this->i18n->trans('no-data'));
+            $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
+            $this->webPage->noindex = true;
+            $this->setTemplate('Master/Portal404');
             return;
         }
 
-        $this->miniLog->warning($this->i18n->trans('no-data'));
-        $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
-        $this->webPage->noindex = true;
-        $this->setTemplate('Master/Portal404');
+        if (!$this->contactCanSee()) {
+            $this->miniLog->warning($this->i18n->trans('access-denied'));
+            $this->response->setStatusCode(Response::HTTP_FORBIDDEN);
+            $this->webPage->noindex = true;
+            $this->setTemplate('Master/AccessDenied');
+            return;
+        }
+
+        $this->title = 'Plugin ' . $this->project->name;
+        $this->description = $this->project->description();
+
+        $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+        $this->project->increaseVisitCount($ipAddress);
     }
 
     /**

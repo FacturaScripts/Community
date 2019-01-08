@@ -22,22 +22,45 @@
                                         <input type="text" name="name" class="form-input" maxlength="50" autocomplete="off" autofocus="" required="true"/>
                                     </div>
                                     <div class="column col mb-2">
-                                        {{ i18n.trans('license') }}:
-                                        <select name="license" class="form-select">
-                                            {% for license in fsc.licenses() %}
-                                                <option value="{{ license.code }}">{{ license.description }}</option>
+                                        {{ i18n.trans('type') }}:
+                                        <select name="type" class="form-select">
+                                            {% for type in fsc.types() %}
+                                                <option value="{{ type }}">{{ i18n.trans(type) }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
+                                    {% if fsc.coreVersions() | length > 1 %}
+                                        <div class="column col mb-2">
+                                            FacturaScripts:
+                                            <select name="version" class="form-select">
+                                                {% for version in fsc.coreVersions() %}
+                                                    {% if version == fsc.version %}
+                                                        <option value="{{ version }}" selected="">{{ version }}</option>
+                                                    {% else %}
+                                                        <option value="{{ version }}">{{ version }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 <div class="columns">
                                     <div class="column col mb-2">
+                                        {{ i18n.trans('public-repository') }}:
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="fab fa-git fa-fw"></i>
                                             </span>
                                             <input type="text" name="git" class="form-input" placeholder="{{ i18n.trans('optional') }}"/>
                                         </div>
+                                    </div>
+                                    <div class="column col mb-2">
+                                        {{ i18n.trans('license') }}:
+                                        <select name="license" class="form-select">
+                                            {% for license in fsc.licenses() %}
+                                                <option value="{{ license.code }}">{{ license.description }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="columns">

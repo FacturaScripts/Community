@@ -79,6 +79,9 @@ class PluginList extends SectionController
         $where = [new DataBaseWhere('plugin', true)];
         switch ($sectionName) {
             case 'ListWebProject':
+                if (!$this->user) {
+                    $where[] = new DataBaseWhere('private', false);
+                }
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
 

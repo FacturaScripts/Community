@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,8 @@ class WebProject extends WebPageClass
 
     use Base\ModelTrait;
     use Common\ContactTrait;
+
+    const DEFAULT_TYPE = 'public';
 
     /**
      *
@@ -75,9 +77,21 @@ class WebProject extends WebPageClass
 
     /**
      *
+     * @var bool
+     */
+    public $private;
+
+    /**
+     *
      * @var string
      */
     public $publicrepo;
+
+    /**
+     *
+     * @var string
+     */
+    public $type;
 
     /**
      *
@@ -100,6 +114,8 @@ class WebProject extends WebPageClass
         $this->downloads = 0;
         $this->license = 'LGPL';
         $this->plugin = true;
+        $this->private = false;
+        $this->type = self::DEFAULT_TYPE;
         $this->version = 0.0;
     }
 
@@ -162,6 +178,16 @@ class WebProject extends WebPageClass
         if (!preg_match("/^[a-z0-9_-]+$/i", $this->name)) {
             self::$miniLog->alert(self::$i18n->trans('invalid-name'));
             return false;
+        }
+
+        $this->private = false;
+        switch ($this->type) {
+            case 'private':
+                $this->private = true;
+                break;
+
+            default:
+                $this->type = self::DEFAULT_TYPE;
         }
 
         $this->lastmoddisable = true;

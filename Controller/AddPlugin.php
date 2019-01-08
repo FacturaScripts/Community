@@ -32,10 +32,50 @@ use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 class AddPlugin extends PortalControllerWizard
 {
 
+    /**
+     *
+     * @var string
+     */
+    public $version = '2018';
+
+    /**
+     * 
+     * @return array
+     */
+    public function coreVersions()
+    {
+        return ['2018'];
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getPageData()
+    {
+        $data = parent::getPageData();
+        $data['title'] = 'new-plugin';
+
+        return $data;
+    }
+
+    /**
+     * 
+     * @return CodeModel[]
+     */
     public function licenses()
     {
         $codeModel = new CodeModel();
         return $codeModel->all('licenses', 'name', 'title', false);
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function types()
+    {
+        return ['public', 'private'];
     }
 
     /**
@@ -48,6 +88,21 @@ class AddPlugin extends PortalControllerWizard
         $name = $this->request->get('name', '');
         if (!empty($name)) {
             $this->newPlugin($name);
+        }
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    protected function getPluginType()
+    {
+        switch ($this->request->request->get('type')) {
+            case 'private':
+                return 'private';
+
+            default:
+                return 'public';
         }
     }
 
@@ -78,9 +133,10 @@ class AddPlugin extends PortalControllerWizard
         /// save new plugin
         $project->name = $name;
         $project->description = $this->request->request->get('description', $name);
+        $project->idcontacto = $this->contact->idcontacto;
         $project->license = $this->request->request->get('license');
         $project->publicrepo = $this->request->request->get('git');
-        $project->idcontacto = $this->contact->idcontacto;
+        $project->type = $this->getPluginType();
         if ($project->save()) {
             $description = $this->i18n->trans('new-plugin', ['%pluginName%' => $name]);
             $link = $project->url('public');
