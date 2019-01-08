@@ -217,6 +217,7 @@ class EditWebTeam extends EditSectionController
     {
         switch ($action) {
             case 'accept-request':
+            case 'expel':
             case 'join':
             case 'leave':
                 /// we force save to update number of members and requests
