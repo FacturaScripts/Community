@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,33 +18,38 @@
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
 -->
-
 <view>
     <columns>
         <group name="data" numcolumns="12">
-            <column name="name" order="100">
+            <column name="name" numcolumns="3" order="100">
                 <widget type="text" fieldname="name" required="true" readonly="dinamic" />
             </column>
-            <column name="admin" level="2" order="110">
+            <column name="type" numcolumns="3" order="110">
+                <widget type="select" fieldname="type" required="true" translate="true">
+                    <values title="public">public</values>
+                    <values title="private">private</values>
+                </widget>
+            </column>
+            <column name="admin" level="2" numcolumns="3" order="120">
                 <widget type="autocomplete" fieldname="idcontacto" required="true">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
-            <column name="license" order="120">
+            <column name="license" numcolumns="3" order="130">
                 <widget type="select" fieldname="license" required="true">
                     <values source="licenses" fieldcode="name" fieldtitle="title"></values>
                 </widget>
-            </column>
-            <column name="version" order="130">
-                <widget type="number" fieldname="version" readonly="true" />
-            </column>
-            <column name="last-update" order="140">
-                <widget type="date" fieldname="lastmod" readonly="true" />
             </column>
         </group>
         <group name="github" numcolumns="12">
             <column name="public-repository" order="100">
                 <widget type="text" fieldname="publicrepo" icon="fab fa-git" />
+            </column>
+            <column name="version" numcolumns="2" order="110">
+                <widget type="number" fieldname="version" readonly="true" />
+            </column>
+            <column name="last-update" numcolumns="3" order="120">
+                <widget type="date" fieldname="lastmod" readonly="true" />
             </column>
         </group>
         <group name="description" numcolumns="12">

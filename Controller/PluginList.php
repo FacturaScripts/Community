@@ -41,6 +41,9 @@ class PluginList extends SectionController
         $this->addSearchOptions($name, ['name', 'description']);
 
         /// filters
+        $types = $this->codeModel->all('webprojects', 'type', 'type');
+        $this->addFilterSelect($name, 'type', 'type', 'type', $types);
+
         $licenses = $this->codeModel->all('licenses', 'name', 'title');
         $this->addFilterSelect($name, 'license', 'license', 'license', $licenses);
 
