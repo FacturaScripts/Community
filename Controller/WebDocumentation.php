@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -290,9 +290,20 @@ class WebDocumentation extends PortalController
         $codeModel = new CodeModel();
         foreach ($codeModel->all('webdocpages', 'idproject', 'idproject', false) as $item) {
             $project = new WebProject();
-            if ($project->loadFromCode($item->code)) {
+            if ($project->loadFromCode($item->code) && !$project->plugin) {
                 $this->projects[] = $project;
             }
         }
+
+        /// sort by name
+        uasort($this->projects, function ($item1, $item2) {
+            if ($item1->name < $item2->name) {
+                return -1;
+            } elseif ($item1->name > $item2->name) {
+                return 1;
+            }
+
+            return 0;
+        });
     }
 }
