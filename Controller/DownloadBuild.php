@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -83,6 +83,23 @@ class DownloadBuild extends PortalController
     }
 
     /**
+     * 
+     * @return bool
+     */
+    protected function contactCanDownload()
+    {
+        if (!$this->currentProject->private) {
+            return true;
+        }
+
+        if (empty($this->contact)) {
+            return false;
+        }
+
+        return $this->currentProject->idcontacto == $this->contact->idcontacto;
+    }
+
+    /**
      * Returns the download link from the build.
      *
      * @param WebBuild $build
@@ -111,6 +128,12 @@ class DownloadBuild extends PortalController
      */
     protected function findBuild($idProject, $buildVersion)
     {
+        if (!$this->contactCanDownload()) {
+            $this->response->setContent('UNAUTHORIZED');
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+            return;
+        }
+
         $where = [new DataBaseWhere('idproject', $idProject)];
         if (is_numeric($buildVersion)) {
             $where[] = new DataBaseWhere('version', $buildVersion);
