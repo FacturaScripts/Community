@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -337,7 +337,7 @@ class EditIssue extends EditSectionController
         $txt = '<h4>' . $issue->title() . '</h4>'
             . '<p>' . nl2br($issue->description()) . '</p>'
             . '<h4>Comentario de ' . $comment->getContactAlias() . '</h4>'
-            . '<p>' . nl2br($comment->body) . ' - <a href="' . $link . '">Leer más...</a></p>';
+            . '<p>' . nl2br($comment->resume(60)) . ' - <a href="' . $link . '">Leer más...</a></p>';
 
         $emailTools = new EmailTools();
         $mail = $emailTools->newMail();
@@ -359,13 +359,17 @@ class EditIssue extends EditSectionController
 
     /**
      * Re-open an existing issue.
+     * 
+     * @return bool
      */
     protected function reopenAction()
     {
         if ($this->contactCanEdit()) {
             $issue = $this->getMainModel();
             $issue->closed = false;
-            $issue->save();
+            return $issue->save();
         }
+
+        return false;
     }
 }
