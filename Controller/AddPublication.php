@@ -110,7 +110,7 @@ class AddPublication extends PortalControllerWizard
         }
 
         if ($this->publication->save()) {
-            /// redir to existing publication
+            /// redir to new publication
             $this->response->headers->set('Refresh', '0; ' . $this->publication->url('public'));
             return true;
         }

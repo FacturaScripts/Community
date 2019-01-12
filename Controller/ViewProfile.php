@@ -149,9 +149,6 @@ class ViewProfile extends EditSectionController
             case 'profile':
                 $this->loadProfile();
                 break;
-
-            default:
-                parent::loadData($sectionName);
         }
     }
 
