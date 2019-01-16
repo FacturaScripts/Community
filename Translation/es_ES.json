@@ -29,6 +29,7 @@
     "new-plugin": "Nuevo plugin: %pluginName%",
     "new-translation": "Nueva traducción",
     "new-translation-paragraph": "Para crear una nueva traducción debe darle un código identificador válido. Un código en minúsculas, en inglés y separado por guiones. Si quiere traducir 'pagar factura' use por ejemplo el código 'pay-invoice'.",
+    "point-cost": "Coste en puntos",
     "private": "Privado",
     "project": "Proyecto",
     "projects": "Proyectos",
@@ -43,5 +44,6 @@
     "teams": "Equipos",
     "translation": "Traducción",
     "translation-team": "Equipo de traducción",
-    "visit-counter": "Contador de visitas"
+    "visit-counter": "Contador de visitas",
+    "your-points": "Tus puntos"
 }
