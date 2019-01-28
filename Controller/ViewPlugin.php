@@ -322,7 +322,7 @@ class ViewPlugin extends EditSectionController
         }
 
         if ($version != $plugin->version || $downloads != $plugin->downloads) {
-            $plugin->downloads = $downloads;
+            $plugin->downloads = max([$downloads, $plugin->downloads]);
             $plugin->version = $version;
             $plugin->lastmod = $lastmod;
             $plugin->save();
