@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -68,7 +68,7 @@ class CommunityHome extends SectionController
         $this->addSearchOptions($name, ['title', 'body']);
         $this->addOrderOption($name, ['creationdate'], 'date', 2);
         $this->addOrderOption($name, ['visitcount'], 'visit-counter');
-        
+
         /// buttons
         if ($this->user) {
             $button = [
@@ -87,8 +87,9 @@ class CommunityHome extends SectionController
         $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle', 'teams');
         $this->sections[$name]->template = 'Section/Issues.html.twig';
         $this->addSearchOptions($name, ['body', 'creationroute']);
-        $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
+        $this->addOrderOption($name, ['lastmod'], 'last-update');
         $this->addOrderOption($name, ['creationdate'], 'date');
+        $this->addOrderOption($name, ['priority', 'lastmod'], 'priority', 2);
 
         /// buttons
         $contactButton = [

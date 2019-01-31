@@ -7,6 +7,7 @@
             <thead>
                 <tr>
                     <th>{{ i18n.trans('title') }}</th>
+                    <th class="text-right">{{ i18n.trans('priority') }}</th>
                     <th class="text-right">{{ i18n.trans('last-update') }}</th>
                 </tr>
             </thead>
@@ -24,6 +25,7 @@
                             <br/>
                             <a href="{{ issue.url('public') }}">{{ issue.description() | raw }}</a>
                         </td>
+                        <td class="text-right">{{ issue.priority }}</td>
                         <td class="text-right">{{ issue.lastmod }}</td>
                     </tr>
                 {% else %}

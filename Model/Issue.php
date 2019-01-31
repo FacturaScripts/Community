@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -88,6 +88,12 @@ class Issue extends WebPageClass
      * @var int
      */
     public $lastcommidcontacto;
+    
+    /**
+     *
+     * @var int
+     */
+    public $priority;
 
     /**
      *
@@ -102,6 +108,7 @@ class Issue extends WebPageClass
     {
         parent::clear();
         $this->closed = false;
+        $this->priority = 0;
     }
 
     /**

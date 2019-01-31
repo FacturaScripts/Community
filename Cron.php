@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,8 +19,10 @@
 namespace FacturaScripts\Plugins\Community;
 
 use FacturaScripts\Core\Base\CronClass;
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Lib\WebTeamPoints;
 use FacturaScripts\Plugins\Community\Lib\WebTeamReport;
+use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\Language;
 
 /**
@@ -34,6 +36,11 @@ class Cron extends CronClass
 
     public function run()
     {
+        if ($this->isTimeForJob('update-issue-priorities', '1 day')) {
+            $this->updateIssuePriorities();
+            $this->jobDone('update-issue-priorities');
+        }
+
         if ($this->isTimeForJob('fix-translations', '1 day')) {
             $this->fixTranslations();
             $this->jobDone('fix-translations');
@@ -58,6 +65,24 @@ class Cron extends CronClass
         foreach ($languageModel->all() as $lang) {
             $lang->updateStats();
             $lang->save();
+        }
+    }
+
+    protected function updateIssuePriorities()
+    {
+        $issueModel = new Issue();
+        $where = [new DataBaseWhere('closed', false)];
+        foreach ($issueModel->all($where, [], 0, 0) as $issue) {
+            if (empty($issue->lastcommidcontacto)) {
+                $issue->priority += 2;
+            } elseif ($issue->lastcommidcontacto == $issue->idcontacto) {
+                $issue->priority++;
+            } else {
+                $issue->priority--;
+            }
+
+            $issue->lastmoddisable = true;
+            $issue->save();
         }
     }
 }
