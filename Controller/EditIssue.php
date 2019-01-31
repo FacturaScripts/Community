@@ -183,9 +183,9 @@ class EditIssue extends EditSectionController
      * 
      * @param string $name
      */
-    protected function createSectionRelatedIssues($name = 'ListIssue')
+    protected function createSectionRelatedIssues($name = 'ListIssue', $title = 'related', $group = '')
     {
-        $this->addListSection($name, 'Issue', 'related', 'fas fa-question-circle');
+        $this->addListSection($name, 'Issue', $title, 'fas fa-question-circle', $group);
         $this->sections[$name]->template = 'Section/Issues.html.twig';
         $this->addSearchOptions($name, ['body', 'creationroute']);
         $this->addOrderOption($name, ['creationdate'], 'date', 2);
@@ -202,6 +202,7 @@ class EditIssue extends EditSectionController
 
         $this->createSectionComments();
         $this->createSectionRelatedIssues();
+        $this->createSectionRelatedIssues('ListIssue-contact', 'issues', 'contact');
 
         if ($this->user) {
             $this->createSectionEditIssue();
@@ -318,6 +319,14 @@ class EditIssue extends EditSectionController
                 break;
 
             case 'ListIssue':
+                $where = [
+                    new DataBaseWhere('creationroute', $issue->creationroute),
+                    new DataBaseWhere('idissue', $issue->idissue, '!=')
+                ];
+                $this->sections[$sectionName]->loadData('', $where);
+                break;
+
+            case 'ListIssue-contact':
                 $where = [
                     new DataBaseWhere('idcontacto', $issue->idcontacto),
                     new DataBaseWhere('idissue', $issue->idissue, '!=')
