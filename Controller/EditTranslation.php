@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -85,10 +85,7 @@ class EditTranslation extends EditSectionController
      */
     public function getLanguageModel(): Language
     {
-        $translation = $this->getMainModel();
-        $language = new Language();
-        $language->loadFromCode($translation->langcode);
-        return $language;
+        return $this->getMainModel()->getLanguage();
     }
 
     /**
@@ -222,6 +219,7 @@ class EditTranslation extends EditSectionController
         $translation->lastmod = date('d-m-Y H:i:s');
         $translation->needsrevision = false;
 
+        /// rename?
         $oldTransName = $translation->name;
         if ($this->request->request->get('name', '') !== '') {
             $translation->name = $this->request->request->get('name', '');
@@ -231,9 +229,20 @@ class EditTranslation extends EditSectionController
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
         }
 
+        /// rename
         if ($oldTransName != $translation->name) {
             foreach ($translation->getEquivalents($oldTransName) as $trans) {
                 $trans->name = $translation->name;
+                $trans->save();
+            }
+        }
+
+        /// update children
+        foreach ($translation->getChildren() as $trans) {
+            if ($trans->needsrevision) {
+                $trans->description = $translation->description;
+                $trans->translation = $translation->translation;
+                $trans->needsrevision = false;
                 $trans->save();
             }
         }

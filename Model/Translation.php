@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -105,6 +105,31 @@ class Translation extends Base\ModelClass
     }
 
     /**
+     * 
+     * @return self[]
+     */
+    public function getChildren()
+    {
+        $children = [];
+
+        $childrenLanguages = [];
+        $language = $this->getLanguage();
+        foreach ($language->all([], [], 0, 0) as $lang) {
+            if ($lang->parentcode == $language->langcode) {
+                $childrenLanguages[] = $lang->langcode;
+            }
+        }
+
+        foreach ($this->getEquivalents() as $trans) {
+            if (in_array($trans->langcode, $childrenLanguages)) {
+                $children[] = $trans;
+            }
+        }
+
+        return $children;
+    }
+
+    /**
      * Returns equivalent translations.
      * 
      * @param string $name
@@ -122,6 +147,17 @@ class Translation extends Base\ModelClass
     }
 
     /**
+     * 
+     * @return Language
+     */
+    public function getLanguage()
+    {
+        $language = new Language();
+        $language->loadFromCode($this->langcode);
+        return $language;
+    }
+
+    /**
      * This function is called when creating the model table. Returns the SQL
      * that will be executed after the creation of the table. Useful to insert values
      * default.
@@ -133,7 +169,7 @@ class Translation extends Base\ModelClass
         /// needed dependencies
         new Language();
         new WebProject();
-        
+
         return parent::install();
     }
 
