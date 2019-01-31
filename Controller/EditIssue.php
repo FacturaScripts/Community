@@ -24,6 +24,7 @@ use FacturaScripts\Dinamic\Lib\EmailTools;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\IssueComment;
+use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -139,7 +140,9 @@ class EditIssue extends EditSectionController
         /// update issue
         $issue->lastcommidcontacto = $this->contact->idcontacto;
         $issue->closed = ($close === 'TRUE') ? true : $issue->closed;
-        $issue->save();
+        if ($issue->save()) {
+            $this->evaluateSolution($issue);
+        }
 
         $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
         $this->notifyComment($issue, $comment);
@@ -228,6 +231,41 @@ class EditIssue extends EditSectionController
 
         $this->miniLog->alert($this->i18n->trans('delete-comment-error'));
         return false;
+    }
+
+    /**
+     * 
+     * @param Issue $issue
+     *
+     * @return bool
+     */
+    protected function evaluateSolution($issue)
+    {
+        /// issue must be closed and last comment from author to continue
+        if (!$issue->closed || $issue->lastcommidcontacto != $issue->idcontacto) {
+            return false;
+        }
+
+        $idcontacts = [];
+        foreach ($issue->getComments() as $comm) {
+            if (empty($comm->idcontacto) || $comm->idcontacto == $issue->idcontacto) {
+                continue;
+            }
+
+            $idcontacts[] = $comm->idcontacto;
+        }
+
+        if (empty($idcontacts)) {
+            return false;
+        }
+
+        shuffle($idcontacts);
+        $teamLog = new WebTeamLog();
+        $teamLog->description = $issue->title() . ' solved';
+        $teamLog->idcontacto = $idcontacts[0];
+        $teamLog->idteam = AppSettings::get('community', 'idteamsup');
+        $teamLog->link = $issue->url();
+        return $teamLog->save();
     }
 
     /**

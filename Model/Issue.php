@@ -117,6 +117,17 @@ class Issue extends WebPageClass
     }
 
     /**
+     * 
+     * @return IssueComment[]
+     */
+    public function getComments()
+    {
+        $issueComment = new IssueComment();
+        $where = [new DataBaseWhere('idissue', $this->idissue)];
+        return $issueComment->all($where, ['creationdate' => 'ASC'], 0, 0);
+    }
+
+    /**
      * Returns contact model from last comment.
      *
      * @return Contacto

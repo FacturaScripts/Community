@@ -46,9 +46,15 @@
                 <button type="submit" class="btn btn-primary">
                     {{ i18n.trans('send') }}
                 </button>
-                <button type="submit" name="close" value="TRUE" class="btn btn-error">
-                    {{ i18n.trans('send') }} + {{ i18n.trans('close') }}
-                </button>
+                {% if fsc.contact and issue.idcontacto == fsc.contact.idcontacto %}
+                    <button type="submit" name="close" value="TRUE" class="btn btn-success">
+                        {{ i18n.trans('send') }} + {{ i18n.trans('solved') }}
+                    </button>
+                {% else %}
+                    <button type="submit" name="close" value="TRUE" class="btn btn-error">
+                        {{ i18n.trans('send') }} + {{ i18n.trans('close') }}
+                    </button>
+                {% endif %}
             </div>
         </form>
     {% endif %}
