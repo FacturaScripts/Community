@@ -36,7 +36,7 @@ class Cron extends CronClass
 
     public function run()
     {
-        if ($this->isTimeForJob('update-issue-priorities', '1 day')) {
+        if ($this->isTimeForJob('update-issue-priorities', '1 hour')) {
             $this->updateIssuePriorities();
             $this->jobDone('update-issue-priorities');
         }
@@ -76,9 +76,9 @@ class Cron extends CronClass
             if (empty($issue->lastcommidcontacto)) {
                 $issue->priority += 2;
             } elseif ($issue->lastcommidcontacto == $issue->idcontacto) {
-                $issue->priority++;
+                $issue->priority += ($issue->priority < 0) ? 2 : 1;
             } else {
-                $issue->priority--;
+                $issue->priority -= ($issue->priority > 0) ? 2 : 1;
             }
 
             $issue->lastmoddisable = true;

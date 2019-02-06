@@ -99,7 +99,7 @@ class ContactFormTree extends WebPageClass
     {
         parent::clear();
         $this->body = 'Seleccione la opción que más se ajuste a su caso:';
-        $this->icon = 'fas fa-circle-o';
+        $this->icon = 'fas fa-circle';
     }
 
     /**
