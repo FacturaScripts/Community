@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\ListSection;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 
 /**
@@ -173,24 +174,29 @@ class CommunityHome extends SectionController
     /**
      * Return when was do it the last modification.
      *
-     * @param object $section
+     * @param ListSection $section
      *
      * @return int
      */
     protected function getSectionLastmod(&$section): int
     {
         $lastMod = 0;
+        foreach ($section->cursor as $cursor) {
+            if (isset($cursor->creationdate) && strtotime($cursor->creationdate) > $lastMod) {
+                $lastMod = strtotime($cursor->creationdate);
+            }
 
-        if (isset($section->cursor[0]->creationdate) && strtotime($section->cursor[0]->creationdate) > $lastMod) {
-            $lastMod = strtotime($section->cursor[0]->creationdate);
-        }
+            if (isset($cursor->lastmod) && strtotime($cursor->lastmod) > $lastMod) {
+                $lastMod = strtotime($cursor->lastmod);
+            }
 
-        if (isset($section->cursor[0]->lastmod) && strtotime($section->cursor[0]->lastmod) > $lastMod) {
-            $lastMod = strtotime($section->cursor[0]->lastmod);
-        }
+            if (isset($cursor->fecha) && strtotime($cursor->fecha) > $lastMod) {
+                $lastMod = strtotime($cursor->fecha);
+            }
 
-        if (isset($section->cursor[0]->actualizado) && $section->cursor[0]->actualizado > $lastMod) {
-            $lastMod = $section->cursor[0]->actualizado;
+            if (isset($cursor->actualizado) && $cursor->actualizado > $lastMod) {
+                $lastMod = $cursor->actualizado;
+            }
         }
 
         return $lastMod;
