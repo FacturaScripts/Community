@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -395,11 +395,12 @@ class EditWebTeam extends EditSectionController
     protected function loadTeam()
     {
         if ($this->getMainModel(true)->exists()) {
-            $this->title = $this->team->name;
-            $this->description = $this->team->description();
+            $this->title = $this->getMainModel()->name;
+            $this->description = $this->getMainModel()->description();
+            $this->canonicalUrl = $this->getMainModel()->url('public');
 
             $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
-            $this->team->increaseVisitCount($ipAddress);
+            $this->getMainModel()->increaseVisitCount($ipAddress);
             return;
         }
 

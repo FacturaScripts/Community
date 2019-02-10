@@ -70,7 +70,7 @@ class Sitemap extends parentController
         $items = [];
 
         $docPageModel = new WebDocPage();
-        foreach ($docPageModel->all([], [], 0, 0) as $docPage) {
+        foreach ($docPageModel->all([], ['lastmod' => 'DESC'], 0, 500) as $docPage) {
             $items[] = $this->createItem($docPage->url('public'), strtotime($docPage->lastmod));
         }
 
@@ -87,8 +87,8 @@ class Sitemap extends parentController
         $items = [];
 
         $projectModel = new WebProject();
-        foreach ($projectModel->all([], [], 0, 0) as $project) {
-            if (!$project->plugin) {
+        foreach ($projectModel->all([], ['lastmod' => 'DESC'], 0, 500) as $project) {
+            if (!$project->plugin || $project->private) {
                 continue;
             }
 
@@ -103,7 +103,7 @@ class Sitemap extends parentController
         $items = [];
 
         $publicationModel = new Publication();
-        foreach ($publicationModel->all([], [], 0, 0) as $publication) {
+        foreach ($publicationModel->all([], ['lastmod' => 'DESC'], 0, 500) as $publication) {
             $items[] = $this->createItem($publication->url('public'), strtotime($publication->lastmod));
         }
 
@@ -120,7 +120,7 @@ class Sitemap extends parentController
         $items = [];
 
         $teamModel = new WebTeam();
-        foreach ($teamModel->all([], [], 0, 0) as $team) {
+        foreach ($teamModel->all([], ['lastmod' => 'DESC'], 0, 500) as $team) {
             $items[] = $this->createItem($team->url('public'), strtotime($team->creationdate));
         }
 

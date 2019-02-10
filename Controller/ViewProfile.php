@@ -155,8 +155,8 @@ class ViewProfile extends EditSectionController
     protected function loadProfile()
     {
         if ($this->getMainModel()->exists()) {
-            $this->title = $this->mainModel->alias();
-            $this->description = $this->mainModel->fullName();
+            $this->title = $this->getMainModel()->alias();
+            $this->description = $this->getMainModel()->fullName();
             return;
         }
 
@@ -175,7 +175,7 @@ class ViewProfile extends EditSectionController
     {
         $teamMember = new WebTeamMember();
         $where = [
-            new DataBaseWhere('idcontacto', $this->mainModel->idcontacto),
+            new DataBaseWhere('idcontacto', $this->getMainModel()->idcontacto),
             new DataBaseWhere('accepted', true),
         ];
 

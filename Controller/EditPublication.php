@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -113,11 +113,12 @@ class EditPublication extends EditSectionController
     protected function loadPublication()
     {
         if ($this->getMainModel(true)->exists()) {
-            $this->title = $this->mainModel->title;
-            $this->description = $this->mainModel->description();
+            $this->title = $this->getMainModel()->title;
+            $this->description = $this->getMainModel()->description();
+            $this->canonicalUrl = $this->getMainModel()->url('public');
 
             $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
-            $this->mainModel->increaseVisitCount($ipAddress);
+            $this->getMainModel()->increaseVisitCount($ipAddress);
             return;
         }
 

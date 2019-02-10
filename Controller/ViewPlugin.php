@@ -277,11 +277,12 @@ class ViewPlugin extends EditSectionController
             return;
         }
 
-        $this->title = 'Plugin ' . $this->project->name;
-        $this->description = $this->project->description();
+        $this->title = 'Plugin ' . $this->getMainModel()->name;
+        $this->description = $this->getMainModel()->description();
+        $this->canonicalUrl = $this->getMainModel()->url('public');
 
         $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
-        $this->project->increaseVisitCount($ipAddress);
+        $this->getMainModel()->increaseVisitCount($ipAddress);
     }
 
     /**

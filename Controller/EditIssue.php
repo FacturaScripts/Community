@@ -359,11 +359,12 @@ class EditIssue extends EditSectionController
             return;
         }
 
-        $this->title = $this->issue->title();
-        $this->description = $this->issue->description();
+        $this->title = $this->getMainModel()->title();
+        $this->description = $this->getMainModel()->description();
+        $this->canonicalUrl = $this->getMainModel()->url('public');
 
         $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
-        $this->issue->increaseVisitCount($ipAddress);
+        $this->getMainModel()->increaseVisitCount($ipAddress);
     }
 
     /**

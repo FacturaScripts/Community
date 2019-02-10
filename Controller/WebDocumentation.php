@@ -266,6 +266,7 @@ class WebDocumentation extends PortalController
 
         $this->title = $this->docPage->title;
         $this->description = $this->docPage->description(300);
+        $this->canonicalUrl = $this->docPage->url('public');
         $this->setTemplate('WebDocPage');
     }
 
@@ -276,6 +277,7 @@ class WebDocumentation extends PortalController
     {
         $this->title .= ' - ' . $this->currentProject->name;
         $this->description .= ' - Project: ' . $this->currentProject->name;
+        $this->canonicalUrl = '/' . $this->getProjectUrl($this->currentProject);
 
         $where = [
             new DataBaseWhere('idparent', null, 'IS'),
