@@ -144,8 +144,9 @@ class EditIssue extends EditSectionController
             $this->evaluateSolution($issue);
         }
 
-        $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
         $this->notifyComment($issue, $comment);
+        $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+        $this->response->headers->set('Refresh', '0; ' . $issue->url('public'));
         return true;
     }
 
@@ -226,11 +227,18 @@ class EditIssue extends EditSectionController
         $idComment = $this->request->request->get('idcomment', '');
         $issueComment = new IssueComment();
         if ($issueComment->loadFromCode($idComment) && $issueComment->delete()) {
-            $this->miniLog->notice($this->i18n->trans('comment-deleted-correctly'));
+            $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
+
+            /// update issue
+            $this->getMainModel()->lastcommidcontacto = null;
+            foreach ($this->getMainModel()->getComments() as $comment) {
+                $this->getMainModel()->lastcommidcontacto = $comment->idcontacto;
+            }
+            $this->getMainModel()->save();
             return true;
         }
 
-        $this->miniLog->alert($this->i18n->trans('delete-comment-error'));
+        $this->miniLog->alert($this->i18n->trans('record-deleted-error'));
         return false;
     }
 

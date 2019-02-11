@@ -72,6 +72,8 @@ class Cron extends CronClass
     {
         $issueModel = new Issue();
         $where = [new DataBaseWhere('closed', false)];
+        $count = $issueModel->count($where);
+
         foreach ($issueModel->all($where, [], 0, 0) as $issue) {
             if (empty($issue->lastcommidcontacto)) {
                 $issue->priority += 2;
@@ -79,6 +81,12 @@ class Cron extends CronClass
                 $issue->priority += ($issue->priority < 0) ? 2 : 1;
             } else {
                 $issue->priority -= ($issue->priority > 0) ? 2 : 1;
+            }
+
+            if ($issue->priority > $count) {
+                $issue->priority = $count;
+            } elseif ($issue->priority < 0 - $count) {
+                $issue->priority = 0 - $count;
             }
 
             $issue->lastmoddisable = true;

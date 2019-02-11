@@ -25,6 +25,7 @@
     "mantainer": "Mantainer",
     "members": "Members",
     "needs-revisions": "Needs revisions",
+    "new-comment": "New comment",
     "new-language": "New language",
     "new-plugin": "New plugin: %pluginName%",
     "new-translation": "New translation",
