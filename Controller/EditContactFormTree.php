@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,7 +38,7 @@ class EditContactFormTree extends ExtendedController\PanelController
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['title'] = 'contact-form-tree';
+        $pageData['title'] = 'contact-form';
         $pageData['menu'] = 'web';
         $pageData['icon'] = 'fas fa-code-branch';
         $pageData['showonmenu'] = false;

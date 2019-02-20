@@ -137,8 +137,10 @@ class WebTeamReport
                 $content .= '<li>';
                 if (empty($log->link)) {
                     $content .= $log->description . ' - ' . $log->time;
-                } else {
+                } elseif (substr($log->link, 0, 1) === '/') {
                     $content .= '<a href="' . $url . $log->link . '">' . $log->description . '</a> - ' . $log->time;
+                } else {
+                    $content .= '<a href="' . $url . '/' . $log->link . '">' . $log->description . '</a> - ' . $log->time;
                 }
 
                 $content .= ' - ' . $log->getContactAlias() . '</li>';
