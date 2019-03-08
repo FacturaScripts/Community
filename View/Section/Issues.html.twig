@@ -19,13 +19,23 @@
                                 <i class="fas fa-lock fa-fw" aria-hidden="true" title="{{ i18n.trans('closed') }}"></i>
                             {% endif %}
                             #{{ issue.idissue }} {{ issue.getContactAlias() }}
-                            {% if issue.lastcommidcontacto %}
+                            {% if issue.lastcommidcontacto == issue.idcontacto %}
                                 <i class="fas fa-comments" aria-hidden="true"></i> {{ issue.getLastCommentContact().alias() }}
+                            {% elseif issue.lastcommidcontacto %}
+                                <span class="text-success">
+                                    <i class="fas fa-comments" aria-hidden="true"></i> {{ issue.getLastCommentContact().alias() }}
+                                </span>
                             {% endif %}
                             <br/>
                             <a href="{{ issue.url('public') }}">{{ issue.description() | raw }}</a>
                         </td>
-                        <td class="text-right">{{ issue.priority }}</td>
+                        <td class="text-right">
+                            {% if issue.priority >= 0 %}
+                                {{ issue.priority }}
+                            {% else %}
+                                <span class="text-error">{{ issue.priority }}</span>
+                            {% endif %}
+                        </td>
                         <td class="text-right">{{ issue.lastmod }}</td>
                     </tr>
                 {% else %}

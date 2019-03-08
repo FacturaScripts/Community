@@ -14,7 +14,7 @@
                     </a>
                 </div>
                 <div class="tile-content">
-                    {{ comment.body | raw | nl2br }}
+                    {{ comment.html() | raw }}
                 </div>
                 {% if fsc.contactCanEdit() %}
                     <div class="tile-action">
@@ -60,8 +60,7 @@
     {% endif %}
 
     <script>
-        function deleteComment(idcomment)
-        {
+        function deleteComment(idcomment) {
             var form = $('<form action="#" method="post"></form>');
             form.append(`<input type="hidden" name="action" value="delete-comment" />`);
             form.append(`<input type="hidden" name="idcomment" value="${idcomment}" />`);

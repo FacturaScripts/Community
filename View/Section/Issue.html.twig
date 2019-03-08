@@ -15,7 +15,7 @@
             {% endif %}
             <h1 class="h3">{{ issue.title() }}</h1>
             <small>{{ issue.creationroute }}</small>
-            <p>{{ issue.body | raw | nl2br }}</p>
+            <p>{{ issue.html() | raw }}</p>
             <small>
                 <i class="fas fa-globe-americas" aria-hidden="true"></i> {{ contact.country() }}
                 &nbsp;

@@ -147,6 +147,17 @@ class Issue extends WebPageClass
     }
 
     /**
+     * 
+     * @return string
+     */
+    public function html()
+    {
+        $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+        $html = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $this->body);
+        return nl2br($html);
+    }
+
+    /**
      * Returns the name of the column that is the primary key of the model.
      *
      * @return string
