@@ -68,6 +68,12 @@ class WebTeam extends WebPageClass
 
     /**
      *
+     * @var bool
+     */
+    public $private;
+
+    /**
+     *
      * @var array
      */
     private static $urls = [];
@@ -80,6 +86,7 @@ class WebTeam extends WebPageClass
         parent::clear();
         $this->nummembers = 0;
         $this->numrequests = 0;
+        $this->private = false;
     }
 
     /**

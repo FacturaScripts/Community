@@ -87,7 +87,7 @@ class CommunityHome extends SectionController
     {
         $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle', 'teams');
         $this->sections[$name]->template = 'Section/Issues.html.twig';
-        $this->addSearchOptions($name, ['body', 'creationroute']);
+        $this->addSearchOptions($name, ['body', 'creationroute', 'idissue']);
         $this->addOrderOption($name, ['lastmod'], 'last-update');
         $this->addOrderOption($name, ['creationdate'], 'date');
         $this->addOrderOption($name, ['priority', 'lastmod'], 'priority', 2);

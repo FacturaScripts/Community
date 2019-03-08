@@ -1,5 +1,7 @@
 {% set issue = fsc.getMainModel() %}
 {% set contact = issue.getContact() %}
+{% set project = issue.getProject() %}
+{% set team = issue.getTeam() %}
 
 <div class="container">
     <div class="columns">
@@ -14,8 +16,18 @@
                 <span class="label label-error">{{ i18n.trans('closed') }}</span>
             {% endif %}
             <h1 class="h3">{{ issue.title() }}</h1>
-            <small>{{ issue.creationroute }}</small>
-            <p>{{ issue.html() | raw }}</p>
+            <small>
+                <i class="fas fa-mouse-pointer" aria-hidden="true"></i> {{ issue.creationroute }}
+                {% if project.exists() %}
+                    &nbsp;
+                    <i class="fas fa-plug" aria-hidden="true"></i> <a href="{{ project.url('public') }}">{{ project.name }}</a>
+                {% endif %}
+                &nbsp;
+                <i class="fas fa-users" aria-hidden="true"></i> <a href="{{ team.url('public') }}">{{ team.name }}</a>
+            </small>
+            <p class="mt-1">
+                {{ issue.html() | raw }}
+            </p>
             <small>
                 <i class="fas fa-globe-americas" aria-hidden="true"></i> {{ contact.country() }}
                 &nbsp;

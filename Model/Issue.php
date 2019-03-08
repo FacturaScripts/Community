@@ -88,7 +88,7 @@ class Issue extends WebPageClass
      * @var int
      */
     public $lastcommidcontacto;
-    
+
     /**
      *
      * @var int
@@ -144,6 +144,28 @@ class Issue extends WebPageClass
         $contact = new Contacto();
         $contact->loadFromCode($this->lastcommidcontacto);
         return $contact;
+    }
+
+    /**
+     * 
+     * @return WebProject
+     */
+    public function getProject()
+    {
+        $project = new WebProject();
+        $project->loadFromCode($this->idproject);
+        return $project;
+    }
+
+    /**
+     * 
+     * @return WebTeam
+     */
+    public function getTeam()
+    {
+        $team = new WebTeam();
+        $team->loadFromCode($this->idteam);
+        return $team;
     }
 
     /**

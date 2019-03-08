@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -46,8 +46,9 @@ class AddTeam extends PortalControllerWizard
 
         $name = $this->request->request->get('name', '');
         $description = $this->request->request->get('description', '');
+        $private = (bool) $this->request->request->get('private', false);
         if (!empty($name) && !empty($description)) {
-            $this->newWebTeam($name, $description);
+            $this->newWebTeam($name, $description, $private);
         }
     }
 
@@ -55,10 +56,11 @@ class AddTeam extends PortalControllerWizard
      * 
      * @param string $name
      * @param string $description
+     * @param bool   $private
      *
      * @return bool
      */
-    protected function newWebTeam($name, $description)
+    protected function newWebTeam($name, $description, $private)
     {
         if ($this->contact->puntos < $this->pointCost()) {
             $this->miniLog->warning('You need ' . $this->pointCost() . ' points to create a new team.');
@@ -77,6 +79,7 @@ class AddTeam extends PortalControllerWizard
         $team->name = $name;
         $team->description = $description;
         $team->idcontacto = $this->contact->idcontacto;
+        $team->private = $private;
         if ($team->save()) {
             $this->subtractPoints();
             $this->newWebTeamMember($team);

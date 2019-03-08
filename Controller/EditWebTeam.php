@@ -67,7 +67,7 @@ class EditWebTeam extends EditSectionController
      */
     public function contactCanSee()
     {
-        return true;
+        return $this->contactCanEdit() ? true : !$this->getMainModel()->private;
     }
 
     /**
@@ -394,20 +394,28 @@ class EditWebTeam extends EditSectionController
      */
     protected function loadTeam()
     {
-        if ($this->getMainModel(true)->exists()) {
-            $this->title = $this->getMainModel()->name;
-            $this->description = $this->getMainModel()->description();
-            $this->canonicalUrl = $this->getMainModel()->url('public');
-
-            $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
-            $this->getMainModel()->increaseVisitCount($ipAddress);
+        if (!$this->getMainModel(true)->exists()) {
+            $this->miniLog->warning($this->i18n->trans('no-data'));
+            $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
+            $this->webPage->noindex = true;
+            $this->setTemplate('Master/Portal404');
             return;
         }
 
-        $this->miniLog->warning($this->i18n->trans('no-data'));
-        $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
-        $this->webPage->noindex = true;
-        $this->setTemplate('Master/Portal404');
+        if (!$this->contactCanSee()) {
+            $this->miniLog->warning($this->i18n->trans('access-denied'));
+            $this->response->setStatusCode(Response::HTTP_FORBIDDEN);
+            $this->webPage->noindex = true;
+            $this->setTemplate('Master/AccessDenied');
+            return;
+        }
+
+        $this->title = $this->getMainModel()->name;
+        $this->description = $this->getMainModel()->description();
+        $this->canonicalUrl = $this->getMainModel()->url('public');
+
+        $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+        $this->getMainModel()->increaseVisitCount($ipAddress);
     }
 
     /**

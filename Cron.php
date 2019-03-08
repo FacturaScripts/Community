@@ -80,7 +80,7 @@ class Cron extends CronClass
             } elseif ($issue->lastcommidcontacto == $issue->idcontacto) {
                 $issue->priority += ($issue->priority < 0) ? 2 : 1;
             } else {
-                $issue->priority -= ($issue->priority > 0) ? 2 : 1;
+                $issue->priority -= ($issue->priority > 0) ? 3 : 1;
             }
 
             if ($issue->priority > $count) {

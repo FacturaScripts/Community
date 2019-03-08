@@ -8,7 +8,7 @@
                 <div class="columns">
                     <div class="column">
                         <h1 class="text-capitalize">
-                            <i class="fas fa-users fa-fw"></i> {{ i18n.trans('new') }}
+                            <i class="fas fa-users fa-fw"></i> {{ i18n.trans('team') }}
                         </h1>
                         <div class="form-group mb-2">
                             {{ i18n.trans('name') }}:
@@ -21,6 +21,14 @@
                     </div>
                 </div>
                 <div class="columns">
+                    <div class="column">
+                        <div class="form-group">
+                            <label class="form-switch">
+                                <input type="checkbox" name="private" value="TRUE"/>
+                                <i class="form-icon"></i> {{ i18n.trans('private') }}
+                            </label>
+                        </div>
+                    </div>
                     <div class="column">
                         <span class="text-error">
                             {{ i18n.trans('point-cost') }}: {{ fsc.pointCost() }}

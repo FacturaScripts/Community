@@ -45,6 +45,11 @@
         <type>integer</type>
     </column>
     <column>
+        <name>private</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
         <name>visitcount</name>
         <type>integer</type>
     </column>
