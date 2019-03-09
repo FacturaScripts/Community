@@ -46,4 +46,8 @@
         <name>ca_webteams_members_contactos</name>
         <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
+    <constraint>
+        <name>ca_webteams_members_teams</name>
+        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
 </table>

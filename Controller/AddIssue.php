@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -95,8 +95,9 @@ class AddIssue extends PortalControllerWizard
         $this->issue->creationroute = implode(', ', $this->getTreeList());
         $this->issue->idcontacto = $this->contact->idcontacto;
         $this->issue->idproject = $this->request->get('idproject');
-        $this->issue->idteam = AppSettings::get('community', 'idteamsup');
         $this->issue->idtree = $this->request->get('idtree');
+        $this->setTeam();
+
         if ($this->issue->save()) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
             $this->subtractPoints();
@@ -107,6 +108,17 @@ class AddIssue extends PortalControllerWizard
         }
 
         $this->miniLog->alert($this->i18n->trans('record-save-error'));
+    }
+
+    protected function setTeam()
+    {
+        $project = new WebProject();
+        if (!empty($this->issue->idproject) && $project->loadFromCode($this->issue->idproject)) {
+            $this->issue->idteam = empty($project->idteam) ? AppSettings::get('community', 'idteamsup') : $project->idteam;
+            return;
+        }
+
+        $this->issue->idteam = AppSettings::get('community', 'idteamsup');
     }
 
     protected function subtractPoints()

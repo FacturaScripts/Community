@@ -95,7 +95,7 @@ class EditWebTeam extends EditSectionController
     }
 
     /**
-     * Returns the status of this contact in this team: in|pendirg|out.
+     * Returns the status of this contact in this team: in|pending|out.
      *
      * @return string
      */
@@ -159,9 +159,9 @@ class EditWebTeam extends EditSectionController
         $this->addOrderOption($name, ['time'], 'date', 2);
     }
 
-    protected function createSectionMembers($name, $label, $icon)
+    protected function createSectionMembers($name, $label, $icon, $group = '')
     {
-        $this->addListSection($name, 'WebTeamMember', $label, $icon);
+        $this->addListSection($name, 'WebTeamMember', $label, $icon, $group);
         $this->sections[$name]->template = 'Section/TeamMembers.html.twig';
         $this->addOrderOption($name, ['creationdate'], 'date', 2);
     }
@@ -197,15 +197,47 @@ class EditWebTeam extends EditSectionController
         $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
 
         $this->createSectionPublications();
+
+        if ($this->getMemberStatus() === 'in') {
+            $this->createTeamIssuesSection();
+        }
+
         $this->createSectionLogs();
         $this->createSectionMembers('ListWebTeamMember', 'members', 'fas fa-users');
-        $this->createSectionMembers('ListWebTeamMember-req', 'requests', 'fas fa-address-card');
 
         /// admin
         if ($this->contactCanEdit()) {
             $this->addEditSection('EditWebTeam', 'WebTeam', 'edit', 'fas fa-edit', 'admin');
             $this->addEditListSection('EditWebTeamMember', 'WebTeamMember', 'members', 'fas fa-users', 'admin');
+            $this->createSectionMembers('ListWebTeamMember-req', 'requests', 'fas fa-address-card', 'admin');
         }
+    }
+
+    protected function createTeamIssuesSection($name = 'ListIssue')
+    {
+        $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle');
+        $this->sections[$name]->template = 'Section/Issues.html.twig';
+        $this->addSearchOptions($name, ['body', 'creationroute', 'idissue']);
+        $this->addOrderOption($name, ['lastmod'], 'last-update');
+        $this->addOrderOption($name, ['creationdate'], 'date');
+        $this->addOrderOption($name, ['priority', 'lastmod'], 'priority', 2);
+
+        /// buttons
+        $contactButton = [
+            'action' => 'ContactForm',
+            'color' => 'success',
+            'icon' => 'fas fa-plus',
+            'label' => 'new',
+            'type' => 'link',
+        ];
+        $this->addButton($name, $contactButton);
+
+        /// filters
+        $this->addFilterDatePicker($name, 'fromdate', 'from-date', 'creationdate', '>=');
+        $this->addFilterDatePicker($name, 'untildate', 'until-date', 'creationdate', '<=');
+
+        $where = [new DataBaseWhere('closed', false)];
+        $this->addFilterCheckbox($name, 'closed', 'closed', 'closed', '=', true, $where);
     }
 
     /**
@@ -357,6 +389,11 @@ class EditWebTeam extends EditSectionController
         $team = $this->getMainModel();
         $where = [new DataBaseWhere('idteam', $team->idteam)];
         switch ($sectionName) {
+            case 'ListIssue':
+            case 'EditWebTeamMember':
+                $this->sections[$sectionName]->loadData('', $where);
+                break;
+
             case 'EditWebTeam':
                 $this->sections[$sectionName]->loadData($team->primaryColumnValue());
                 break;
@@ -367,10 +404,6 @@ class EditWebTeam extends EditSectionController
 
             case 'ListWebTeamLog':
                 $this->sections[$sectionName]->loadData('', $where, ['time' => 'DESC']);
-                break;
-
-            case 'EditWebTeamMember':
-                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'ListWebTeamMember':
@@ -399,6 +432,9 @@ class EditWebTeam extends EditSectionController
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/Portal404');
+
+            /// redir to teams
+            $this->response->headers->set('Refresh', '0; ' . $this->getMainModel()->url('public-list'));
             return;
         }
 

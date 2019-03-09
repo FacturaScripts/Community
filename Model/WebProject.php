@@ -55,6 +55,12 @@ class WebProject extends WebPageClass
      * @var int
      */
     public $idproject;
+    
+    /**
+     *
+     * @var int
+     */
+    public $idteam;
 
     /**
      *

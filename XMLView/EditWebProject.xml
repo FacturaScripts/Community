@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -57,8 +57,13 @@
                 <widget type="textarea" fieldname="description" required="true" />
             </column>
         </group>
-        <group name="advanced" numcolumns="12">
-            <column name="plugin" order="100" level="10">
+        <group name="advanced" title="advanced" numcolumns="12">
+            <column name="team" order="100">
+                <widget type="select" fieldname="idteam" onclick="EditWebTean">
+                    <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
+                </widget>
+            </column>
+            <column name="plugin" order="110" level="10">
                 <widget type="checkbox" fieldname="plugin" />
             </column>
         </group>

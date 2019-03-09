@@ -29,6 +29,10 @@
         <default>nextval('webprojects_idproject_seq'::regclass)</default>
     </column>
     <column>
+        <name>idteam</name>
+        <type>serial</type>
+    </column>
+    <column>
         <name>lastip</name>
         <type>character varying(40)</type>
     </column>
@@ -78,6 +82,10 @@
     <constraint>
         <name>ca_webprojects_contactos</name>
         <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_webprojects_webteams</name>
+        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
         <name>uniq_webprojects</name>
