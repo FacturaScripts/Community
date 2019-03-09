@@ -198,7 +198,7 @@ class EditWebTeam extends EditSectionController
 
         $this->createSectionPublications();
 
-        if ($this->getMemberStatus() === 'in') {
+        if ($this->getMemberStatus() === 'in' || $this->user) {
             $this->createTeamIssuesSection();
         }
 

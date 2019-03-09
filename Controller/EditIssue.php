@@ -51,6 +51,10 @@ class EditIssue extends EditSectionController
      */
     public function contactCanEdit()
     {
+        if ($this->user) {
+            return true;
+        }
+
         if (empty($this->contact)) {
             return false;
         }
