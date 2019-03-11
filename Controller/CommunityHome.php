@@ -149,10 +149,10 @@ class CommunityHome extends SectionController
         }
 
         $this->addHtmlSection('home', 'home');
-        $this->createPublicationsSection('ListPublication-proj');
         $this->createMyIssuesSection();
 
         if (count($this->getTeamsMemberData()) > 0) {
+            $this->createPublicationsSection('ListPublication-proj');
             $this->createPublicationsSection('ListPublication', 'teams');
             $this->createTeamIssuesSection();
             $this->createTeamLogSection();
