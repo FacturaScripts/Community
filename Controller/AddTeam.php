@@ -37,7 +37,7 @@ class AddTeam extends PortalControllerWizard
      */
     public function pointCost()
     {
-        return 10;
+        return 5;
     }
 
     protected function commonCore()

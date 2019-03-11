@@ -19,7 +19,9 @@
 namespace FacturaScripts\Plugins\Community;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Base\EventManager;
 use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Plugins\Community\Lib\IssueNotification;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
@@ -35,7 +37,13 @@ class Init extends InitClass
 
     public function init()
     {
-        ;
+        EventManager::attach('Model:Issue:saveInsert', function($model) {
+            IssueNotification::notify($model);
+        });
+
+        EventManager::attach('Model:IssueComment:saveInsert', function($model) {
+            IssueNotification::notifyComment($model);
+        });
     }
 
     public function update()

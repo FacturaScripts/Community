@@ -20,7 +20,6 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Dinamic\Lib\EmailTools;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\IssueComment;
@@ -148,7 +147,6 @@ class EditIssue extends EditSectionController
             $this->evaluateSolution($issue);
         }
 
-        $this->notifyComment($issue, $comment);
         $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
         $this->response->headers->set('Refresh', '0; ' . $issue->url('public'));
         return true;
@@ -377,44 +375,6 @@ class EditIssue extends EditSectionController
 
         $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
         $this->getMainModel()->increaseVisitCount($ipAddress);
-    }
-
-    /**
-     * Notify a new comment on an existing issue.
-     *
-     * @param Issue        $issue
-     * @param IssueComment $comment
-     */
-    protected function notifyComment($issue, $comment)
-    {
-        if ($issue->idcontacto === $comment->idcontacto) {
-            return;
-        }
-
-        $contact = $issue->getContact();
-        $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
-        $title = 'Issue #' . $issue->idissue . ': comentario de ' . $issue->getLastCommentContact()->alias();
-        $txt = '<h4>' . $issue->title() . '</h4>'
-            . '<p>' . nl2br($issue->description()) . '</p>'
-            . '<h4>Comentario de ' . $comment->getContactAlias() . '</h4>'
-            . '<p>' . nl2br($comment->resume(60)) . ' - <a href="' . $link . '">Leer más...</a></p>';
-
-        $emailTools = new EmailTools();
-        $mail = $emailTools->newMail();
-        $mail->addAddress($contact->email, $contact->fullName());
-        $mail->Subject = $title;
-
-        $params = [
-            'body' => $txt,
-            'company' => AppSettings::get('webportal', 'title'),
-            'footer' => AppSettings::get('webportal', 'copyright'),
-            'title' => $title,
-        ];
-        $mail->msgHTML($emailTools->getTemplateHtml($params));
-
-        if ($mail->send()) {
-            $this->miniLog->notice($this->i18n->trans('email-sent'));
-        }
     }
 
     /**
