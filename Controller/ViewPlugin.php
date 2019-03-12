@@ -186,6 +186,8 @@ class ViewPlugin extends EditSectionController
         if ($this->contactCanEdit()) {
             $this->addEditSection('EditWebProject', 'WebProject', 'edit', 'fas fa-edit', 'admin');
             $this->addEditListSection('EditWebBuild', 'WebBuild', 'builds', 'fas fa-file-archive', 'admin');
+            $this->addListSection('ListIssue', 'Issue', 'issues', 'fas fa-question-circle', 'admin');
+            $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
         }
     }
 
@@ -237,6 +239,7 @@ class ViewPlugin extends EditSectionController
                 $this->sections[$sectionName]->loadData($project->primaryColumnValue());
                 break;
 
+            case 'ListIssue':
             case 'ListPublication':
                 $where = [new DataBaseWhere('idproject', $project->idproject)];
                 $this->sections[$sectionName]->loadData('', $where);

@@ -82,7 +82,6 @@ class AddTeam extends PortalControllerWizard
         $team->private = $private;
         if ($team->save()) {
             $this->subtractPoints();
-            $this->newWebTeamMember($team);
 
             /// redir to new plugin
             $this->response->headers->set('Refresh', '0; ' . $team->url('public'));
@@ -91,21 +90,6 @@ class AddTeam extends PortalControllerWizard
 
         $this->miniLog->alert($this->i18n->trans('record-save-error'));
         return false;
-    }
-
-    /**
-     * 
-     * @param WebTeam $team
-     *
-     * @return bool
-     */
-    protected function newWebTeamMember(WebTeam &$team)
-    {
-        $member = new WebTeamMember();
-        $member->accepted = true;
-        $member->idcontacto = $this->contact->idcontacto;
-        $member->idteam = $team->idteam;
-        return $member->save();
     }
 
     protected function subtractPoints()

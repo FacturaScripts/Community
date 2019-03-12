@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>  
 -->
-
 <view>
     <columns>
         <column name="code" order="100">
@@ -27,7 +26,15 @@
         <column name="body" order="110">
             <widget type="textarea" fieldname="body" />
         </column>
-        <column name="creation-date" display="right" order="120">
+        <column name="priority" display="right" order="120">
+            <widget type="number" fieldname="priority" decimal="0" />
+        </column>
+        <column name="team" order="130">
+            <widget type="select" fieldname="idteam" onclick="EditWebTeam">
+                <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
+            </widget>
+        </column>
+        <column name="creation-date" display="right" order="140">
             <widget type="date" fieldname="creationdate" />
         </column>
     </columns>

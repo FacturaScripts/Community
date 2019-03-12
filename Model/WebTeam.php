@@ -201,4 +201,25 @@ class WebTeam extends WebPageClass
 
         return '#';
     }
+
+    /**
+     * 
+     * @param array $values
+     *
+     * @return bool
+     */
+    protected function saveInsert(array $values = [])
+    {
+        if (parent::saveInsert($values)) {
+            $member = new WebTeamMember();
+            $member->accepted = true;
+            $member->idcontacto = $this->idcontacto;
+            $member->idteam = $this->idteam;
+            $member->save();
+
+            return true;
+        }
+
+        return false;
+    }
 }

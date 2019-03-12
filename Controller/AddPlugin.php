@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,8 @@ use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Model\CodeModel;
 use FacturaScripts\Plugins\Community\Model\WebProject;
+use FacturaScripts\Plugins\Community\Model\WebTeam;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 
 /**
@@ -107,6 +109,44 @@ class AddPlugin extends PortalControllerWizard
     }
 
     /**
+     * 
+     * @return WebTeam
+     */
+    protected function getPrivateTeam()
+    {
+        /// contact owns a private team?
+        $teamModel = new WebTeam();
+        $where = [
+            new DataBaseWhere('private', true),
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto)
+        ];
+        foreach ($teamModel->all($where, [], 0, 0) as $team) {
+            return $team;
+        }
+
+        /// contact is in private team?
+        $teamMemberModel = new WebTeamMember();
+        $where2 = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+            new DataBaseWhere('accepted', true)
+        ];
+        foreach ($teamMemberModel->all($where2, [], 0, 0) as $member) {
+            if ($teamModel->loadFromCode($member->idteam) && $teamModel->private) {
+                return $teamModel;
+            }
+        }
+
+        /// create a new team
+        $newTeam = new WebTeam();
+        $newTeam->description = $this->contact->alias();
+        $newTeam->idcontacto = $this->contact->idcontacto;
+        $newTeam->name = $this->contact->alias();
+        $newTeam->private = true;
+        $newTeam->save();
+        return $newTeam;
+    }
+
+    /**
      * Adds new plugin to the community.
      *
      * @param string $name
@@ -134,6 +174,7 @@ class AddPlugin extends PortalControllerWizard
         $project->name = $name;
         $project->description = $this->request->request->get('description', $name);
         $project->idcontacto = $this->contact->idcontacto;
+        $project->idteam = $this->getPrivateTeam()->idteam;
         $project->license = $this->request->request->get('license');
         $project->publicrepo = $this->request->request->get('git');
         $project->type = $this->getPluginType();

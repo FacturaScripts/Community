@@ -151,6 +151,35 @@ class EditWebTeam extends EditSectionController
         }
     }
 
+    protected function createPluginSection($name = 'ListWebProject')
+    {
+        $this->addListSection($name, 'WebProject', 'plugins', 'fas fa-plug');
+        $this->sections[$name]->template = 'Section/Plugins.html.twig';
+        $this->addOrderOption($name, ['LOWER(name)'], 'name');
+        $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
+        $this->addOrderOption($name, ['version'], 'version');
+        $this->addOrderOption($name, ['downloads'], 'downloads');
+        $this->addOrderOption($name, ['visitcount'], 'visit-counter');
+        $this->addSearchOptions($name, ['name', 'description']);
+
+        /// filters
+        $types = $this->codeModel->all('webprojects', 'type', 'type');
+        $this->addFilterSelect($name, 'type', 'type', 'type', $types);
+
+        $licenses = $this->codeModel->all('licenses', 'name', 'title');
+        $this->addFilterSelect($name, 'license', 'license', 'license', $licenses);
+
+        /// buttons
+        $button = [
+            'action' => 'AddPlugin',
+            'color' => 'success',
+            'icon' => 'fas fa-plus',
+            'label' => 'new',
+            'type' => 'link'
+        ];
+        $this->addButton($name, $button);
+    }
+
     protected function createSectionLogs($name = 'ListWebTeamLog')
     {
         $this->addListSection($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
@@ -200,6 +229,7 @@ class EditWebTeam extends EditSectionController
 
         if ($this->getMemberStatus() === 'in' || $this->user) {
             $this->createTeamIssuesSection();
+            $this->createPluginSection();
         }
 
         $this->createSectionLogs();
@@ -390,6 +420,7 @@ class EditWebTeam extends EditSectionController
         $where = [new DataBaseWhere('idteam', $team->idteam)];
         switch ($sectionName) {
             case 'ListIssue':
+            case 'ListWebProject':
             case 'EditWebTeamMember':
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
