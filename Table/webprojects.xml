@@ -85,7 +85,7 @@
     </constraint>
     <constraint>
         <name>ca_webprojects_webteams</name>
-        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE CASCADE ON UPDATE CASCADE</type>
+        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
         <name>uniq_webprojects</name>

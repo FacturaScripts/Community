@@ -40,7 +40,6 @@
     <column>
         <name>idteam</name>
         <type>integer</type>
-        <null>NO</null>
     </column>
     <column>
         <name>idtree</name>
@@ -75,5 +74,13 @@
     <constraint>
         <name>issues_pkey</name>
         <type>PRIMARY KEY (idissue)</type>
+    </constraint>
+    <constraint>
+        <name>ca_issues_webteams</name>
+        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_issues_contactos</name>
+        <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
 </table>
