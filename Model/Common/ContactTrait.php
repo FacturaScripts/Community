@@ -102,7 +102,7 @@ trait ContactTrait
      *
      * @return string
      */
-    private function getProfileUrl($contact)
+    public function getProfileUrl($contact)
     {
         if (isset(self::$profileUrl)) {
             return self::$profileUrl . $contact->idcontacto;
