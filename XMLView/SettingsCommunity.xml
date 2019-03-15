@@ -18,7 +18,6 @@
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
 -->
-
 <view>
     <columns>
         <group name="default" icon="fas fa-users" numcolumns="12">
@@ -30,6 +29,13 @@
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"/>
                 </widget>
             </column>
+            <column name="mainlanguage" title="main-language" order="110">
+                <widget type="select" fieldname="mainlanguage" required="true">
+                    <values source="languages" fieldcode="langcode" fieldtitle="langcode"/>
+                </widget>
+            </column>
+        </group>
+        <group name="teams" title="teams" numcolumns="12">
             <column name="idteamdev" title="development-team" numcolumns="3" order="110">
                 <widget type="select" fieldname="idteamdev" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
@@ -50,9 +56,14 @@
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>
-            <column name="mainlanguage" title="main-language" numcolumns="3" order="150">
-                <widget type="select" fieldname="mainlanguage" required="true">
-                    <values source="languages" fieldcode="langcode" fieldtitle="langcode"/>
+        </group>
+        <group name="advanced" title="advanced" numcolumns="12">
+            <column name="minpoints" title="min-points" numcolumns="2" order="100">
+                <widget type="number" fieldname="minpoints" decimal="0" required="true" />
+            </column>
+            <column name="youneedmorepointspage" title="you-need-more-points-page" order="110">
+                <widget type="select" fieldname="morepointspage" required="true">
+                    <values source="webpages" fieldcode="idpage" fieldtitle="permalink" />
                 </widget>
             </column>
         </group>

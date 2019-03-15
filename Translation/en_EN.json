@@ -24,6 +24,7 @@
     "main-language": "Main language",
     "mantainer": "Mantainer",
     "members": "Members",
+    "min-points": "Minimum points",
     "needs-revisions": "Needs revisions",
     "new-comment": "New comment",
     "new-language": "New language",
@@ -47,5 +48,6 @@
     "translation": "Translation",
     "translation-team": "Translation team",
     "visit-counter": "Visit counter",
+    "you-need-more-points-page": "You need more points page",
     "your-points": "Your points"
 }

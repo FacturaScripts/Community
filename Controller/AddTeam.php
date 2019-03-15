@@ -19,9 +19,9 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
-use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 
 /**
  * Description of AddTeam
@@ -30,6 +30,8 @@ use FacturaScripts\Plugins\Community\Model\WebTeamMember;
  */
 class AddTeam extends PortalControllerWizard
 {
+
+    use Lib\PointsMethodsTrait;
 
     /**
      * 
@@ -62,17 +64,16 @@ class AddTeam extends PortalControllerWizard
      */
     protected function newWebTeam($name, $description, $private)
     {
-        if ($this->contact->puntos < $this->pointCost()) {
-            $this->miniLog->warning('You need ' . $this->pointCost() . ' points to create a new team.');
-            return false;
-        }
-
         /// team already exists?
         $team = new WebTeam();
         $where = [new DataBaseWhere('name', $name)];
         if ($team->loadFromCode('', $where)) {
             $this->miniLog->error($this->i18n->trans('duplicate-record'));
             return false;
+        }
+
+        if (!$this->contactHasPoints($this->pointCost())) {
+            return $this->redirToYouNeedMorePointsPage();
         }
 
         /// save new team
@@ -90,11 +91,5 @@ class AddTeam extends PortalControllerWizard
 
         $this->miniLog->alert($this->i18n->trans('record-save-error'));
         return false;
-    }
-
-    protected function subtractPoints()
-    {
-        $this->contact->puntos -= $this->pointCost();
-        $this->contact->save();
     }
 }

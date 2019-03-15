@@ -33,6 +33,7 @@ abstract class PortalControllerWizard extends PortalController
 {
 
     use Lib\WebTeamMethodsTrait;
+    use Lib\PointsMethodsTrait;
 
     abstract protected function commonCore();
 

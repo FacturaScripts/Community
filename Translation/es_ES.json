@@ -24,6 +24,7 @@
     "main-language": "Idioma principal",
     "mantainer": "Mantenedor",
     "members": "Miembros",
+    "min-points": "Mínimo de puntos",
     "needs-revisions": "Necesita revisión",
     "new-comment": "Nuevo comentario",
     "new-language": "Nuevo idioma",
@@ -47,5 +48,6 @@
     "translation": "Traducción",
     "translation-team": "Equipo de traducción",
     "visit-counter": "Contador de visitas",
+    "you-need-more-points-page": "Página usted necesita más puntos",
     "your-points": "Tus puntos"
 }

@@ -38,4 +38,10 @@
             <widget type="date" fieldname="creationdate" />
         </column>
     </columns>
+    <rows>
+        <row type="status">
+            <option color="success" fieldname="closed">0</option>
+            <option color="warning" fieldname="closed">1</option>
+        </row>
+    </rows>
 </view>

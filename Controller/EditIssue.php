@@ -20,11 +20,12 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
+use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\IssueComment;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -35,6 +36,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class EditIssue extends EditSectionController
 {
+
+    use Lib\PointsMethodsTrait;
 
     /**
      * The selected issue.
@@ -58,15 +61,10 @@ class EditIssue extends EditSectionController
             return false;
         }
 
-        $issue = $this->getMainModel();
-        if ($issue->idcontacto === $this->contact->idcontacto) {
-            return true;
-        }
-
         $member = new WebTeamMember();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $issue->idteam),
+            new DataBaseWhere('idteam', $this->getMainModel()->idteam),
             new DataBaseWhere('accepted', true)
         ];
 
@@ -80,7 +78,15 @@ class EditIssue extends EditSectionController
      */
     public function contactCanSee()
     {
-        return $this->contactCanEdit();
+        if ($this->contactCanEdit()) {
+            return true;
+        }
+
+        if (empty($this->contact)) {
+            return false;
+        }
+
+        return $this->getMainModel()->idcontacto === $this->contact->idcontacto;
     }
 
     /**
@@ -114,9 +120,7 @@ class EditIssue extends EditSectionController
      */
     protected function addNewComment(): bool
     {
-        if (!$this->contactCanEdit()) {
-            $this->miniLog->warning($this->i18n->trans('login-to-continue'));
-            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+        if (!$this->contactCanSee()) {
             return false;
         }
 
@@ -207,8 +211,11 @@ class EditIssue extends EditSectionController
         $this->createSectionRelatedIssues();
         $this->createSectionRelatedIssues('ListIssue-contact', 'issues', 'contact');
 
-        if ($this->user) {
+        if ($this->contactCanEdit()) {
             $this->createSectionEditIssue();
+        }
+
+        if ($this->user) {
             $this->createSectionEditComments();
         }
     }
@@ -384,10 +391,19 @@ class EditIssue extends EditSectionController
      */
     protected function reopenAction()
     {
-        if ($this->contactCanEdit()) {
-            $issue = $this->getMainModel();
-            $issue->closed = false;
-            return $issue->save();
+        if (!$this->contactCanSee()) {
+            return false;
+        }
+
+        if (!$this->contactHasPoints($this->pointCost())) {
+            return $this->redirToYouNeedMorePointsPage();
+        }
+
+        $issue = $this->getMainModel();
+        $issue->closed = false;
+        if ($issue->save()) {
+            $this->subtractPoints();
+            return true;
         }
 
         return false;

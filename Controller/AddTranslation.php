@@ -20,9 +20,10 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Plugins\Community\Lib;
+use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
-use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 
 /**
  * This class allow us to add translations and languages to manage.
@@ -31,6 +32,8 @@ use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
  */
 class AddTranslation extends PortalControllerWizard
 {
+
+    use Lib\PointsMethodsTrait;
 
     /**
      *
@@ -51,12 +54,20 @@ class AddTranslation extends PortalControllerWizard
     }
 
     /**
+     * 
+     * @return int
+     */
+    public function pointCost()
+    {
+        return 1;
+    }
+
+    /**
      * Execute common code between private and public core.
      */
     protected function commonCore()
     {
         $this->setTemplate('AddTranslation');
-
         $this->language = new Language();
 
         $action = $this->request->request->get('action', '');
@@ -157,6 +168,11 @@ class AddTranslation extends PortalControllerWizard
             return true;
         }
 
+        if (!$this->contactHasPoints($this->pointCost())) {
+            $this->redirToYouNeedMorePointsPage();
+            return false;
+        }
+
         /// save new translation in every important language
         $langModel = new Language();
         $mainLangcode = AppSettings::get('community', 'mainlanguage');
@@ -182,6 +198,7 @@ class AddTranslation extends PortalControllerWizard
             }
         }
 
+        $this->subtractPoints();
         return true;
     }
 }

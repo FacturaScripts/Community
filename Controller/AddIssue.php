@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
+use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 use FacturaScripts\Plugins\Community\Model\ContactFormTree;
 use FacturaScripts\Plugins\Community\Model\Issue;
@@ -31,6 +32,8 @@ use FacturaScripts\Plugins\Community\Model\WebProject;
  */
 class AddIssue extends PortalControllerWizard
 {
+
+    use Lib\PointsMethodsTrait;
 
     /**
      * The new issue.
@@ -69,15 +72,6 @@ class AddIssue extends PortalControllerWizard
     }
 
     /**
-     * 
-     * @return int
-     */
-    public function pointCost()
-    {
-        return 0;
-    }
-
-    /**
      * Execute common code between private and public core.
      */
     protected function commonCore()
@@ -88,6 +82,10 @@ class AddIssue extends PortalControllerWizard
         $body = $this->request->get('body', '');
         if (empty($body)) {
             return;
+        }
+
+        if (!$this->contactHasPoints($this->pointCost())) {
+            return $this->redirToYouNeedMorePointsPage();
         }
 
         /// save issue
@@ -119,11 +117,5 @@ class AddIssue extends PortalControllerWizard
         }
 
         $this->issue->idteam = AppSettings::get('community', 'idteamsup');
-    }
-
-    protected function subtractPoints()
-    {
-        $this->contact->puntos -= $this->pointCost();
-        $this->contact->save();
     }
 }
