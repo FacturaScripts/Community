@@ -152,7 +152,7 @@ class EditIssue extends EditSectionController
         }
 
         $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-        $this->response->headers->set('Refresh', '0; ' . $issue->url('public'));
+        $this->response->headers->set('Refresh', '0; ' . $issue->url('public') . '#comm' . $comment->primaryColumnValue());
         return true;
     }
 

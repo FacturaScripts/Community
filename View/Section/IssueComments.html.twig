@@ -13,7 +13,7 @@
                         <img src="{{ contact.gravatar() }}" alt="{{ comment.getContactAlias() }}"/>
                     </a>
                 </div>
-                <div class="tile-content">
+                <div id="comm{{ comment.primaryColumnValue() }}" class="tile-content">
                     {{ comment.html() | raw }}
                 </div>
                 {% if fsc.contactCanEdit() %}
