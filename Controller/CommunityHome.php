@@ -152,7 +152,6 @@ class CommunityHome extends SectionController
         $this->createMyIssuesSection();
 
         if (count($this->getTeamsMemberData()) > 0) {
-            $this->createPublicationsSection('ListPublication-proj');
             $this->createPublicationsSection('ListPublication', 'teams');
             $this->createTeamIssuesSection();
             $this->createTeamLogSection();
@@ -167,7 +166,10 @@ class CommunityHome extends SectionController
     protected function getTeamsMemberData(): array
     {
         $teamMember = new WebTeamMember();
-        $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];
+        $where = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+            new DataBaseWhere('accepted', true)
+        ];
         return $teamMember->all($where, [], 0, 0);
     }
 
@@ -246,19 +248,17 @@ class CommunityHome extends SectionController
      */
     protected function loadData(string $sectionName)
     {
+        $idTeams = [];
+        foreach ($this->getTeamsMemberData() as $member) {
+            $idTeams[] = $member->idteam;
+        }
         $where = [];
+
         switch ($sectionName) {
             case 'ListIssue-teams':
                 $where[] = new DataBaseWhere('idcontacto', $this->contact->idcontacto, '!=');
             /// no break
-            case 'ListPublication':
             case 'ListWebTeamLog':
-                $idTeams = [];
-                foreach ($this->getTeamsMemberData() as $member) {
-                    if ($member->accepted) {
-                        $idTeams[] = $member->idteam;
-                    }
-                }
                 $where[] = new DataBaseWhere('idteam', implode(',', $idTeams), 'IN');
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
@@ -268,8 +268,9 @@ class CommunityHome extends SectionController
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
 
-            case 'ListPublication-proj':
-                $where[] = new DataBaseWhere('idteam', null, 'IS');
+            case 'ListPublication':
+                $where[] = new DataBaseWhere('idteam', implode(',', $idTeams), 'IN');
+                $where[] = new DataBaseWhere('idteam', null, 'IS', 'OR');
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
