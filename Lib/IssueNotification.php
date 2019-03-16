@@ -45,18 +45,18 @@ class IssueNotification
         $txt = '<h4>' . $issue->title() . '</h4>'
             . '<p>' . nl2br($issue->description()) . ' - <a href="' . $link . '">Leer más...</a></p>';
 
-        $emailTools = new EmailTools();
-        $mail = $emailTools->newMail();
-        static::addTeamEmails($mail, $issue);
-
         $params = [
             'body' => $txt,
             'company' => AppSettings::get('webportal', 'title'),
             'footer' => AppSettings::get('webportal', 'copyright'),
             'title' => $title,
         ];
+
+        $emailTools = new EmailTools();
+        $mail = $emailTools->newMail();
         $mail->msgHTML($emailTools->getTemplateHtml($params));
         $mail->Subject = $title;
+        static::addTeamEmails($mail, $issue);
         $mail->send();
     }
 
@@ -76,23 +76,45 @@ class IssueNotification
             . '<h4>Comentario de ' . $comment->getContactAlias() . '</h4>'
             . '<p>' . nl2br($comment->resume(60)) . ' - <a href="' . $link . '">Leer más...</a></p>';
 
-        $emailTools = new EmailTools();
-        $mail = $emailTools->newMail();
-        if ($issue->idcontacto === $comment->idcontacto) {
-            static::addTeamEmails($mail, $issue);
-        } else {
-            $mail->addAddress($contact->email, $contact->fullName());
-        }
-
         $params = [
             'body' => $txt,
             'company' => AppSettings::get('webportal', 'title'),
             'footer' => AppSettings::get('webportal', 'copyright'),
             'title' => $title,
         ];
+
+        $emailTools = new EmailTools();
+        $mail = $emailTools->newMail();
         $mail->msgHTML($emailTools->getTemplateHtml($params));
         $mail->Subject = $title;
-        $mail->send();
+
+        if ($issue->idcontacto !== $comment->idcontacto) {
+            $mail->addAddress($contact->email, $contact->fullName());
+            $mail->send();
+        } elseif (static::addCommentsOtherEmails($mail, $issue)) {
+            $mail->send();
+        }
+    }
+
+    /**
+     * 
+     * @param object $mail
+     * @param Issue  $issue
+     *
+     * @return bool
+     */
+    protected static function addCommentsOtherEmails(&$mail, &$issue)
+    {
+        $added = false;
+        foreach ($issue->getComments() as $comment) {
+            if ($comment->idcontacto != $issue->idcontacto) {
+                $contact = $comment->getContact();
+                $mail->addBCC($contact->email, $contact->fullName());
+                $added = true;
+            }
+        }
+
+        return $added;
     }
 
     /**
