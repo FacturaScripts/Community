@@ -2,6 +2,7 @@
     "accepted": "Aceptado",
     "accepted-to-team": "Has sido aceptado como miembro del equipo %teamName%",
     "accepted-to-team-msg": "¡Felicidades!<br/>Has sido aceptado en el equipo <a href='%link%'>%teamName%</a>: %teamDescription%",
+    "admin-team": "Equipo de administración",
     "beta": "Beta",
     "builds": "Builds",
     "comments": "Comentarios",

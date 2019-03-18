@@ -47,11 +47,11 @@ class AddPublication extends PortalControllerWizard
     {
         $project = new WebProject();
         if ($this->user) {
-            return $project->all([], ['name' => 'ASC'], 0, 0);
+            return $project->all([], ['LOWER(name)' => 'ASC'], 0, 0);
         }
 
         $where = [new DataBaseWhere('idcontacto', $this->contact->idcontacto)];
-        return $project->all($where, ['name' => 'ASC'], 0, 0);
+        return $project->all($where, ['LOWER(name)' => 'ASC'], 0, 0);
     }
 
     /**
