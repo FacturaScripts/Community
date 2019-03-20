@@ -30,7 +30,7 @@
                 <widget type="date" fieldname="creationdate" />
             </column>
             <column name="team" order="120">
-                <widget type="select" fieldname="idteam" onclick="EditWebTean" required="true">
+                <widget type="select" fieldname="idteam" onclick="EditWebTeam" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
                 </widget>
             </column>

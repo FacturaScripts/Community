@@ -59,7 +59,7 @@
         </group>
         <group name="advanced" title="advanced" numcolumns="12">
             <column name="team" order="100">
-                <widget type="select" fieldname="idteam" onclick="EditWebTean">
+                <widget type="select" fieldname="idteam" onclick="EditWebTeam">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
                 </widget>
             </column>
