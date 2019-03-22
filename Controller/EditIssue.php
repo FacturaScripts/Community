@@ -25,6 +25,7 @@ use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\IssueComment;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
+use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -81,7 +82,18 @@ class EditIssue extends EditSectionController
             return false;
         }
 
-        return $this->getMainModel()->idcontacto === $this->contact->idcontacto;
+        if ($this->getMainModel()->idcontacto === $this->contact->idcontacto) {
+            return true;
+        }
+
+        $member = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idcontacto', $this->contact->idcontacto),
+            new DataBaseWhere('idteam', $this->getMainModel()->idteam),
+            new DataBaseWhere('accepted', true)
+        ];
+
+        return $member->loadFromCode('', $where);
     }
 
     /**
