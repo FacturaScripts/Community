@@ -41,7 +41,7 @@ class IssueNotification
     {
         $contact = $issue->getContact();
         $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
-        $title = 'Issue #' . $issue->idissue . ' de ' . $contact->alias();
+        $title = $issue->title() . ' de ' . $contact->alias();
         $txt = '<h4>' . $issue->title() . '</h4>'
             . '<p>' . nl2br($issue->description()) . ' - <a href="' . $link . '">Leer más...</a></p>';
 
@@ -70,7 +70,7 @@ class IssueNotification
         $issue->loadFromCode($comment->idissue);
         $contact = $issue->getContact();
         $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
-        $title = 'Issue #' . $issue->idissue . ': comentario de ' . $comment->getContactAlias();
+        $title = $issue->title() . ': comentario de ' . $comment->getContactAlias();
         $txt = '<h4>' . $issue->title() . '</h4>'
             . '<p>' . nl2br($issue->description()) . '</p>'
             . '<h4>Comentario de ' . $comment->getContactAlias() . '</h4>'
@@ -88,7 +88,10 @@ class IssueNotification
         $mail->msgHTML($emailTools->getTemplateHtml($params));
         $mail->Subject = $title;
 
-        if ($issue->idcontacto !== $comment->idcontacto) {
+        if ($issue->lastcommidcontacto === $comment->idcontacto) {
+            /// don't notify
+            return;
+        } elseif ($issue->idcontacto !== $comment->idcontacto) {
             $mail->addAddress($contact->email, $contact->fullName());
             $mail->send();
         } elseif (static::addCommentsOtherEmails($mail, $issue)) {
@@ -125,7 +128,10 @@ class IssueNotification
     protected static function addTeamEmails(&$mail, &$issue)
     {
         $memberModel = new WebTeamMember();
-        $where = [new DataBaseWhere('idteam', $issue->idteam)];
+        $where = [
+            new DataBaseWhere('idteam', $issue->idteam),
+            new DataBaseWhere('idcontacto', $issue->idcontacto, '!='),
+        ];
         foreach ($memberModel->all($where, [], 0, 0) as $member) {
             $memberContact = $member->getContact();
             $mail->addBCC($memberContact->email, $memberContact->fullName());
