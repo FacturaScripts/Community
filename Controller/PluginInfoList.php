@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
@@ -77,12 +78,14 @@ class PluginInfoList extends PortalController
         ];
         $order = ['name' => 'ASC'];
 
+        $domain = AppSettings::get('webportal', 'url');
+
         $list = [];
         foreach ($projectModel->all($where, $order, 0, 0) as $plugin) {
             $list[] = [
-                'description' => Utils::noHtml($plugin->description),
+                'description' => Utils::fixHtml($plugin->description),
                 'name' => $plugin->name,
-                'url' => $plugin->url('public'),
+                'url' => $domain . $plugin->url('public'),
                 'version' => $plugin->version
             ];
         }
