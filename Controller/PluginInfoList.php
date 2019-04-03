@@ -76,7 +76,7 @@ class PluginInfoList extends PortalController
             new DataBaseWhere('plugin', true),
             new DataBaseWhere('private', false),
         ];
-        $order = ['name' => 'ASC'];
+        $order = ['LOWER(name)' => 'ASC'];
 
         $domain = AppSettings::get('webportal', 'url');
 
