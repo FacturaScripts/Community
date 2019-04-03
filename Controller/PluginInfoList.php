@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
@@ -79,9 +80,9 @@ class PluginInfoList extends PortalController
         $list = [];
         foreach ($projectModel->all($where, $order, 0, 0) as $plugin) {
             $list[] = [
-                'description' => $plugin->description,
+                'description' => Utils::noHtml($plugin->description),
                 'name' => $plugin->name,
-                'url' => $plugin->url(),
+                'url' => $plugin->url('public'),
                 'version' => $plugin->version
             ];
         }
