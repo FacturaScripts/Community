@@ -220,6 +220,7 @@ class DownloadBuild extends PortalController
         /// current project
         $this->currentProject = new WebProject();
         if ('' === $idProject) {
+            $this->response->headers->set('Content-Type', 'application/json');
             $this->response->setContent(json_encode($this->getBuilds()));
         } elseif ($this->currentProject->loadFromCode($idProject)) {
             $this->findBuild($idProject, $buildVersion);
