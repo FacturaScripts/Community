@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,17 +18,16 @@
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>  
 -->
-
 <view>
     <columns>
-        <column name="code" display="none" order="100">
-            <widget type="text" fieldname="id" />
-        </column>
-        <column name="langcode" order="110">
+        <column name="langcode" order="100">
             <widget type="text" fieldname="langcode"/>
         </column>
-        <column name="description" order="120">
+        <column name="description" order="110">
             <widget type="text" fieldname="description" />
+        </column>
+        <column name="parentcode" order="120">
+            <widget type="text" fieldname="parentcode"/>
         </column>
         <column name="translations" display="right" order="130">
             <widget type="number" fieldname="numtranslations" decimal="0" />

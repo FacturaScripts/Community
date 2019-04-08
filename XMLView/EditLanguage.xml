@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>  
 -->
-
 <view>
     <columns>
         <group name="main" numcolumns="12">
@@ -28,15 +27,20 @@
             <column name="description" order="110">
                 <widget type="text" fieldname="description" />
             </column>
-            <column name="mantainer" numcolumns="2" order="120">
+            <column name="parentcode" numcolumns="2" order="120">
+                <widget type="autocomplete" fieldname="parentcode">
+                    <values source="languages" fieldcode="langcode" fieldtitle="description"></values>
+                </widget>
+            </column>
+            <column name="mantainer" numcolumns="2" order="130">
                 <widget type="autocomplete" fieldname="idcontacto">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
-            <column name="translations" numcolumns="2" order="130">
+            <column name="translations" numcolumns="2" order="140">
                 <widget type="number" fieldname="numtranslations" decimal="0" readonly="true" />
             </column>
-            <column name="needs-revision" numcolumns="2" order="140">
+            <column name="needs-revision" numcolumns="2" order="150">
                 <widget type="number" fieldname="needsrevision" decimal="0" readonly="true" />
             </column>
         </group>
