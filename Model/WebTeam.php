@@ -37,6 +37,12 @@ class WebTeam extends WebPageClass
 
     /**
      *
+     * @var int
+     */
+    public $defaultpublication;
+
+    /**
+     *
      * @var string
      */
     public $description;
@@ -47,6 +53,12 @@ class WebTeam extends WebPageClass
      * @var int
      */
     public $idteam;
+
+    /**
+     *
+     * @var int
+     */
+    public $maxinactivitydays;
 
     /**
      *
@@ -84,6 +96,7 @@ class WebTeam extends WebPageClass
     public function clear()
     {
         parent::clear();
+        $this->maxinactivitydays = 0;
         $this->nummembers = 0;
         $this->numrequests = 0;
         $this->private = false;
@@ -135,7 +148,6 @@ class WebTeam extends WebPageClass
             return false;
         }
 
-        $this->updateStats();
         return parent::test();
     }
 

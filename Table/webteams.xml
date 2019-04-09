@@ -11,6 +11,10 @@
         <type>date</type>
     </column>
     <column>
+        <name>defaultpublication</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>description</name>
         <type>text</type>
     </column>
@@ -31,6 +35,10 @@
     <column>
         <name>lastmod</name>
         <type>date</type>
+    </column>
+    <column>
+        <name>maxinactivitydays</name>
+        <type>integer</type>
     </column>
     <column>
         <name>name</name>

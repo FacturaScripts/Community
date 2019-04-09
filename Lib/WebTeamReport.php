@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -59,6 +59,23 @@ class WebTeamReport
         $this->i18n = new Translator();
     }
 
+    public function expelInactiveMembers()
+    {
+        $teamModel = new WebTeam();
+        foreach ($teamModel->all([], [], 0, 0) as $team) {
+            if (empty($team->maxinactivitydays)) {
+                continue;
+            }
+
+            $minTime = strtotime('-' . $team->maxinactivitydays . ' days');
+            foreach ($this->getTeamMembers($team) as $member) {
+                if (strtotime($member->getContact()->lastactivity) < $minTime) {
+                    $this->expelTeamMember($team, $member);
+                }
+            }
+        }
+    }
+
     /**
      * 
      * @param string $period
@@ -66,14 +83,8 @@ class WebTeamReport
     public function sendMail($period)
     {
         $teamModel = new WebTeam();
-        $memberTeam = new WebTeamMember();
-
         foreach ($teamModel->all([], [], 0, 0) as $team) {
-            $where = [
-                new DataBaseWhere('idteam', $team->idteam),
-                new DataBaseWhere('accepted', true),
-            ];
-            $members = $memberTeam->all($where, [], 0, 0);
+            $members = $this->getTeamMembers($team);
             if (empty($members)) {
                 continue;
             }
@@ -159,6 +170,22 @@ class WebTeamReport
 
     /**
      * 
+     * @param WebTeam       $team
+     * @param WebTeamMember $member
+     */
+    protected function expelTeamMember(WebTeam $team, WebTeamMember $member)
+    {
+        if ($member->delete()) {
+            $teamLog = new WebTeamLog();
+            $teamLog->description = 'Expelled for inactivity';
+            $teamLog->idcontacto = $member->idcontacto;
+            $teamLog->idteam = $team->primaryColumnValue();
+            $teamLog->save();
+        }
+    }
+
+    /**
+     * 
      * @param WebTeam $team
      * @param string  $period
      *
@@ -191,6 +218,23 @@ class WebTeamReport
         ];
 
         return $teamLog->all($where, ['time' => 'DESC'], 0, 0);
+    }
+
+    /**
+     * 
+     * @param WebTeam $team
+     *
+     * @return WebTemMember[]
+     */
+    protected function getTeamMembers(WebTeam $team)
+    {
+        $memberTeam = new WebTeamMember();
+        $where = [
+            new DataBaseWhere('idteam', $team->idteam),
+            new DataBaseWhere('accepted', true),
+        ];
+
+        return $memberTeam->all($where, [], 0, 0);
     }
 
     /**

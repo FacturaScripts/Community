@@ -29,7 +29,15 @@
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
-            <column name="creation-date" display="right" order="120">
+            <column name="publication" order="120">
+                <widget type="autocomplete" fieldname="defaultpublication">
+                    <values source="publications" fieldcode="idpublication" fieldtitle="title"></values>
+                </widget>
+            </column>
+            <column name="max-inactivity-days" order="130">
+                <widget type="number" fieldname="maxinactivitydays" decimal="0" min="0" />
+            </column>
+            <column name="creation-date" order="140">
                 <widget type="date" fieldname="creationdate" />
             </column>
         </group>

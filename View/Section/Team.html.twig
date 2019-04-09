@@ -24,7 +24,7 @@
             {% set status = fsc.getMemberStatus() %}
             {% if status == 'out' %}
                 <a href="#" class="btn btn-success" onclick="return showModal('modalJoinTeam');">
-                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i> {{ i18n.trans('join-team', {'%team%': team.name}) }}
+                    <i class="fas fa-sign-in-alt fa-fw" aria-hidden="true"></i> {{ i18n.trans('join-team', {'%team%': team.name}) }}
                 </a>
                 <form action="{{ team.url('public') }}" method="post">
                     <input type="hidden" name="action" value="join"/>
@@ -55,11 +55,11 @@
                 </form>
             {% elseif status == 'pending' %}
                 <a href="{{ team.url('public') }}" class="btn btn-success">
-                    <i class="fas fa-paper-plane" aria-hidden="true"></i> {{ i18n.trans('request-sent') }}
+                    <i class="fas fa-paper-plane fa-fw" aria-hidden="true"></i> {{ i18n.trans('request-sent') }}
                 </a>
             {% elseif status == 'in' %}
                 <a href="{{ team.url('public') }}?action=leave" class="btn btn-error">
-                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ i18n.trans('leave-team') }}
+                    <i class="fas fa-sign-out-alt fa-fw" aria-hidden="true"></i> {{ i18n.trans('leave-team') }}
                 </a>
             {% endif %}
         </div>

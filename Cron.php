@@ -54,6 +54,7 @@ class Cron extends CronClass
 
         if ($this->isTimeForJob('send-mail-to-team-members', '1 week')) {
             $teamReport = new WebTeamReport();
+            $teamReport->expelInactiveMembers();
             $teamReport->sendMail('1 week');
             $this->jobDone('send-mail-to-team-members');
         }

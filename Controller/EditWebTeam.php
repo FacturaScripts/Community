@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Lib\EmailTools;
+use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
@@ -271,27 +272,6 @@ class EditWebTeam extends EditSectionController
     }
 
     /**
-     * Runs the controller actions after data read.
-     *
-     * @param string $action
-     */
-    protected function execAfterAction(string $action)
-    {
-        switch ($action) {
-            case 'accept-request':
-            case 'expel':
-            case 'join':
-            case 'leave':
-                /// we force save to update number of members and requests
-                $this->getMainModel(true)->save();
-                break;
-
-            default:
-                parent::execAfterAction($action);
-        }
-    }
-
-    /**
      * Run the actions that alter data before reading it.
      *
      * @param string $action
@@ -497,6 +477,13 @@ class EditWebTeam extends EditSectionController
         $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
         $title = $this->i18n->trans('accepted-to-team', ['%teamName%' => $team->name]);
         $txt = $this->i18n->trans('accepted-to-team-msg', ['%link%' => $link, '%teamName%' => $team->name, '%teamDescription%' => $team->description]);
+
+        $publication = new Publication();
+        if (!empty($team->defaultpublication) && $publication->loadFromCode($team->defaultpublication)) {
+            $url = AppSettings::get('webportal', 'url', '');
+            $txt .= "<br/><br/><a href='" . $url . '/' . $publication->url() . "'>" . $publication->title . "</a>"
+                . "<br/>" . $publication->description();
+        }
 
         $emailTools = new EmailTools();
         $mail = $emailTools->newMail();

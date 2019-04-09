@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -76,6 +76,20 @@ class WebTeamMember extends Base\ModelClass
     }
 
     /**
+     * 
+     * @return bool
+     */
+    public function delete()
+    {
+        if (parent::delete()) {
+            $this->getTeam()->updateStats();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Returns team.
      *
      * @return WebTeam
@@ -140,5 +154,21 @@ class WebTeamMember extends Base\ModelClass
         }
 
         return parent::url($type, 'ListWebProject?active=List');
+    }
+
+    /**
+     * 
+     * @param array $values
+     *
+     * @return bool
+     */
+    protected function saveInsert(array $values = [])
+    {
+        if (parent::saveInsert($values)) {
+            $this->getTeam()->updateStats();
+            return true;
+        }
+
+        return false;
     }
 }
