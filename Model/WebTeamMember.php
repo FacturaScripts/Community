@@ -112,6 +112,20 @@ class WebTeamMember extends Base\ModelClass
     }
 
     /**
+     * 
+     * @return bool
+     */
+    public function save()
+    {
+        if (parent::save()) {
+            $this->getTeam()->updateStats();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Returns the name of the table that uses this model.
      *
      * @return string
@@ -154,21 +168,5 @@ class WebTeamMember extends Base\ModelClass
         }
 
         return parent::url($type, 'ListWebProject?active=List');
-    }
-
-    /**
-     * 
-     * @param array $values
-     *
-     * @return bool
-     */
-    protected function saveInsert(array $values = [])
-    {
-        if (parent::saveInsert($values)) {
-            $this->getTeam()->updateStats();
-            return true;
-        }
-
-        return false;
     }
 }

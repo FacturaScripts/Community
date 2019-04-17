@@ -337,13 +337,12 @@ class EditWebTeam extends EditSectionController
             return;
         }
 
-        $team = $this->getMainModel();
         $member = new WebTeamMember();
         $member->idcontacto = $this->contact->idcontacto;
-        $member->idteam = $team->idteam;
+        $member->idteam = $this->getMainModel()->idteam;
         $member->observations = $this->request->request->get('observations', '');
         if ($this->user) {
-            $member->accepted = true;
+            //$member->accepted = true;
         }
 
         if ($member->save()) {
@@ -368,10 +367,9 @@ class EditWebTeam extends EditSectionController
         }
 
         $member = new WebTeamMember();
-        $team = $this->getMainModel();
         $where = [
             new DataBaseWhere('idcontacto', $this->contact->idcontacto),
-            new DataBaseWhere('idteam', $team->idteam),
+            new DataBaseWhere('idteam', $this->getMainModel()->idteam),
         ];
 
         if (!$member->loadFromCode('', $where)) {

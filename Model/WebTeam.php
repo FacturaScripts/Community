@@ -168,6 +168,8 @@ class WebTeam extends WebPageClass
             new DataBaseWhere('accepted', true, '!=')
         ];
         $this->numrequests = $member->count($whereRequests);
+
+        $this->save();
     }
 
     /**
@@ -223,6 +225,7 @@ class WebTeam extends WebPageClass
     protected function saveInsert(array $values = [])
     {
         if (parent::saveInsert($values)) {
+            /// adds owner as a member
             $member = new WebTeamMember();
             $member->accepted = true;
             $member->idcontacto = $this->idcontacto;
