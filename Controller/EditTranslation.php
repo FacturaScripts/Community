@@ -184,7 +184,7 @@ class EditTranslation extends EditSectionController
     protected function deleteAction()
     {
         if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-delete'));
+            $this->miniLog->warning($this->i18n->trans('not-allowed-delete'));
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return;
         }
@@ -195,7 +195,7 @@ class EditTranslation extends EditSectionController
         }
 
         if ($translation->delete()) {
-            $this->miniLog->info($this->i18n->trans('record-deleted-correctly'));
+            $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
             $idteam = AppSettings::get('community', 'idteamtra');
             $description = 'Deleted translation: ' . $translation->langcode . ' / ' . $translation->name;
             $this->saveTeamLog($idteam, $description);
@@ -226,7 +226,7 @@ class EditTranslation extends EditSectionController
         }
 
         if (!$translation->save()) {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+            $this->miniLog->warning($this->i18n->trans('record-save-error'));
         }
 
         /// rename
@@ -247,7 +247,7 @@ class EditTranslation extends EditSectionController
             }
         }
 
-        $this->miniLog->info($this->i18n->trans('record-updated-correctly'));
+        $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
         $idteam = AppSettings::get('community', 'idteamtra');
         $description = 'Updated translation: ' . $translation->langcode . ' / ' . $translation->name;
         $link = $translation->url('public');

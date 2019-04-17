@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -75,6 +75,10 @@ class TranslationList extends SectionController
         $this->addSearchOptions($name, ['name', 'description', 'translation']);
         $this->addOrderOption($name, ['name'], 'code');
         $this->addOrderOption($name, ['lastmod'], 'last-update', 2);
+
+        /// filters
+        $languages = $this->codeModel->all('languages', 'langcode', 'description');
+        $this->addFilterSelect($name, 'langcode', 'language', 'langcode', $languages);
 
         /// buttons
         if ($this->contact) {
