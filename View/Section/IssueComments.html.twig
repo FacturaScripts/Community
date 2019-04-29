@@ -40,11 +40,11 @@
                     {{ i18n.trans('send') }}
                 </button>
                 {% if fsc.contact and issue.idcontacto == fsc.contact.idcontacto %}
-                    <button type="submit" name="close" value="TRUE" class="btn btn-success" onclick="this.disabled = true;this.form.submit();">
+                    <button type="submit" name="close" value="TRUE" class="btn btn-success">
                         {{ i18n.trans('send') }} + {{ i18n.trans('solved') }}
                     </button>
                 {% else %}
-                    <button type="submit" name="close" value="TRUE" class="btn btn-error" onclick="this.disabled = true;this.form.submit();">
+                    <button type="submit" name="close" value="TRUE" class="btn btn-error">
                         {{ i18n.trans('send') }} + {{ i18n.trans('close') }}
                     </button>
                 {% endif %}
