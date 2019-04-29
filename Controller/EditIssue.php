@@ -225,37 +225,6 @@ class EditIssue extends EditSectionController
     }
 
     /**
-     * Delete the comment specify by the user.
-     *
-     * @return bool
-     */
-    protected function deleteComment()
-    {
-        if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-delete'));
-            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
-            return false;
-        }
-
-        $idComment = $this->request->request->get('idcomment', '');
-        $issueComment = new IssueComment();
-        if ($issueComment->loadFromCode($idComment) && $issueComment->delete()) {
-            $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
-
-            /// update issue
-            $this->getMainModel()->lastcommidcontacto = null;
-            foreach ($this->getMainModel()->getComments() as $comment) {
-                $this->getMainModel()->lastcommidcontacto = $comment->idcontacto;
-            }
-            $this->getMainModel()->save();
-            return true;
-        }
-
-        $this->miniLog->alert($this->i18n->trans('record-deleted-error'));
-        return false;
-    }
-
-    /**
      * 
      * @param Issue $issue
      *
@@ -300,10 +269,6 @@ class EditIssue extends EditSectionController
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
-            case 'delete-comment':
-                $this->deleteComment();
-                return true;
-
             case 'new-comment':
                 $this->addNewComment();
                 return true;

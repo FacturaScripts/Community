@@ -21,7 +21,7 @@
 <view>
     <columns>
         <group name="main" numcolumns="12">
-            <column name="title" numcolumns="8" order="100">
+            <column name="title" numcolumns="6" order="100">
                 <widget type="text" fieldname="title" />
             </column>
             <column name="project" numcolumns="2" order="110">
@@ -29,7 +29,12 @@
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"></values>
                 </widget>
             </column>
-            <column name="sort" numcolumns="2" order="120">
+            <column name="team" numcolumns="2" order="120">
+                <widget type="select" fieldname="idteam">
+                    <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
+                </widget>
+            </column>
+            <column name="sort" numcolumns="2" order="130">
                 <widget type="number" fieldname="ordernum" />
             </column>
         </group>

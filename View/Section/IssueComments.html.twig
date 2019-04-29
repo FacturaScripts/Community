@@ -16,13 +16,6 @@
                 <div id="comm{{ comment.primaryColumnValue() }}" class="tile-content">
                     {{ comment.html() | raw }}
                 </div>
-                {% if fsc.contactCanEdit() %}
-                    <div class="tile-action">
-                        <button class="btn btn-sm btn-error" onclick="deleteComment('{{ comment.idcomment }}');" title="{{ i18n.trans('delete') }}">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                {% endif %}
             </div>
         {% endfor %}
     </div>
@@ -31,7 +24,7 @@
         <div class="divider text-center"></div>
         <form method="post">
             <input type="hidden" name="action" value="re-open"/>
-            <button type="submit" class="btn btn-block btn-success">
+            <button type="submit" class="btn btn-block btn-success" onclick="this.disabled = true;this.form.submit();">
                 <i class="fas fa-lock-open fa-fw"></i> {{ i18n.trans('re-open') }}
             </button>
         </form>
@@ -43,33 +36,19 @@
                 <textarea name="newComment" class="form-input" placeholder="{{ i18n.trans('new-comment') }}" rows="6"></textarea>
             </div>
             <div class="text-right">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" onclick="this.disabled = true;this.form.submit();">
                     {{ i18n.trans('send') }}
                 </button>
                 {% if fsc.contact and issue.idcontacto == fsc.contact.idcontacto %}
-                    <button type="submit" name="close" value="TRUE" class="btn btn-success">
+                    <button type="submit" name="close" value="TRUE" class="btn btn-success" onclick="this.disabled = true;this.form.submit();">
                         {{ i18n.trans('send') }} + {{ i18n.trans('solved') }}
                     </button>
                 {% else %}
-                    <button type="submit" name="close" value="TRUE" class="btn btn-error">
+                    <button type="submit" name="close" value="TRUE" class="btn btn-error" onclick="this.disabled = true;this.form.submit();">
                         {{ i18n.trans('send') }} + {{ i18n.trans('close') }}
                     </button>
                 {% endif %}
             </div>
         </form>
     {% endif %}
-
-    <script>
-        function deleteComment(idcomment) {
-            var form = $('<form action="#" method="post"></form>');
-            form.append(`<input type="hidden" name="action" value="delete-comment" />`);
-            form.append(`<input type="hidden" name="idcomment" value="${idcomment}" />`);
-            form.append(`<button type="submit"></button>`);
-            $("body").append(form);
-
-            if (confirm("{{ i18n.trans('are-you-sure') }}", false)) {
-                form.submit();
-            }
-        }
-    </script>
 {% endblock %}

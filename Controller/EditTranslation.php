@@ -174,7 +174,7 @@ class EditTranslation extends EditSectionController
         $this->addListSection($name, 'Translation', $label, $icon);
         $this->sections[$name]->template = 'Section/Translations.html.twig';
         $this->addSearchOptions($name, ['name', 'description', 'translation']);
-        $this->addOrderOption($name, ['name'], 'code', 1);
+        $this->addOrderOption($name, ['langcode'], 'code', 1);
         $this->addOrderOption($name, ['lastmod'], 'last-update');
     }
 
@@ -279,10 +279,9 @@ class EditTranslation extends EditSectionController
             case 'edit':
                 $this->editAction();
                 return true;
-
-            default:
-                return parent::execPreviousAction($action);
         }
+
+        return parent::execPreviousAction($action);
     }
 
     /**

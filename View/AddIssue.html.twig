@@ -24,8 +24,8 @@
                             Este mensaje es confidencial y solamente será visible por usted y el equipo de soporte.
                         </p>
                     </div>
-                    <div class="column text-right">
-                        <button type="submit" class="btn btn-primary">
+                    <div class="column col-3 text-right">
+                        <button type="submit" class="btn btn-primary" onclick="this.disabled = true;this.form.submit();">
                             {{ i18n.trans('send') }}
                         </button>
                     </div>

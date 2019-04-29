@@ -6,28 +6,39 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>{{ i18n.trans('langcode') }}</th>
-                    <th>{{ i18n.trans('name') }}</th>
+                    {% if fsc.url() != 'EditLanguage' %}
+                        <th>
+                            {{ i18n.trans('langcode') }}
+                        </th>
+                    {% endif %}
+                    {% if fsc.url() != 'EditTranslation' %}
+                        <th>
+                            {{ i18n.trans('name') }}
+                        </th>
+                    {% endif %}
                     <th>{{ i18n.trans('translation') }}</th>
+                    <th>{{ i18n.trans('description') }}</th>
                     <th class="text-right">{{ i18n.trans('last-update') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for translation in section.cursor %}
-                    <tr>
-                        <td>{{ translation.langcode }}</td>
-                        <td>
-                            <a href="{{ translation.url() }}">{{ translation.name }}</a>
-                        </td>
-                        {% if translation.needsrevision %}
-                            <td class="bg-warning">
-                                {{ translation.translation | raw }}
-                            </td>
-                        {% else %}
-                            <td class="bg-success">
-                                {{ translation.translation | raw }}
+                    {% set tdClass = translation.needsrevision ? 'bg-warning' : 'bg-success' %}
+                    <tr class="clickableRow c-hand" data-href="{{ asset(translation.url()) }}">
+                        {% if fsc.url() != 'EditLanguage' %}
+                            <td>{{ translation.langcode }}</td>
+                        {% endif %}
+                        {% if fsc.url() != 'EditTranslation' %}
+                            <td>
+                                {{ translation.name }}
                             </td>
                         {% endif %}
+                        <td class="{{ tdClass }}">
+                            {{ translation.translation | raw }}
+                        </td>
+                        <td class="{{ tdClass }}">
+                            {{ translation.description | raw }}
+                        </td>
                         <td class="text-right">{{ translation.lastmod }}</td>
                     </tr>
                 {% else %}
