@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -112,7 +112,8 @@ class Publication extends WebPageClass
      */
     public function description(int $length = 300): string
     {
-        return Utils::trueTextBreak($this->body, $length);
+        $text = strip_tags($this->body('html'));
+        return Utils::trueTextBreak($text, $length);
     }
 
     /**
@@ -153,6 +154,13 @@ class Publication extends WebPageClass
         return parent::test();
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param string $list
+     *
+     * @return string
+     */
     public function url(string $type = 'auto', string $list = 'List')
     {
         switch ($type) {

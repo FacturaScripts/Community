@@ -94,6 +94,12 @@ class EditPublication extends EditSectionController
         if ($this->contactCanEdit()) {
             $this->addEditSection('EditPublication', 'Publication', 'edit', 'fas fa-edit');
         }
+
+        $name = 'ListPublication';
+        $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper');
+        $this->addSearchOptions($name, ['title', 'body']);
+        $this->addOrderOption($name, ['creationdate'], 'date', 2);
+        $this->addOrderOption($name, ['visitcount'], 'visit-counter');
     }
 
     protected function loadData(string $sectionName)
@@ -102,6 +108,10 @@ class EditPublication extends EditSectionController
         switch ($sectionName) {
             case 'EditPublication':
                 $this->sections[$sectionName]->loadData($publication->primaryColumnValue());
+                break;
+
+            case 'ListPublication':
+                parent::loadData($sectionName);
                 break;
 
             case 'publication':
