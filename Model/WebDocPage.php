@@ -115,7 +115,8 @@ class WebDocPage extends WebPageClass
     public function description(int $length = 300): string
     {
         $text = strip_tags($this->body('html'));
-        return Utils::trueTextBreak($text, $length);
+        $noLineBreaks = preg_replace("/\r|\n/", " ", $text);
+        return Utils::trueTextBreak($noLineBreaks, $length);
     }
 
     /**

@@ -55,7 +55,7 @@ class WebProject extends WebPageClass
      * @var int
      */
     public $idproject;
-    
+
     /**
      *
      * @var int
@@ -181,7 +181,7 @@ class WebProject extends WebPageClass
             return false;
         }
 
-        if (!preg_match("/^[a-z0-9_-]+$/i", $this->name)) {
+        if (!preg_match("/^[A-Za-z]/", $this->name) || !preg_match("/^[a-z0-9_-]+$/i", $this->name)) {
             self::$miniLog->alert(self::$i18n->trans('invalid-name'));
             return false;
         }
