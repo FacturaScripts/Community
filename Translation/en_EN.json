@@ -14,6 +14,8 @@
     "documentation-team": "Documentation team",
     "edit": "Edit",
     "even-more": "Even more",
+    "expelled-from-team": "You have been expelled from team %teamName%",
+    "expelled-from-team-msg": "We regret to inform you that you have been expelled from the team <a href='%link%'>%teamName%</a>. Please read the team requirements or use the contact section for more information.",
     "home": "Home",
     "import": "Import",
     "join-team": "Join %team% team",
@@ -51,5 +53,7 @@
     "translation-team": "Translation team",
     "visit-counter": "Visit counter",
     "you-need-more-points-page": "You need more points page",
-    "your-points": "Your points"
+    "your-points": "Your points",
+    "why-join-team": "Why do you want to join this team?",
+    "why-join-team-paragraph": "Your answer will help us understand if you have really read the description of the team."
 }

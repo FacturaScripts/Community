@@ -1,7 +1,7 @@
 {
     "accepted": "Aceptado",
-    "accepted-to-team": "Has sido aceptado como miembro del equipo %teamName%",
-    "accepted-to-team-msg": "¡Felicidades!<br/>Has sido aceptado en el equipo <a href='%link%'>%teamName%</a>: %teamDescription%",
+    "accepted-to-team": "Ha sido aceptado como miembro del equipo %teamName%",
+    "accepted-to-team-msg": "¡Felicidades!<br/>Ha sido aceptado en el equipo <a href='%link%'>%teamName%</a>: %teamDescription%",
     "admin-team": "Equipo de administración",
     "beta": "Beta",
     "builds": "Builds",
@@ -14,6 +14,8 @@
     "documentation-team": "Equipo de documentación",
     "edit": "Editar",
     "even-more": "Todavía más",
+    "expelled-from-team": "Ha sido expulsado del equipo %teamName%",
+    "expelled-from-team-msg": "Lamentamos informarle de que ha sido expulsado del equipo <a href='%link%'>%teamName%</a>. Por favor, lea los requisitos del equipo o use la sección contacto para más información.",
     "home": "Portada",
     "import": "Importar",
     "join-team": "Únase al equipo %team%",
@@ -51,5 +53,7 @@
     "translation-team": "Equipo de traducción",
     "visit-counter": "Contador de visitas",
     "you-need-more-points-page": "Página usted necesita más puntos",
-    "your-points": "Tus puntos"
+    "your-points": "Tus puntos",
+    "why-join-team": "¿Por qué motivo desea unirse a este grupo?",
+    "why-join-team-paragraph": "Su respuesta nos ayudará a entender si de verdad ha leído la descripción del equipo."
 }

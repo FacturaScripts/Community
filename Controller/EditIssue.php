@@ -251,7 +251,13 @@ class EditIssue extends EditSectionController
         }
 
         shuffle($idcontacts);
+
         $teamLog = new WebTeamLog();
+        $where = [new DataBaseWhere('link', $issue->url())];
+        if ($teamLog->loadFromCode('', $where)) {
+            return;
+        }
+
         $teamLog->description = $issue->title() . ' solved';
         $teamLog->idcontacto = $idcontacts[0];
         $teamLog->idteam = AppSettings::get('community', 'idteamsup');

@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Lib\EmailTools;
+use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
@@ -316,6 +317,7 @@ class EditWebTeam extends EditSectionController
             return;
         }
 
+        $this->notifyExpell($member);
         if ($member->delete()) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
             $teamLog = new WebTeamLog();
@@ -483,6 +485,33 @@ class EditWebTeam extends EditSectionController
                 . "<br/>" . $publication->description();
         }
 
+        $this->notifySend($contact, $title, $txt);
+    }
+
+    /**
+     * Notify to member that was accepted to team.
+     *
+     * @param WebTeamMember $member
+     */
+    protected function notifyExpell(WebTeamMember $member)
+    {
+        $contact = $member->getContact();
+        $team = $this->getMainModel();
+        $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
+        $title = $this->i18n->trans('expelled-from-team', ['%teamName%' => $team->name]);
+        $txt = $this->i18n->trans('expelled-from-team-msg', ['%link%' => $link, '%teamName%' => $team->name]);
+
+        $this->notifySend($contact, $title, $txt);
+    }
+
+    /**
+     * 
+     * @param Contacto $contact
+     * @param string   $title
+     * @param string   $txt
+     */
+    protected function notifySend($contact, $title, $txt)
+    {
         $emailTools = new EmailTools();
         $mail = $emailTools->newMail();
         $mail->addAddress($contact->email, $contact->fullName());

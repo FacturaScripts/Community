@@ -111,7 +111,13 @@ class EditPublication extends EditSectionController
                 break;
 
             case 'ListPublication':
-                parent::loadData($sectionName);
+                $where = [new DataBaseWhere('idpublication', $publication->primaryColumnValue(), '!=')];
+                if (null === $publication->idteam) {
+                    $where[] = new DataBaseWhere('idteam', null, 'IS');
+                } else {
+                    $where[] = new DataBaseWhere('idteam', $publication->idteam);
+                }
+                $this->sections[$sectionName]->loadData('', $where);
                 break;
 
             case 'publication':

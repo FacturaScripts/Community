@@ -13,7 +13,7 @@
                 {{ team.name }}
             </h1>
             <p>
-                {{ team.description | raw | nl2br }}
+                {{ team.html() | raw }}
                 {% if team.idcontacto %}
                     <br/><b>{{ i18n.trans('admin') }}</b>:
                     <a href="{{ asset(team.getContactProfile()) }}">
@@ -38,17 +38,16 @@
                             <div class="modal-body">
                                 <div class="content">
                                     <div class="form-group">
-                                        <b>¿Por qué motivo desea unirse a este equipo?</b>
-                                        <br/>
-                                        Ayúdenos a comprobar que no es un bot.
-                                        <textarea name="observations" class="form-input" rows="3" required=""></textarea>
+                                        <b>{{ i18n.trans('why-join-team') }}</b>
+                                        <textarea name="observations" class="form-input" required=""></textarea>
+                                        <p>{{ i18n.trans('why-join-team-paragraph') }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="submit" class="btn btn-success">
+                                            {{ i18n.trans('accept') }}
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">
-                                    {{ i18n.trans('accept') }}
-                                </button>
                             </div>
                         </div>
                     </div>
