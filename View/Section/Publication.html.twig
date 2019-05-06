@@ -15,7 +15,8 @@
             </h1>
             {{ publication.body('html') | raw }}
             <small>
-                <i class="fas fa-calendar" aria-hidden="true"></i> {{ publication.creationdate }} |
+                <i class="fas fa-calendar" aria-hidden="true"></i> {{ publication.creationdate }}
+                &nbsp;
                 <i class="fas fa-clock" aria-hidden="true"></i> {{ publication.lastmod }}
             </small>
         </div>

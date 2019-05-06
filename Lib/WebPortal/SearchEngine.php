@@ -80,7 +80,8 @@ class SearchEngine extends ParentEngine
         $pluginProject = new WebProject();
         $where = [
             new DataBaseWhere('name|description', $query, 'LIKE'),
-            new DataBaseWhere('plugin', true)
+            new DataBaseWhere('plugin', true),
+            new DataBaseWhere('private', false)
         ];
         foreach ($pluginProject->all($where) as $plugin) {
             $this->addSearchResults($results, [

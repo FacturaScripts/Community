@@ -12,13 +12,17 @@
             </h1>
             <p>
                 {{ plugin.description | raw | nl2br }}
-                {% if plugin.idcontacto %}
-                    <br/><b>{{ i18n.trans('mantainer') }}</b>:
-                    <a href="{{ asset(plugin.getContactProfile()) }}">{{ plugin.getContactAlias() }}</a>
-                {% endif %}
             </p>
             {{ macros.downloadButton(plugin, i18n, fsc) }}
             <br/><br/>
+            {% if plugin.private %}
+                <span class="label label-error">{{ i18n.trans('private') }}</span>
+                &nbsp;
+            {% endif %}
+            {% if plugin.idcontacto %}
+                <b>{{ i18n.trans('mantainer') }}</b>:
+                <a href="{{ asset(plugin.getContactProfile()) }}">{{ plugin.getContactAlias() }}</a>
+            {% endif %}
             {{ macros.healthTable(plugin, i18n, fsc) }}
         </div>
     </div>
