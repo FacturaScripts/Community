@@ -131,6 +131,7 @@ class IssueNotification
         $where = [
             new DataBaseWhere('idteam', $issue->idteam),
             new DataBaseWhere('idcontacto', $issue->idcontacto, '!='),
+            new DataBaseWhere('accepted', true),
         ];
         foreach ($memberModel->all($where, [], 0, 0) as $member) {
             $memberContact = $member->getContact();

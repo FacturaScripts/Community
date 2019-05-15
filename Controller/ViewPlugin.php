@@ -174,13 +174,11 @@ class ViewPlugin extends EditSectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('plugin', 'plugin', 'Section/Plugin');
-        $project = $this->getMainModel();
-        $this->addNavigationLink($project->url('public-list'), $this->i18n->trans('plugins'));
-        $this->addNavigationLink($project->url('public-list') . '?activetab=ListWebProject', '2018');
 
-        $this->createSectionPublications();
         $this->addListSection('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
         $this->sections['ListWebDocPage']->template = 'Section/Documentation.html.twig';
+
+        $this->createSectionPublications();
 
         /// admin
         if ($this->contactCanEdit()) {
@@ -189,6 +187,11 @@ class ViewPlugin extends EditSectionController
             $this->addListSection('ListIssue', 'Issue', 'issues', 'fas fa-question-circle', 'admin');
             $this->sections['ListIssue']->template = 'Section/Issues.html.twig';
         }
+
+        /// navigation links
+        $project = $this->getMainModel();
+        $this->addNavigationLink($project->url('public-list'), $this->i18n->trans('plugins'));
+        $this->addNavigationLink($project->url('public-list') . '?activetab=ListWebProject', '2018');
     }
 
     protected function deleteAction()

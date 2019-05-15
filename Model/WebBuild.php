@@ -168,11 +168,11 @@ class WebBuild extends Base\ModelClass
      */
     public function increaseDownloads()
     {
-        if ($this->downloads < 100 && mt_rand(0, 1) == 0) {
-            $this->downloads += 2;
+        if ($this->downloads < 100) {
+            $this->downloads++;
             $this->save();
-        } elseif ($this->downloads >= 100 && mt_rand(0, 9) === 0) {
-            $this->downloads += 10;
+        } elseif ($this->downloads >= 100 && mt_rand(0, 4) === 0) {
+            $this->downloads += 5;
             $this->save();
         }
     }
