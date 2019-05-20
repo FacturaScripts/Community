@@ -445,7 +445,7 @@ class EditWebTeam extends EditSectionController
             $this->setTemplate('Master/Portal404');
 
             /// redir to teams
-            $this->response->headers->set('Refresh', '0; ' . $this->getMainModel()->url('public-list'));
+            $this->redirect($this->getMainModel()->url('public-list'));
             return;
         }
 

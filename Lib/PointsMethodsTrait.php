@@ -58,7 +58,7 @@ trait PointsMethodsTrait
     {
         $webPage = new WebPage();
         if ($webPage->loadFromCode(AppSettings::get('community', 'morepointspage'))) {
-            $this->response->headers->set('Refresh', '0; ' . $webPage->url('public'));
+            $this->redirect($webPage->url('public'));
             return;
         }
 

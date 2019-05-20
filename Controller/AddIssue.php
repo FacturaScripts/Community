@@ -101,7 +101,7 @@ class AddIssue extends PortalControllerWizard
             $this->subtractPoints();
 
             /// redit to new issue
-            $this->response->headers->set('Refresh', '0; ' . $this->issue->url('public'));
+            $this->redirect($this->issue->url('public'));
             return;
         }
 

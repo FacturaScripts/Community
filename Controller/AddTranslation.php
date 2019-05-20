@@ -137,7 +137,7 @@ class AddTranslation extends PortalControllerWizard
             $language->save();
 
             /// redit to new language
-            $this->response->headers->set('Refresh', '0; ' . $language->url('public'));
+            $this->redirect($language->url('public'));
             return true;
         }
 
@@ -194,7 +194,7 @@ class AddTranslation extends PortalControllerWizard
                 $this->saveTeamLog($idteamtra, $description, $link);
 
                 /// redit to translation in main language
-                $this->response->headers->set('Refresh', '0; ' . $newTrans->url('public'));
+                $this->redirect($newTrans->url('public'));
             }
         }
 

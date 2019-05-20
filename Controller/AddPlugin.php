@@ -184,7 +184,7 @@ class AddPlugin extends PortalControllerWizard
             $this->saveTeamLog($idteamdev, $description, $link);
 
             /// redir to new plugin
-            $this->response->headers->set('Refresh', '0; ' . $link);
+            $this->redirect($link);
             return true;
         }
 

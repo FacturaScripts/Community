@@ -150,7 +150,7 @@ class ContactForm extends PortalController
         $this->formTrees = $this->currentTree->getChildrenPages();
         switch ($this->currentTree->endaction) {
             case 'send-issue':
-                $this->response->headers->set('Refresh', '0; ' . self::SEND_ISSUE_CONTROLLER . '?idtree=' . $this->currentTree->idtree);
+                $this->redirect(self::SEND_ISSUE_CONTROLLER . '?idtree=' . $this->currentTree->idtree);
                 break;
 
             case 'select-plugin':

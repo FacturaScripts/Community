@@ -145,7 +145,7 @@ class EditPublication extends EditSectionController
 
         if ('/' == substr($this->uri, -1)) {
             /// redit to homepage
-            $this->response->headers->set('Refresh', '0; ' . AppSettings::get('webportal', 'url'));
+            $this->redirect(AppSettings::get('webportal', 'url'));
         }
     }
 
