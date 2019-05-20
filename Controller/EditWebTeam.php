@@ -87,7 +87,8 @@ class EditWebTeam extends EditSectionController
 
         $this->team = new WebTeam();
         $uri = explode('/', $this->uri);
-        if ($this->team->loadFromCode('', [new DataBaseWhere('name', end($uri))])) {
+        $name = rawurldecode(end($uri));
+        if ($this->team->loadFromCode('', [new DataBaseWhere('name', $name)])) {
             return $this->team;
         }
 

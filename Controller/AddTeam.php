@@ -85,7 +85,7 @@ class AddTeam extends PortalControllerWizard
             $this->subtractPoints();
 
             /// redir to new plugin
-            $this->redirect($team->url('public'));
+            $this->redirect($team->url());
             return true;
         }
 

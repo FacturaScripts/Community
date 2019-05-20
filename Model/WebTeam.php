@@ -154,7 +154,7 @@ class WebTeam extends WebPageClass
     {
         $this->description = Utils::noHtml($this->description);
         $this->name = Utils::noHtml($this->name);
-        if (strlen($this->name) < 1) {
+        if (!preg_match('/^[a-zA-Z0-9_\-\+]{1,50}$/', $this->name)) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']));
             return false;
         }
