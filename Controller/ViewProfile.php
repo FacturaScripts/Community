@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -87,6 +87,10 @@ class ViewProfile extends EditSectionController
         return strtotime($date) < strtotime($max);
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createLogSection($name = 'ListWebTeamLog')
     {
         $this->addListSection($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
@@ -95,6 +99,10 @@ class ViewProfile extends EditSectionController
         $this->addOrderOption($name, ['time'], 'date', 2);
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createPluginSection($name = 'ListWebProject')
     {
         $this->addListSection($name, 'WebProject', 'plugins', 'fas fa-plug');
@@ -120,19 +128,28 @@ class ViewProfile extends EditSectionController
         $this->createPluginSection();
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createTeamSection($name = 'ListWebTeam')
     {
         $this->addListSection($name, 'WebTeam', 'teams', 'fas fa-users');
     }
 
+    /**
+     * 
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         $contacto = $this->getMainModel();
         switch ($sectionName) {
             case 'ListWebProject':
                 $where = [
+                    new DataBaseWhere('idcontacto', $contacto->idcontacto),
                     new DataBaseWhere('plugin', true),
-                    new DataBaseWhere('idcontacto', $contacto->idcontacto)
+                    new DataBaseWhere('private', false),
                 ];
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
@@ -171,6 +188,10 @@ class ViewProfile extends EditSectionController
         }
     }
 
+    /**
+     * 
+     * @param string $sectionName
+     */
     protected function loadTeams($sectionName)
     {
         $teamMember = new WebTeamMember();
