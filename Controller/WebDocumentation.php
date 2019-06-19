@@ -259,7 +259,7 @@ class WebDocumentation extends PortalController
      */
     protected function loadPage()
     {
-        $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+        $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
         $this->docPage->increaseVisitCount($ipAddress);
         $this->docPages = $this->docPage->getChildrenPages();
         $this->docIndex = $this->getProjectIndex();

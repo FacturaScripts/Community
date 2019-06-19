@@ -287,7 +287,7 @@ class ViewPlugin extends EditSectionController
         $this->description = $this->getMainModel()->description();
         $this->canonicalUrl = $this->getMainModel()->url('public');
 
-        $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+        $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
         $this->getMainModel()->increaseVisitCount($ipAddress);
     }
 

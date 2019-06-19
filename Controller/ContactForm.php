@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,7 +65,6 @@ class ContactForm extends PortalController
     {
         $data = parent::getPageData();
         $data['title'] = 'contact';
-
         return $data;
     }
 
@@ -144,7 +143,7 @@ class ContactForm extends PortalController
             return;
         }
 
-        $ipAddress = is_null($this->request->getClientIp()) ? '::1' : $this->request->getClientIp();
+        $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
         $this->currentTree->increaseVisitCount($ipAddress);
 
         $this->formTrees = $this->currentTree->getChildrenPages();
