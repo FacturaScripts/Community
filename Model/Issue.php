@@ -207,7 +207,7 @@ class Issue extends WebPageClass
     public function test()
     {
         $this->body = Utils::noHtml($this->body);
-
+        $this->priority = $this->closed ? 0 : $this->priority;
         return parent::test();
     }
 

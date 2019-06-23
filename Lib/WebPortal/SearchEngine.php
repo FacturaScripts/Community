@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,8 +51,9 @@ class SearchEngine extends ParentEngine
      * 
      * @param array  $results
      * @param string $query
+     * @param int    $priority
      */
-    protected function findDocPages(&$results, $query)
+    protected function findDocPages(&$results, $query, $priority = 1)
     {
         $defaultIdproject = AppSettings::get('community', 'idproject', '');
 
@@ -64,7 +65,7 @@ class SearchEngine extends ParentEngine
                 'title' => $docPage->title,
                 'description' => $docPage->body,
                 'link' => $docPage->url('public'),
-                'priority' => ($docPage->idproject == $defaultIdproject) ? 0 : -1,
+                'priority' => ($docPage->idproject == $defaultIdproject) ? $priority : 0,
                 ], $query);
         }
     }
@@ -74,8 +75,9 @@ class SearchEngine extends ParentEngine
      * 
      * @param array  $results
      * @param string $query
+     * @param int    $priority
      */
-    protected function findPlugins(&$results, $query)
+    protected function findPlugins(&$results, $query, $priority = 3)
     {
         $pluginProject = new WebProject();
         $where = [
@@ -88,7 +90,8 @@ class SearchEngine extends ParentEngine
                 'icon' => 'fas fa-plug',
                 'title' => $plugin->name,
                 'description' => $plugin->description,
-                'link' => $plugin->url('public')
+                'link' => $plugin->url('public'),
+                'priority' => $priority,
                 ], $query);
         }
     }
@@ -98,8 +101,9 @@ class SearchEngine extends ParentEngine
      *
      * @param array  $results
      * @param string $query
+     * @param int    $priority
      */
-    protected function findPublications(&$results, $query)
+    protected function findPublications(&$results, $query, $priority = -1)
     {
         $publication = new Publication();
         $where = [new DataBaseWhere('title|body', $query, 'LIKE')];
@@ -108,7 +112,8 @@ class SearchEngine extends ParentEngine
                 'icon' => 'fas fa-newspaper',
                 'title' => $pub->title,
                 'description' => $pub->body,
-                'link' => $pub->url('public')
+                'link' => $pub->url('public'),
+                'priority' => $priority,
                 ], $query);
         }
     }
