@@ -23,19 +23,24 @@
         <column name="code" order="100">
             <widget type="text" fieldname="idissue" />
         </column>
-        <column name="body" order="110">
+        <column name="contact" order="110">
+            <widget type="autocomplete" fieldname="idcontacto" onclick="EditContacto">
+                <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
+            </widget>
+        </column>
+        <column name="body" order="120">
             <widget type="textarea" fieldname="body" />
         </column>
-        <column name="priority" display="right" order="120">
+        <column name="priority" display="right" order="130">
             <widget type="number" fieldname="priority" decimal="0" />
         </column>
-        <column name="team" order="130">
+        <column name="team" order="140">
             <widget type="select" fieldname="idteam" onclick="EditWebTeam">
                 <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
             </widget>
         </column>
-        <column name="creation-date" display="right" order="140">
-            <widget type="date" fieldname="creationdate" />
+        <column name="last-update" display="right" order="150">
+            <widget type="datetime" fieldname="lastmod" />
         </column>
     </columns>
     <rows>

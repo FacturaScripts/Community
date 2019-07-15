@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,7 @@ use FacturaScripts\Core\Model\Base;
 /**
  * Description of WebTeamLog
  *
- * @author carlos
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class WebTeamLog extends Base\ModelClass
 {
@@ -122,8 +122,16 @@ class WebTeamLog extends Base\ModelClass
      *
      * @return string
      */
-    public function url(string $type = 'auto', string $list = 'List')
+    public function url(string $type = 'auto', string $list = 'ListWebProject?active=List')
     {
-        return parent::url($type, 'ListWebProject?active=List');
+        switch ($type) {
+            case 'auto':
+            case 'edit':
+            case 'public':
+                return empty($this->link) ? parent::url($type, $list) : $this->link;
+
+            default:
+                return parent::url($type, $list);
+        }
     }
 }

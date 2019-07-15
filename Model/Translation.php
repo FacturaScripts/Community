@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
@@ -29,7 +30,7 @@ use FacturaScripts\Plugins\webportal\Model\WebPage;
  * @author Raul Jimenez         <raul.jimenez@nazcanetworks.com>
  * @author Carlos García Gómez  <carlos@facturascripts.com>
  */
-class Translation extends Base\ModelClass
+class Translation extends Base\ModelOnChangeClass
 {
 
     use Base\ModelTrait;
@@ -62,6 +63,12 @@ class Translation extends Base\ModelClass
     public $langcode;
 
     /**
+     *
+     * @var int
+     */
+    public $lastidcontacto;
+
+    /**
      * Last modification date.
      *
      * @var string
@@ -87,6 +94,12 @@ class Translation extends Base\ModelClass
      * @var string
      */
     public $translation;
+
+    /**
+     *
+     * @var int
+     */
+    private static $idcontacto;
 
     /**
      *
@@ -184,6 +197,24 @@ class Translation extends Base\ModelClass
     }
 
     /**
+     * 
+     * @return string
+     */
+    public function primaryDescription()
+    {
+        return $this->langcode . '/' . $this->name;
+    }
+
+    /**
+     * 
+     * @param int $idcontacto
+     */
+    public static function setCurrentContact($idcontacto)
+    {
+        self::$idcontacto = $idcontacto;
+    }
+
+    /**
      * Returns the name of the table that uses this model.
      *
      * @return string
@@ -209,7 +240,32 @@ class Translation extends Base\ModelClass
             return false;
         }
 
+        /// set current contact id
+        if (!empty(self::$idcontacto)) {
+            $this->lastidcontacto = self::$idcontacto;
+        }
+
         return parent::test();
+    }
+
+    public function updateChildren()
+    {
+        $mainLangCode = AppSettings::get('community', 'mainlanguage');
+        if ($this->langcode == $mainLangCode) {
+            foreach ($this->getEquivalents() as $trans) {
+                $trans->needsrevision = true;
+                $trans->save();
+            }
+        }
+
+        foreach ($this->getChildren() as $child) {
+            if ($child->needsrevision) {
+                $child->description = $this->description;
+                $child->translation = $this->translation;
+                $child->needsrevision = false;
+                $child->save();
+            }
+        }
     }
 
     /**
@@ -251,5 +307,65 @@ class Translation extends Base\ModelClass
         }
 
         return '#';
+    }
+
+    /**
+     * 
+     * @param string $translation
+     *
+     * @return bool
+     */
+    protected function newTeamLog($translation)
+    {
+        $teamLog = new WebTeamLog();
+        $teamLog->description = self::$i18n->trans($translation, ['%name%' => $this->primaryDescription()]);
+        $teamLog->idcontacto = self::$idcontacto;
+        $teamLog->idteam = (int) AppSettings::get('community', 'idteamtra');
+        $teamLog->link = $this->url('public');
+        return $teamLog->save();
+    }
+
+    /**
+     * 
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function onChange($field)
+    {
+        switch ($field) {
+            case 'translation':
+                $this->newTeamLog('updated-translation');
+                return true;
+
+            default:
+                return parent::onChange($field);
+        }
+    }
+
+    protected function onDelete()
+    {
+        $mainLangCode = AppSettings::get('community', 'mainlanguage');
+        if ($this->langcode == $mainLangCode) {
+            $this->newTeamLog('deleted-translation');
+        }
+    }
+
+    protected function onInsert()
+    {
+        $mainLangCode = AppSettings::get('community', 'mainlanguage');
+        if ($this->langcode == $mainLangCode) {
+            $this->newTeamLog('created-translation');
+        }
+    }
+
+    /**
+     * 
+     * @param array $fields
+     */
+    protected function setPreviousData(array $fields = [])
+    {
+        $more = ['translation'];
+        parent::setPreviousData(array_merge($more, $fields));
     }
 }

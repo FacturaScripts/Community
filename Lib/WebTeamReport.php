@@ -70,7 +70,7 @@ class WebTeamReport
             $minTime = strtotime('-' . $team->maxinactivitydays . ' days');
             foreach ($this->getTeamMembers($team) as $member) {
                 if (strtotime($member->getContact()->lastactivity) < $minTime) {
-                    $this->expelTeamMember($team, $member);
+                    $member->expel(true);
                 }
             }
         }
@@ -166,22 +166,6 @@ class WebTeamReport
             'title' => $title,
         ];
         return $this->emailTools->getTemplateHtml($params);
-    }
-
-    /**
-     * 
-     * @param WebTeam       $team
-     * @param WebTeamMember $member
-     */
-    protected function expelTeamMember(WebTeam $team, WebTeamMember $member)
-    {
-        if ($member->delete()) {
-            $teamLog = new WebTeamLog();
-            $teamLog->description = 'Expelled for inactivity';
-            $teamLog->idcontacto = $member->idcontacto;
-            $teamLog->idteam = $team->primaryColumnValue();
-            $teamLog->save();
-        }
     }
 
     /**

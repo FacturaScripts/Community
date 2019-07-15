@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,24 +23,30 @@ use FacturaScripts\Core\Lib\ExtendedController\EditController;
 /**
  * Description of EditLicense
  *
- * @author carlos
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class EditLicense extends EditController
 {
 
+    /**
+     * 
+     * @return string
+     */
     public function getModelClassName()
     {
         return 'License';
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['icon'] = 'fas fa-file-signature';
         $pageData['menu'] = 'web';
-        $pageData['showonmenu'] = false;
         $pageData['title'] = 'license';
-
+        $pageData['icon'] = 'fas fa-file-signature';
         return $pageData;
     }
 }

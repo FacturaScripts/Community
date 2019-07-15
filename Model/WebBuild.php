@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -164,17 +164,23 @@ class WebBuild extends Base\ModelClass
     }
 
     /**
+     * 
+     * @return WebProject
+     */
+    public function getProject()
+    {
+        $project = new WebProject();
+        $project->loadFromCode($this->idproject);
+        return $project;
+    }
+
+    /**
      * Increase download counter.
      */
     public function increaseDownloads()
     {
-        if ($this->downloads < 100) {
-            $this->downloads++;
-            $this->save();
-        } elseif ($this->downloads >= 100 && mt_rand(0, 4) === 0) {
-            $this->downloads += 5;
-            $this->save();
-        }
+        $this->downloads++;
+        $this->save();
     }
 
     /**
@@ -200,6 +206,27 @@ class WebBuild extends Base\ModelClass
     public static function primaryColumn()
     {
         return 'idbuild';
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function save()
+    {
+        if (parent::save()) {
+            /// update project stats
+            $project = $this->getProject();
+            if ($this->version > $project->version) {
+                $project->lastmod = $this->date;
+                $project->version = $this->version;
+                $project->save();
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -248,9 +275,9 @@ class WebBuild extends Base\ModelClass
      *
      * @return string
      */
-    public function url(string $type = 'auto', string $list = 'List')
+    public function url(string $type = 'auto', string $list = 'ListWebProject?active=List')
     {
-        return parent::url($type, 'ListWebProject?active=List');
+        return parent::url($type, $list);
     }
 
     /**

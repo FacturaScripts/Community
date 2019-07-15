@@ -57,7 +57,7 @@ class IssueNotification
         $mail->msgHTML($emailTools->getTemplateHtml($params));
         $mail->Subject = $title;
         static::addTeamEmails($mail, $issue);
-        $mail->send();
+        $emailTools->send($mail);
     }
 
     /**
@@ -93,9 +93,9 @@ class IssueNotification
             return;
         } elseif ($issue->idcontacto !== $comment->idcontacto) {
             $mail->addAddress($contact->email, $contact->fullName());
-            $mail->send();
+            $emailTools->send($mail);
         } elseif (static::addCommentsOtherEmails($mail, $issue)) {
-            $mail->send();
+            $emailTools->send($mail);
         }
     }
 

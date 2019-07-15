@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,14 +18,14 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Dinamic\Lib\ExtendedController;
+use FacturaScripts\Dinamic\Lib\ExtendedController\ListController;
 
 /**
  * Description of ListContactFormTree
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class ListContactFormTree extends ExtendedController\ListController
+class ListContactFormTree extends ListController
 {
 
     /**
@@ -36,10 +36,9 @@ class ListContactFormTree extends ExtendedController\ListController
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['title'] = 'contact-form';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fas fa-code-branch';
-
+        $pageData['title'] = 'contact-form';
+        $pageData['icon'] = 'fas fa-project-diagram';
         return $pageData;
     }
 
@@ -48,11 +47,12 @@ class ListContactFormTree extends ExtendedController\ListController
      */
     protected function createViews()
     {
-        $this->addView('ListContactFormTree', 'ContactFormTree', 'contact-form', 'fas fa-code-branch');
-        $this->addSearchFields('ListContactFormTree', ['title', 'body']);
-        $this->addOrderBy('ListContactFormTree', ['idparent', 'ordernum'], 'sort');
-        $this->addOrderBy('ListContactFormTree', ['title']);
-        $this->addOrderBy('ListContactFormTree', ['visitcount'], 'visit-counter');
-        $this->addOrderBy('ListContactFormTree', ['lastmod'], 'last-update');
+        $viewName = 'ListContactFormTree';
+        $this->addView($viewName, 'ContactFormTree', 'contact-form', 'fas fa-project-diagram');
+        $this->addSearchFields($viewName, ['title', 'body']);
+        $this->addOrderBy($viewName, ['idparent', 'ordernum'], 'sort');
+        $this->addOrderBy($viewName, ['title']);
+        $this->addOrderBy($viewName, ['visitcount'], 'visit-counter');
+        $this->addOrderBy($viewName, ['lastmod'], 'last-update');
     }
 }

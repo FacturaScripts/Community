@@ -22,6 +22,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\EventManager;
 use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Plugins\Community\Lib\IssueNotification;
+use FacturaScripts\Plugins\Community\Lib\WebTeamNotifications;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
@@ -44,34 +45,45 @@ class Init extends InitClass
         EventManager::attach('Model:IssueComment:saveInsert', function($model) {
             IssueNotification::notifyComment($model);
         });
+
+        EventManager::attach('Model:WebTeamMember:acceptedBy', function($model) {
+            WebTeamNotifications::notifyAccept($model);
+        });
+
+        EventManager::attach('Model:WebTeamMember:expel', function($model) {
+            WebTeamNotifications::notifyExpel($model);
+        });
     }
 
     public function update()
     {
         $defaultPages = [
-            'ContactForm' => '/contact',
-            'WebDocumentation' => '/doc*',
-            'PluginList' => '/plugins',
-            'TeamList' => '/teams',
-            'EditWebTeam' => '/teams/*',
-            'EditPublication' => '/publications/*',
-            'TranslationList' => '/translations',
-            'ViewProfile' => '/profiles/*',
+            ['controller' => 'ContactForm', 'permalink' => '/contact', 'index' => true],
+            ['controller' => 'WebDocumentation', 'permalink' => '/doc*', 'index' => true],
+            ['controller' => 'PluginList', 'permalink' => '/plugins', 'index' => true],
+            ['controller' => 'TeamList', 'permalink' => '/teams', 'index' => true],
+            ['controller' => 'EditWebTeam', 'permalink' => '/teams/*', 'index' => false],
+            ['controller' => 'EditPublication', 'permalink' => '/publications/*', 'index' => false],
+            ['controller' => 'TranslationList', 'permalink' => '/translations', 'index' => true],
+            ['controller' => 'ViewProfile', 'permalink' => '/profiles/*', 'index' => false],
         ];
 
         $webPage = new WebPage();
-        foreach ($defaultPages as $controller => $permalink) {
-            $where = [new DataBaseWhere('customcontroller', $controller)];
+        foreach ($defaultPages as $data) {
+            $where = [new DataBaseWhere('customcontroller', $data['controller'])];
             if ($webPage->loadFromCode('', $where)) {
                 continue;
             }
 
-            $webPage->customcontroller = $controller;
-            $webPage->description = $controller;
-            $webPage->ordernum = 101;
-            $webPage->permalink = $permalink;
-            $webPage->shorttitle = $controller;
-            $webPage->title = $controller;
+            $webPage->customcontroller = $data['controller'];
+            $webPage->description = $data['controller'];
+            $webPage->noindex = !$data['index'];
+            $webPage->ordernum++;
+            $webPage->permalink = $data['permalink'];
+            $webPage->shorttitle = $data['controller'];
+            $webPage->showonfooter = $data['index'];
+            $webPage->showonmenu = $data['index'];
+            $webPage->title = $data['controller'];
             $webPage->save();
         }
 

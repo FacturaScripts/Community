@@ -18,11 +18,8 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Plugins\Community\Model\License;
 use FacturaScripts\Plugins\Community\Model\WebProject;
-use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -72,19 +69,6 @@ class ViewPlugin extends EditSectionController
         }
 
         return $this->contactCanEdit();
-    }
-
-    /**
-     * 
-     * @param string $licenseCode
-     *
-     * @return License
-     */
-    public function getLicense($licenseCode)
-    {
-        $license = new License();
-        $license->loadFromCode($licenseCode);
-        return $license;
     }
 
     /**
@@ -194,35 +178,6 @@ class ViewPlugin extends EditSectionController
         $this->addNavigationLink($project->url('public-list') . '?activetab=ListWebProject', '2018');
     }
 
-    protected function deleteAction()
-    {
-        $return = parent::deleteAction();
-        if ($return && $this->active === 'EditWebProject') {
-            /// adds delete plugin message to team log
-            $uri = explode('/', $this->uri);
-            $this->saveTeamLog('Deleted plugin ' . end($uri), '');
-        } elseif ($return && $this->active === 'EditWebBuild') {
-            $this->sections[$this->active]->model->clear();
-        }
-
-        return $return;
-    }
-
-    protected function insertAction()
-    {
-        $return = parent::insertAction();
-        if ($return && $this->active === 'EditWebBuild') {
-            /// adds new plugin version message to team log
-            $plugin = $this->getMainModel();
-            $version = $this->request->request->get('version', $plugin->version);
-            $this->saveTeamLog('Uploaded plugin ' . $plugin->name . ' v' . $version, $plugin->url('public'));
-        } elseif (false === $return && $this->active === 'EditWebBuild') {
-            $this->sections[$this->active]->model->clear();
-        }
-
-        return $return;
-    }
-
     /**
      * Load section data procedure
      *
@@ -235,7 +190,6 @@ class ViewPlugin extends EditSectionController
             case 'EditWebBuild':
                 $where = [new DataBaseWhere('idproject', $project->idproject)];
                 $this->sections[$sectionName]->loadData('', $where, ['version' => 'DESC']);
-                $this->updatePluginVersion($sectionName);
                 break;
 
             case 'EditWebProject':
@@ -268,7 +222,6 @@ class ViewPlugin extends EditSectionController
     protected function loadPlugin()
     {
         if (!$this->getMainModel(true)->exists() || !$this->getMainModel()->plugin) {
-            $this->miniLog->warning($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/Portal404');
@@ -276,7 +229,6 @@ class ViewPlugin extends EditSectionController
         }
 
         if (!$this->contactCanSee()) {
-            $this->miniLog->warning($this->i18n->trans('access-denied'));
             $this->response->setStatusCode(Response::HTTP_FORBIDDEN);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/AccessDenied');
@@ -289,52 +241,5 @@ class ViewPlugin extends EditSectionController
 
         $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
         $this->getMainModel()->increaseVisitCount($ipAddress);
-    }
-
-    /**
-     * 
-     * @param string $description
-     * @param string $link
-     *
-     * @return bool
-     */
-    protected function saveTeamLog($description, $link)
-    {
-        $teamLog = new WebTeamLog();
-        $teamLog->description = $description;
-        $teamLog->idcontacto = $this->contact->idcontacto;
-        $teamLog->idteam = AppSettings::get('community', 'idteamdev');
-        $teamLog->link = $link;
-        return $teamLog->save();
-    }
-
-    /**
-     * Updates plugin version with the top build version.
-     *
-     * @param string $sectionName
-     */
-    protected function updatePluginVersion(string $sectionName)
-    {
-        $version = 0;
-        $lastmod = null;
-        $downloads = 0;
-
-        $plugin = $this->getMainModel();
-        foreach ($this->sections[$sectionName]->cursor as $model) {
-            $downloads += $model->downloads;
-            if ($model->version > $version) {
-                $version = $model->version;
-                $lastmod = $model->date;
-            }
-        }
-
-        if ($version != $plugin->version || $downloads != $plugin->downloads) {
-            $plugin->downloads = max([$downloads, $plugin->downloads]);
-            $plugin->version = $version;
-            $plugin->lastmod = $lastmod;
-            $plugin->save();
-        }
-
-        $this->sections['EditWebBuild']->model->version = $version + 0.1;
     }
 }

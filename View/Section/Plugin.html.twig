@@ -47,7 +47,7 @@
 {% endmacro %}
 
 {% macro healthTable(plugin, i18n, fsc) %}
-    {% set license = fsc.getLicense(plugin.license) %}
+    {% set license = plugin.getLicense() %}
     <div class="custom-scroll">
         <table class="table">
             <thead>

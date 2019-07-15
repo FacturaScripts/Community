@@ -24,40 +24,40 @@
             <column name="name" display="none" order="0">
                 <widget type="text" fieldname="name" readonly="true" required="true" />
             </column>
-            <column name="idproject" title="default-project" numcolumns="3" order="100">
-                <widget type="select" fieldname="idproject" required="true">
+            <column name="idproject" title="default-project" order="100">
+                <widget type="select" fieldname="idproject" icon="fas fa-folder" required="true">
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"/>
                 </widget>
             </column>
             <column name="mainlanguage" title="main-language" order="110">
-                <widget type="select" fieldname="mainlanguage" required="true">
+                <widget type="select" fieldname="mainlanguage" icon="fas fa-language" required="true">
                     <values source="languages" fieldcode="langcode" fieldtitle="langcode"/>
                 </widget>
             </column>
         </group>
         <group name="teams" title="teams" numcolumns="12">
             <column name="idteamdev" title="development-team" numcolumns="3" order="110">
-                <widget type="select" fieldname="idteamdev" required="true">
+                <widget type="select" fieldname="idteamdev" icon="fas fa-users" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>
             <column name="idteamdoc" title="documentation-team" numcolumns="3" order="120">
-                <widget type="select" fieldname="idteamdoc" required="true">
+                <widget type="select" fieldname="idteamdoc" icon="fas fa-users" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>
             <column name="idteamsup" title="support-team" numcolumns="3" order="130">
-                <widget type="select" fieldname="idteamsup" required="true">
+                <widget type="select" fieldname="idteamsup" icon="fas fa-users" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>
             <column name="idteamtra" title="translation-team" numcolumns="3" order="140">
-                <widget type="select" fieldname="idteamtra" required="true">
+                <widget type="select" fieldname="idteamtra" icon="fas fa-users" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>
             <column name="idteamadmin" title="admin-team" numcolumns="3" order="150">
-                <widget type="select" fieldname="idteamadmin" required="true">
+                <widget type="select" fieldname="idteamadmin" icon="fas fa-users" required="true">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"/>
                 </widget>
             </column>
@@ -67,7 +67,7 @@
                 <widget type="number" fieldname="minpoints" decimal="0" required="true" />
             </column>
             <column name="youneedmorepointspage" title="you-need-more-points-page" order="110">
-                <widget type="select" fieldname="morepointspage" required="true">
+                <widget type="select" fieldname="morepointspage" icon="fas fa-file" required="true">
                     <values source="webpages" fieldcode="idpage" fieldtitle="permalink" />
                 </widget>
             </column>

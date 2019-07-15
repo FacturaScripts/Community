@@ -45,6 +45,7 @@
                                         <div class="column col mb-2">
                                             {{ i18n.trans('parent') }}:
                                             <select name="parent" class="form-select">
+                                                <option value="">------</option>
                                                 {% for language in fsc.language.all({}, {}, 0, 0) %}
                                                     <option value="{{ language.langcode }}">{{ language.description }}</option>
                                                 {% endfor %}

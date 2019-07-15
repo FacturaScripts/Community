@@ -43,18 +43,6 @@ class AddTranslation extends PortalControllerWizard
 
     /**
      * 
-     * @return array
-     */
-    public function getPageData()
-    {
-        $data = parent::getPageData();
-        $data['title'] = 'new-translation';
-
-        return $data;
-    }
-
-    /**
-     * 
      * @return int
      */
     public function pointCost()
@@ -91,26 +79,6 @@ class AddTranslation extends PortalControllerWizard
 
     /**
      * 
-     * @param string $langCode
-     * @param string $parentCode
-     */
-    protected function cloneTranslations(string $langCode, string $parentCode)
-    {
-        $translationModel = new Translation();
-        $where = [new DataBaseWhere('langcode', $parentCode)];
-        foreach ($translationModel->all($where, [], 0, 0) as $trans) {
-            $newTrans = new Translation();
-            $newTrans->description = $trans->description;
-            $newTrans->idproject = $trans->idproject;
-            $newTrans->langcode = $langCode;
-            $newTrans->name = $trans->name;
-            $newTrans->translation = $trans->translation;
-            $newTrans->save();
-        }
-    }
-
-    /**
-     * 
      * @param string $code
      * @param string $parentCode
      *
@@ -119,6 +87,7 @@ class AddTranslation extends PortalControllerWizard
     protected function newLanguage(string $code, string $parentCode): bool
     {
         $language = new Language();
+        $language->setCurrentContact($this->contact->idcontacto);
 
         /// language already exists?
         $where = [new DataBaseWhere('langcode', $code)];
@@ -132,10 +101,6 @@ class AddTranslation extends PortalControllerWizard
         $language->langcode = $code;
         $language->parentcode = $parentCode;
         if ($language->save()) {
-            $this->cloneTranslations($code, $parentCode);
-            $language->updateStats();
-            $language->save();
-
             /// redit to new language
             $this->redirect($language->url('public'));
             return true;
@@ -160,8 +125,10 @@ class AddTranslation extends PortalControllerWizard
             return false;
         }
 
-        /// translation exists?
         $transModel = new Translation();
+        $transModel->setCurrentContact($this->contact->idcontacto);
+
+        /// translation exists?
         $where = [new DataBaseWhere('name', $name)];
         if ($transModel->loadFromCode('', $where)) {
             $this->miniLog->error($this->i18n->trans('duplicate-record'));
@@ -189,10 +156,6 @@ class AddTranslation extends PortalControllerWizard
             }
 
             if ($language->langcode == $mainLangcode) {
-                $description = 'New translation: ' . $newTrans->langcode . ' / ' . $newTrans->name;
-                $link = $newTrans->url('public');
-                $this->saveTeamLog($idteamtra, $description, $link);
-
                 /// redit to translation in main language
                 $this->redirect($newTrans->url('public'));
             }

@@ -44,21 +44,6 @@ class DownloadBuild extends PortalController
     public $currentProject;
 
     /**
-     * Returns basic page attributes
-     *
-     * @return array
-     */
-    public function getPageData()
-    {
-        $pageData = parent::getPageData();
-        $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fas fa-file-archive-o';
-        $pageData['showonmenu'] = false;
-
-        return $pageData;
-    }
-
-    /**
      * * Runs the controller's private logic.
      *
      * @param Response              $response

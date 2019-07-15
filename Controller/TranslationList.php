@@ -29,6 +29,10 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class TranslationList extends SectionController
 {
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionLanguages($name = 'ListLanguage')
     {
         $this->addListSection($name, 'Language', 'languages', 'fas fa-language');
@@ -49,13 +53,6 @@ class TranslationList extends SectionController
                 'type' => 'link',
             ];
             $this->addButton($name, $addButton);
-
-            $importButton = [
-                'action' => $this->url() . '?action=import-lang',
-                'label' => 'import',
-                'type' => 'link',
-            ];
-            $this->addButton($name, $importButton);
         }
     }
 
@@ -68,6 +65,10 @@ class TranslationList extends SectionController
         $this->createSectionTranslations();
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionTranslations($name = 'ListTranslation')
     {
         $this->addListSection($name, 'Translation', 'translations', 'fas fa-copy');
@@ -90,43 +91,6 @@ class TranslationList extends SectionController
                 'type' => 'link',
             ];
             $this->addButton($name, $addButton);
-        }
-    }
-
-    /**
-     * Run the actions that alter data before reading it.
-     *
-     * @param string $action
-     *
-     * @return bool
-     */
-    protected function execPreviousAction(string $action)
-    {
-        switch ($action) {
-            case 'import-lang':
-                $this->importLanguagesAction();
-                return true;
-
-            default:
-                return parent::execPreviousAction($action);
-        }
-    }
-
-    /**
-     * Code for import languages action.
-     */
-    protected function importLanguagesAction()
-    {
-        if (!$this->user) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
-            return;
-        }
-
-        foreach ($this->i18n->getAvailableLanguages() as $key => $value) {
-            $language = new Language();
-            $language->langcode = $key;
-            $language->description = $value;
-            $language->save();
         }
     }
 }

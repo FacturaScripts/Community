@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,11 +20,12 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Controller\EditContacto as ParentController;
+use FacturaScripts\Core\Lib\ExtendedController\BaseView;
 
 /**
  * Description of EditContacto
  *
- * @author carlos
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class EditContacto extends ParentController
 {
@@ -32,25 +33,46 @@ class EditContacto extends ParentController
     protected function createViews()
     {
         parent::createViews();
-
-        /// tabs on top
-        $this->setTabsPosition('top');
-
         $this->createViewIssues();
         $this->createViewTeamLogs();
     }
 
-    protected function createViewIssues($name = 'ListIssue')
+    /**
+     * 
+     * @param string $viewName
+     */
+    protected function createViewIssues($viewName = 'ListIssue')
     {
-        $this->addListView($name, 'Issue', 'issues', 'fas fa-question-circle');
-        $this->setSettings($name, 'btnNew', false);
+        $this->addListView($viewName, 'Issue', 'issues', 'fas fa-question-circle');
+        $this->views[$viewName]->searchFields = ['body'];
+        $this->views[$viewName]->addOrderBy(['lastmod'], 'last-update', 2);
+
+        /// disable column
+        $this->views[$viewName]->disableColumn('contact');
+
+        /// disable buttons
+        $this->setSettings($viewName, 'btnNew', false);
     }
 
-    protected function createViewTeamLogs($name = 'ListWebTeamLog')
+    /**
+     * 
+     * @param string $viewName
+     */
+    protected function createViewTeamLogs($viewName = 'ListWebTeamLog')
     {
-        $this->addListView($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
+        $this->addListView($viewName, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
+        $this->views[$viewName]->searchFields = ['description'];
+        $this->views[$viewName]->addOrderBy(['time'], 'time', 2);
+        
+        /// disable column
+        $this->views[$viewName]->disableColumn('contact');
     }
 
+    /**
+     * 
+     * @param string   $viewName
+     * @param BaseView $view
+     */
     protected function loadData($viewName, $view)
     {
         $code = $this->getViewModelValue('EditContacto', 'idcontacto');

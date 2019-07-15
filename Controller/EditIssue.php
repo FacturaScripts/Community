@@ -18,13 +18,10 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Model\Issue;
-use FacturaScripts\Plugins\Community\Model\IssueComment;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
-use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
@@ -131,9 +128,9 @@ class EditIssue extends EditSectionController
             return false;
         }
 
-        $close = $this->request->request->get('close', '');
+        $close = ($this->request->request->get('close', '') === 'TRUE');
         $text = $this->request->get('newComment', '');
-        if (empty($text) && $close === 'TRUE') {
+        if (empty($text) && $close) {
             $text = $this->i18n->trans('close');
         }
 
@@ -142,24 +139,13 @@ class EditIssue extends EditSectionController
         }
 
         $issue = $this->getMainModel();
-        $comment = new IssueComment();
-        $comment->body = $text;
-        $comment->idcontacto = $this->contact->idcontacto;
-        $comment->idissue = $issue->idissue;
-        if (!$comment->save()) {
+        if (!$issue->newComment($this->contact->idcontacto, $text, $close)) {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
             return false;
         }
 
-        /// update issue
-        $issue->lastcommidcontacto = $this->contact->idcontacto;
-        $issue->closed = ($close === 'TRUE') ? true : $issue->closed;
-        if ($issue->save()) {
-            $this->evaluateSolution($issue);
-        }
-
         $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-        $this->redirect($issue->url('public') . '#comm' . $comment->primaryColumnValue());
+        $this->redirect($issue->url('public') . '#comm' . $issue->getLastComment()->primaryColumnValue());
         return true;
     }
 
@@ -222,47 +208,6 @@ class EditIssue extends EditSectionController
             $this->createSectionEditIssue();
             $this->createSectionEditComments();
         }
-    }
-
-    /**
-     * 
-     * @param Issue $issue
-     *
-     * @return bool
-     */
-    protected function evaluateSolution($issue)
-    {
-        /// issue must be closed and last comment from author to continue
-        if (!$issue->closed || $issue->lastcommidcontacto != $issue->idcontacto) {
-            return false;
-        }
-
-        $idcontacts = [];
-        foreach ($issue->getComments() as $comm) {
-            if (empty($comm->idcontacto) || $comm->idcontacto == $issue->idcontacto) {
-                continue;
-            }
-
-            $idcontacts[] = $comm->idcontacto;
-        }
-
-        if (empty($idcontacts)) {
-            return false;
-        }
-
-        shuffle($idcontacts);
-
-        $teamLog = new WebTeamLog();
-        $where = [new DataBaseWhere('link', $issue->url())];
-        if ($teamLog->loadFromCode('', $where)) {
-            return;
-        }
-
-        $teamLog->description = $issue->title() . ' solved';
-        $teamLog->idcontacto = $idcontacts[0];
-        $teamLog->idteam = AppSettings::get('community', 'idteamsup');
-        $teamLog->link = $issue->url();
-        return $teamLog->save();
     }
 
     /**
@@ -334,7 +279,6 @@ class EditIssue extends EditSectionController
     protected function loadIssue()
     {
         if (!$this->getMainModel(true)->exists()) {
-            $this->miniLog->warning($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/Portal404');
@@ -355,7 +299,7 @@ class EditIssue extends EditSectionController
         $this->description = $this->getMainModel()->description();
         $this->canonicalUrl = $this->getMainModel()->url('public');
 
-        $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
+        $ipAddress = $this->ipFilter->getClientIp();
         $this->getMainModel()->increaseVisitCount($ipAddress);
     }
 

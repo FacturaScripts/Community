@@ -24,6 +24,7 @@ use FacturaScripts\Plugins\Community\Lib\WebTeamPoints;
 use FacturaScripts\Plugins\Community\Lib\WebTeamReport;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\Language;
+use FacturaScripts\Plugins\Community\Model\WebProject;
 
 /**
  * Define the taks of Community's crons.
@@ -44,6 +45,11 @@ class Cron extends CronClass
         if ($this->isTimeForJob('fix-translations', '1 day')) {
             $this->fixTranslations();
             $this->jobDone('fix-translations');
+        }
+
+        if ($this->isTimeForJob('update-projects', '1 day')) {
+            $this->updateWebProjects();
+            $this->jobDone('update-projects');
         }
 
         if ($this->isTimeForJob('team-points', '1 week')) {
@@ -92,6 +98,15 @@ class Cron extends CronClass
 
             $issue->lastmoddisable = true;
             $issue->save();
+        }
+    }
+
+    protected function updateWebProjects()
+    {
+        $webProjectModel = new WebProject();
+        foreach ($webProjectModel->all([], [], 0, 0) as $project) {
+            $project->updateStats();
+            $project->save();
         }
     }
 }

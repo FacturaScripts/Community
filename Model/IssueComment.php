@@ -70,6 +70,17 @@ class IssueComment extends Base\ModelClass
 
     /**
      * 
+     * @return Issue
+     */
+    public function getIssue()
+    {
+        $issue = new Issue();
+        $issue->loadFromCode($this->idissue);
+        return $issue;
+    }
+
+    /**
+     * 
      * @return string
      */
     public function html()

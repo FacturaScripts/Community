@@ -31,12 +31,12 @@
                 </widget>
             </column>
             <column name="admin" numcolumns="3" order="120">
-                <widget type="autocomplete" fieldname="idcontacto" required="true">
+                <widget type="autocomplete" fieldname="idcontacto" onclick="EditContacto" required="true">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
             <column name="license" numcolumns="3" order="130">
-                <widget type="select" fieldname="license" required="true">
+                <widget type="select" fieldname="license" onclick="EditLicense" required="true">
                     <values source="licenses" fieldcode="name" fieldtitle="title"></values>
                 </widget>
             </column>
@@ -59,7 +59,7 @@
         </group>
         <group name="advanced" title="advanced" numcolumns="12">
             <column name="team" order="100">
-                <widget type="select" fieldname="idteam" onclick="EditWebTeam">
+                <widget type="select" fieldname="idteam" icon="fas fa-users" onclick="EditWebTeam">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
                 </widget>
             </column>

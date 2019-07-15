@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -94,6 +94,9 @@ class EditWebDocPage extends EditSectionController
     protected function createSections()
     {
         $this->addEditSection('EditWebDocPage', 'WebDocPage', 'documentation');
+        if ($this->contact) {
+            $this->sections['EditWebDocPage']->model->setCurrentContact($this->contact->idcontacto);
+        }
 
         /// log
         $this->addListSection('ListWebTeamLog', 'WebTeamLog', 'log', 'fas fa-file-medical-alt');
@@ -101,59 +104,44 @@ class EditWebDocPage extends EditSectionController
         $this->addOrderOption('ListWebTeamLog', ['time'], 'date', 2);
     }
 
+    /**
+     * 
+     * @return bool
+     */
     protected function deleteAction()
     {
-        $original = $this->getMainModel();
-        $result = parent::deleteAction();
-        if ($result && $this->active === 'EditWebDocPage') {
-            $idteam = AppSettings::get('community', 'idteamdoc', '');
-            $description = 'Deleted documentation page: ' . $original->title;
-            $this->saveTeamLog($idteam, $description);
-        }
-
-        return $result;
-    }
-
-    protected function editAction()
-    {
-        $result = parent::editAction();
-        if ($result && $this->active === 'EditWebDocPage') {
-            $idteam = AppSettings::get('community', 'idteamdoc', '');
-            $description = 'Modified documentation page: ' . $this->getMainModel()->title;
-            $link = $this->getMainModel()->url('public');
-
-            /// we only save one log per day
-            $logs = $this->searchTeamLog($idteam, $this->contact->idcontacto, $link);
-            if (empty($logs) || time() - strtotime($logs[0]->time) > 86400) {
-                $this->saveTeamLog($idteam, $description, $link);
+        $parent = $this->getMainModel()->getParentPage();
+        if (parent::deleteAction()) {
+            if ($parent) {
+                $this->redirect($parent->url('public'));
+                return true;
             }
+
+            $this->redirect($this->getMainModel()->url('public-list'));
+            return true;
         }
 
-        return $result;
+        return flase;
     }
 
+    /**
+     * 
+     * @return bool
+     */
     protected function insertAction()
     {
-        $result = parent::insertAction();
-        if ($result && $this->active === 'EditWebDocPage') {
-            /// load new data
-            $this->getMainModel();
-            $this->mainModel->loadFromCode($this->sections[$this->active]->newCode);
-
-            $idteam = AppSettings::get('community', 'idteamdoc', '');
-            $description = 'Created documentation page: ' . $this->getMainModel()->title;
-            $link = $this->getMainModel()->url('public');
-
-            /// we only save one log per day
-            $logs = $this->searchTeamLog($idteam, $this->contact->idcontacto, $link);
-            if (empty($logs) || time() - strtotime($logs[0]->time) > 86400) {
-                $this->saveTeamLog($idteam, $description, $link);
-            }
+        if (parent::insertAction()) {
+            $this->redirect($this->sections[$this->active]->model->url('public'));
+            return true;
         }
 
-        return $result;
+        return false;
     }
 
+    /**
+     * 
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {
@@ -162,13 +150,16 @@ class EditWebDocPage extends EditSectionController
                 break;
 
             case 'ListWebTeamLog':
-                $docPage = $this->getMainModel();
-                $where = [new DataBaseWhere('link', $docPage->url('public'))];
+                $where = [new DataBaseWhere('link', $this->getMainModel()->url('public'))];
                 $this->sections[$sectionName]->loadData('', $where);
                 break;
         }
     }
 
+    /**
+     * 
+     * @param string $sectionName
+     */
     protected function loadDocPage(string $sectionName)
     {
         if (!$this->contactCanEdit()) {

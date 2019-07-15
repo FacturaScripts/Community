@@ -51,18 +51,6 @@ class AddPlugin extends PortalControllerWizard
 
     /**
      * 
-     * @return array
-     */
-    public function getPageData()
-    {
-        $data = parent::getPageData();
-        $data['title'] = 'new-plugin';
-
-        return $data;
-    }
-
-    /**
-     * 
      * @return CodeModel[]
      */
     public function licenses()
@@ -179,12 +167,8 @@ class AddPlugin extends PortalControllerWizard
         $project->publicrepo = $this->request->request->get('git');
         $project->type = $this->getPluginType();
         if ($project->save()) {
-            $description = $this->i18n->trans('new-plugin', ['%pluginName%' => $name]);
-            $link = $project->url('public');
-            $this->saveTeamLog($idteamdev, $description, $link);
-
             /// redir to new plugin
-            $this->redirect($link);
+            $this->redirect($project->url('public'));
             return true;
         }
 

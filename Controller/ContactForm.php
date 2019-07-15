@@ -58,17 +58,6 @@ class ContactForm extends PortalController
     public $formTrees;
 
     /**
-     * 
-     * @return array
-     */
-    public function getPageData()
-    {
-        $data = parent::getPageData();
-        $data['title'] = 'contact';
-        return $data;
-    }
-
-    /**
      * * Runs the controller's private logic.
      *
      * @param Response              $response

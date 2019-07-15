@@ -18,13 +18,15 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\Base\EventManager;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Dinamic\Model\Contacto;
 
 /**
  * Description of WebTeamMember
  *
- * @author carlos
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class WebTeamMember extends Base\ModelClass
 {
@@ -66,6 +68,27 @@ class WebTeamMember extends Base\ModelClass
     public $observations;
 
     /**
+     * 
+     * @param int $idcontacto
+     *
+     * @return bool
+     */
+    public function acceptedBy($idcontacto)
+    {
+        $this->accepted = true;
+        if ($this->save()) {
+            $byContact = new Contacto();
+            $byContact->loadFromCode($idcontacto);
+            $this->newTeamLog('accepted-on-team-by', ['%by%' => $byContact->alias()]);
+            EventManager::trigger('Model:' . $this->modelClassName() . ':acceptedBy', $this);
+            return true;
+        }
+
+        $this->accepted = false;
+        return false;
+    }
+
+    /**
      * Reset the values of all model properties.
      */
     public function clear()
@@ -90,6 +113,24 @@ class WebTeamMember extends Base\ModelClass
     }
 
     /**
+     * 
+     * @param bool $inactivity
+     *
+     * @return bool
+     */
+    public function expel($inactivity = false)
+    {
+        if ($this->delete()) {
+            $translation = $inactivity ? 'expelled-from-team-inactivity' : 'expelled-from-team';
+            $this->newTeamLog($translation);
+            EventManager::trigger('Model:' . $this->modelClassName() . ':expel', $this);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Returns team.
      *
      * @return WebTeam
@@ -99,6 +140,20 @@ class WebTeamMember extends Base\ModelClass
         $team = new WebTeam();
         $team->loadFromCode($this->idteam);
         return $team;
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function leave()
+    {
+        if ($this->delete()) {
+            $this->newTeamLog('leaves-team');
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -142,7 +197,6 @@ class WebTeamMember extends Base\ModelClass
     public function test()
     {
         $this->observations = Utils::noHtml($this->observations);
-
         return parent::test();
     }
 
@@ -168,5 +222,38 @@ class WebTeamMember extends Base\ModelClass
         }
 
         return parent::url($type, 'ListWebProject?active=List');
+    }
+
+    /**
+     * 
+     * @param string $translation
+     * @param array  $extra
+     *
+     * @return bool
+     */
+    protected function newTeamLog($translation, $extra = [])
+    {
+        $teamLog = new WebTeamLog();
+        $extra['%name%'] = $this->getContactAlias();
+        $teamLog->description = self::$i18n->trans($translation, $extra);
+        $teamLog->idcontacto = $this->idcontacto;
+        $teamLog->idteam = $this->idteam;
+        return $teamLog->save();
+    }
+
+    /**
+     * 
+     * @param array $values
+     *
+     * @return bool
+     */
+    protected function saveInsert(array $values = [])
+    {
+        if (parent::saveInsert($values)) {
+            $this->newTeamLog('wants-to-join-team');
+            return true;
+        }
+
+        return false;
     }
 }

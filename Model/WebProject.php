@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
@@ -35,6 +36,7 @@ class WebProject extends WebPageClass
     use Base\ModelTrait;
     use Common\ContactTrait;
 
+    const DEFAULT_LICENSE = 'LGPL';
     const DEFAULT_TYPE = 'public';
 
     /**
@@ -118,7 +120,7 @@ class WebProject extends WebPageClass
     {
         parent::clear();
         $this->downloads = 0;
-        $this->license = 'LGPL';
+        $this->license = self::DEFAULT_LICENSE;
         $this->plugin = true;
         $this->private = false;
         $this->type = self::DEFAULT_TYPE;
@@ -135,6 +137,17 @@ class WebProject extends WebPageClass
     public function description(int $length = 300): string
     {
         return Utils::trueTextBreak($this->description, $length);
+    }
+
+    /**
+     * 
+     * @return License
+     */
+    public function getLicense()
+    {
+        $license = new License();
+        $license->loadFromCode($this->license);
+        return $license;
     }
 
     /**
@@ -200,6 +213,17 @@ class WebProject extends WebPageClass
         return parent::test();
     }
 
+    public function updateStats()
+    {
+        $this->downloads = 0;
+
+        $webBuild = new WebBuild();
+        $where = [new DataBaseWhere('idproject', $this->idproject)];
+        foreach ($webBuild->all($where, [], 0, 0) as $build) {
+            $this->downloads += $build->downloads;
+        }
+    }
+
     /**
      * Returns the url where to see / modify the data.
      *
@@ -242,5 +266,65 @@ class WebProject extends WebPageClass
         }
 
         return '#';
+    }
+
+    /**
+     * 
+     * @param string $translation
+     *
+     * @return bool
+     */
+    protected function newTeamLog($translation)
+    {
+        $teamLog = new WebTeamLog();
+        $teamLog->description = self::$i18n->trans($translation, ['%pluginName%' => $this->name, '%version%' => $this->version]);
+        $teamLog->idcontacto = $this->idcontacto;
+        $teamLog->idteam = AppSettings::get('community', 'idteamdev');
+        $teamLog->link = $this->url('public');
+        return $teamLog->save();
+    }
+
+    /**
+     * 
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function onChange($field)
+    {
+        switch ($field) {
+            case 'version':
+                if ($this->plugin) {
+                    $this->newTeamLog('updated-plugin');
+                }
+                return true;
+
+            default:
+                return parent::onChange($field);
+        }
+    }
+
+    protected function onDelete()
+    {
+        if ($this->plugin) {
+            $this->newTeamLog('deleted-plugin');
+        }
+    }
+
+    protected function onInsert()
+    {
+        if ($this->plugin) {
+            $this->newTeamLog('created-plugin');
+        }
+    }
+
+    /**
+     * 
+     * @param array $fields
+     */
+    protected function setPreviousData(array $fields = [])
+    {
+        $more = ['version'];
+        parent::setPreviousData(array_merge($more, $fields));
     }
 }

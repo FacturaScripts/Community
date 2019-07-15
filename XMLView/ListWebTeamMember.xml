@@ -33,7 +33,7 @@
                 <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
             </widget>
         </column>
-        <column name="accepted" order="130">
+        <column name="accepted" display="center" order="130">
             <widget type="checkbox" fieldname="accepted" />
         </column>
         <column name="creation-date" display="right" order="150">

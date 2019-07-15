@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>  
 -->
-
 <view>
     <columns>
         <column name="code" display="none" order="100">
@@ -30,11 +29,23 @@
         <column name="description" order="120">
             <widget type="textarea" fieldname="description" />
         </column>
-        <column name="visit-counter" display="right" order="130">
+        <column name="version" display="right" order="130">
+            <widget type="number" fieldname="version" />
+        </column>
+        <column name="visit-counter" display="right" order="140">
             <widget type="number" fieldname="visitcount" decimal="0" />
         </column>
-        <column name="creation-date" display="right" order="140">
-            <widget type="date" fieldname="creationdate" />
+        <column name="downloads" display="right" order="150">
+            <widget type="number" fieldname="downloads" decimal="0" />
+        </column>
+        <column name="last-update" display="right" order="160">
+            <widget type="date" fieldname="lastmod" />
         </column>
     </columns>
+    <rows>
+        <row type="status">
+            <option color="warning" fieldname="downloads">0</option>
+            <option color="success" fieldname="downloads">gt:100</option>
+        </row>
+    </rows>
 </view>

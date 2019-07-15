@@ -103,30 +103,6 @@ class EditLanguage extends EditSectionController
     }
 
     /**
-     * Get a list of the parent languages.
-     *
-     * @return array
-     */
-    public function getParentLanguages(): array
-    {
-        $current = $this->getMainModel();
-        $languages = [];
-        foreach ($current->all([], ['langcode' => 'ASC'], 0, 0) as $language) {
-            if ($language->langcode == $current->langcode) {
-                continue;
-            }
-
-            if ($language->parentcode) {
-                continue;
-            }
-
-            $languages[] = $language;
-        }
-
-        return $languages;
-    }
-
-    /**
      * Check available translations with translation name.
      *
      * @param Language $language
@@ -173,6 +149,10 @@ class EditLanguage extends EditSectionController
         }
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionRevisions($name = 'ListTranslation-rev')
     {
         $this->addListSection($name, 'Translation', 'needs-revisions', 'fas fa-eye');
@@ -182,6 +162,10 @@ class EditLanguage extends EditSectionController
         $this->addOrderOption($name, ['lastmod'], 'last-update');
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionTranslations($name = 'ListTranslation')
     {
         $this->addListSection($name, 'Translation', 'translations', 'fas fa-copy');
@@ -199,16 +183,6 @@ class EditLanguage extends EditSectionController
             'type' => 'link',
         ];
         $this->addButton($name, $button);
-
-        if ($this->contactCanEdit()) {
-            $language = $this->getMainModel();
-            $button = [
-                'action' => $language->url() . '&action=import-trans',
-                'label' => 'import',
-                'type' => 'link',
-            ];
-            $this->addButton($name, $button);
-        }
     }
 
     /**
@@ -221,10 +195,6 @@ class EditLanguage extends EditSectionController
     protected function execPreviousAction(string $action)
     {
         switch ($action) {
-            case 'import-trans':
-                $this->importTranslationsAction();
-                return true;
-
             case 'json':
                 $this->jsonExport();
                 return false;
@@ -232,89 +202,6 @@ class EditLanguage extends EditSectionController
             default:
                 return parent::execPreviousAction($action);
         }
-    }
-
-    /**
-     * Import all translations from Core.
-     */
-    protected function importTranslationsAction()
-    {
-        if (!$this->user) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
-            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
-            return;
-        }
-
-        $language = $this->getMainModel();
-        if ($language->parentcode) {
-            $this->miniLog->alert("You can't import a language with parent.");
-            return;
-        }
-
-        // import translations from file
-        $newTranslations = [];
-        $idproject = AppSettings::get('community', 'idproject');
-        $json = (array) json_decode(file_get_contents(FS_FOLDER . '/Core/Translation/' . $language->langcode . '.json'), true);
-
-        // start transaction
-        $this->dataBase->beginTransaction();
-
-        // main save process
-        try {
-            foreach ($json as $key => $value) {
-                $translation = new Translation();
-                $translation->idproject = $idproject;
-                $translation->langcode = $language->langcode;
-                $translation->name = $key;
-                $translation->description = $translation->translation = $value;
-                $translation->needsrevision = false;
-
-                /// is this string in the main language?
-                if (!$this->checkTranslation($language, $key)) {
-                    continue;
-                }
-
-                if ($translation->save()) {
-                    $newTranslations[] = $key;
-                }
-            }
-            // confirm data
-            $this->dataBase->commit();
-        } catch (\Exception $e) {
-            $this->miniLog->alert($e->getMessage());
-        } finally {
-            if ($this->dataBase->inTransaction()) {
-                $this->dataBase->rollback();
-            }
-        }
-
-        // generate missing translations
-        $mainLangCode = AppSettings::get('community', 'mainlanguage');
-        foreach ($this->mainTranslations as $mainKey) {
-            if (in_array($mainKey, $newTranslations)) {
-                continue;
-            }
-
-            // we need main translation
-            $mainTranslation = new Translation();
-            $where = [
-                new DataBaseWhere('langcode', $mainLangCode),
-                new DataBaseWhere('name', $mainKey)
-            ];
-            $mainTranslation->loadFromCode('', $where);
-
-            $newTranslation = new Translation();
-            $newTranslation->description = $mainTranslation->description;
-            $newTranslation->idproject = $idproject;
-            $newTranslation->langcode = $language->langcode;
-            $newTranslation->lastmod = $mainTranslation->lastmod;
-            $newTranslation->name = $mainTranslation->name;
-            $newTranslation->translation = $mainTranslation->translation;
-            $newTranslation->save();
-        }
-
-        $language->updateStats();
-        $language->save();
     }
 
     /**
@@ -377,7 +264,6 @@ class EditLanguage extends EditSectionController
     protected function loadLanguage()
     {
         if (!$this->getMainModel(true)->exists()) {
-            $this->miniLog->warning($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/Portal404');

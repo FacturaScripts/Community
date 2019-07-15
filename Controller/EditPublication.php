@@ -21,8 +21,6 @@ namespace FacturaScripts\Plugins\Community\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\Publication;
-use FacturaScripts\Plugins\Community\Model\WebProject;
-use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -102,6 +100,10 @@ class EditPublication extends EditSectionController
         $this->addOrderOption($name, ['visitcount'], 'visit-counter');
     }
 
+    /**
+     * 
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         $publication = $this->getMainModel();
@@ -133,38 +135,27 @@ class EditPublication extends EditSectionController
             $this->description = $this->getMainModel()->description();
             $this->canonicalUrl = $this->getMainModel()->url('public');
 
-            $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
+            $ipAddress = $this->ipFilter->getClientIp();
             $this->getMainModel()->increaseVisitCount($ipAddress);
             return;
         }
 
-        $this->miniLog->warning($this->i18n->trans('no-data'));
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');
-
-        if ('/' == substr($this->uri, -1)) {
-            /// redit to homepage
-            $this->redirect(AppSettings::get('webportal', 'url'));
-        }
     }
 
     protected function setNavigationLinks()
     {
-        $publication = $this->getMainModel();
-        if ($publication->idteam) {
-            $team = new WebTeam();
-            if ($team->loadFromCode($publication->idteam)) {
-                $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
-                $this->addNavigationLink($team->url('public'), $team->name);
-            }
+        $team = $this->getMainModel()->getTeam();
+        if ($team->exists()) {
+            $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
+            $this->addNavigationLink($team->url('public'), $team->name);
         }
 
-        if ($publication->idproject) {
-            $project = new WebProject();
-            if ($project->loadFromCode($publication->idproject) && $project->plugin) {
-                $this->addNavigationLink($project->url('public'), $project->name);
-            }
+        $project = $this->getMainModel()->getProject();
+        if ($project->exists()) {
+            $this->addNavigationLink($project->url('public'), $project->name);
         }
     }
 }

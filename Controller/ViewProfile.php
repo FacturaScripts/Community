@@ -177,15 +177,9 @@ class ViewProfile extends EditSectionController
             return;
         }
 
-        $this->miniLog->warning($this->i18n->trans('no-data'));
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
         $this->webPage->noindex = true;
         $this->setTemplate('Master/Portal404');
-
-        if ('/' == substr($this->uri, -1)) {
-            /// redit to homepage
-            $this->redirect(AppSettings::get('webportal', 'url'));
-        }
     }
 
     /**

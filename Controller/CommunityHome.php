@@ -44,6 +44,10 @@ class CommunityHome extends SectionController
         }
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createMyIssuesSection($name = 'ListIssue')
     {
         $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle', 'your');
@@ -63,6 +67,11 @@ class CommunityHome extends SectionController
         $this->addButton($name, $contactButton);
     }
 
+    /**
+     * 
+     * @param string $name
+     * @param string $team
+     */
     protected function createPublicationsSection($name, $team = '')
     {
         $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper', $team);
@@ -83,6 +92,10 @@ class CommunityHome extends SectionController
         }
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createTeamIssuesSection($name = 'ListIssue-teams')
     {
         $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle', 'teams');
@@ -119,6 +132,10 @@ class CommunityHome extends SectionController
         $this->addFilterCheckbox($name, 'closed', 'closed', 'closed', '=', true, $where);
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createTeamLogSection($name = 'ListWebTeamLog')
     {
         $this->addListSection($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt', 'teams');

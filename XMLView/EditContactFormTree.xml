@@ -28,7 +28,7 @@
                 <widget type="text" fieldname="title" required="true" />
             </column>
             <column name="end-action" numcolumns="2" order="120">
-                <widget type="select" fieldname="endaction">
+                <widget type="select" fieldname="endaction" icon="fas fa-cog">
                     <values title="add-contract">add-contract</values>
                     <values title="select-cloud-install">select-cloud-install</values>
                     <values title="select-plugin">select-plugin</values>
@@ -45,13 +45,13 @@
                 <widget type="html" fieldname="body" />
             </column>
             <column name="lang-code" numcolumns="3" order="140">
-                <widget type="text" fieldname="langcode" required="true" />
+                <widget type="text" fieldname="langcode" icon="fas fa-language" required="true" />
             </column>
             <column name="sort" numcolumns="3" order="150">
-                <widget type="number" fieldname="ordernum" />
+                <widget type="number" fieldname="ordernum" icon="fas fa-sort" />
             </column>
             <column name="icon" numcolumns="3" order="160">
-                <widget type="text" fieldname="icon" />
+                <widget type="text" fieldname="icon" icon="fas fa-icons" />
             </column>
             <column name="date" numcolumns="3" order="170">
                 <widget type="date" fieldname="creationdate" />

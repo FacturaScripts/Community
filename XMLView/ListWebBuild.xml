@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>  
 -->
-
 <view>
     <columns>
         <column name="code" display="none" order="100">
@@ -29,23 +28,30 @@
                 <values source="webprojects" fieldcode="idproject" fieldtitle="name"></values>
             </widget>
         </column>
-        <column name="version" order="120">
-            <widget type="text" fieldname="version" />
+        <column name="version" display="right" order="120">
+            <widget type="number" fieldname="version" />
         </column>
-        <column name="stable" order="120">
+        <column name="stable" display="center" order="130">
             <widget type="checkbox" fieldname="stable" />
         </column>
-        <column name="beta" order="120">
+        <column name="beta" display="center" order="140">
             <widget type="checkbox" fieldname="beta" />
         </column>
-        <column name="date" display="right" order="140">
-            <widget type="date" fieldname="date" />
-        </column>
-        <column name="hour" display="right" order="150">
-            <widget type="date" fieldname="hour" />
-        </column>
-        <column name="downloads" display="right" order="160">
+        <column name="downloads" display="right" order="150">
             <widget type="number" fieldname="downloads" decimal="0" />
         </column>
+        <column name="date" display="right" order="160">
+            <widget type="date" fieldname="date" />
+        </column>
+        <column name="hour" display="none" order="170">
+            <widget type="string" fieldname="hour" />
+        </column>
     </columns>
+    <rows>
+        <row type="status">
+            <option color="info" fieldname="stable">0</option>
+            <option color="warning" fieldname="downloads">0</option>
+            <option color="success" fieldname="downloads">gt:100</option>
+        </row>
+    </rows>
 </view>

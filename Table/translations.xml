@@ -28,6 +28,10 @@
         <null>NO</null>
     </column>
     <column>
+        <name>lastidcontacto</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>lastmod</name>
         <type>timestamp</type>
     </column>

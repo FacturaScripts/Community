@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
@@ -27,7 +28,8 @@ use FacturaScripts\Plugins\webportal\Model\WebPage;
 /**
  * Description of Language
  *
- * @author Raul Jimenez <raul.jimenez@nazcanetworks.com>
+ * @author Raul Jimenez         <raul.jimenez@nazcanetworks.com>
+ * @author Carlos García Gómez  <carlos@facturascripts.com>
  */
 class Language extends Base\ModelClass
 {
@@ -77,6 +79,12 @@ class Language extends Base\ModelClass
 
     /**
      *
+     * @var int
+     */
+    private static $currentIdcontacto;
+
+    /**
+     *
      * @var array
      */
     private static $urls = [];
@@ -91,12 +99,16 @@ class Language extends Base\ModelClass
         $this->needsrevision = 0;
         $this->numtranslations = 0;
     }
-    
+
+    /**
+     * 
+     * @return string
+     */
     public function install()
     {
         /// needed dependencies
         new Contacto();
-        
+
         return parent::install();
     }
 
@@ -108,6 +120,15 @@ class Language extends Base\ModelClass
     public static function primaryColumn()
     {
         return 'langcode';
+    }
+
+    /**
+     * 
+     * @param int $idcontacto
+     */
+    public static function setCurrentContact($idcontacto)
+    {
+        self::$currentIdcontacto = $idcontacto;
     }
 
     /**
@@ -130,12 +151,14 @@ class Language extends Base\ModelClass
         $lenLangCode = strlen($this->langcode);
         if ($lenLangCode < 1 || $lenLangCode > 8) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'langcode', '%min%' => '1', '%max%' => '8']));
+            return false;
         }
 
         $this->description = Utils::noHtml($this->description);
         $lenDesc = strlen($this->description);
         if ($lenDesc < 1 || $lenDesc > 50) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'description', '%min%' => '1', '%max%' => '50']));
+            return false;
         }
 
         if (empty($this->parentcode)) {
@@ -176,6 +199,23 @@ class Language extends Base\ModelClass
         return parent::url($type, $list);
     }
 
+    protected function cloneTranslations()
+    {
+        $clonecode = empty($this->parentcode) ? AppSettings::get('community', 'mainlanguage') : $this->parentcode;
+
+        $translationModel = new Translation();
+        $where = [new DataBaseWhere('langcode', $clonecode)];
+        foreach ($translationModel->all($where, [], 0, 0) as $trans) {
+            $newTrans = new Translation();
+            $newTrans->description = $trans->description;
+            $newTrans->idproject = $trans->idproject;
+            $newTrans->langcode = $this->langcode;
+            $newTrans->name = $trans->name;
+            $newTrans->translation = $trans->translation;
+            $newTrans->save();
+        }
+    }
+
     /**
      * Return the public url from custom controller.
      *
@@ -197,5 +237,41 @@ class Language extends Base\ModelClass
         }
 
         return '#';
+    }
+
+    /**
+     * 
+     * @param string $translation
+     *
+     * @return bool
+     */
+    protected function newTeamLog($translation)
+    {
+        $teamLog = new WebTeamLog();
+        $teamLog->description = self::$i18n->trans($translation, ['%name%' => $this->description]);
+        $teamLog->idcontacto = self::$currentIdcontacto;
+        $teamLog->idteam = (int) AppSettings::get('community', 'idteamtra');
+        $teamLog->link = $this->url('public');
+        return $teamLog->save();
+    }
+
+    /**
+     * 
+     * @param array $values
+     *
+     * @return bool
+     */
+    protected function saveInsert(array $values = [])
+    {
+        if (parent::saveInsert($values)) {
+            $this->newTeamLog('new-language');
+            $this->cloneTranslations();
+            $this->updateStats();
+            $this->save();
+
+            return true;
+        }
+
+        return false;
     }
 }

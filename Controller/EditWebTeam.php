@@ -18,13 +18,8 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Dinamic\Lib\EmailTools;
-use FacturaScripts\Dinamic\Model\Contacto;
-use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
-use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
@@ -124,36 +119,37 @@ class EditWebTeam extends EditSectionController
 
     /**
      * Code for accept action.
+     * 
+     * @return bool
      */
     protected function acceptAction()
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
-            return;
+            return false;
         }
 
         $idRequest = $this->request->get('idrequest', '');
         $member = new WebTeamMember();
         if ('' === $idRequest || !$member->loadFromCode($idRequest)) {
             $this->miniLog->alert($this->i18n->trans('record-save-error'));
-            return;
+            return false;
         }
 
-        $member->accepted = true;
-        if ($member->save()) {
+        if ($member->acceptedBy($this->contact->idcontacto)) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-
-            $nick = is_null($this->contact) ? $this->user->nick : $this->contact->alias();
-            $teamLog = new WebTeamLog();
-            $teamLog->description = 'Accepted as new member by ' . $nick . '.';
-            $teamLog->idcontacto = $member->idcontacto;
-            $teamLog->idteam = $member->idteam;
-            $teamLog->save();
-            $this->notifyAccept($member);
+            return true;
         }
+
+        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        return false;
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createPluginSection($name = 'ListWebProject')
     {
         $this->addListSection($name, 'WebProject', 'plugins', 'fas fa-plug');
@@ -183,6 +179,10 @@ class EditWebTeam extends EditSectionController
         $this->addButton($name, $button);
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionLogs($name = 'ListWebTeamLog')
     {
         $this->addListSection($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
@@ -191,6 +191,13 @@ class EditWebTeam extends EditSectionController
         $this->addOrderOption($name, ['time'], 'date', 2);
     }
 
+    /**
+     * 
+     * @param string $name
+     * @param string $label
+     * @param string $icon
+     * @param string $group
+     */
     protected function createSectionMembers($name, $label, $icon, $group = '')
     {
         $this->addListSection($name, 'WebTeamMember', $label, $icon, $group);
@@ -198,6 +205,10 @@ class EditWebTeam extends EditSectionController
         $this->addOrderOption($name, ['creationdate'], 'date', 2);
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createSectionPublications($name = 'ListPublication')
     {
         $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper');
@@ -225,6 +236,8 @@ class EditWebTeam extends EditSectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('team', 'team', 'Section/Team');
+
+        /// navigation link
         $team = $this->getMainModel();
         $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
 
@@ -246,6 +259,10 @@ class EditWebTeam extends EditSectionController
         }
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createTeamIssuesSection($name = 'ListIssue')
     {
         $this->addListSection($name, 'Issue', 'issues', 'fas fa-question-circle');
@@ -303,70 +320,64 @@ class EditWebTeam extends EditSectionController
         return parent::execPreviousAction($action);
     }
 
+    /**
+     * 
+     * @return bool
+     */
     protected function expelAction()
     {
         if (!$this->contactCanEdit()) {
             $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
-            return;
+            return false;
         }
 
         $member = new WebTeamMember();
         $code = $this->request->get('idrequest');
-        if (!$member->loadFromCode($code)) {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
-            return;
+        if ($member->loadFromCode($code) && $member->expel()) {
+            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            return true;
         }
 
-        $this->notifyExpell($member);
-        if ($member->delete()) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-            $teamLog = new WebTeamLog();
-            $teamLog->description = 'Expelled from this team.';
-            $teamLog->idcontacto = $member->idcontacto;
-            $teamLog->idteam = $member->idteam;
-            $teamLog->save();
-        }
+        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        return false;
     }
 
     /**
      * Code for join action.
+     * 
+     * @return bool
      */
     protected function joinAction()
     {
         if (empty($this->contact)) {
             $this->miniLog->warning($this->i18n->trans('login-to-continue'));
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
-            return;
+            return false;
         }
 
         $member = new WebTeamMember();
         $member->idcontacto = $this->contact->idcontacto;
         $member->idteam = $this->getMainModel()->idteam;
         $member->observations = $this->request->request->get('observations', '');
-        if ($this->user) {
-            //$member->accepted = true;
-        }
-
         if ($member->save()) {
             $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-            $teamLog = new WebTeamLog();
-            $teamLog->idcontacto = $member->idcontacto;
-            $teamLog->idteam = $member->idteam;
-            $teamLog->description = 'Wants to be member of this team.';
-            $teamLog->save();
-        } else {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+            return true;
         }
+
+        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        return false;
     }
 
     /**
      * Code for leave action.
+     * 
+     * @return bool
      */
     protected function leaveAction()
     {
         if (empty($this->contact)) {
-            return;
+            return false;
         }
 
         $member = new WebTeamMember();
@@ -375,19 +386,13 @@ class EditWebTeam extends EditSectionController
             new DataBaseWhere('idteam', $this->getMainModel()->idteam),
         ];
 
-        if (!$member->loadFromCode('', $where)) {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
-            return;
+        if ($member->loadFromCode('', $where) && $member->leave()) {
+            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            return true;
         }
 
-        if ($member->delete()) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-            $teamLog = new WebTeamLog();
-            $teamLog->description = 'Leaves this team.';
-            $teamLog->idcontacto = $member->idcontacto;
-            $teamLog->idteam = $member->idteam;
-            $teamLog->save();
-        }
+        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        return false;
     }
 
     /**
@@ -440,18 +445,13 @@ class EditWebTeam extends EditSectionController
     protected function loadTeam()
     {
         if (!$this->getMainModel(true)->exists()) {
-            $this->miniLog->warning($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/Portal404');
-
-            /// redir to teams
-            $this->redirect($this->getMainModel()->url('public-list'));
             return;
         }
 
         if (!$this->contactCanSee()) {
-            $this->miniLog->warning($this->i18n->trans('access-denied'));
             $this->response->setStatusCode(Response::HTTP_FORBIDDEN);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/AccessDenied');
@@ -462,72 +462,7 @@ class EditWebTeam extends EditSectionController
         $this->description = $this->getMainModel()->description();
         $this->canonicalUrl = $this->getMainModel()->url('public');
 
-        $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
+        $ipAddress = $this->ipFilter->getClientIp();
         $this->getMainModel()->increaseVisitCount($ipAddress);
-    }
-
-    /**
-     * Notify to member that was accepted to team.
-     *
-     * @param WebTeamMember $member
-     */
-    protected function notifyAccept(WebTeamMember $member)
-    {
-        $contact = $member->getContact();
-        $team = $this->getMainModel();
-        $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
-        $title = $this->i18n->trans('accepted-to-team', ['%teamName%' => $team->name]);
-        $txt = $this->i18n->trans('accepted-to-team-msg', ['%link%' => $link, '%teamName%' => $team->name, '%teamDescription%' => $team->description]);
-
-        $publication = new Publication();
-        if (!empty($team->defaultpublication) && $publication->loadFromCode($team->defaultpublication)) {
-            $url = AppSettings::get('webportal', 'url', '');
-            $txt .= "<br/><br/><a href='" . $url . '/' . $publication->url() . "'>" . $publication->title . "</a>"
-                . "<br/>" . $publication->description();
-        }
-
-        $this->notifySend($contact, $title, $txt);
-    }
-
-    /**
-     * Notify to member that was accepted to team.
-     *
-     * @param WebTeamMember $member
-     */
-    protected function notifyExpell(WebTeamMember $member)
-    {
-        $contact = $member->getContact();
-        $team = $this->getMainModel();
-        $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
-        $title = $this->i18n->trans('expelled-from-team', ['%teamName%' => $team->name]);
-        $txt = $this->i18n->trans('expelled-from-team-msg', ['%link%' => $link, '%teamName%' => $team->name]);
-
-        $this->notifySend($contact, $title, $txt);
-    }
-
-    /**
-     * 
-     * @param Contacto $contact
-     * @param string   $title
-     * @param string   $txt
-     */
-    protected function notifySend($contact, $title, $txt)
-    {
-        $emailTools = new EmailTools();
-        $mail = $emailTools->newMail();
-        $mail->addAddress($contact->email, $contact->fullName());
-        $mail->Subject = $title;
-
-        $params = [
-            'body' => $txt,
-            'company' => AppSettings::get('webportal', 'title'),
-            'footer' => AppSettings::get('webportal', 'copyright'),
-            'title' => $title,
-        ];
-        $mail->msgHTML($emailTools->getTemplateHtml($params));
-
-        if ($mail->send()) {
-            $this->miniLog->notice($this->i18n->trans('email-sent'));
-        }
     }
 }

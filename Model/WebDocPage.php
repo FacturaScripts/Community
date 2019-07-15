@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
@@ -70,6 +71,12 @@ class WebDocPage extends WebPageClass
 
     /**
      *
+     * @var integer
+     */
+    public $lastidcontacto;
+
+    /**
+     *
      * @var string
      */
     public $permalink;
@@ -80,6 +87,12 @@ class WebDocPage extends WebPageClass
      * @var string
      */
     public $title;
+
+    /**
+     *
+     * @var int
+     */
+    private static $idcontacto;
 
     /**
      *
@@ -170,6 +183,15 @@ class WebDocPage extends WebPageClass
     }
 
     /**
+     * 
+     * @param int $idcontacto
+     */
+    public static function setCurrentContact($idcontacto)
+    {
+        self::$idcontacto = $idcontacto;
+    }
+
+    /**
      * Returns the name of the table that uses this model.
      *
      * @return string
@@ -188,12 +210,20 @@ class WebDocPage extends WebPageClass
     {
         $this->body = Utils::noHtml($this->body);
         $this->title = Utils::noHtml($this->title);
-
         if (strlen($this->title) < 1 || strlen($this->title) > 200) {
             self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '200']));
+            return false;
         }
 
-        $this->permalink = is_null($this->permalink) ? $this->newPermalink() : $this->permalink;
+        /// set current contact id
+        if (!empty(self::$idcontacto)) {
+            $this->lastidcontacto = self::$idcontacto;
+        }
+
+        if (null === $this->permalink) {
+            $this->permalink = $this->newPermalink();
+        }
+
         return parent::test();
     }
 
@@ -250,7 +280,7 @@ class WebDocPage extends WebPageClass
      *
      * @return string
      */
-    private function newPermalink()
+    protected function newPermalink()
     {
         $permalink = null;
         if (!is_null($this->idparent)) {
@@ -271,5 +301,71 @@ class WebDocPage extends WebPageClass
         }
 
         return $permalink;
+    }
+
+    /**
+     * 
+     * @param string $translation
+     *
+     * @return bool
+     */
+    protected function newTeamLog($translation)
+    {
+        $teamLog = new WebTeamLog();
+        $teamLog->description = self::$i18n->trans($translation, ['%title%' => $this->title]);
+        $teamLog->idcontacto = $this->lastidcontacto;
+        $teamLog->idteam = (int) AppSettings::get('community', 'idteamdoc');
+        $teamLog->link = $this->url('public');
+        return $teamLog->save();
+    }
+
+    /**
+     * 
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function onChange($field)
+    {
+        switch ($field) {
+            case 'lastidcontacto':
+                if (date('d-m-Y', strtotime($this->lastmod)) == $this->previousData['lastmod']) {
+                    $this->newTeamLog('updated-doc-page');
+                }
+                return true;
+
+            case 'lastmod':
+                if (date('d-m-Y', strtotime($this->lastmod)) != $this->previousData['lastmod']) {
+                    $this->newTeamLog('updated-doc-page');
+                }
+                return true;
+
+            default:
+                return parent::onChange($field);
+        }
+    }
+
+    protected function onDelete()
+    {
+        if (!empty(self::$idcontacto)) {
+            $this->lastidcontacto = self::$idcontacto;
+        }
+
+        $this->newTeamLog('deleted-doc-page');
+    }
+
+    protected function onInsert()
+    {
+        $this->newTeamLog('created-doc-page');
+    }
+
+    /**
+     * 
+     * @param array $fields
+     */
+    protected function setPreviousData(array $fields = [])
+    {
+        $more = ['lastidcontacto', 'lastmod'];
+        parent::setPreviousData(array_merge($more, $fields));
     }
 }

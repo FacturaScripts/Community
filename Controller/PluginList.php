@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,6 +29,11 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class PluginList extends SectionController
 {
 
+    /**
+     * 
+     * @param string $name
+     * @param string $title
+     */
     protected function createPluginSection($name, $title)
     {
         $this->addListSection($name, 'WebProject', $title, 'fas fa-plug', '2018');

@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,16 +18,14 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Dinamic\Lib\ExtendedController;
-use FacturaScripts\Plugins\Community\Model\WebDocPage;
+use FacturaScripts\Core\Lib\ExtendedController\ListController;
 
 /**
  * Description of ListWebProject controller.
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class ListWebProject extends ExtendedController\ListController
+class ListWebProject extends ListController
 {
 
     /**
@@ -38,10 +36,9 @@ class ListWebProject extends ExtendedController\ListController
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['title'] = 'projects';
         $pageData['menu'] = 'web';
+        $pageData['title'] = 'projects';
         $pageData['icon'] = 'fas fa-folder-open';
-
         return $pageData;
     }
 
@@ -57,7 +54,9 @@ class ListWebProject extends ExtendedController\ListController
     }
 
     /**
-     * Load Views for builds
+     * Load Views for builds.
+     * 
+     * @param string $viewName
      */
     protected function createViewsBuild($viewName = 'ListWebBuild')
     {
@@ -72,7 +71,9 @@ class ListWebProject extends ExtendedController\ListController
     }
 
     /**
-     * Load Views for doc pages
+     * Load Views for doc pages.
+     * 
+     * @param string $viewName
      */
     protected function createViewsDocPages($viewName = 'ListWebDocPage')
     {
@@ -109,50 +110,10 @@ class ListWebProject extends ExtendedController\ListController
     {
         $this->addView($viewName, 'WebProject', 'projects', 'fas fa-folder-open');
         $this->addSearchFields($viewName, ['name', 'description']);
-        $this->addOrderBy($viewName, ['name']);
         $this->addOrderBy($viewName, ['creationdate'], 'date');
-    }
-
-    /**
-     * Runs the controller actions after data read.
-     *
-     * @param string $action
-     */
-    protected function execAfterAction($action)
-    {
-        if ($action === 'regen-permalinks') {
-            $this->regenPermalinksAction();
-        }
-
-        parent::execAfterAction($action);
-    }
-
-    /**
-     * Regenerates a permalink for a doc page.
-     *
-     * @param WebDocPage $docPage
-     */
-    private function regenPermalinks(WebDocPage $docPage)
-    {
-        $docPage->permalink = null;
-        if ($docPage->save()) {
-            foreach ($docPage->getChildrenPages() as $children) {
-                $this->regenPermalinks($children);
-            }
-        }
-    }
-
-    /**
-     * Code for regenerate permalinks action.
-     */
-    private function regenPermalinksAction()
-    {
-        $docPageModel = new WebDocPage();
-        $where = [new DataBaseWhere('idparent', null, 'IS')];
-        foreach ($docPageModel->all($where) as $docPage) {
-            $this->regenPermalinks($docPage);
-        }
-
-        $this->miniLog->info('done');
+        $this->addOrderBy($viewName, ['downloads'], 'downloads');
+        $this->addOrderBy($viewName, ['lastmod'], 'last-update');
+        $this->addOrderBy($viewName, ['name'], 'name', 1);
+        $this->addOrderBy($viewName, ['visitcount'], 'visit-counter');
     }
 }

@@ -30,6 +30,10 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\SectionController;
 class TeamList extends SectionController
 {
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createLogSection($name = 'ListWebTeamLog')
     {
         $this->addListSection($name, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
@@ -38,6 +42,10 @@ class TeamList extends SectionController
         $this->addOrderOption($name, ['time'], 'date', 2);
     }
 
+    /**
+     * 
+     * @param string $name
+     */
     protected function createPublicationSection($name = 'ListPublication')
     {
         $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper');
@@ -72,6 +80,11 @@ class TeamList extends SectionController
         }
     }
 
+    /**
+     * 
+     * @param string $name
+     * @param string $group
+     */
     protected function createTeamSection($name = 'ListWebTeam', $group = '')
     {
         $this->addListSection($name, 'WebTeam', 'teams', 'fas fa-users', $group);
@@ -104,6 +117,10 @@ class TeamList extends SectionController
         return $teamMember->all($where, [], 0, 0);
     }
 
+    /**
+     * 
+     * @param string $sectionName
+     */
     protected function loadData(string $sectionName)
     {
         switch ($sectionName) {

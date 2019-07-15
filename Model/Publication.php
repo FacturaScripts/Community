@@ -118,6 +118,28 @@ class Publication extends WebPageClass
     }
 
     /**
+     * 
+     * @return WebProject
+     */
+    public function getProject()
+    {
+        $webProject = new WebProject();
+        $webProject->loadFromCode($this->idproject);
+        return $webProject;
+    }
+
+    /**
+     * 
+     * @return WebTeam
+     */
+    public function getTeam()
+    {
+        $webTeam = new WebTeam();
+        $webTeam->loadFromCode($this->idteam);
+        return $webTeam;
+    }
+
+    /**
      * Returns the name of the column that is the primary key of the model.
      *
      * @return string

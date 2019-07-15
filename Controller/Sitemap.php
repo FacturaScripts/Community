@@ -98,6 +98,10 @@ class Sitemap extends parentController
         return $items;
     }
 
+    /**
+     * 
+     * @return array
+     */
     protected function getPublications(): array
     {
         $items = [];

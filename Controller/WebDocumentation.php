@@ -77,7 +77,7 @@ class WebDocumentation extends PortalController
      *
      * @var WebProject[]
      */
-    public $projects;
+    public $projects = [];
 
     /**
      * The prefix to use in the url.
@@ -129,8 +129,8 @@ class WebDocumentation extends PortalController
     /**
      * Returns the project index.
      *
-     * @param null  $docPage
-     * @param array $subIndex
+     * @param WebPage $docPage
+     * @param array   $subIndex
      *
      * @return array
      */
@@ -201,16 +201,7 @@ class WebDocumentation extends PortalController
             return $webPage;
         }
 
-        if (!$webPage->loadFromCode('', [new DataBaseWhere('customcontroller', $this->getClassName())])) {
-            /// create the webpage
-            $webPage->customcontroller = $this->getClassName();
-            $webPage->description = 'Doc';
-            $webPage->permalink = 'doc*';
-            $webPage->shorttitle = 'Doc';
-            $webPage->title = 'Doc';
-            $webPage->save();
-        }
-
+        $webPage->loadFromCode('', [new DataBaseWhere('customcontroller', $this->getClassName())]);
         return $webPage;
     }
 
@@ -230,8 +221,9 @@ class WebDocumentation extends PortalController
         /// current project
         $this->currentProject = new WebProject();
         if (!$this->currentProject->loadFromCode($idproject)) {
-            $this->miniLog->warning($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
+            $this->webPage->noindex = true;
+            $this->setTemplate('Master/Portal404');
         }
 
         /// all projects
@@ -247,7 +239,6 @@ class WebDocumentation extends PortalController
             /// individual doc page
             $this->loadPage();
         } else {
-            $this->miniLog->warning($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/Portal404');
@@ -259,7 +250,7 @@ class WebDocumentation extends PortalController
      */
     protected function loadPage()
     {
-        $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
+        $ipAddress = $this->ipFilter->getClientIp();
         $this->docPage->increaseVisitCount($ipAddress);
         $this->docPages = $this->docPage->getChildrenPages();
         $this->docIndex = $this->getProjectIndex();

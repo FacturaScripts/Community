@@ -20,8 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Plugins\Community\Lib;
-use FacturaScripts\Plugins\Community\Model\Language;
+use FacturaScripts\Plugins\Community\Lib\WebTeamMethodsTrait;
 use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +34,7 @@ use Symfony\Component\HttpFoundation\Response;
 class EditTranslation extends EditSectionController
 {
 
-    use Lib\WebTeamMethodsTrait;
+    use WebTeamMethodsTrait;
 
     /**
      * This translation.
@@ -66,7 +65,7 @@ class EditTranslation extends EditSectionController
         }
 
         // This language has a mantainer?
-        $language = $this->getLanguageModel();
+        $language = $this->getMainModel()->getLanguage();
         return !($language->idcontacto && $language->idcontacto !== $this->contact->idcontacto);
     }
 
@@ -77,15 +76,6 @@ class EditTranslation extends EditSectionController
     public function contactCanSee()
     {
         return true;
-    }
-
-    /**
-     * 
-     * @return Language
-     */
-    public function getLanguageModel(): Language
-    {
-        return $this->getMainModel()->getLanguage();
     }
 
     /**
@@ -114,29 +104,6 @@ class EditTranslation extends EditSectionController
     }
 
     /**
-     * Check the revisions for this translation.
-     *
-     * @param Translation $translation
-     */
-    protected function checkRevisions(Translation $translation)
-    {
-        $mainLangCode = AppSettings::get('community', 'mainlanguage');
-        if ($translation->langcode !== $mainLangCode) {
-            return;
-        }
-
-        // when we change a translation in main language, we check equivalent translations for revision
-        $where = [
-            new DataBaseWhere('name', $translation->name),
-            new DataBaseWhere('id', $translation->id, '!=')
-        ];
-        foreach ($translation->all($where, [], 0, 0) as $trans) {
-            $trans->needsrevision = true;
-            $trans->save();
-        }
-    }
-
-    /**
      * 
      * @param string $name
      */
@@ -154,7 +121,14 @@ class EditTranslation extends EditSectionController
     {
         $this->fixedSection();
         $this->addHtmlSection('translation', 'translation', 'Section/Translation');
-        $language = $this->getLanguageModel();
+
+        /// set current contact
+        if ($this->contact) {
+            $this->getMainModel()->setCurrentContact($this->contact->idcontacto);
+        }
+
+        /// navigation links
+        $language = $this->getMainModel()->getLanguage();
         $this->addNavigationLink($language->url('public-list') . '?activetab=ListTranslation', $this->i18n->trans('translations'));
         $this->addNavigationLink($language->url('public'), $language->description);
 
@@ -186,7 +160,7 @@ class EditTranslation extends EditSectionController
         if (!$this->contactCanEdit()) {
             $this->miniLog->warning($this->i18n->trans('not-allowed-delete'));
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
-            return;
+            return false;
         }
 
         $translation = $this->getMainModel();
@@ -196,10 +170,11 @@ class EditTranslation extends EditSectionController
 
         if ($translation->delete()) {
             $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
-            $idteam = AppSettings::get('community', 'idteamtra');
-            $description = 'Deleted translation: ' . $translation->langcode . ' / ' . $translation->name;
-            $this->saveTeamLog($idteam, $description);
+            return true;
         }
+
+        $this->miniLog->warning($this->i18n->trans('record-deleted-error'));
+        return false;
     }
 
     /**
@@ -210,7 +185,7 @@ class EditTranslation extends EditSectionController
         if (!$this->contactCanEdit()) {
             $idteam = AppSettings::get('community', 'idteamtra');
             $this->contactNotInTeamError($idteam);
-            return;
+            return false;
         }
 
         $translation = $this->getMainModel();
@@ -227,6 +202,7 @@ class EditTranslation extends EditSectionController
 
         if (!$translation->save()) {
             $this->miniLog->warning($this->i18n->trans('record-save-error'));
+            return false;
         }
 
         /// rename
@@ -237,29 +213,9 @@ class EditTranslation extends EditSectionController
             }
         }
 
-        /// update children
-        foreach ($translation->getChildren() as $trans) {
-            if ($trans->needsrevision) {
-                $trans->description = $translation->description;
-                $trans->translation = $translation->translation;
-                $trans->needsrevision = false;
-                $trans->save();
-            }
-        }
-
+        $translation->updateChildren();
         $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
-        $idteam = AppSettings::get('community', 'idteamtra');
-        $description = 'Updated translation: ' . $translation->langcode . ' / ' . $translation->name;
-        $link = $translation->url('public');
-
-        /// we only save one log per day
-        $logs = $this->searchTeamLog($idteam, $this->contact->idcontacto, $link);
-        if (empty($logs) || time() - strtotime($logs[0]->time) > 86400) {
-            $this->saveTeamLog($idteam, $description, $link);
-        }
-
-        $this->checkRevisions($translation);
-        $this->updateLanguageStats($translation->langcode);
+        return true;
     }
 
     /**
@@ -324,7 +280,6 @@ class EditTranslation extends EditSectionController
     protected function loadTranslation()
     {
         if (!$this->getMainModel(true)->exists()) {
-            $this->miniLog->warning($this->i18n->trans('no-data'));
             $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
             $this->webPage->noindex = true;
             $this->setTemplate('Master/Portal404');
@@ -333,19 +288,5 @@ class EditTranslation extends EditSectionController
 
         $this->title = $this->translationModel->name;
         $this->description = $this->translationModel->description;
-    }
-
-    /**
-     * Updates the details of the language.
-     *
-     * @param string $langcode
-     */
-    private function updateLanguageStats(string $langcode)
-    {
-        $language = new Language();
-        if ($language->loadFromCode($langcode)) {
-            $language->updateStats();
-            $language->save();
-        }
     }
 }

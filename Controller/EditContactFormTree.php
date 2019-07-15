@@ -20,15 +20,24 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Lib\ExtendedController\BaseView;
-use FacturaScripts\Dinamic\Lib\ExtendedController;
+use FacturaScripts\Core\Lib\ExtendedController\EditController;
 
 /**
  * Description of EditContactFormTree
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class EditContactFormTree extends ExtendedController\PanelController
+class EditContactFormTree extends EditController
 {
+
+    /**
+     * 
+     * @return string
+     */
+    public function getModelClassName()
+    {
+        return 'ContactFormTree';
+    }
 
     /**
      * Returns basic page attributes
@@ -38,11 +47,9 @@ class EditContactFormTree extends ExtendedController\PanelController
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['title'] = 'contact-form';
         $pageData['menu'] = 'web';
-        $pageData['icon'] = 'fas fa-code-branch';
-        $pageData['showonmenu'] = false;
-
+        $pageData['title'] = 'contact-form';
+        $pageData['icon'] = 'fas fa-project-diagram';
         return $pageData;
     }
 
@@ -51,10 +58,38 @@ class EditContactFormTree extends ExtendedController\PanelController
      */
     protected function createViews()
     {
-        $this->addEditView('EditContactFormTree', 'ContactFormTree', 'edit', 'fas fa-edit');
-        $this->addListView('ListContactFormTree', 'ContactFormTree', 'children', 'fas fa-code-branch');
+        parent::createViews();
+        $this->setTabsPosition('bottom');
 
-        $this->views['ListContactFormTree']->disableColumn('parent', true);
+        $this->createViewChildren();
+        $this->createViewIssues();
+    }
+
+    /**
+     * 
+     * @param string $viewName
+     */
+    protected function createViewChildren($viewName = 'ListContactFormTree')
+    {
+        $this->addListView($viewName, 'ContactFormTree', 'children', 'fas fa-project-diagram');
+        $this->views[$viewName]->searchFields = ['title', 'body'];
+        $this->views[$viewName]->addOrderBy(['ordernum'], 'sort');
+
+        $this->views[$viewName]->disableColumn('parent', true);
+    }
+
+    /**
+     * 
+     * @param string $viewName
+     */
+    public function createViewIssues($viewName = 'ListIssue')
+    {
+        $this->addListView($viewName, 'Issue', 'issues', 'fas fa-question-circle');
+        $this->views[$viewName]->searchFields = ['body'];
+        $this->views[$viewName]->addOrderBy(['lastmod'], 'last-update', 2);
+        
+        /// disable buttons
+        $this->setSettings($viewName, 'btnNew', false);
     }
 
     /**
@@ -65,16 +100,21 @@ class EditContactFormTree extends ExtendedController\PanelController
      */
     protected function loadData($viewName, $view)
     {
+        $idtree = $this->getViewModelValue('EditContactFormTree', 'idtree');
+
         switch ($viewName) {
-            case 'EditContactFormTree':
-                $code = $this->request->get('code');
-                $view->loadData($code);
+            case 'ListIssue':
+                $where = [new DataBaseWhere('idtree', $idtree)];
+                $view->loadData('', $where);
                 break;
 
             case 'ListContactFormTree':
-                $code = $this->getViewModelValue('EditContactFormTree', 'idtree');
-                $where = [new DataBaseWhere('idparent', $code)];
-                $view->loadData('', $where, 0, 0);
+                $where = [new DataBaseWhere('idparent', $idtree)];
+                $view->loadData('', $where);
+                break;
+
+            default:
+                parent::loadData($viewName, $view);
                 break;
         }
     }

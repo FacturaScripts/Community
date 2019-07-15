@@ -18,6 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
@@ -87,6 +88,12 @@ class Issue extends WebPageClass
      *
      * @var int
      */
+    protected $lastcommid;
+
+    /**
+     *
+     * @var int
+     */
     public $lastcommidcontacto;
 
     /**
@@ -135,6 +142,24 @@ class Issue extends WebPageClass
     }
 
     /**
+     * 
+     * @return IssueComment
+     */
+    public function getLastComment()
+    {
+        $comment = new IssueComment();
+        if ($comment->loadFromCode($this->lastcommid)) {
+            return $comment;
+        }
+
+        foreach (array_reverse($this->getComments()) as $comm) {
+            return $comm;
+        }
+
+        return $comment;
+    }
+
+    /**
      * Returns contact model from last comment.
      *
      * @return Contacto
@@ -177,6 +202,35 @@ class Issue extends WebPageClass
         $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
         $html = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $this->body);
         return nl2br($html);
+    }
+
+    /**
+     * 
+     * @param int    $idcontacto
+     * @param string $text
+     * @param bool   $close
+     *
+     * @return bool
+     */
+    public function newComment($idcontacto, $text, $close = false)
+    {
+        $comment = new IssueComment();
+        $comment->body = $text;
+        $comment->idcontacto = $idcontacto;
+        $comment->idissue = $this->idissue;
+        if ($comment->save()) {
+            $this->lastcommid = $comment->primaryColumnValue();
+
+            /// update issue
+            $this->lastcommidcontacto = $idcontacto;
+            $this->closed = $close;
+            $this->save();
+
+            $this->evaluateSolution();
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -236,6 +290,46 @@ class Issue extends WebPageClass
         }
 
         return parent::url($type, $list);
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    protected function evaluateSolution()
+    {
+        /// issue must be closed and last comment from author to continue
+        if (!$this->closed || $this->lastcommidcontacto != $this->idcontacto) {
+            return false;
+        }
+
+        $idcontacts = [];
+        foreach ($this->getComments() as $comm) {
+            if (empty($comm->idcontacto) || $comm->idcontacto == $issue->idcontacto) {
+                continue;
+            }
+
+            $idcontacts[] = $comm->idcontacto;
+        }
+
+        if (empty($idcontacts)) {
+            return false;
+        }
+
+        shuffle($idcontacts);
+
+        /// add log message
+        $teamLog = new WebTeamLog();
+        $where = [new DataBaseWhere('link', $issue->url())];
+        if ($teamLog->loadFromCode('', $where)) {
+            return;
+        }
+
+        $teamLog->description = $issue->title() . ' solved';
+        $teamLog->idcontacto = $idcontacts[0];
+        $teamLog->idteam = AppSettings::get('community', 'idteamsup');
+        $teamLog->link = $issue->url();
+        return $teamLog->save();
     }
 
     /**

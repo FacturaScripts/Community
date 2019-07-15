@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,12 +18,11 @@
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>  
 -->
-
 <view>
     <columns>
         <group name="main">
             <column name="title" numcolumns="4" order="100">
-                <widget type="text" fieldname="title" required="" />
+                <widget type="text" fieldname="title" maxlength="200" required="true" />
             </column>
             <column name="parent" numcolumns="4" order="110">
                 <widget type="autocomplete" fieldname="idparent">
@@ -31,17 +30,25 @@
                 </widget>
             </column>
             <column name="sort" numcolumns="4" order="120">
-                <widget type="number" fieldname="ordernum" />
+                <widget type="number" fieldname="ordernum" icon="fas fa-sort" />
             </column>
             <column name="body" numcolumns="12" order="130">
                 <widget type="markdown" fieldname="body" />
             </column>
             <column name="language" order="140">
-                <widget type="text" fieldname="langcode" readonly="true" />
+                <widget type="text" fieldname="langcode" icon="fas fa-language" readonly="true" />
             </column>
             <column name="project" order="150">
-                <widget type="select" fieldname="idproject" required="">
+                <widget type="select" fieldname="idproject" icon="fas fa-folder" required="true">
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"></values>
+                </widget>
+            </column>
+            <column name="lastmod" title="last-update" order="160">
+                <widget type="date" fieldname="lastmod" readonly="true" />
+            </column>
+            <column name="contact" display="none" order="170">
+                <widget type="autocomplete" fieldname="lastidcontacto" onclick="EditContacto" readonly="true">
+                    <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
         </group>

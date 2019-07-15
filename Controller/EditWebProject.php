@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,14 +20,14 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Lib\ExtendedController\BaseView;
-use FacturaScripts\Dinamic\Lib\ExtendedController;
+use FacturaScripts\Core\Lib\ExtendedController\EditController;
 
 /**
  * Description of EditWebProject controller.
  *
  * @author Carlos García Gómez <carlos@facturascripts.com>
  */
-class EditWebProject extends ExtendedController\EditController
+class EditWebProject extends EditController
 {
 
     /**
@@ -47,11 +47,9 @@ class EditWebProject extends ExtendedController\EditController
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['title'] = 'project';
         $pageData['menu'] = 'web';
+        $pageData['title'] = 'project';
         $pageData['icon'] = 'fas fa-folder-open';
-        $pageData['showonmenu'] = false;
-
         return $pageData;
     }
 
@@ -61,9 +59,15 @@ class EditWebProject extends ExtendedController\EditController
     protected function createViews()
     {
         parent::createViews();
-        $this->addListView('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
+        $this->setTabsPosition('bottom');
+
+        /// builds
         $this->addEditListView('EditWebBuild', 'WebBuild', 'builds', 'fas fa-file-archive');
 
+        /// documentation
+        $this->addListView('ListWebDocPage', 'WebDocPage', 'documentation', 'fas fa-book');
+        $this->views['ListWebDocPage']->addOrderBy(['lastmod'], 'last-update', 2);
+        $this->views['ListWebDocPage']->searchFields = ['title', 'body'];
         $this->views['ListWebDocPage']->disableColumn('project', true);
     }
 
@@ -83,6 +87,7 @@ class EditWebProject extends ExtendedController\EditController
 
             case 'EditWebBuild':
                 $view->loadData(false, [new DataBaseWhere('idproject', $idproject)], ['version' => 'DESC']);
+                $view->model->version = 0.01 + (float) $this->getViewModelValue('EditWebProject', 'version');
                 break;
 
             default:
