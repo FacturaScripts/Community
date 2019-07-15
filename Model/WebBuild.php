@@ -119,8 +119,12 @@ class WebBuild extends Base\ModelClass
     public function delete()
     {
         $attachedFile = $this->getAttachedFile();
-        if ($attachedFile->delete()) {
-            return parent::delete();
+        if ($attachedFile->delete() && parent::delete()) {
+            $project = $this->getProject();
+            $project->updateStats();
+            $project->save();
+
+            return true;
         }
 
         return false;
@@ -215,13 +219,9 @@ class WebBuild extends Base\ModelClass
     public function save()
     {
         if (parent::save()) {
-            /// update project stats
             $project = $this->getProject();
-            if ($this->version > $project->version) {
-                $project->lastmod = $this->date;
-                $project->version = $this->version;
-                $project->save();
-            }
+            $project->updateStats();
+            $project->save();
 
             return true;
         }

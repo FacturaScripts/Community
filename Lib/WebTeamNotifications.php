@@ -50,7 +50,7 @@ class WebTeamNotifications
         $publication = new Publication();
         if (!empty($team->defaultpublication) && $publication->loadFromCode($team->defaultpublication)) {
             $url = AppSettings::get('webportal', 'url', '');
-            $txt .= "<br/><br/><a href='" . $url . '/' . $publication->url() . "'>" . $publication->title . "</a>"
+            $txt .= "<br/><br/><a href='" . $url . '/' . $publication->url('public') . "'>" . $publication->title . "</a>"
                 . "<br/>" . $publication->description();
         }
 

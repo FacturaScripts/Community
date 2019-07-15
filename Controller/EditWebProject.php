@@ -87,7 +87,10 @@ class EditWebProject extends EditController
 
             case 'EditWebBuild':
                 $view->loadData(false, [new DataBaseWhere('idproject', $idproject)], ['version' => 'DESC']);
-                $view->model->version = 0.01 + (float) $this->getViewModelValue('EditWebProject', 'version');
+                if (!$view->model->exists()) {
+                    /// increase version
+                    $view->model->version += $this->getViewModelValue('EditWebProject', 'version');
+                }
                 break;
 
             default:

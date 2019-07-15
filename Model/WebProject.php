@@ -141,6 +141,17 @@ class WebProject extends WebPageClass
 
     /**
      * 
+     * @return WebBuild[]
+     */
+    public function getBuilds()
+    {
+        $build = new WebBuild();
+        $where = [new DataBaseWhere('idproject', $this->idproject)];
+        return $build->all($where, ['version' => 'DESC'], 0, 0);
+    }
+
+    /**
+     * 
      * @return License
      */
     public function getLicense()
@@ -216,11 +227,16 @@ class WebProject extends WebPageClass
     public function updateStats()
     {
         $this->downloads = 0;
+        $this->lastmod = $this->creationdate;
+        $this->version = 0.0;
 
-        $webBuild = new WebBuild();
-        $where = [new DataBaseWhere('idproject', $this->idproject)];
-        foreach ($webBuild->all($where, [], 0, 0) as $build) {
+        foreach ($this->getBuilds() as $build) {
             $this->downloads += $build->downloads;
+
+            if ($build->version > $this->version) {
+                $this->version = $build->version;
+                $this->lastmod = $build->date;
+            }
         }
     }
 
