@@ -314,7 +314,7 @@ class WebProject extends WebPageClass
     protected function onInsert()
     {
         if ($this->plugin) {
-            $this->newTeamLog('created-plugin');
+            $this->newTeamLog('new-plugin');
         }
     }
 

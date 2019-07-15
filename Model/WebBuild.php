@@ -107,7 +107,7 @@ class WebBuild extends Base\ModelClass
         $this->date = date('d-m-Y');
         $this->downloads = 0;
         $this->hour = date('H:i:s');
-        $this->stable = false;
+        $this->stable = true;
         $this->version = 0.1;
     }
 

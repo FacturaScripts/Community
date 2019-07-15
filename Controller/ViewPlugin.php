@@ -190,6 +190,8 @@ class ViewPlugin extends EditSectionController
             case 'EditWebBuild':
                 $where = [new DataBaseWhere('idproject', $project->idproject)];
                 $this->sections[$sectionName]->loadData('', $where, ['version' => 'DESC']);
+                /// increase version
+                $this->sections[$sectionName]->model->version += $this->getMainModel()->version;
                 break;
 
             case 'EditWebProject':
