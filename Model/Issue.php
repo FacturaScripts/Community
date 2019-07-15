@@ -305,7 +305,7 @@ class Issue extends WebPageClass
 
         $idcontacts = [];
         foreach ($this->getComments() as $comm) {
-            if (empty($comm->idcontacto) || $comm->idcontacto == $issue->idcontacto) {
+            if (empty($comm->idcontacto) || $comm->idcontacto == $this->idcontacto) {
                 continue;
             }
 
@@ -320,15 +320,15 @@ class Issue extends WebPageClass
 
         /// add log message
         $teamLog = new WebTeamLog();
-        $where = [new DataBaseWhere('link', $issue->url())];
+        $where = [new DataBaseWhere('link', $this->url())];
         if ($teamLog->loadFromCode('', $where)) {
             return;
         }
 
-        $teamLog->description = $issue->title() . ' solved';
+        $teamLog->description = $this->title() . ' solved';
         $teamLog->idcontacto = $idcontacts[0];
         $teamLog->idteam = AppSettings::get('community', 'idteamsup');
-        $teamLog->link = $issue->url();
+        $teamLog->link = $this->url();
         return $teamLog->save();
     }
 
