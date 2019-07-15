@@ -24,6 +24,7 @@
     "expelled-from-team-msg": "We regret to inform you that you have been expelled from the team <a href='%link%'>%teamName%</a>. Please read the team requirements or use the contact section for more information.",
     "home": "Home",
     "import": "Import",
+    "issue-solved": "%title% solved.",
     "join-team": "Join %team% team",
     "langcode": "Lang code",
     "languages": "Languages",

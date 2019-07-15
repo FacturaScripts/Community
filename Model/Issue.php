@@ -325,7 +325,7 @@ class Issue extends WebPageClass
             return;
         }
 
-        $teamLog->description = $this->title() . ' solved';
+        $teamLog->description = self::$i18n->trans('issue-solved', ['%title%' => $this->title()]);
         $teamLog->idcontacto = $idcontacts[0];
         $teamLog->idteam = AppSettings::get('community', 'idteamsup');
         $teamLog->link = $this->url();

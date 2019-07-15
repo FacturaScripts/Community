@@ -24,6 +24,7 @@
     "expelled-from-team-msg": "Lamentamos informarle de que ha sido expulsado del equipo <a href='%link%'>%teamName%</a>. Por favor, lea los requisitos del equipo o use la sección contacto para más información.",
     "home": "Portada",
     "import": "Importar",
+    "issue-solved": "%title% solucionada.",
     "join-team": "Únase al equipo %team%",
     "langcode": "Código de idioma",
     "languages": "Idiomas",
