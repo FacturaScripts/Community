@@ -232,7 +232,7 @@ class WebTeamReport
      */
     protected function loadMail($teamName, $publications, $logs)
     {
-        $mail = $this->emailTools->newMail();
+        $mail = $this->emailTools->newMail(AppSettings::get('webportal', 'title'));
         $mail->Subject = $this->i18n->trans('weekly-report', ['%teamName%' => $teamName]);
         $mail->msgHTML($this->buildTableBody($mail->Subject, $publications, $logs));
 

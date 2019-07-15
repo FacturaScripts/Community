@@ -83,7 +83,7 @@ class WebTeamNotifications
     protected static function notifySend($contact, $title, $txt)
     {
         $emailTools = new EmailTools();
-        $mail = $emailTools->newMail();
+        $mail = $emailTools->newMail(AppSettings::get('webportal', 'title'));
         $mail->addAddress($contact->email, $contact->fullName());
         $mail->Subject = $title;
 

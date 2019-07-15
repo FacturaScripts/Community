@@ -53,7 +53,7 @@ class IssueNotification
         ];
 
         $emailTools = new EmailTools();
-        $mail = $emailTools->newMail();
+        $mail = $emailTools->newMail(AppSettings::get('webportal', 'title'));
         $mail->msgHTML($emailTools->getTemplateHtml($params));
         $mail->Subject = $title;
         static::addTeamEmails($mail, $issue);
@@ -84,7 +84,7 @@ class IssueNotification
         ];
 
         $emailTools = new EmailTools();
-        $mail = $emailTools->newMail();
+        $mail = $emailTools->newMail(AppSettings::get('webportal', 'title'));
         $mail->msgHTML($emailTools->getTemplateHtml($params));
         $mail->Subject = $title;
 
