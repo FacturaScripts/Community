@@ -250,7 +250,10 @@ class WebTeamMember extends Base\ModelClass
     protected function saveInsert(array $values = [])
     {
         if (parent::saveInsert($values)) {
-            $this->newTeamLog('wants-to-join-team');
+            if (!$this->accepted) {
+                $this->newTeamLog('wants-to-join-team');
+            }
+
             return true;
         }
 

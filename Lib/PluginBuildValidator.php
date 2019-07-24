@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,24 +19,32 @@
 namespace FacturaScripts\Plugins\Community\Lib;
 
 use FacturaScripts\Core\Base\MiniLog;
+use FacturaScripts\Core\Base\Translator;
 use ZipArchive;
 
 /**
  * Description of PluginBuildValidator
  *
- * @author Carlos García Gómez
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class PluginBuildValidator
 {
 
     /**
      *
+     * @var Translator
+     */
+    protected $i18n;
+
+    /**
+     *
      * @var MiniLog
      */
-    private $minilog;
+    protected $minilog;
 
     public function __construct()
     {
+        $this->i18n = new Translator();
         $this->minilog = new MiniLog();
     }
 
@@ -52,12 +60,14 @@ class PluginBuildValidator
         $ini = parse_ini_file($path);
         foreach ($params as $key => $value) {
             if (!isset($ini[$key])) {
-                $this->minilog->alert('facturascripts.ini, ' . $key . ' not found');
+                $this->minilog->alert($this->i18n->trans('facturascripts-ini-key-not-found', ['%key%' => $key]));
                 return false;
             }
 
             if ($ini[$key] != $value) {
-                $this->minilog->alert('facturascripts.ini, wrong ' . $key . '.');
+                $this->minilog->alert(
+                    $this->i18n->trans('facturascripts-ini-wrong-value', ['%key%' => $key, '%value%' => $ini[$key], '%expected%' => $value])
+                );
                 return false;
             }
         }
@@ -99,7 +109,7 @@ class PluginBuildValidator
         }
 
         if (!$found) {
-            $this->minilog->alert('facturascripts.ini not found');
+            $this->minilog->alert($this->i18n->trans('facturascripts-ini-not-found'));
         }
 
         $zip->close();
