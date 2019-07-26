@@ -30,7 +30,7 @@
     </column>
     <column>
         <name>idteam</name>
-        <type>serial</type>
+        <type>integer</type>
     </column>
     <column>
         <name>lastip</name>
