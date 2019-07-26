@@ -156,12 +156,9 @@ class DownloadBuild extends PortalController
     protected function getBuilds(): array
     {
         $data = [];
-        $buildModel = new WebBuild();
         foreach ($this->currentProject->all([], [], 0, 0) as $project) {
-            $projectData = ['project' => $project->idproject, 'builds' => []];
-            $where = [new DataBaseWhere('idproject', $project->idproject)];
-            $order = ['version' => 'DESC'];
-            foreach ($buildModel->all($where, $order, 0, 5) as $build) {
+            $projectData = ['project' => $project->idproject, 'name' => $project->name, 'builds' => []];
+            foreach ($project->getBuilds() as $build) {
                 $projectData['builds'][] = [
                     'version' => $build->version,
                     'stable' => $build->stable,
