@@ -110,16 +110,43 @@ class PluginBuildValidator
     {
         $ini = parse_ini_string($iniContent);
         foreach ($params as $key => $value) {
-            if (!isset($ini[$key])) {
+            if (!isset($ini[$key]) && $key !== 'max_version') {
                 $this->minilog->alert($this->i18n->trans('facturascripts-ini-key-not-found', ['%key%' => $key]));
                 return false;
             }
 
-            if ($ini[$key] != $value) {
-                $this->minilog->alert(
-                    $this->i18n->trans('facturascripts-ini-wrong-value', ['%key%' => $key, '%value%' => $ini[$key], '%expected%' => $value])
-                );
-                return false;
+            switch ($key) {
+                case 'max_version':
+                    if ((float) $ini['min_version'] > (float) $value) {
+                        $this->minilog->alert(
+                            $this->i18n->trans(
+                                'facturascripts-ini-wrong-value', [
+                                '%key%' => 'min_version',
+                                '%value%' => $ini['min_version'],
+                                '%expected%' => $params['min_version']
+                                ]
+                            )
+                        );
+                        return false;
+                    }
+                    break;
+
+                case 'min_version':
+                    if ((float) $ini[$key] < (float) $value) {
+                        $this->minilog->alert(
+                            $this->i18n->trans('facturascripts-ini-wrong-value', ['%key%' => $key, '%value%' => $ini[$key], '%expected%' => $value])
+                        );
+                        return false;
+                    }
+                    break;
+
+                default:
+                    if ($ini[$key] != $value) {
+                        $this->minilog->alert(
+                            $this->i18n->trans('facturascripts-ini-wrong-value', ['%key%' => $key, '%value%' => $ini[$key], '%expected%' => $value])
+                        );
+                        return false;
+                    }
             }
         }
 

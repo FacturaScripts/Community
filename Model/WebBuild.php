@@ -248,7 +248,7 @@ class WebBuild extends Base\ModelClass
     {
         if (empty($this->idfile)) {
             $filePath = FS_FOLDER . DIRECTORY_SEPARATOR . 'MyFiles' . DIRECTORY_SEPARATOR . $this->path;
-            if (!$this->testPlugin($filePath)) {
+            if (!$this->testFile($filePath)) {
                 unlink($filePath);
                 return false;
             }
@@ -286,7 +286,7 @@ class WebBuild extends Base\ModelClass
      *
      * @return bool
      */
-    protected function testPlugin($filePath)
+    protected function testFile($filePath)
     {
         $project = new WebProject();
         if (!$project->loadFromCode($this->idproject)) {
@@ -304,7 +304,7 @@ class WebBuild extends Base\ModelClass
         }
 
         /// is zip file ok?
-        $params = ['version' => $this->version, 'name' => $project->name];
+        $params = ['name' => $project->name, 'min_version' => 2018, 'version' => $this->version];
         $validator = new PluginBuildValidator();
         if ($validator->validateZip($filePath, $params)) {
             return true;
