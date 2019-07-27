@@ -55,9 +55,60 @@ class PluginBuildValidator
      *
      * @return bool
      */
-    public function validateIni($path, $params)
+    public function validateZip($path, $params)
     {
-        $ini = parse_ini_file($path);
+        $zipFile = new ZipArchive();
+        $result = $zipFile->open($path, ZipArchive::CHECKCONS);
+        if (true !== $result) {
+            $this->minilog->error('ZIP error: ' . $result);
+            return false;
+        }
+
+        /// get the facturascripts.ini file inside the zip
+        $zipIndex = $zipFile->locateName('facturascripts.ini', ZipArchive::FL_NODIR);
+        if (false === $zipIndex) {
+            $this->minilog->alert($this->i18n->trans('facturascripts-ini-not-found'));
+            return false;
+        } else if (!$this->validateIni($zipFile->getFromIndex($zipIndex), $params)) {
+            return false;
+        }
+
+        /// the zip must contain the plugin folder
+        $pathINI = $zipFile->getNameIndex($zipIndex);
+        if (count(explode('/', $pathINI)) !== 2) {
+            $this->minilog->error($this->i18n->trans('zip-error-wrong-structure'));
+            return false;
+        }
+
+        /// get folders inside the zip file
+        $folders = [];
+        for ($index = 0; $index < $zipFile->numFiles; $index++) {
+            $data = $zipFile->statIndex($index);
+            $path = explode('/', $data['name']);
+            if (count($path) > 1) {
+                $folders[$path[0]] = $path[0];
+            }
+        }
+
+        //// the zip must contain a single plugin
+        if (count($folders) != 1) {
+            $this->minilog->error($this->i18n->trans('zip-error-wrong-structure'));
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 
+     * @param string $iniContent
+     * @param array  $params
+     *
+     * @return bool
+     */
+    protected function validateIni($iniContent, $params)
+    {
+        $ini = parse_ini_string($iniContent);
         foreach ($params as $key => $value) {
             if (!isset($ini[$key])) {
                 $this->minilog->alert($this->i18n->trans('facturascripts-ini-key-not-found', ['%key%' => $key]));
@@ -73,46 +124,5 @@ class PluginBuildValidator
         }
 
         return true;
-    }
-
-    /**
-     * 
-     * @param string $path
-     * @param array  $params
-     *
-     * @return bool
-     */
-    public function validateZip($path, $params)
-    {
-        $zip = new ZipArchive();
-        $zipStatus = $zip->open($path, ZipArchive::CHECKCONS);
-        if ($zipStatus !== true) {
-            $this->minilog->alert('ZIP error: ' . $zipStatus);
-            return false;
-        }
-
-        /// extract facturascripts.ini
-        $found = false;
-        $result = false;
-        for ($i = 0; $i < $zip->numFiles; $i++) {
-            $filename = $zip->getNameIndex($i);
-            if (basename($filename) != 'facturascripts.ini') {
-                continue;
-            }
-
-            $found = true;
-            $newPath = FS_FOLDER . DIRECTORY_SEPARATOR . 'MyFiles' . DIRECTORY_SEPARATOR . mt_rand(1, 99999999) . '.ini';
-            if (copy("zip://" . $path . "#" . $filename, $newPath)) {
-                $result = $this->validateIni($newPath, $params);
-                unlink($newPath);
-            }
-        }
-
-        if (!$found) {
-            $this->minilog->alert($this->i18n->trans('facturascripts-ini-not-found'));
-        }
-
-        $zip->close();
-        return $result;
     }
 }
