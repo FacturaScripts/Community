@@ -22,7 +22,11 @@
                 {% endif %}
             </p>
             {% set status = fsc.getMemberStatus() %}
-            {% if status == 'out' %}
+            {% if fsc.contact is empty %}
+                <a href="#" class="btn btn-success" onclick="return showModal('loginModal');">
+                    <i class="fas fa-sign-in-alt fa-fw" aria-hidden="true"></i> {{ i18n.trans('join-team', {'%team%': team.name}) }}
+                </a>
+            {% elseif status == 'out' %}
                 <a href="#" class="btn btn-success" onclick="return showModal('modalJoinTeam');">
                     <i class="fas fa-sign-in-alt fa-fw" aria-hidden="true"></i> {{ i18n.trans('join-team', {'%team%': team.name}) }}
                 </a>

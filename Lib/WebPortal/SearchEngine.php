@@ -58,7 +58,7 @@ class SearchEngine extends ParentEngine
         $defaultIdproject = AppSettings::get('community', 'idproject', '');
 
         $docPage = new WebDocPage();
-        $where = [new DataBaseWhere('body|title', $query, 'LIKE')];
+        $where = [new DataBaseWhere('body|title', $query, 'XLIKE')];
         foreach ($docPage->all($where, ['visitcount' => 'DESC']) as $docPage) {
             $this->addSearchResults($results, [
                 'icon' => 'fas fa-book',
@@ -81,7 +81,7 @@ class SearchEngine extends ParentEngine
     {
         $pluginProject = new WebProject();
         $where = [
-            new DataBaseWhere('name|description', $query, 'LIKE'),
+            new DataBaseWhere('name|description', $query, 'XLIKE'),
             new DataBaseWhere('plugin', true),
             new DataBaseWhere('private', false)
         ];
@@ -106,7 +106,7 @@ class SearchEngine extends ParentEngine
     protected function findPublications(&$results, $query, $priority = -1)
     {
         $publication = new Publication();
-        $where = [new DataBaseWhere('title|body', $query, 'LIKE')];
+        $where = [new DataBaseWhere('title|body', $query, 'XLIKE')];
         foreach ($publication->all($where) as $pub) {
             $this->addSearchResults($results, [
                 'icon' => 'fas fa-newspaper',

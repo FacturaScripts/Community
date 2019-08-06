@@ -20,7 +20,7 @@ namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Plugins\Community\Lib;
+use FacturaScripts\Plugins\Community\Lib\WebTeamMethodsTrait;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 
@@ -32,7 +32,7 @@ use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
 class EditWebDocPage extends EditSectionController
 {
 
-    use Lib\WebTeamMethodsTrait;
+    use WebTeamMethodsTrait;
 
     /**
      *
@@ -93,6 +93,12 @@ class EditWebDocPage extends EditSectionController
 
     protected function createSections()
     {
+        if (!$this->contactCanEdit()) {
+            $idteam = AppSettings::get('community', 'idteamdoc', '');
+            $this->contactNotInTeamError($idteam);
+            return;
+        }
+
         $this->addEditSection('EditWebDocPage', 'WebDocPage', 'documentation');
         if ($this->contact) {
             $this->sections['EditWebDocPage']->model->setCurrentContact($this->contact->idcontacto);
@@ -162,12 +168,6 @@ class EditWebDocPage extends EditSectionController
      */
     protected function loadDocPage(string $sectionName)
     {
-        if (!$this->contactCanEdit()) {
-            $idteam = AppSettings::get('community', 'idteamdoc', '');
-            $this->contactNotInTeamError($idteam);
-            return;
-        }
-
         $this->sections[$sectionName]->loadData($this->getMainModel()->primaryColumnValue());
         $this->title = $this->getMainModel()->title;
         $this->description = $this->getMainModel()->title;

@@ -20,7 +20,9 @@ namespace FacturaScripts\Plugins\Community\Lib;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Dinamic\Lib\EmailTools;
+use FacturaScripts\Core\Base\Translator;
+use FacturaScripts\Dinamic\Lib\Email\NewMail;
+use FacturaScripts\Dinamic\Lib\Email\ButtonBlock;
 use FacturaScripts\Plugins\Community\Model\Issue;
 use FacturaScripts\Plugins\Community\Model\IssueComment;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
@@ -39,25 +41,17 @@ class IssueNotification
      */
     public static function notify(&$issue)
     {
-        $contact = $issue->getContact();
+        $i18n = new Translator();
         $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
-        $title = $issue->title() . ' de ' . $contact->alias();
-        $txt = '<h4>' . $issue->title() . '</h4>'
-            . '<p>' . nl2br($issue->description()) . ' - <a href="' . $link . '">Leer más...</a></p>';
 
-        $params = [
-            'body' => $txt,
-            'company' => AppSettings::get('webportal', 'title'),
-            'footer' => AppSettings::get('webportal', 'copyright'),
-            'title' => $title,
-        ];
+        $mail = new NewMail();
+        $mail->fromName = AppSettings::get('webportal', 'title');
+        $mail->title = $issue->title() . ' de ' . $issue->getContactAlias();
+        $mail->text = $issue->description();
+        $mail->addMainBlock(new ButtonBlock($i18n->trans('read-more'), $link));
 
-        $emailTools = new EmailTools();
-        $mail = $emailTools->newMail(AppSettings::get('webportal', 'title'));
-        $mail->msgHTML($emailTools->getTemplateHtml($params));
-        $mail->Subject = $title;
         static::addTeamEmails($mail, $issue);
-        $emailTools->send($mail);
+        $mail->send();
     }
 
     /**
@@ -66,36 +60,28 @@ class IssueNotification
      */
     public static function notifyComment(&$comment)
     {
-        $issue = new Issue();
-        $issue->loadFromCode($comment->idissue);
+        $i18n = new Translator();
+        $issue = $comment->getIssue();
         $contact = $issue->getContact();
         $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
-        $title = $issue->title() . ': comentario de ' . $comment->getContactAlias();
-        $txt = '<h4>' . $issue->title() . '</h4>'
-            . '<p>' . nl2br($issue->description()) . '</p>'
-            . '<h4>Comentario de ' . $comment->getContactAlias() . '</h4>'
-            . '<p>' . nl2br($comment->resume(60)) . ' - <a href="' . $link . '">Leer más...</a></p>';
 
-        $params = [
-            'body' => $txt,
-            'company' => AppSettings::get('webportal', 'title'),
-            'footer' => AppSettings::get('webportal', 'copyright'),
-            'title' => $title,
-        ];
-
-        $emailTools = new EmailTools();
-        $mail = $emailTools->newMail(AppSettings::get('webportal', 'title'));
-        $mail->msgHTML($emailTools->getTemplateHtml($params));
-        $mail->Subject = $title;
+        $mail = new NewMail();
+        $mail->fromName = AppSettings::get('webportal', 'title');
+        $mail->title = $issue->title() . ': comentario de ' . $comment->getContactAlias();
+        $mail->text = '<b>' . $issue->title() . '</b><br/>' . $issue->description()
+            . '<br/><br/>'
+            . '<b>Comentario de ' . $comment->getContactAlias() . '</b><br/>'
+            . $comment->resume(60);
+        $mail->addMainBlock(new ButtonBlock($i18n->trans('read-more'), $link));
 
         if ($issue->lastcommidcontacto === $comment->idcontacto) {
             /// don't notify
             return;
         } elseif ($issue->idcontacto !== $comment->idcontacto) {
             $mail->addAddress($contact->email, $contact->fullName());
-            $emailTools->send($mail);
+            $mail->send();
         } elseif (static::addCommentsOtherEmails($mail, $issue)) {
-            $emailTools->send($mail);
+            $mail->send();
         }
     }
 
@@ -122,8 +108,8 @@ class IssueNotification
 
     /**
      * 
-     * @param object $mail
-     * @param Issue  $issue
+     * @param NewMail $mail
+     * @param Issue   $issue
      */
     protected static function addTeamEmails(&$mail, &$issue)
     {

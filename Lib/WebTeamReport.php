@@ -21,7 +21,8 @@ namespace FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Translator;
-use FacturaScripts\Dinamic\Lib\EmailTools;
+use FacturaScripts\Dinamic\Lib\Email\NewMail;
+use FacturaScripts\Core\Lib\Email\TableBlock;
 use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
@@ -43,19 +44,12 @@ class WebTeamReport
 
     /**
      *
-     * @var EmailTools
-     */
-    protected $emailTools;
-
-    /**
-     *
      * @var Translator
      */
     protected $i18n;
 
     public function __construct()
     {
-        $this->emailTools = new EmailTools();
         $this->i18n = new Translator();
     }
 
@@ -100,7 +94,8 @@ class WebTeamReport
             $mail = $this->loadMail($team->name, $publication, $logs);
             foreach ($members as $member) {
                 if (self::MAX_EMAIL_BCC == $iterator) {
-                    $this->emailTools->send($mail);
+                    $mail->send();
+
                     $mail = $this->loadMail($team->name, $publication, $logs);
                     $iterator = 0;
                 } else {
@@ -111,61 +106,56 @@ class WebTeamReport
             }
 
             if ($iterator <= self::MAX_EMAIL_BCC) {
-                $this->emailTools->send($mail);
+                $mail->send();
             }
         }
     }
 
     /**
-     * Build the body of the tabla for the email.
+     * Build the body for the email.
      * 
-     * @param string $title
+     * @param NewMail       $mail
      * @param Publication[] $publications
      * @param WebTeamLog[]  $logs
-     *
-     * @return string
      */
-    protected function buildTableBody($title, $publications, $logs): string
+    protected function buildTableBody(&$mail, $publications, $logs)
     {
-        $content = '';
         $url = AppSettings::get('webportal', 'url', '');
 
         /// publications
         if (!empty($publications)) {
-            $content .= '<h1>' . $this->i18n->trans('publications') . '</h1>'
-                . '<ul>';
+            $pubHeaders = [$this->i18n->trans('publications'), $this->i18n->trans('date')];
+            $pubRows = [];
             foreach ($publications as $pub) {
-                $content .= '<li><a href="' . $url . $pub->url('public') . '">' . $pub->title . '</a></li>';
+                $pubRows[] = [
+                    '<a href="' . $url . $pub->url('public') . '">' . $pub->title . '</a>',
+                    $pub->creationdate
+                ];
             }
-            $content .= '</ul>';
+
+            $mail->addMainBlock(new TableBlock($pubHeaders, $pubRows));
         }
 
         /// logs
         if (!empty($logs)) {
-            $content .= '<h2>' . $this->i18n->trans('logs') . '</h2>'
-                . '<ul>';
+            $logHeaders = [$this->i18n->trans('name'), $this->i18n->trans('description'), $this->i18n->trans('date')];
+            $logRows = [];
             foreach ($logs as $log) {
-                $content .= '<li>';
                 if (empty($log->link)) {
-                    $content .= $log->description . ' - ' . $log->time;
-                } elseif (substr($log->link, 0, 1) === '/') {
-                    $content .= '<a href="' . $url . $log->link . '">' . $log->description . '</a> - ' . $log->time;
-                } else {
-                    $content .= '<a href="' . $url . '/' . $log->link . '">' . $log->description . '</a> - ' . $log->time;
+                    $logRows[] = [$log->getContactAlias(), $log->description, $log->time];
+                    continue;
                 }
 
-                $content .= ' - ' . $log->getContactAlias() . '</li>';
-            }
-            $content .= '</ul>';
-        }
+                if (substr($log->link, 0, 1) === '/') {
+                    $logRows[] = [$log->getContactAlias(), '<a href="' . $url . $log->link . '">' . $log->description . '</a>', $log->time];
+                    continue;
+                }
 
-        $params = [
-            'body' => $content,
-            'company' => $title,
-            'footer' => $title,
-            'title' => $title,
-        ];
-        return $this->emailTools->getTemplateHtml($params);
+                $logRows[] = [$log->getContactAlias(), '<a href="' . $url . '/' . $log->link . '">' . $log->description . '</a>', $log->time];
+            }
+
+            $mail->addMainBlock(new TableBlock($logHeaders, $logRows));
+        }
     }
 
     /**
@@ -232,10 +222,10 @@ class WebTeamReport
      */
     protected function loadMail($teamName, $publications, $logs)
     {
-        $mail = $this->emailTools->newMail(AppSettings::get('webportal', 'title'));
-        $mail->Subject = $this->i18n->trans('weekly-report', ['%teamName%' => $teamName]);
-        $mail->msgHTML($this->buildTableBody($mail->Subject, $publications, $logs));
-
+        $mail = new NewMail();
+        $mail->fromName = AppSettings::get('webportal', 'title');
+        $mail->title = $mail->text = $this->i18n->trans('weekly-report', ['%teamName%' => $teamName]);
+        $this->buildTableBody($mail, $publications, $logs);
         return $mail;
     }
 }

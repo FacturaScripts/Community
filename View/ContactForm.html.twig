@@ -34,7 +34,7 @@
         {% endfor %}
         {% for tree in fsc.formTrees %}
             <dd>
-                <i class="{{ tree.icon }} fa-fw" aria-hidden="true"></i> <a href="{{ tree.url('public') }}">{{ tree.title }}</a>
+                <i class="{{ tree.icon }} fa-fw" aria-hidden="true"></i>&nbsp; <a href="{{ tree.url('public') }}">{{ tree.title }}</a>
                 {% if fsc.user %}
                     <span class="label">{{ tree.visitcount }}</span>
                 {% endif %}

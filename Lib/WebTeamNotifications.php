@@ -20,7 +20,7 @@ namespace FacturaScripts\Plugins\Community\Lib;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\Translator;
-use FacturaScripts\Dinamic\Lib\EmailTools;
+use FacturaScripts\Dinamic\Lib\Email\NewMail;
 use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
@@ -82,19 +82,11 @@ class WebTeamNotifications
      */
     protected static function notifySend($contact, $title, $txt)
     {
-        $emailTools = new EmailTools();
-        $mail = $emailTools->newMail(AppSettings::get('webportal', 'title'));
+        $mail = new NewMail();
+        $mail->fromName = AppSettings::get('webportal', 'title');
         $mail->addAddress($contact->email, $contact->fullName());
-        $mail->Subject = $title;
-
-        $params = [
-            'body' => $txt,
-            'company' => AppSettings::get('webportal', 'title'),
-            'footer' => AppSettings::get('webportal', 'copyright'),
-            'title' => $title,
-        ];
-        $mail->msgHTML($emailTools->getTemplateHtml($params));
-
-        $emailTools->send($mail);
+        $mail->title = $title;
+        $mail->text = $txt;
+        $mail->send();
     }
 }
