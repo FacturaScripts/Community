@@ -7,20 +7,19 @@
         <div class="container">
             <div class="columns">
                 <div class="column col-6">
-                    <div class="show-xs">
-                        <div class="dropdown">
-                            <a href="#" class="btn dropdown-toggle" tabindex="0">
+                    <a class="btn hide-md" href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">
+                        <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i> {{ fsc.currentProject.name }}
+                    </a>
+                    <div class="show-md mb-2">
+                        <span class="dropdown">
+                            <a class="btn dropdown-toggle" tabindex="0">
                                 <i class="fas fa-book fa-fw" aria-hidden="true"></i>
-                                {{ i18n.trans('index') }}
+                                {{ fsc.currentProject.name }}
                                 <i class="fas fa-caret-down fa-fw" aria-hidden="true"></i>
                             </a>
                             {{ macros.showIndexUlMenu(fsc.docIndex) }}
-                        </div>
-                        <br/><br/>
+                        </span>
                     </div>
-                    <a class="btn hide-xs" href="{{ asset(fsc.getProjectUrl(fsc.currentProject)) }}">
-                        <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i> {{ fsc.currentProject.name }}
-                    </a>
                 </div>
                 {% if fsc.contact or fsc.user %}
                     <div class="column text-right">
@@ -32,7 +31,7 @@
             </div>
             <div class="columns">
                 <div class="column">
-                    <div class="hide-xs">
+                    <div class="hide-md">
                         {{ macros.showIndexUl(fsc.docIndex) }}
                     </div>
                 </div>
@@ -42,7 +41,7 @@
                         {% set parentPage = fsc.docPage.getParentPage() %}
                         <b>{{ parentPage.title | raw  }}</b>
                     {% endif %}
-                    <h1>{{ fsc.docPage.title | raw }}</h1>
+                    <h1 class="h3">{{ fsc.docPage.title | raw }}</h1>
                     {{ fsc.docPage.body('html') | raw }}
                     {% if fsc.docPages is not empty %}
                         <h5>
@@ -64,6 +63,21 @@
                     {% endif %}
                 </div>
             </div>
+            {% if fsc.docPages is empty %}
+                <div class="columns mt-2 show-md">
+                    <div class="column">
+                        <h5>{{ i18n.trans('more') }}</h5>
+                        <div class="dropdown">
+                            <a class="btn dropdown-toggle" tabindex="0">
+                                <i class="fas fa-book fa-fw" aria-hidden="true"></i>
+                                {{ fsc.currentProject.name }}
+                                <i class="fas fa-caret-down fa-fw" aria-hidden="true"></i>
+                            </a>
+                            {{ macros.showIndexUlMenu(fsc.docIndex) }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
@@ -92,7 +106,7 @@
 {% macro showIndexUlMenu(items) %}
     {% import _self as macros %}
 
-    <ul class="menu menu-big" style="width: 285px;">
+    <ul class="menu menu-big">
         {% for item in items %}
             <li class="menu-item">
                 <a href="{{ item.page.url('public') }}">
