@@ -24,7 +24,7 @@
             <column name="code" order="100">
                 <widget type="text" fieldname="idcomment" readonly="true" />
             </column>
-            <column name="contact" order="110">
+            <column name="contact" level="2" order="110">
                 <widget type="autocomplete" fieldname="idcontacto" onclick="EditContacto">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
