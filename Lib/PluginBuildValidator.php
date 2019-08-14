@@ -58,45 +58,66 @@ class PluginBuildValidator
     public function validateZip($path, $params)
     {
         $zipFile = new ZipArchive();
+
+        /// can we open the file?
         $result = $zipFile->open($path, ZipArchive::CHECKCONS);
         if (true !== $result) {
             $this->minilog->error('ZIP error: ' . $result);
             return false;
         }
 
-        /// get the facturascripts.ini file inside the zip
-        $zipIndex = $zipFile->locateName('facturascripts.ini', ZipArchive::FL_NODIR);
-        if (false === $zipIndex) {
-            $this->minilog->alert($this->i18n->trans('facturascripts-ini-not-found'));
-            return false;
-        } else if (!$this->validateIni($zipFile->getFromIndex($zipIndex), $params)) {
-            return false;
+        if ($this->validatePluginStructure($zipFile, $params) && $this->validateComposer($zipFile) && $this->validateNPM($zipFile)) {
+            $zipFile->close();
+            return true;
         }
 
-        /// the zip must contain the plugin folder
-        $pathINI = $zipFile->getNameIndex($zipIndex);
-        if (count(explode('/', $pathINI)) !== 2) {
-            $this->minilog->error($this->i18n->trans('zip-error-wrong-structure'));
-            return false;
-        }
+        $zipFile->close();
+        return false;
+    }
 
+    /**
+     * 
+     * @param ZipArchive $zipFile
+     * @param int        $level
+     *
+     * @return array
+     */
+    protected function getZipFolders(&$zipFile, $level = 0)
+    {
         /// get folders inside the zip file
         $folders = [];
         for ($index = 0; $index < $zipFile->numFiles; $index++) {
             $data = $zipFile->statIndex($index);
             $path = explode('/', $data['name']);
             if (count($path) > 1) {
-                $folders[$path[0]] = $path[0];
+                $folders[$path[$level]] = $path[$level];
             }
         }
 
-        //// the zip must contain a single plugin
-        if (count($folders) != 1) {
-            $this->minilog->error($this->i18n->trans('zip-error-wrong-structure'));
-            return false;
+        return $folders;
+    }
+
+    /**
+     * 
+     * @param ZipArchive $zipFile
+     *
+     * @return bool
+     */
+    protected function validateComposer(&$zipFile)
+    {
+        $zipIndex = $zipFile->locateName('composer.json', ZipArchive::FL_NODIR);
+        if (false === $zipIndex) {
+            return true;
         }
 
-        return true;
+        foreach ($this->getZipFolders($zipFile, 1) as $folder) {
+            if ($folder === 'vendor') {
+                return true;
+            }
+        }
+
+        $this->minilog->alert($this->i18n->trans('composer-vendor-not-found'));
+        return false;
     }
 
     /**
@@ -148,6 +169,66 @@ class PluginBuildValidator
                         return false;
                     }
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * 
+     * @param ZipArchive $zipFile
+     *
+     * @return bool
+     */
+    protected function validateNPM(&$zipFile)
+    {
+        $zipIndex = $zipFile->locateName('package.json', ZipArchive::FL_NODIR);
+        if (false === $zipIndex) {
+            return true;
+        }
+
+        foreach ($this->getZipFolders($zipFile, 1) as $folder) {
+            if ($folder === 'node_modules') {
+                return true;
+            }
+        }
+
+        $this->minilog->alert($this->i18n->trans('node-modules-not-found'));
+        return false;
+    }
+
+    /**
+     * 
+     * @param ZipArchive $zipFile
+     * @param array      $params
+     *
+     * @return bool
+     */
+    protected function validatePluginStructure(&$zipFile, $params)
+    {
+        /// get the facturascripts.ini file inside the zip
+        $zipIndex = $zipFile->locateName('facturascripts.ini', ZipArchive::FL_NODIR);
+        if (false === $zipIndex) {
+            $this->minilog->alert($this->i18n->trans('facturascripts-ini-not-found'));
+            return false;
+        } else if (!$this->validateIni($zipFile->getFromIndex($zipIndex), $params)) {
+            return false;
+        }
+
+        /// the zip must contain the plugin folder
+        $pathINI = $zipFile->getNameIndex($zipIndex);
+        if (count(explode('/', $pathINI)) !== 2) {
+            $this->minilog->error($this->i18n->trans('zip-error-wrong-structure'));
+            return false;
+        }
+
+        /// get folders inside the zip file
+        $folders = $this->getZipFolders($zipFile);
+
+        //// the zip must contain a single plugin
+        if (count($folders) != 1) {
+            $this->minilog->error($this->i18n->trans('zip-error-wrong-structure'));
+            return false;
         }
 
         return true;

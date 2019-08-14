@@ -21,31 +21,31 @@
 <view>
     <columns>
         <group name="main">
-            <column name="contact" level="2" numcolumns="3" order="100">
+            <column name="contact" level="2" order="100">
                 <widget type="autocomplete" fieldname="idcontacto" onclick="EditContacto">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
-            <column name="creation-date" display="right" numcolumns="2" order="110">
-                <widget type="date" fieldname="creationdate" />
-            </column>
-            <column name="team" numcolumns="3" order="120">
-                <widget type="select" fieldname="idteam" onclick="EditWebTeam" required="true">
-                    <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
-                </widget>
-            </column>
-            <column name="project" numcolumns="2" order="110">
+            <column name="project" order="110">
                 <widget type="autocomplete" fieldname="idproject">
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"></values>
                 </widget>
             </column>
-            <column name="priority" numcolumns="2" display="right" order="130">
+            <column name="team" order="120">
+                <widget type="select" fieldname="idteam" onclick="EditWebTeam" required="true">
+                    <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
+                </widget>
+            </column>
+            <column name="priority" display="right" order="130">
                 <widget type="number" fieldname="priority" decimal="0" />
             </column>
-            <column name="body" numcolumns="12" order="130">
+            <column name="creation-date" display="right" numcolumns="2" order="140">
+                <widget type="date" fieldname="creationdate" readonly="true" />
+            </column>
+            <column name="body" numcolumns="12" order="150">
                 <widget type="textarea" fieldname="body" />
             </column>
-            <column name="closed" order="140">
+            <column name="closed" order="160">
                 <widget type="checkbox" fieldname="closed" />
             </column>
         </group>

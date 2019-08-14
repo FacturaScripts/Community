@@ -21,24 +21,21 @@
 <view>
     <columns>
         <group name="data" numcolumns="12">
-            <column name="name" order="100">
-                <widget type="text" fieldname="name" />
-            </column>
-            <column name="admin" order="110">
+            <column name="admin" order="100">
                 <widget type="autocomplete" fieldname="idcontacto">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
-            <column name="publication" order="120">
+            <column name="publication" order="110">
                 <widget type="autocomplete" fieldname="defaultpublication">
                     <values source="publications" fieldcode="idpublication" fieldtitle="title"></values>
                 </widget>
             </column>
-            <column name="max-inactivity-days" order="130">
+            <column name="max-inactivity-days" order="120">
                 <widget type="number" fieldname="maxinactivitydays" decimal="0" min="0" />
             </column>
-            <column name="creation-date" order="140">
-                <widget type="date" fieldname="creationdate" />
+            <column name="creation-date" order="130">
+                <widget type="date" fieldname="creationdate" readonly="true" />
             </column>
         </group>
         <group name="notes" numcolumns="12">
