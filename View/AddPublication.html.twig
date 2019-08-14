@@ -2,54 +2,61 @@
 
 {% block body %}
     <div class="body-section">
-        <br/>
         <form method="post">
             <input type="hidden" name="action" value="save"/>
             <div class="container grid-lg">
                 <div class="columns">
                     <div class="column">
-                        <h1>
-                            <i class="fas fa-newspaper fa-fw"></i> {{ i18n.trans('publication') }}
-                        </h1>
-                        <div class="form-group mb-2">
-                            <input type="text" name="title" value="{{ fsc.publication.title }}" placeholder="{{ i18n.trans('title') }}" class="form-input" autofocus="" required=""/>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title h3 text-center">
+                                    <i class="fas fa-newspaper fa-fw"></i> {{ i18n.trans('publication') }}
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group mb-2">
+                                    <input type="text" name="title" value="{{ fsc.publication.title }}" placeholder="{{ i18n.trans('title') }}" class="form-input" autofocus="" required=""/>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <textarea name="body" class="form-input" rows="5" required="">{{ fsc.publication.body }}</textarea>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <div class="columns">
+                                    <div class="column">
+                                        <select name="idteam" class="form-select">
+                                            <option value="">{{ i18n.trans('team') }}</option>
+                                            <option value="">------</option>
+                                            {% for team in fsc.myTeams() %}
+                                                {% if team.idteam == fsc.publication.idteam %}
+                                                    <option value="{{ team.idteam }}" selected="">{{ team.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ team.idteam }}">{{ team.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="column">
+                                        <select name="idproject" class="form-select">
+                                            <option value="">{{ i18n.trans('project') }}</option>
+                                            <option value="">------</option>
+                                            {% for project in fsc.myProjects() %}
+                                                {% if project.idproject == fsc.publication.idproject %}
+                                                    <option value="{{ project.idproject }}" selected="">{{ project.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ project.idproject }}">{{ project.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="column text-right">
+                                        <button type="submit" class="btn btn-primary">
+                                            {{ i18n.trans('save') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group mb-2">
-                            <textarea name="body" class="form-input" rows="5" required="">{{ fsc.publication.body }}</textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column">
-                        <select name="idteam" class="form-select">
-                            <option value="">{{ i18n.trans('team') }}</option>
-                            <option value="">------</option>
-                            {% for team in fsc.myTeams() %}
-                                {% if team.idteam == fsc.publication.idteam %}
-                                    <option value="{{ team.idteam }}" selected="">{{ team.name }}</option>
-                                {% else %}
-                                    <option value="{{ team.idteam }}">{{ team.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="column">
-                        <select name="idproject" class="form-select">
-                            <option value="">{{ i18n.trans('project') }}</option>
-                            <option value="">------</option>
-                            {% for project in fsc.myProjects() %}
-                                {% if project.idproject == fsc.publication.idproject %}
-                                    <option value="{{ project.idproject }}" selected="">{{ project.name }}</option>
-                                {% else %}
-                                    <option value="{{ project.idproject }}">{{ project.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="column text-right">
-                        <button type="submit" class="btn btn-primary">
-                            {{ i18n.trans('save') }}
-                        </button>
                     </div>
                 </div>
             </div>

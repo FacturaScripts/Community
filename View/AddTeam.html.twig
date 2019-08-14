@@ -2,47 +2,54 @@
 
 {% block body %}
     <div class="body-section">
-        <br/>
         <form method="post">
             <div class="container grid-lg">
                 <div class="columns">
                     <div class="column">
-                        <h1 class="text-capitalize">
-                            <i class="fas fa-users fa-fw"></i> {{ i18n.trans('team') }}
-                        </h1>
-                        <div class="form-group mb-2">
-                            {{ i18n.trans('name') }}:
-                            <input type="text" name="name" class="form-input" maxlength="50" autocomplete="off" autofocus="" required="true"/>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title h3 text-center">
+                                    <i class="fas fa-users fa-fw"></i> {{ i18n.trans('team') }}
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group mb-2">
+                                    {{ i18n.trans('name') }}:
+                                    <input type="text" name="name" class="form-input" maxlength="50" autocomplete="off" autofocus="" required="true"/>
+                                </div>
+                                <div class="form-group mb-2">
+                                    {{ i18n.trans('description') }}:
+                                    <textarea name="description" class="form-input" rows="5" required="true"></textarea>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <div class="columns">
+                                    <div class="column">
+                                        <div class="form-group">
+                                            <label class="form-switch">
+                                                <input type="checkbox" name="private" value="TRUE"/>
+                                                <i class="form-icon"></i> {{ i18n.trans('private') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        <span class="text-error">
+                                            {{ i18n.trans('point-cost') }}: {{ fsc.pointCost() }}
+                                        </span>
+                                    </div>
+                                    <div class="column col text-center">
+                                        <span class="text-warning">
+                                            {{ i18n.trans('your-points') }}: {{ fsc.contact.puntos }}
+                                        </span>
+                                    </div>
+                                    <div class="column text-right">
+                                        <button type="submit" class="btn btn-primary">
+                                            {{ i18n.trans('save') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group mb-2">
-                            {{ i18n.trans('description') }}:
-                            <textarea name="description" class="form-input" rows="5" required="true"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column">
-                        <div class="form-group">
-                            <label class="form-switch">
-                                <input type="checkbox" name="private" value="TRUE"/>
-                                <i class="form-icon"></i> {{ i18n.trans('private') }}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <span class="text-error">
-                            {{ i18n.trans('point-cost') }}: {{ fsc.pointCost() }}
-                        </span>
-                    </div>
-                    <div class="column col text-center">
-                        <span class="text-warning">
-                            {{ i18n.trans('your-points') }}: {{ fsc.contact.puntos }}
-                        </span>
-                    </div>
-                    <div class="column text-right">
-                        <button type="submit" class="btn btn-primary">
-                            {{ i18n.trans('save') }}
-                        </button>
                     </div>
                 </div>
             </div>

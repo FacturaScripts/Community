@@ -88,6 +88,15 @@ class AddIssue extends PortalControllerWizard
             return $this->redirToYouNeedMorePointsPage();
         }
 
+        /// check privacy policy
+        if (!$this->contact->aceptaprivacidad && 'true' !== $this->request->request->get('privacy')) {
+            $this->miniLog->warning($this->i18n->trans('you-must-accept-privacy-policy'));
+            return false;
+        } elseif (!$this->contact->aceptaprivacidad) {
+            $this->contact->aceptaprivacidad = true;
+            $this->contact->save();
+        }
+
         /// save issue
         $this->issue->body = $body;
         $this->issue->creationroute = implode(', ', $this->getTreeList());

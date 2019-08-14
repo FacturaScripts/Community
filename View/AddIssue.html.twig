@@ -2,32 +2,64 @@
 
 {% block body %}
     <div class="body-section">
-        <br/>
         <form method="post">
             <div class="container grid-lg">
                 <div class="columns">
                     <div class="column">
-                        <h1 class="text-capitalize">
-                            <i class="fas fa-envelope fa-fw"></i> {{ i18n.trans('send') }}
-                        </h1>
-                        {% for item in fsc.getTreeList() %}
-                            <span class="label">{{ item }}</span>
-                        {% endfor %}
-                        <div class="form-group mb-2">
-                            <textarea name="body" class="form-input" placeholder="detalle su mensaje" rows="5" autofocus=""></textarea>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title h3 text-center">
+                                    <i class="fas fa-envelope fa-fw"></i> {{ i18n.trans('send') }}
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                {% for item in fsc.getTreeList() %}
+                                    <span class="label">{{ item }}</span>
+                                {% endfor %}
+                                <div class="form-group mb-2">
+                                    <textarea name="body" class="form-input" placeholder="detalle su mensaje" rows="5" autofocus=""></textarea>
+                                </div>
+                                <p>
+                                    Este mensaje es confidencial y solamente será visible por usted y el equipo de soporte.
+                                </p>
+                            </div>
+                            <div class="panel-footer">
+                                <div class="columns">
+                                    <div class="column col-6 col-xs-12">
+                                        {% if fsc.contact.aceptaprivacidad == false %}
+                                            <div class="form-group">
+                                                <label class="form-switch">
+                                                    <input type="checkbox" name="privacy" value="true"/>
+                                                    <i class="form-icon"></i>
+                                                    {{ i18n.trans('i-accept-privacy-policy') }}
+                                                    <a href="{{ fsc.menuComposer.getPrivacyPage().url('public') | raw }}" target="_blank">
+                                                        {{ i18n.trans('read-more') }}
+                                                    </a>
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                        {% if fsc.showCookiesPolicy %}
+                                            <div class="form-group">
+                                                <label class="form-switch">
+                                                    <input type="checkbox" name="okCookies" value="TRUE"/>
+                                                    <i class="form-icon"></i>
+                                                    {{ i18n.trans('i-accept-cookies-policy') }}
+                                                    <a href="{{ fsc.menuComposer.getCookiesPage().url('public') | raw }}" target="_blank">
+                                                        {{ i18n.trans('read-more') }}
+                                                    </a>
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="column text-right">
+                                        <button type="submit" class="btn btn-primary" onclick="this.disabled = true;
+                                                this.form.submit();">
+                                            {{ i18n.trans('send') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column">
-                        <p>
-                            Este mensaje es confidencial y solamente será visible por usted y el equipo de soporte.
-                        </p>
-                    </div>
-                    <div class="column col-3 text-right">
-                        <button type="submit" class="btn btn-primary" onclick="this.disabled = true;this.form.submit();">
-                            {{ i18n.trans('send') }}
-                        </button>
                     </div>
                 </div>
             </div>

@@ -6,7 +6,7 @@
     <div class="custom-scroll">
         {% for comment in section.cursor %}
             <div class="divider text-center" data-content="{{ comment.getContactAlias() }} - {{ comment.creationdate }}"></div>
-            <div class="tile">
+            <div class="tile ml-2">
                 <div class="tile-icon">
                     <a href="{{ asset(comment.getContactProfile()) }}" class="avatar avatar-xl">
                         {% set contact = comment.getContact() %}
@@ -20,35 +20,38 @@
         {% endfor %}
     </div>
 
-    {% if issue.closed %}
-        <div class="divider text-center"></div>
-        <form method="post">
-            <input type="hidden" name="action" value="re-open"/>
-            <button type="submit" class="btn btn-block btn-success" onclick="this.disabled = true;this.form.submit();">
-                <i class="fas fa-lock-open fa-fw"></i> {{ i18n.trans('re-open') }}
-            </button>
-        </form>
-    {% else %}
-        <br/>
-        <form method="post">
-            <input type="hidden" name="action" value="new-comment"/>
-            <div class="form-group">
-                <textarea name="newComment" class="form-input" placeholder="{{ i18n.trans('new-comment') }}" rows="6"></textarea>
-            </div>
-            <div class="text-right">
-                <button type="submit" class="btn btn-primary" onclick="this.disabled = true;this.form.submit();">
-                    {{ i18n.trans('send') }}
+    <div class="ml-2 mr-2 mb-2 mt-2">
+        {% if issue.closed %}
+            <div class="divider text-center"></div>
+            <form method="post">
+                <input type="hidden" name="action" value="re-open"/>
+                <button type="submit" class="btn btn-block btn-success" onclick="this.disabled = true;
+                        this.form.submit();">
+                    <i class="fas fa-lock-open fa-fw"></i> {{ i18n.trans('re-open') }}
                 </button>
-                {% if fsc.contact and issue.idcontacto == fsc.contact.idcontacto %}
-                    <button type="submit" name="close" value="TRUE" class="btn btn-success">
-                        {{ i18n.trans('send') }} + {{ i18n.trans('solved') }}
+            </form>
+        {% else %}
+            <form method="post">
+                <input type="hidden" name="action" value="new-comment"/>
+                <div class="form-group">
+                    <textarea name="newComment" class="form-input" placeholder="{{ i18n.trans('new-comment') }}" rows="6"></textarea>
+                </div>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-primary" onclick="this.disabled = true;
+                            this.form.submit();">
+                        {{ i18n.trans('send') }}
                     </button>
-                {% else %}
-                    <button type="submit" name="close" value="TRUE" class="btn btn-error">
-                        {{ i18n.trans('send') }} + {{ i18n.trans('close') }}
-                    </button>
-                {% endif %}
-            </div>
-        </form>
-    {% endif %}
+                    {% if fsc.contact and issue.idcontacto == fsc.contact.idcontacto %}
+                        <button type="submit" name="close" value="TRUE" class="btn btn-success">
+                            {{ i18n.trans('send') }} + {{ i18n.trans('solved') }}
+                        </button>
+                    {% else %}
+                        <button type="submit" name="close" value="TRUE" class="btn btn-error">
+                            {{ i18n.trans('send') }} + {{ i18n.trans('close') }}
+                        </button>
+                    {% endif %}
+                </div>
+            </form>
+        {% endif %}
+    </div>
 {% endblock %}
