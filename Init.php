@@ -21,12 +21,12 @@ namespace FacturaScripts\Plugins\Community;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\EventManager;
 use FacturaScripts\Core\Base\InitClass;
-use FacturaScripts\Plugins\Community\Lib\IssueNotification;
-use FacturaScripts\Plugins\Community\Lib\WebTeamNotifications;
-use FacturaScripts\Plugins\Community\Model\Language;
-use FacturaScripts\Plugins\Community\Model\WebProject;
-use FacturaScripts\Plugins\Community\Model\WebTeam;
-use FacturaScripts\Plugins\webportal\Model\WebPage;
+use FacturaScripts\Dinamic\Lib\IssueNotification;
+use FacturaScripts\Dinamic\Lib\WebTeamNotifications;
+use FacturaScripts\Dinamic\Model\Language;
+use FacturaScripts\Dinamic\Model\WebProject;
+use FacturaScripts\Dinamic\Model\WebTeam;
+use FacturaScripts\Dinamic\Model\WebPage;
 
 /**
  * Description of Init

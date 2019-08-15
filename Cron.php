@@ -20,11 +20,11 @@ namespace FacturaScripts\Plugins\Community;
 
 use FacturaScripts\Core\Base\CronClass;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Plugins\Community\Lib\WebTeamPoints;
-use FacturaScripts\Plugins\Community\Lib\WebTeamReport;
-use FacturaScripts\Plugins\Community\Model\Issue;
-use FacturaScripts\Plugins\Community\Model\Language;
-use FacturaScripts\Plugins\Community\Model\WebProject;
+use FacturaScripts\Dinamic\Lib\WebTeamPoints;
+use FacturaScripts\Dinamic\Lib\WebTeamReport;
+use FacturaScripts\Dinamic\Model\Issue;
+use FacturaScripts\Dinamic\Model\Language;
+use FacturaScripts\Dinamic\Model\WebProject;
 
 /**
  * Define the taks of Community's crons.
