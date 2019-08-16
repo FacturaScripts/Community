@@ -26,7 +26,6 @@
         <name>idproject</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('webprojects_idproject_seq'::regclass)</default>
     </column>
     <column>
         <name>idteam</name>

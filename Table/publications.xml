@@ -22,7 +22,6 @@
         <name>idpublication</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('publications_idpublication_seq'::regclass)</default>
     </column>
     <column>
         <name>idproject</name>

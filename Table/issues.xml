@@ -31,7 +31,6 @@
         <name>idissue</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('issues_idissue_seq'::regclass)</default>
     </column>
     <column>
         <name>idproject</name>

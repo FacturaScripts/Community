@@ -22,7 +22,6 @@
         <name>idtree</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('contactformtrees_idtree_seq'::regclass)</default>
     </column>
     <column>
         <name>icon</name>

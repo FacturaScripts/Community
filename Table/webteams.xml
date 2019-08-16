@@ -26,7 +26,6 @@
         <name>idteam</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('webteams_idteam_seq'::regclass)</default>
     </column>
     <column>
         <name>lastip</name>

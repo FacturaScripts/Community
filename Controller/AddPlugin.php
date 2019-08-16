@@ -74,6 +74,7 @@ class AddPlugin extends PortalControllerWizard
     protected function commonCore()
     {
         $this->setTemplate('AddPlugin');
+        $this->title = $this->description = $this->i18n->trans('new-plugin', ['%pluginName%' => '']);
 
         $name = $this->request->get('name', '');
         if (!empty($name)) {

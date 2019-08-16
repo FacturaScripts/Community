@@ -27,7 +27,6 @@
         <name>idbuild</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('webbuilds_idbuild_seq'::regclass)</default>
     </column>
     <column>
         <name>idfile</name>

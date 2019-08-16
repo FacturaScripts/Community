@@ -18,7 +18,6 @@
         <name>idcomment</name>
         <type>serial</type>
         <null>NO</null>
-        <default>nextval('issuecomments_idcomment_seq'::regclass)</default>
     </column>
     <column>
         <name>idcontacto</name>
