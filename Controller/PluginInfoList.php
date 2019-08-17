@@ -19,13 +19,10 @@
 namespace FacturaScripts\Plugins\Community\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
-use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\Utils;
-use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Community\Model\WebProject;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\PortalController;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of PluginInfoList
@@ -35,30 +32,9 @@ use Symfony\Component\HttpFoundation\Response;
 class PluginInfoList extends PortalController
 {
 
-    /**
-     * 
-     * @param Response              $response
-     * @param User                  $user
-     * @param ControllerPermissions $permissions
-     */
-    public function privateCore(&$response, $user, $permissions)
+    protected function processWebPage()
     {
-        parent::privateCore($response, $user, $permissions);
-        $this->commonCore();
-    }
-
-    /**
-     * 
-     * @param Response $response
-     */
-    public function publicCore(&$response)
-    {
-        parent::publicCore($response);
-        $this->commonCore();
-    }
-
-    protected function commonCore()
-    {
+        parent::processWebPage();
         $this->setTemplate(false);
 
         $this->response->headers->set('Content-Type', 'application/json');
