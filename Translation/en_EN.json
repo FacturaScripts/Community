@@ -70,7 +70,7 @@
     "updated-doc-page": "Updated doc page: %title%",
     "updated-plugin": "Updated plugin %pluginName% to version %version%",
     "updated-translation": "Updated translation: %name%",
-    "visit-counter": "Visit counter",
+    "version-must-be-gt-0" : "The version must be greater than 0, for example 0.1",
     "you-need-more-points-page": "You need more points page",
     "your-points": "Your points",
     "wants-to-join-team": "Wants to join this team.",

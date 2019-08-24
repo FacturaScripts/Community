@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -246,6 +246,11 @@ class WebBuild extends Base\ModelClass
      */
     public function test()
     {
+        if ($this->version <= 0) {
+            $this->toolBox()->i18nLog()->error('version-must-be-gt-0');
+            return false;
+        }
+
         if (empty($this->idfile)) {
             $filePath = FS_FOLDER . DIRECTORY_SEPARATOR . 'MyFiles' . DIRECTORY_SEPARATOR . $this->path;
             if (!$this->testFile($filePath)) {

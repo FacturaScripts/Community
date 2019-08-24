@@ -70,7 +70,7 @@
     "updated-doc-page": "Actualizada documentación: %title%",
     "updated-plugin": "Actualizado plugin %pluginName% a la versión %version%",
     "updated-translation": "Actualizada traducción: %name%",
-    "visit-counter": "Contador de visitas",
+    "version-must-be-gt-0" : "La versión debe ser mayor que 0, por ejemplo 0.1",
     "you-need-more-points-page": "Página usted necesita más puntos",
     "your-points": "Tus puntos",
     "wants-to-join-team": "Solicita unirse al equipo.",
