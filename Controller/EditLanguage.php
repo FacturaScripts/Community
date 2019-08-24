@@ -18,9 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Plugins\Community\Model\Language;
 use FacturaScripts\Plugins\Community\Model\Translation;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
@@ -41,13 +39,6 @@ class EditLanguage extends EditSectionController
      * @var Language
      */
     private $languageModel;
-
-    /**
-     * A list of main translations.
-     *
-     * @var array
-     */
-    private $mainTranslations = [];
 
     /**
      * Returns true if contact can edit this language.
@@ -103,33 +94,6 @@ class EditLanguage extends EditSectionController
     }
 
     /**
-     * Check available translations with translation name.
-     *
-     * @param Language $language
-     * @param string   $translationName
-     *
-     * @return bool
-     */
-    private function checkTranslation(&$language, $translationName): bool
-    {
-        $mainLangCode = AppSettings::get('community', 'mainlanguage');
-        if ($language->langcode === $mainLangCode) {
-            return true;
-        }
-
-        if (empty($this->mainTranslations)) {
-            $this->mainTranslations = [];
-            $translation = new Translation();
-            $where = [new DataBaseWhere('langcode', $mainLangCode)];
-            foreach ($translation->all($where, [], 0, 0) as $trans) {
-                $this->mainTranslations[] = $trans->name;
-            }
-        }
-
-        return in_array($translationName, $this->mainTranslations);
-    }
-
-    /**
      * Load sections to the view.
      */
     protected function createSections()
@@ -138,7 +102,7 @@ class EditLanguage extends EditSectionController
 
         $this->addHtmlSection('language', 'language', 'Section/Language');
         $language = $this->getMainModel();
-        $this->addNavigationLink($language->url('public-list') . '?activetab=ListLanguage', $this->i18n->trans('languages'));
+        $this->addNavigationLink($language->url('public-list') . '?activetab=ListLanguage', $this->toolBox()->i18n()->trans('languages'));
 
         $this->createSectionRevisions();
         $this->createSectionTranslations();
@@ -217,13 +181,13 @@ class EditLanguage extends EditSectionController
         if (!empty($language->parentcode)) {
             $where = [new DataBaseWhere('langcode', $language->parentcode)];
             foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $transParent) {
-                $json[$transParent->name] = Utils::fixHtml($transParent->translation);
+                $json[$transParent->name] = $this->toolBox()->utils()->fixHtml($transParent->translation);
             }
         }
 
         $where = [new DataBaseWhere('langcode', $language->langcode)];
         foreach ($translation->all($where, ['name' => 'ASC'], 0, 0) as $trans) {
-            $json[$trans->name] = Utils::fixHtml($trans->translation);
+            $json[$trans->name] = $this->toolBox()->utils()->fixHtml($trans->translation);
         }
         $this->response->headers->set('Content-Type', 'application/json');
         $this->response->setContent(json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));

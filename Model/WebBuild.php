@@ -299,7 +299,7 @@ class WebBuild extends Base\ModelClass
 
         /// is a zip file?
         if (mime_content_type($filePath) !== 'application/zip') {
-            self::$miniLog->alert(self::$i18n->trans('only-zip-files'));
+            $this->toolBox()->i18nLog()->warning('only-zip-files');
             return false;
         }
 

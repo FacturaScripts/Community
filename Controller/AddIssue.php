@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
 use FacturaScripts\Plugins\Community\Model\ContactFormTree;
@@ -90,7 +89,7 @@ class AddIssue extends PortalControllerWizard
 
         /// check privacy policy
         if (!$this->contact->aceptaprivacidad && 'true' !== $this->request->request->get('privacy')) {
-            $this->miniLog->warning($this->i18n->trans('you-must-accept-privacy-policy'));
+            $this->toolBox()->i18nLog()->warning('you-must-accept-privacy-policy');
             return false;
         } elseif (!$this->contact->aceptaprivacidad) {
             $this->contact->aceptaprivacidad = true;
@@ -106,7 +105,7 @@ class AddIssue extends PortalControllerWizard
         $this->setTeam();
 
         if ($this->issue->save()) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $this->toolBox()->i18nLog()->notice('record-updated-correctly');
             $this->subtractPoints();
 
             /// redit to new issue
@@ -114,17 +113,17 @@ class AddIssue extends PortalControllerWizard
             return;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        $this->toolBox()->i18nLog()->error('record-save-error');
     }
 
     protected function setTeam()
     {
         $project = new WebProject();
         if (!empty($this->issue->idproject) && $project->loadFromCode($this->issue->idproject)) {
-            $this->issue->idteam = empty($project->idteam) ? AppSettings::get('community', 'idteamsup') : $project->idteam;
+            $this->issue->idteam = empty($project->idteam) ? $this->toolBox()->appSettings()->get('community', 'idteamsup') : $project->idteam;
             return;
         }
 
-        $this->issue->idteam = AppSettings::get('community', 'idteamsup');
+        $this->issue->idteam = $this->toolBox()->appSettings()->get('community', 'idteamsup');
     }
 }

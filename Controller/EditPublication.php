@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
@@ -135,7 +134,7 @@ class EditPublication extends EditSectionController
             $this->description = $this->getMainModel()->description();
             $this->canonicalUrl = $this->getMainModel()->url('public');
 
-            $ipAddress = $this->ipFilter->getClientIp();
+            $ipAddress = $this->toolBox()->ipFilter()->getClientIp();
             $this->getMainModel()->increaseVisitCount($ipAddress);
             return;
         }
@@ -149,7 +148,7 @@ class EditPublication extends EditSectionController
     {
         $team = $this->getMainModel()->getTeam();
         if ($team->exists()) {
-            $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
+            $this->addNavigationLink($team->url('public-list'), $this->toolBox()->i18n()->trans('teams'));
             $this->addNavigationLink($team->url('public'), $team->name);
         }
 

@@ -18,9 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Core\Model\Contacto;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
@@ -127,7 +125,7 @@ class Issue extends WebPageClass
      */
     public function description(int $length = 300): string
     {
-        return Utils::trueTextBreak($this->body, $length);
+        return $this->toolBox()->utils()->trueTextBreak($this->body, $length);
     }
 
     /**
@@ -260,7 +258,7 @@ class Issue extends WebPageClass
      */
     public function test()
     {
-        $this->body = Utils::noHtml($this->body);
+        $this->body = $this->toolBox()->utils()->noHtml($this->body);
         $this->priority = $this->closed ? 0 : $this->priority;
         return parent::test();
     }
@@ -272,7 +270,7 @@ class Issue extends WebPageClass
      */
     public function title(): string
     {
-        return self::$i18n->trans('issue') . ' #' . $this->idissue;
+        return $this->toolBox()->i18n()->trans('issue') . ' #' . $this->idissue;
     }
 
     /**
@@ -325,9 +323,9 @@ class Issue extends WebPageClass
             return;
         }
 
-        $teamLog->description = self::$i18n->trans('issue-solved', ['%title%' => $this->title()]);
+        $teamLog->description = $this->toolBox()->i18n()->trans('issue-solved', ['%title%' => $this->title()]);
         $teamLog->idcontacto = $idcontacts[0];
-        $teamLog->idteam = AppSettings::get('community', 'idteamsup');
+        $teamLog->idteam = $this->toolBox()->appSettings()->get('community', 'idteamsup');
         $teamLog->link = $this->url();
         return $teamLog->save();
     }

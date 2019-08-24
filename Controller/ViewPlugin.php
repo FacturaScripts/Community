@@ -174,7 +174,7 @@ class ViewPlugin extends EditSectionController
 
         /// navigation links
         $project = $this->getMainModel();
-        $this->addNavigationLink($project->url('public-list'), $this->i18n->trans('plugins'));
+        $this->addNavigationLink($project->url('public-list'), $this->toolBox()->i18n()->trans('plugins'));
         $this->addNavigationLink($project->url('public-list') . '?activetab=ListWebProject', '2018');
     }
 
@@ -254,7 +254,7 @@ class ViewPlugin extends EditSectionController
         $this->description = $this->getMainModel()->description();
         $this->canonicalUrl = $this->getMainModel()->url('public');
 
-        $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
+        $ipAddress = $this->toolBox()->ipFilter()->getClientIp();
         $this->getMainModel()->increaseVisitCount($ipAddress);
     }
 }

@@ -18,8 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\Base\EventManager;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Dinamic\Model\Contacto;
 
@@ -80,7 +78,7 @@ class WebTeamMember extends Base\ModelClass
             $byContact = new Contacto();
             $byContact->loadFromCode($idcontacto);
             $this->newTeamLog('accepted-on-team-by', ['%by%' => $byContact->alias()]);
-            EventManager::trigger('Model:' . $this->modelClassName() . ':acceptedBy', $this);
+            $this->toolBox()->events()->trigger('Model:' . $this->modelClassName() . ':acceptedBy', $this);
             return true;
         }
 
@@ -123,7 +121,7 @@ class WebTeamMember extends Base\ModelClass
         if ($this->delete()) {
             $translation = $inactivity ? 'expelled-from-team-inactivity' : 'expelled-from-team';
             $this->newTeamLog($translation);
-            EventManager::trigger('Model:' . $this->modelClassName() . ':expel', $this);
+            $this->toolBox()->events()->trigger('Model:' . $this->modelClassName() . ':expel', $this);
             return true;
         }
 
@@ -196,7 +194,7 @@ class WebTeamMember extends Base\ModelClass
      */
     public function test()
     {
-        $this->observations = Utils::noHtml($this->observations);
+        $this->observations = $this->toolBox()->utils()->noHtml($this->observations);
         return parent::test();
     }
 
@@ -208,7 +206,7 @@ class WebTeamMember extends Base\ModelClass
      *
      * @return string
      */
-    public function url(string $type = 'auto', string $list = 'List')
+    public function url(string $type = 'auto', string $list = 'ListWebProject?active=List')
     {
         $team = new WebTeam();
         if ($team->loadFromCode($this->idteam)) {
@@ -221,7 +219,7 @@ class WebTeamMember extends Base\ModelClass
             }
         }
 
-        return parent::url($type, 'ListWebProject?active=List');
+        return parent::url($type, $list);
     }
 
     /**
@@ -235,7 +233,7 @@ class WebTeamMember extends Base\ModelClass
     {
         $teamLog = new WebTeamLog();
         $extra['%name%'] = $this->getContactAlias();
-        $teamLog->description = self::$i18n->trans($translation, $extra);
+        $teamLog->description = $this->toolBox()->i18n()->trans($translation, $extra);
         $teamLog->idcontacto = $this->idcontacto;
         $teamLog->idteam = $this->idteam;
         return $teamLog->save();

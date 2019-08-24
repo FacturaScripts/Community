@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Lib\WebTeamMethodsTrait;
 use FacturaScripts\Plugins\Community\Model\Translation;
@@ -59,7 +58,7 @@ class EditTranslation extends EditSectionController
         }
 
         // Contact is member of translation team?
-        $idteam = AppSettings::get('community', 'idteamtra');
+        $idteam = $this->toolBox()->appSettings()->get('community', 'idteamtra');
         if (!$this->contactInTeam($idteam)) {
             return false;
         }
@@ -129,7 +128,7 @@ class EditTranslation extends EditSectionController
 
         /// navigation links
         $language = $this->getMainModel()->getLanguage();
-        $this->addNavigationLink($language->url('public-list') . '?activetab=ListTranslation', $this->i18n->trans('translations'));
+        $this->addNavigationLink($language->url('public-list') . '?activetab=ListTranslation', $this->toolBox()->i18n()->trans('translations'));
         $this->addNavigationLink($language->url('public'), $language->description);
 
         $this->createTranslationSection('ListTranslation', 'translations', 'fas fa-copy');
@@ -158,7 +157,7 @@ class EditTranslation extends EditSectionController
     protected function deleteAction()
     {
         if (!$this->contactCanEdit()) {
-            $this->miniLog->warning($this->i18n->trans('not-allowed-delete'));
+            $this->toolBox()->i18nLog()->warning('not-allowed-delete');
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return false;
         }
@@ -169,11 +168,11 @@ class EditTranslation extends EditSectionController
         }
 
         if ($translation->delete()) {
-            $this->miniLog->notice($this->i18n->trans('record-deleted-correctly'));
+            $this->toolBox()->i18nLog()->notice('record-deleted-correctly');
             return true;
         }
 
-        $this->miniLog->warning($this->i18n->trans('record-deleted-error'));
+        $this->toolBox()->i18nLog()->error('record-deleted-error');
         return false;
     }
 
@@ -183,7 +182,7 @@ class EditTranslation extends EditSectionController
     protected function editAction()
     {
         if (!$this->contactCanEdit()) {
-            $idteam = AppSettings::get('community', 'idteamtra');
+            $idteam = $this->toolBox()->appSettings()->get('community', 'idteamtra');
             $this->contactNotInTeamError($idteam);
             return false;
         }
@@ -201,7 +200,7 @@ class EditTranslation extends EditSectionController
         }
 
         if (!$translation->save()) {
-            $this->miniLog->warning($this->i18n->trans('record-save-error'));
+            $this->toolBox()->i18nLog()->error('record-save-error');
             return false;
         }
 
@@ -214,7 +213,7 @@ class EditTranslation extends EditSectionController
         }
 
         $translation->updateChildren();
-        $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+        $this->toolBox()->i18nLog()->notice('record-updated-correctly');
         return true;
     }
 

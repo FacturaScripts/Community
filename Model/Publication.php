@@ -19,7 +19,6 @@
 namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Widget\Markdown;
@@ -96,7 +95,7 @@ class Publication extends WebPageClass
                 return Markdown::render($this->body);
 
             case 'raw':
-                return Utils::fixHtml($this->body);
+                return $this->toolBox()->utils()->fixHtml($this->body);
 
             default:
                 return $this->body;
@@ -114,7 +113,7 @@ class Publication extends WebPageClass
     {
         $text = strip_tags($this->body('html'));
         $noLineBreaks = preg_replace("/\r|\n/", " ", $text);
-        return Utils::trueTextBreak($noLineBreaks, $length);
+        return $this->toolBox()->utils()->trueTextBreak($noLineBreaks, $length);
     }
 
     /**
@@ -166,11 +165,12 @@ class Publication extends WebPageClass
      */
     public function test()
     {
-        $this->body = Utils::noHtml($this->body);
-        $this->title = Utils::noHtml($this->title);
+        $this->body = $this->toolBox()->utils()->noHtml($this->body);
+        $this->title = $this->toolBox()->utils()->noHtml($this->title);
 
         if (strlen($this->title) < 1 || strlen($this->title) > 200) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '200']));
+            $this->toolBox()->i18nLog()->error('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '200']);
+            return false;
         }
 
         $this->permalink = is_null($this->permalink) ? $this->newPermalink() : $this->permalink;

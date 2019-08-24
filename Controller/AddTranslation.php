@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Lib;
 use FacturaScripts\Plugins\Community\Lib\WebPortal\PortalControllerWizard;
@@ -92,7 +91,7 @@ class AddTranslation extends PortalControllerWizard
         /// language already exists?
         $where = [new DataBaseWhere('langcode', $code)];
         if ($language->loadFromCode('', $where)) {
-            $this->miniLog->error($this->i18n->trans('duplicate-record'));
+            $this->toolBox()->i18nLog()->warning('duplicate-record');
             return true;
         }
 
@@ -119,7 +118,7 @@ class AddTranslation extends PortalControllerWizard
     protected function newTranslation(string $name): bool
     {
         /// contact is in translation team?
-        $idteamtra = AppSettings::get('community', 'idteamtra', '');
+        $idteamtra = $this->toolBox()->appSettings()->get('community', 'idteamtra', '');
         if (!$this->contactInTeam($idteamtra)) {
             $this->contactNotInTeamError($idteamtra);
             return false;
@@ -131,7 +130,7 @@ class AddTranslation extends PortalControllerWizard
         /// translation exists?
         $where = [new DataBaseWhere('name', $name)];
         if ($transModel->loadFromCode('', $where)) {
-            $this->miniLog->error($this->i18n->trans('duplicate-record'));
+            $this->toolBox()->i18nLog()->warning('duplicate-record');
             return true;
         }
 
@@ -142,8 +141,8 @@ class AddTranslation extends PortalControllerWizard
 
         /// save new translation in every important language
         $langModel = new Language();
-        $mainLangcode = AppSettings::get('community', 'mainlanguage');
-        $mainProjectId = (int) AppSettings::get('community', 'idproject');
+        $mainLangcode = $this->toolBox()->appSettings()->get('community', 'mainlanguage');
+        $mainProjectId = (int) $this->toolBox()->appSettings()->get('community', 'idproject');
         foreach ($langModel->all([], [], 0, 0) as $language) {
             $newTrans = new Translation();
             $newTrans->description = $name;

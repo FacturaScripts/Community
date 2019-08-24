@@ -19,7 +19,6 @@
 namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
@@ -89,7 +88,7 @@ class ContactFormTree extends WebPageClass
      */
     public function body(): string
     {
-        return Utils::fixHtml($this->body);
+        return $this->toolBox()->utils()->fixHtml($this->body);
     }
 
     /**
@@ -169,11 +168,12 @@ class ContactFormTree extends WebPageClass
      */
     public function test()
     {
-        $this->body = Utils::noHtml($this->body);
-        $this->title = Utils::noHtml($this->title);
+        $this->body = $this->toolBox()->utils()->noHtml($this->body);
+        $this->title = $this->toolBox()->utils()->noHtml($this->title);
 
-        if (strlen($this->title) < 1) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '100']));
+        if (strlen($this->title) < 1 || strlen($this->title) > 250) {
+            $this->toolBox()->i18nLog()->error('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '250']);
+            return false;
         }
 
         return parent::test();

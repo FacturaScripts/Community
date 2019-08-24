@@ -68,7 +68,7 @@ class AddTeam extends PortalControllerWizard
         $team = new WebTeam();
         $where = [new DataBaseWhere('name', $name)];
         if ($team->loadFromCode('', $where)) {
-            $this->miniLog->error($this->i18n->trans('duplicate-record'));
+            $this->toolBox()->i18nLog()->warning('duplicate-record');
             return false;
         }
 
@@ -89,7 +89,7 @@ class AddTeam extends PortalControllerWizard
             return true;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        $this->toolBox()->i18nLog()->error('record-save-error');
         return false;
     }
 }

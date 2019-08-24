@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Lib\WebTeamMethodsTrait;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
@@ -54,7 +53,7 @@ class EditWebDocPage extends EditSectionController
             return false;
         }
 
-        $idteam = AppSettings::get('community', 'idteamdoc', '');
+        $idteam = $this->toolBox()->appSettings()->get('community', 'idteamdoc', '');
         return $this->contactInTeam($idteam);
     }
 
@@ -94,7 +93,7 @@ class EditWebDocPage extends EditSectionController
     protected function createSections()
     {
         if (!$this->contactCanEdit()) {
-            $idteam = AppSettings::get('community', 'idteamdoc', '');
+            $idteam = $this->toolBox()->appSettings()->get('community', 'idteamdoc', '');
             $this->contactNotInTeamError($idteam);
             return;
         }
@@ -176,7 +175,7 @@ class EditWebDocPage extends EditSectionController
     protected function loadNavigationLinks()
     {
         $docPage = $this->getMainModel();
-        $this->addNavigationLink($docPage->url('public-list'), $this->i18n->trans('documentation'));
+        $this->addNavigationLink($docPage->url('public-list'), $this->toolBox()->i18n()->trans('documentation'));
         if ($docPage->exists()) {
             $this->addNavigationLink($docPage->url('public'), $docPage->title);
         }

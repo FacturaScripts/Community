@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 
 /**
@@ -73,9 +72,10 @@ class License extends Base\ModelClass
      */
     public function test()
     {
-        $this->description = Utils::noHtml($this->description);
-        $this->name = Utils::noHtml($this->name);
-        $this->title = Utils::noHtml($this->title);
+        $utils = $this->toolBox()->utils();
+        $this->description = $utils->noHtml($this->description);
+        $this->name = $utils->noHtml($this->name);
+        $this->title = $utils->noHtml($this->title);
         return parent::test();
     }
 

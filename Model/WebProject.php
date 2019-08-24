@@ -18,9 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
@@ -136,7 +134,7 @@ class WebProject extends WebPageClass
      */
     public function description(int $length = 300): string
     {
-        return Utils::trueTextBreak($this->description, $length);
+        return $this->toolBox()->utils()->trueTextBreak($this->description, $length);
     }
 
     /**
@@ -198,15 +196,15 @@ class WebProject extends WebPageClass
      */
     public function test()
     {
-        $this->description = Utils::noHtml($this->description);
-        $this->name = Utils::noHtml($this->name);
+        $this->description = $this->toolBox()->utils()->noHtml($this->description);
+        $this->name = $this->toolBox()->utils()->noHtml($this->name);
         if (strlen($this->name) < 1 || strlen($this->name) > 50) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']));
+            $this->toolBox()->i18nLog()->error('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']);
             return false;
         }
 
         if (!preg_match("/^[A-Za-z]/", $this->name) || !preg_match("/^[a-z0-9_\-]+$/i", $this->name)) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-name'));
+            $this->toolBox()->i18nLog()->error('invalid-name');
             return false;
         }
 
@@ -293,9 +291,9 @@ class WebProject extends WebPageClass
     protected function newTeamLog($translation)
     {
         $teamLog = new WebTeamLog();
-        $teamLog->description = self::$i18n->trans($translation, ['%pluginName%' => $this->name, '%version%' => $this->version]);
+        $teamLog->description = $this->toolBox()->i18n()->trans($translation, ['%pluginName%' => $this->name, '%version%' => $this->version]);
         $teamLog->idcontacto = $this->idcontacto;
-        $teamLog->idteam = AppSettings::get('community', 'idteamdev');
+        $teamLog->idteam = $this->toolBox()->appSettings()->get('community', 'idteamdev');
         $teamLog->link = $this->url('public');
         return $teamLog->save();
     }

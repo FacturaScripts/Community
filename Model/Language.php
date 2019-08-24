@@ -18,9 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
@@ -150,14 +148,14 @@ class Language extends Base\ModelClass
     {
         $lenLangCode = strlen($this->langcode);
         if ($lenLangCode < 1 || $lenLangCode > 8) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'langcode', '%min%' => '1', '%max%' => '8']));
+            $this->toolBox()->i18nLog()->error('invalid-column-lenght', ['%column%' => 'langcode', '%min%' => '1', '%max%' => '8']);
             return false;
         }
 
-        $this->description = Utils::noHtml($this->description);
+        $this->description = $this->toolBox()->utils()->noHtml($this->description);
         $lenDesc = strlen($this->description);
         if ($lenDesc < 1 || $lenDesc > 50) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'description', '%min%' => '1', '%max%' => '50']));
+            $this->toolBox()->i18nLog()->error('invalid-column-lenght', ['%column%' => 'description', '%min%' => '1', '%max%' => '50']);
             return false;
         }
 
@@ -201,7 +199,7 @@ class Language extends Base\ModelClass
 
     protected function cloneTranslations()
     {
-        $clonecode = empty($this->parentcode) ? AppSettings::get('community', 'mainlanguage') : $this->parentcode;
+        $clonecode = empty($this->parentcode) ? $this->toolBox()->appSettings()->get('community', 'mainlanguage') : $this->parentcode;
 
         $translationModel = new Translation();
         $where = [new DataBaseWhere('langcode', $clonecode)];
@@ -248,9 +246,9 @@ class Language extends Base\ModelClass
     protected function newTeamLog($translation)
     {
         $teamLog = new WebTeamLog();
-        $teamLog->description = self::$i18n->trans($translation, ['%name%' => $this->description]);
+        $teamLog->description = $this->toolBox()->i18n()->trans($translation, ['%name%' => $this->description]);
         $teamLog->idcontacto = self::$currentIdcontacto;
-        $teamLog->idteam = (int) AppSettings::get('community', 'idteamtra');
+        $teamLog->idteam = (int) $this->toolBox()->appSettings()->get('community', 'idteamtra');
         $teamLog->link = $this->url('public');
         return $teamLog->save();
     }

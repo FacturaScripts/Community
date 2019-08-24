@@ -125,7 +125,7 @@ class EditWebTeam extends EditSectionController
     protected function acceptAction()
     {
         if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            $this->toolBox()->i18nLog()->warning('not-allowed-modify');
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return false;
         }
@@ -133,16 +133,16 @@ class EditWebTeam extends EditSectionController
         $idRequest = $this->request->get('idrequest', '');
         $member = new WebTeamMember();
         if ('' === $idRequest || !$member->loadFromCode($idRequest)) {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+            $this->toolBox()->i18nLog()->error('record-save-error');
             return false;
         }
 
         if ($member->acceptedBy($this->contact->idcontacto)) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $this->toolBox()->i18nLog()->notice('record-updated-correctly');
             return true;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        $this->toolBox()->i18nLog()->error('record-save-error');
         return false;
     }
 
@@ -239,7 +239,7 @@ class EditWebTeam extends EditSectionController
 
         /// navigation link
         $team = $this->getMainModel();
-        $this->addNavigationLink($team->url('public-list'), $this->i18n->trans('teams'));
+        $this->addNavigationLink($team->url('public-list'), $this->toolBox()->i18n()->trans('teams'));
 
         $this->createSectionPublications();
 
@@ -327,7 +327,7 @@ class EditWebTeam extends EditSectionController
     protected function expelAction()
     {
         if (!$this->contactCanEdit()) {
-            $this->miniLog->alert($this->i18n->trans('not-allowed-modify'));
+            $this->toolBox()->i18nLog()->warning('not-allowed-modify');
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return false;
         }
@@ -335,11 +335,11 @@ class EditWebTeam extends EditSectionController
         $member = new WebTeamMember();
         $code = $this->request->get('idrequest');
         if ($member->loadFromCode($code) && $member->expel()) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $this->toolBox()->i18nLog()->notice('record-updated-correctly');
             return true;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        $this->toolBox()->i18nLog()->error('record-save-error');
         return false;
     }
 
@@ -351,7 +351,7 @@ class EditWebTeam extends EditSectionController
     protected function joinAction()
     {
         if (empty($this->contact)) {
-            $this->miniLog->warning($this->i18n->trans('login-to-continue'));
+            $this->toolBox()->i18nLog()->warning('login-to-continue');
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
             return false;
         }
@@ -361,11 +361,11 @@ class EditWebTeam extends EditSectionController
         $member->idteam = $this->getMainModel()->idteam;
         $member->observations = $this->request->request->get('observations', '');
         if ($member->save()) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $this->toolBox()->i18nLog()->notice('record-updated-correctly');
             return true;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        $this->toolBox()->i18nLog()->error('record-save-error');
         return false;
     }
 
@@ -387,11 +387,11 @@ class EditWebTeam extends EditSectionController
         ];
 
         if ($member->loadFromCode('', $where) && $member->leave()) {
-            $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+            $this->toolBox()->i18nLog()->notice('record-updated-correctly');
             return true;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        $this->toolBox()->i18nLog()->error('record-save-error');
         return false;
     }
 
@@ -462,7 +462,7 @@ class EditWebTeam extends EditSectionController
         $this->description = $this->getMainModel()->description();
         $this->canonicalUrl = $this->getMainModel()->url('public');
 
-        $ipAddress = $this->ipFilter->getClientIp();
+        $ipAddress = $this->toolBox()->ipFilter()->getClientIp();
         $this->getMainModel()->increaseVisitCount($ipAddress);
     }
 }

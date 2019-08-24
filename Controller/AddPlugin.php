@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Model\CodeModel;
 use FacturaScripts\Plugins\Community\Model\WebProject;
@@ -74,7 +73,7 @@ class AddPlugin extends PortalControllerWizard
     protected function commonCore()
     {
         $this->setTemplate('AddPlugin');
-        $this->title = $this->description = $this->i18n->trans('new-plugin', ['%pluginName%' => '']);
+        $this->title = $this->description = $this->toolBox()->i18n()->trans('new-plugin', ['%pluginName%' => '']);
 
         $name = $this->request->get('name', '');
         if (!empty($name)) {
@@ -145,7 +144,7 @@ class AddPlugin extends PortalControllerWizard
     protected function newPlugin(string $name): bool
     {
         /// contact is in dev team?
-        $idteamdev = AppSettings::get('community', 'idteamdev', '');
+        $idteamdev = $this->toolBox()->appSettings()->get('community', 'idteamdev', '');
         if (!$this->contactInTeam($idteamdev)) {
             $this->contactNotInTeamError($idteamdev);
             return false;
@@ -155,7 +154,7 @@ class AddPlugin extends PortalControllerWizard
         $project = new WebProject();
         $where = [new DataBaseWhere('name', $name)];
         if ($project->loadFromCode('', $where)) {
-            $this->miniLog->error($this->i18n->trans('duplicate-record'));
+            $this->toolBox()->i18nLog()->warning('duplicate-record');
             return false;
         }
 
@@ -173,7 +172,7 @@ class AddPlugin extends PortalControllerWizard
             return true;
         }
 
-        $this->miniLog->alert($this->i18n->trans('record-save-error'));
+        $this->toolBox()->i18nLog()->error('record-save-error');
         return false;
     }
 }

@@ -18,9 +18,8 @@
  */
 namespace FacturaScripts\Plugins\Community\Lib;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Translator;
+use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Dinamic\Lib\Email\NewMail;
 use FacturaScripts\Dinamic\Lib\Email\ButtonBlock;
 use FacturaScripts\Plugins\Community\Model\Issue;
@@ -41,11 +40,11 @@ class IssueNotification
      */
     public static function notify(&$issue)
     {
-        $i18n = new Translator();
-        $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
+        $i18n = static::toolBox()->i18n();
+        $link = static::toolBox()->appSettings()->get('webportal', 'url', '') . $issue->url('public');
 
         $mail = new NewMail();
-        $mail->fromName = AppSettings::get('webportal', 'title');
+        $mail->fromName = static::toolBox()->appSettings()->get('webportal', 'title');
         $mail->title = $issue->title() . ' de ' . $issue->getContactAlias();
         $mail->text = $issue->description();
         $mail->addMainBlock(new ButtonBlock($i18n->trans('read-more'), $link));
@@ -60,13 +59,13 @@ class IssueNotification
      */
     public static function notifyComment(&$comment)
     {
-        $i18n = new Translator();
+        $i18n = static::toolBox()->i18n();
         $issue = $comment->getIssue();
         $contact = $issue->getContact();
-        $link = AppSettings::get('webportal', 'url', '') . $issue->url('public');
+        $link = static::toolBox()->appSettings()->get('webportal', 'url', '') . $issue->url('public');
 
         $mail = new NewMail();
-        $mail->fromName = AppSettings::get('webportal', 'title');
+        $mail->fromName = static::toolBox()->appSettings()->get('webportal', 'title');
         $mail->title = $issue->title() . ': comentario de ' . $comment->getContactAlias();
         $mail->text = '<b>' . $issue->title() . '</b><br/>' . $issue->description()
             . '<br/><br/>'
@@ -123,5 +122,14 @@ class IssueNotification
             $memberContact = $member->getContact();
             $mail->addBCC($memberContact->email, $memberContact->fullName());
         }
+    }
+
+    /**
+     * 
+     * @return ToolBox
+     */
+    protected static function toolBox()
+    {
+        return new ToolBox();
     }
 }

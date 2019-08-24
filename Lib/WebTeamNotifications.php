@@ -18,8 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Lib;
 
-use FacturaScripts\Core\App\AppSettings;
-use FacturaScripts\Core\Base\Translator;
+use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Dinamic\Lib\Email\NewMail;
 use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\Community\Model\Publication;
@@ -42,14 +41,16 @@ class WebTeamNotifications
     {
         $contact = $member->getContact();
         $team = $member->getTeam();
-        $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
-        $i18n = new Translator();
-        $title = $i18n->trans('accepted-to-team', ['%teamName%' => $team->name]);
-        $txt = $i18n->trans('accepted-to-team-msg', ['%link%' => $link, '%teamName%' => $team->name, '%teamDescription%' => $team->description]);
+        $link = static::toolBox()->appSettings()->get('webportal', 'url', '') . $team->url('public');
+        $title = static::toolBox()->i18n()->trans('accepted-to-team', ['%teamName%' => $team->name]);
+        $txt = static::toolBox()->i18n()->trans(
+            'accepted-to-team-msg',
+            ['%link%' => $link, '%teamName%' => $team->name, '%teamDescription%' => $team->description]
+        );
 
         $publication = new Publication();
         if (!empty($team->defaultpublication) && $publication->loadFromCode($team->defaultpublication)) {
-            $url = AppSettings::get('webportal', 'url', '');
+            $url = static::toolBox()->appSettings()->get('webportal', 'url', '');
             $txt .= "<br/><br/><a href='" . $url . '/' . $publication->url('public') . "'>" . $publication->title . "</a>"
                 . "<br/>" . $publication->description();
         }
@@ -66,10 +67,9 @@ class WebTeamNotifications
     {
         $contact = $member->getContact();
         $team = $member->getTeam();
-        $link = AppSettings::get('webportal', 'url', '') . $team->url('public');
-        $i18n = new Translator();
-        $title = $i18n->trans('expelled-from-team', ['%teamName%' => $team->name]);
-        $txt = $i18n->trans('expelled-from-team-msg', ['%link%' => $link, '%teamName%' => $team->name]);
+        $link = static::toolBox()->appSettings()->get('webportal', 'url', '') . $team->url('public');
+        $title = static::toolBox()->i18n()->trans('expelled-from-team', ['%teamName%' => $team->name]);
+        $txt = static::toolBox()->i18n()->trans('expelled-from-team-msg', ['%link%' => $link, '%teamName%' => $team->name]);
 
         static::notifySend($contact, $title, $txt);
     }
@@ -83,10 +83,19 @@ class WebTeamNotifications
     protected static function notifySend($contact, $title, $txt)
     {
         $mail = new NewMail();
-        $mail->fromName = AppSettings::get('webportal', 'title');
+        $mail->fromName = static::toolBox()->appSettings()->get('webportal', 'title');
         $mail->addAddress($contact->email, $contact->fullName());
         $mail->title = $title;
         $mail->text = $txt;
         $mail->send();
+    }
+
+    /**
+     * 
+     * @return ToolBox
+     */
+    protected static function toolBox()
+    {
+        return new ToolBox();
     }
 }

@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Lib;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
 /**
@@ -28,6 +27,8 @@ use FacturaScripts\Plugins\webportal\Model\WebPage;
  */
 trait PointsMethodsTrait
 {
+
+    abstract public function toolBox();
 
     /**
      * 
@@ -50,19 +51,20 @@ trait PointsMethodsTrait
             return true;
         }
 
-        $minPoints = (int) AppSettings::get('community', 'minpoints');
+        $minPoints = (int) $this->toolBox()->appSettings()->get('community', 'minpoints');
         return $this->contact->puntos - $needed >= $minPoints;
     }
 
     protected function redirToYouNeedMorePointsPage()
     {
         $webPage = new WebPage();
-        if ($webPage->loadFromCode(AppSettings::get('community', 'morepointspage'))) {
+        $code = $this->toolBox()->appSettings()->get('community', 'morepointspage');
+        if ($webPage->loadFromCode($code)) {
             $this->redirect($webPage->url('public'));
             return;
         }
 
-        $this->miniLog->warning($this->i18n->trans('you-need-more-points'));
+        $this->toolBox()->i18nLog()->warning('you-need-more-points');
     }
 
     protected function subtractPoints()

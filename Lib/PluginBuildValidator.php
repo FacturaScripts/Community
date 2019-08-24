@@ -18,8 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Lib;
 
-use FacturaScripts\Core\Base\MiniLog;
-use FacturaScripts\Core\Base\Translator;
+use FacturaScripts\Core\Base\ToolBox;
 use ZipArchive;
 
 /**
@@ -29,24 +28,6 @@ use ZipArchive;
  */
 class PluginBuildValidator
 {
-
-    /**
-     *
-     * @var Translator
-     */
-    protected $i18n;
-
-    /**
-     *
-     * @var MiniLog
-     */
-    protected $minilog;
-
-    public function __construct()
-    {
-        $this->i18n = new Translator();
-        $this->minilog = new MiniLog();
-    }
 
     /**
      * 
@@ -62,7 +43,7 @@ class PluginBuildValidator
         /// can we open the file?
         $result = $zipFile->open($path, ZipArchive::CHECKCONS);
         if (true !== $result) {
-            $this->minilog->error('ZIP error: ' . $result);
+            $this->toolBox()->log()->error('ZIP error: ' . $result);
             return false;
         }
 
@@ -99,6 +80,15 @@ class PluginBuildValidator
 
     /**
      * 
+     * @return ToolBox
+     */
+    protected function toolBox()
+    {
+        return new ToolBox();
+    }
+
+    /**
+     * 
      * @param ZipArchive $zipFile
      *
      * @return bool
@@ -116,7 +106,7 @@ class PluginBuildValidator
             }
         }
 
-        $this->minilog->alert($this->i18n->trans('composer-vendor-not-found'));
+        $this->toolBox()->i18nLog()->error('composer-vendor-not-found');
         return false;
     }
 
@@ -132,21 +122,19 @@ class PluginBuildValidator
         $ini = parse_ini_string($iniContent);
         foreach ($params as $key => $value) {
             if (!isset($ini[$key]) && $key !== 'max_version') {
-                $this->minilog->alert($this->i18n->trans('facturascripts-ini-key-not-found', ['%key%' => $key]));
+                $this->toolBox()->i18nLog()->error('facturascripts-ini-key-not-found', ['%key%' => $key]);
                 return false;
             }
 
             switch ($key) {
                 case 'max_version':
                     if ((float) $ini['min_version'] > (float) $value) {
-                        $this->minilog->alert(
-                            $this->i18n->trans(
-                                'facturascripts-ini-wrong-value', [
-                                '%key%' => 'min_version',
-                                '%value%' => $ini['min_version'],
-                                '%expected%' => $params['min_version']
-                                ]
-                            )
+                        $this->toolBox()->i18nLog()->error(
+                            'facturascripts-ini-wrong-value', [
+                            '%key%' => 'min_version',
+                            '%value%' => $ini['min_version'],
+                            '%expected%' => $params['min_version']
+                            ]
                         );
                         return false;
                     }
@@ -154,8 +142,9 @@ class PluginBuildValidator
 
                 case 'min_version':
                     if ((float) $ini[$key] < (float) $value) {
-                        $this->minilog->alert(
-                            $this->i18n->trans('facturascripts-ini-wrong-value', ['%key%' => $key, '%value%' => $ini[$key], '%expected%' => $value])
+                        $this->toolBox()->i18nLog()->error(
+                            'facturascripts-ini-wrong-value',
+                            ['%key%' => $key, '%value%' => $ini[$key], '%expected%' => $value]
                         );
                         return false;
                     }
@@ -163,8 +152,9 @@ class PluginBuildValidator
 
                 default:
                     if ($ini[$key] != $value) {
-                        $this->minilog->alert(
-                            $this->i18n->trans('facturascripts-ini-wrong-value', ['%key%' => $key, '%value%' => $ini[$key], '%expected%' => $value])
+                        $this->toolBox()->i18nLog()->error(
+                            'facturascripts-ini-wrong-value',
+                            ['%key%' => $key, '%value%' => $ini[$key], '%expected%' => $value]
                         );
                         return false;
                     }
@@ -193,7 +183,7 @@ class PluginBuildValidator
             }
         }
 
-        $this->minilog->alert($this->i18n->trans('node-modules-not-found'));
+        $this->toolBox()->i18nLog()->error('node-modules-not-found');
         return false;
     }
 
@@ -209,7 +199,7 @@ class PluginBuildValidator
         /// get the facturascripts.ini file inside the zip
         $zipIndex = $zipFile->locateName('facturascripts.ini', ZipArchive::FL_NODIR);
         if (false === $zipIndex) {
-            $this->minilog->alert($this->i18n->trans('facturascripts-ini-not-found'));
+            $this->toolBox()->i18nLog()->error('facturascripts-ini-not-found');
             return false;
         } else if (!$this->validateIni($zipFile->getFromIndex($zipIndex), $params)) {
             return false;
@@ -218,7 +208,7 @@ class PluginBuildValidator
         /// the zip must contain the plugin folder
         $pathINI = $zipFile->getNameIndex($zipIndex);
         if (count(explode('/', $pathINI)) !== 2) {
-            $this->minilog->error($this->i18n->trans('zip-error-wrong-structure'));
+            $this->toolBox()->i18nLog()->error('zip-error-wrong-structure');
             return false;
         }
 
@@ -227,7 +217,7 @@ class PluginBuildValidator
 
         //// the zip must contain a single plugin
         if (count($folders) != 1) {
-            $this->minilog->error($this->i18n->trans('zip-error-wrong-structure'));
+            $this->toolBox()->i18nLog()->error('zip-error-wrong-structure');
             return false;
         }
 

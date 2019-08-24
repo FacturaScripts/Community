@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\ControllerPermissions;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Model\CodeModel;
@@ -211,7 +210,7 @@ class WebDocumentation extends PortalController
     protected function loadData()
     {
         $this->setTemplate('WebDocumentation');
-        $this->defaultIdproject = AppSettings::get('community', 'idproject', '');
+        $this->defaultIdproject = $this->toolBox()->appSettings()->get('community', 'idproject', '');
         $this->urlPrefix = $this->getUrlPrefix();
 
         $urlParams = $this->getUrlExtraParams();
@@ -250,7 +249,7 @@ class WebDocumentation extends PortalController
      */
     protected function loadPage()
     {
-        $ipAddress = $this->ipFilter->getClientIp();
+        $ipAddress = $this->toolBox()->ipFilter()->getClientIp();
         $this->docPage->increaseVisitCount($ipAddress);
         $this->docPages = $this->docPage->getChildrenPages();
         $this->docIndex = $this->getProjectIndex();

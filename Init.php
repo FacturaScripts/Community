@@ -19,7 +19,6 @@
 namespace FacturaScripts\Plugins\Community;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\EventManager;
 use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Dinamic\Lib\IssueNotification;
 use FacturaScripts\Dinamic\Lib\WebTeamNotifications;
@@ -38,19 +37,19 @@ class Init extends InitClass
 
     public function init()
     {
-        EventManager::attach('Model:Issue:saveInsert', function($model) {
+        $this->toolBox()->events()->attach('Model:Issue:saveInsert', function($model) {
             IssueNotification::notify($model);
         });
 
-        EventManager::attach('Model:IssueComment:saveInsert', function($model) {
+        $this->toolBox()->events()->attach('Model:IssueComment:saveInsert', function($model) {
             IssueNotification::notifyComment($model);
         });
 
-        EventManager::attach('Model:WebTeamMember:acceptedBy', function($model) {
+        $this->toolBox()->events()->attach('Model:WebTeamMember:acceptedBy', function($model) {
             WebTeamNotifications::notifyAccept($model);
         });
 
-        EventManager::attach('Model:WebTeamMember:expel', function($model) {
+        $this->toolBox()->events()->attach('Model:WebTeamMember:expel', function($model) {
             WebTeamNotifications::notifyExpel($model);
         });
     }

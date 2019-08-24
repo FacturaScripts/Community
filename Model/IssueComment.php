@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 
 /**
@@ -108,7 +107,7 @@ class IssueComment extends Base\ModelClass
      */
     public function resume(int $length = 60): string
     {
-        return Utils::trueTextBreak($this->body, $length);
+        return $this->toolBox()->utils()->trueTextBreak($this->body, $length);
     }
 
     /**
@@ -128,7 +127,7 @@ class IssueComment extends Base\ModelClass
      */
     public function test()
     {
-        $this->body = Utils::noHtml($this->body);
+        $this->body = $this->toolBox()->utils()->noHtml($this->body);
         return parent::test();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018-2019 Carlos Garcia Gomez  <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Widget\Markdown;
@@ -111,7 +109,7 @@ class WebDocPage extends WebPageClass
                 return Markdown::render($this->body);
 
             case 'raw':
-                return Utils::fixHtml($this->body);
+                return $this->toolBox()->utils()->fixHtml($this->body);
 
             default:
                 return $this->body;
@@ -129,7 +127,7 @@ class WebDocPage extends WebPageClass
     {
         $text = strip_tags($this->body('html'));
         $noLineBreaks = preg_replace("/\r|\n/", " ", $text);
-        return Utils::trueTextBreak($noLineBreaks, $length);
+        return $this->toolBox()->utils()->trueTextBreak($noLineBreaks, $length);
     }
 
     /**
@@ -208,10 +206,10 @@ class WebDocPage extends WebPageClass
      */
     public function test()
     {
-        $this->body = Utils::noHtml($this->body);
-        $this->title = Utils::noHtml($this->title);
+        $this->body = $this->toolBox()->utils()->noHtml($this->body);
+        $this->title = $this->toolBox()->utils()->noHtml($this->title);
         if (strlen($this->title) < 1 || strlen($this->title) > 200) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '200']));
+            $this->toolBox()->i18nLog()->error('invalid-column-lenght', ['%column%' => 'title', '%min%' => '1', '%max%' => '200']);
             return false;
         }
 
@@ -235,7 +233,7 @@ class WebDocPage extends WebPageClass
      *
      * @return string
      */
-    public function url(string $type = 'auto', string $list = 'List')
+    public function url(string $type = 'auto', string $list = 'ListWebProject?active=List')
     {
         if (in_array($type, ['public', 'public-list'])) {
             $url = $this->getCustomUrl($type);
@@ -246,7 +244,7 @@ class WebDocPage extends WebPageClass
             return empty($this->permalink) ? $url : $url . '/' . $this->permalink;
         }
 
-        return parent::url($type, 'ListWebProject?active=List');
+        return parent::url($type, $list);
     }
 
     /**
@@ -312,9 +310,9 @@ class WebDocPage extends WebPageClass
     protected function newTeamLog($translation)
     {
         $teamLog = new WebTeamLog();
-        $teamLog->description = self::$i18n->trans($translation, ['%title%' => $this->title]);
+        $teamLog->description = $this->toolBox()->i18n()->trans($translation, ['%title%' => $this->title]);
         $teamLog->idcontacto = $this->lastidcontacto;
-        $teamLog->idteam = (int) AppSettings::get('community', 'idteamdoc');
+        $teamLog->idteam = (int) $this->toolBox()->appSettings()->get('community', 'idteamdoc');
         $teamLog->link = $this->url('public');
         return $teamLog->save();
     }

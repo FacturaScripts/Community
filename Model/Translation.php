@@ -18,9 +18,7 @@
  */
 namespace FacturaScripts\Plugins\Community\Model;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Utils;
 use FacturaScripts\Core\Model\Base;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
@@ -231,12 +229,13 @@ class Translation extends Base\ModelOnChangeClass
      */
     public function test()
     {
-        $this->description = Utils::noHtml($this->description);
-        $this->name = Utils::noHtml($this->name);
-        $this->translation = Utils::noHtml($this->translation);
+        $utils = $this->toolBox()->utils();
+        $this->description = $utils->noHtml($this->description);
+        $this->name = $utils->noHtml($this->name);
+        $this->translation = $utils->noHtml($this->translation);
 
         if (!preg_match('/^[a-zA-Z0-9_\-\+]{2,100}$/', $this->name)) {
-            self::$miniLog->alert(self::$i18n->trans('invalid-name') . ' ' . $this->name);
+            $this->toolBox()->log()->warning($this->toolBox()->i18n()->trans('invalid-name') . ' ' . $this->name);
             return false;
         }
 
@@ -250,7 +249,7 @@ class Translation extends Base\ModelOnChangeClass
 
     public function updateChildren()
     {
-        $mainLangCode = AppSettings::get('community', 'mainlanguage');
+        $mainLangCode = $this->toolBox()->appSettings()->get('community', 'mainlanguage');
         if ($this->langcode == $mainLangCode) {
             foreach ($this->getEquivalents() as $trans) {
                 $trans->needsrevision = true;
@@ -318,9 +317,9 @@ class Translation extends Base\ModelOnChangeClass
     protected function newTeamLog($translation)
     {
         $teamLog = new WebTeamLog();
-        $teamLog->description = self::$i18n->trans($translation, ['%name%' => $this->primaryDescription()]);
+        $teamLog->description = $this->toolBox()->i18n()->trans($translation, ['%name%' => $this->primaryDescription()]);
         $teamLog->idcontacto = self::$idcontacto;
-        $teamLog->idteam = (int) AppSettings::get('community', 'idteamtra');
+        $teamLog->idteam = (int) $this->toolBox()->appSettings()->get('community', 'idteamtra');
         $teamLog->link = $this->url('public');
         return $teamLog->save();
     }
@@ -345,7 +344,7 @@ class Translation extends Base\ModelOnChangeClass
 
     protected function onDelete()
     {
-        $mainLangCode = AppSettings::get('community', 'mainlanguage');
+        $mainLangCode = $this->toolBox()->appSettings()->get('community', 'mainlanguage');
         if ($this->langcode == $mainLangCode) {
             $this->newTeamLog('deleted-translation');
         }
@@ -353,7 +352,7 @@ class Translation extends Base\ModelOnChangeClass
 
     protected function onInsert()
     {
-        $mainLangCode = AppSettings::get('community', 'mainlanguage');
+        $mainLangCode = $this->toolBox()->appSettings()->get('community', 'mainlanguage');
         if ($this->langcode == $mainLangCode) {
             $this->newTeamLog('created-translation');
         }

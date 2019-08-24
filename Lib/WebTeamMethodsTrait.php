@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 trait WebTeamMethodsTrait
 {
+    abstract public function toolBox();
 
     /**
      * Return true if contact is member of team $idteam.
@@ -59,7 +60,7 @@ trait WebTeamMethodsTrait
     {
         $team = new WebTeam();
         $team->loadFromCode($idteam);
-        $this->miniLog->warning('<a href="' . $team->url('public') . '">' . $this->i18n->trans('join-team', ['%team%' => $team->name]) . '</a>');
+        $this->toolBox()->log()->warning('<a href="' . $team->url('public') . '">' . $this->toolBox()->i18n()->trans('join-team', ['%team%' => $team->name]) . '</a>');
         $this->setTemplate('Master/AccessDenied');
         $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
     }

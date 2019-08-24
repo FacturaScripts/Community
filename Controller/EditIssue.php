@@ -131,7 +131,7 @@ class EditIssue extends EditSectionController
         $close = ($this->request->request->get('close', '') === 'TRUE');
         $text = $this->request->get('newComment', '');
         if (empty($text) && $close) {
-            $text = $this->i18n->trans('close');
+            $text = $this->toolBox()->i18n()->trans('close');
         }
 
         if (empty($text)) {
@@ -140,11 +140,11 @@ class EditIssue extends EditSectionController
 
         $issue = $this->getMainModel();
         if (!$issue->newComment($this->contact->idcontacto, $text, $close)) {
-            $this->miniLog->alert($this->i18n->trans('record-save-error'));
+            $this->toolBox()->i18nLog()->error('record-save-error');
             return false;
         }
 
-        $this->miniLog->notice($this->i18n->trans('record-updated-correctly'));
+        $this->toolBox()->i18nLog()->notice('record-updated-correctly');
         $this->redirect($issue->url('public') . '#comm' . $issue->getLastComment()->primaryColumnValue());
         return true;
     }
@@ -286,7 +286,7 @@ class EditIssue extends EditSectionController
         }
 
         if (!$this->contactCanSee()) {
-            $this->miniLog->warning($this->i18n->trans('access-denied'));
+            $this->toolBox()->i18nLog()->warning('access-denied');
             $this->response->setStatusCode(Response::HTTP_FORBIDDEN);
             $this->webPage->noindex = true;
 
@@ -299,7 +299,7 @@ class EditIssue extends EditSectionController
         $this->description = $this->getMainModel()->description();
         $this->canonicalUrl = $this->getMainModel()->url('public');
 
-        $ipAddress = $this->ipFilter->getClientIp();
+        $ipAddress = $this->toolBox()->ipFilter()->getClientIp();
         $this->getMainModel()->increaseVisitCount($ipAddress);
     }
 

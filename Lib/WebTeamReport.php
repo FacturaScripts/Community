@@ -18,16 +18,14 @@
  */
 namespace FacturaScripts\Plugins\Community\Lib;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\Translator;
+use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Dinamic\Lib\Email\NewMail;
 use FacturaScripts\Core\Lib\Email\TableBlock;
 use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebTeam;
 use FacturaScripts\Plugins\Community\Model\WebTeamLog;
 use FacturaScripts\Plugins\Community\Model\WebTeamMember;
-use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * Description of WebTeamReport
@@ -41,17 +39,6 @@ class WebTeamReport
      * Quantity of contact to simulate pagination to send email.
      */
     const MAX_EMAIL_BCC = 50;
-
-    /**
-     *
-     * @var Translator
-     */
-    protected $i18n;
-
-    public function __construct()
-    {
-        $this->i18n = new Translator();
-    }
 
     public function expelInactiveMembers()
     {
@@ -120,11 +107,11 @@ class WebTeamReport
      */
     protected function buildTableBody(&$mail, $publications, $logs)
     {
-        $url = AppSettings::get('webportal', 'url', '');
+        $url = $this->toolBox()->appSettings()->get('webportal', 'url', '');
 
         /// publications
         if (!empty($publications)) {
-            $pubHeaders = [$this->i18n->trans('publications'), $this->i18n->trans('date')];
+            $pubHeaders = [$this->toolBox()->i18n()->trans('publication'), $this->toolBox()->i18n()->trans('date')];
             $pubRows = [];
             foreach ($publications as $pub) {
                 $pubRows[] = [
@@ -138,7 +125,7 @@ class WebTeamReport
 
         /// logs
         if (!empty($logs)) {
-            $logHeaders = [$this->i18n->trans('name'), $this->i18n->trans('description'), $this->i18n->trans('date')];
+            $logHeaders = [$this->toolBox()->i18n()->trans('name'), $this->toolBox()->i18n()->trans('description'), $this->toolBox()->i18n()->trans('date')];
             $logRows = [];
             foreach ($logs as $log) {
                 if (empty($log->link)) {
@@ -159,6 +146,7 @@ class WebTeamReport
     }
 
     /**
+     * Returns team publications and main publications.
      * 
      * @param WebTeam $team
      * @param string  $period
@@ -172,8 +160,15 @@ class WebTeamReport
             new DataBaseWhere('idteam', $team->idteam),
             new DataBaseWhere('creationdate', date('d-m-Y H:i:s', strtotime('-' . $period)), '>')
         ];
+        $teamPublications = $publication->all($where, ['creationdate' => 'DESC'], 0, 0);
 
-        return $publication->all($where, ['creationdate' => 'DESC'], 0, 0);
+        $where2 = [
+            new DataBaseWhere('idteam', null),
+            new DataBaseWhere('creationdate', date('d-m-Y H:i:s', strtotime('-' . $period)), '>')
+        ];
+        $mainPublications = $publication->all($where2, ['creationdate' => 'DESC'], 0, 0);
+
+        return array_merge($teamPublications, $mainPublications);
     }
 
     /**
@@ -218,14 +213,23 @@ class WebTeamReport
      * @param Publication[] $publications
      * @param WebTeamLog    $logs
      *
-     * @return PHPMailer
+     * @return NewMail
      */
     protected function loadMail($teamName, $publications, $logs)
     {
         $mail = new NewMail();
-        $mail->fromName = AppSettings::get('webportal', 'title');
-        $mail->title = $mail->text = $this->i18n->trans('weekly-report', ['%teamName%' => $teamName]);
+        $mail->fromName = $this->toolBox()->appSettings()->get('webportal', 'title');
+        $mail->title = $mail->text = $this->toolBox()->i18n()->trans('weekly-report', ['%teamName%' => $teamName]);
         $this->buildTableBody($mail, $publications, $logs);
         return $mail;
+    }
+
+    /**
+     * 
+     * @return ToolBox
+     */
+    protected function toolBox()
+    {
+        return new ToolBox();
     }
 }

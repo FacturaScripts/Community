@@ -48,7 +48,7 @@ abstract class PortalControllerWizard extends PortalController
     {
         parent::privateCore($response, $user, $permissions);
         if (empty($this->contact)) {
-            $this->miniLog->alert('Contact not found');
+            $this->toolBox()->log()->warning('Contact not found');
             return;
         }
 

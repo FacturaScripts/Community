@@ -18,8 +18,8 @@
  */
 namespace FacturaScripts\Plugins\Community\Lib\WebPortal;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Plugins\Community\Model\Publication;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\Community\Model\WebProject;
@@ -55,7 +55,7 @@ class SearchEngine extends ParentEngine
      */
     protected function findDocPages(&$results, $query, $priority = 1)
     {
-        $defaultIdproject = AppSettings::get('community', 'idproject', '');
+        $defaultIdproject = $this->toolBox()->appSettings()->get('community', 'idproject', '');
 
         $docPage = new WebDocPage();
         $where = [new DataBaseWhere('body|title', $query, 'XLIKE')];
@@ -116,5 +116,14 @@ class SearchEngine extends ParentEngine
                 'priority' => $priority,
                 ], $query);
         }
+    }
+
+    /**
+     * 
+     * @return ToolBox
+     */
+    protected function toolBox()
+    {
+        return new ToolBox();
     }
 }

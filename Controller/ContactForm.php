@@ -127,12 +127,12 @@ class ContactForm extends PortalController
     {
         $this->currentTree = new ContactFormTree();
         if (!$this->currentTree->loadFromCode($code)) {
-            $this->miniLog->alert($this->i18n->trans('no-data'));
+            $this->toolBox()->i18nLog()->error('no-data');
             $this->getRoot();
             return;
         }
 
-        $ipAddress = empty($this->ipFilter->getClientIp()) ? '::1' : $this->ipFilter->getClientIp();
+        $ipAddress = $this->toolBox()->ipFilter()->getClientIp();
         $this->currentTree->increaseVisitCount($ipAddress);
 
         $this->formTrees = $this->currentTree->getChildrenPages();
