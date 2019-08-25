@@ -72,7 +72,7 @@ class CommunityHome extends SectionController
      * @param string $name
      * @param string $team
      */
-    protected function createPublicationsSection($name, $team = '')
+    protected function createPublicationsSection($name = 'ListPublication', $team = 'teams')
     {
         $this->addListSection($name, 'Publication', 'publications', 'fas fa-newspaper', $team);
         $this->addSearchOptions($name, ['title', 'body']);
@@ -169,7 +169,7 @@ class CommunityHome extends SectionController
         $this->createMyIssuesSection();
 
         if (count($this->getTeamsMemberData()) > 0) {
-            $this->createPublicationsSection('ListPublication', 'teams');
+            $this->createPublicationsSection();
             $this->createTeamIssuesSection();
             $this->createTeamLogSection();
         }

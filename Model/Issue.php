@@ -164,9 +164,7 @@ class Issue extends WebPageClass
      */
     public function getLastCommentContact()
     {
-        $contact = new Contacto();
-        $contact->loadFromCode($this->lastcommidcontacto);
-        return $contact;
+        return $this->getCustomContact($this->lastcommidcontacto);
     }
 
     /**

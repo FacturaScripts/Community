@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Community plugin for FacturaScripts.
- * Copyright (C) 2018 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2018-2019 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,6 +49,8 @@ trait ContactTrait
      */
     private static $profileUrl;
 
+    abstract protected function toolBox();
+
     /**
      * Return the actual contact.
      *
@@ -56,20 +58,7 @@ trait ContactTrait
      */
     public function getContact()
     {
-        if (empty($this->idcontacto)) {
-            return new Contacto();
-        }
-
-        if (isset(self::$contacts[$this->idcontacto])) {
-            return self::$contacts[$this->idcontacto];
-        }
-
-        $contact = new Contacto();
-        if ($contact->loadFromCode($this->idcontacto)) {
-            self::$contacts[$this->idcontacto] = $contact;
-        }
-
-        return $contact;
+        return $this->getCustomContact($this->idcontacto);
     }
 
     /**
@@ -78,8 +67,7 @@ trait ContactTrait
      */
     public function getContactAlias(): string
     {
-        $contact = $this->getContact();
-        return $contact->alias();
+        return $this->getContact()->alias();
     }
 
     /**
@@ -118,5 +106,34 @@ trait ContactTrait
         }
 
         return self::$profileUrl . $contact->idcontacto;
+    }
+
+    /**
+     * 
+     * @param int $idcontacto
+     *
+     * @return Contacto
+     */
+    protected function getCustomContact($idcontacto)
+    {
+        if (empty($idcontacto)) {
+            return new Contacto();
+        }
+
+        if (isset(self::$contacts[$idcontacto])) {
+            return self::$contacts[$idcontacto];
+        }
+
+        if (empty(self::$contacts)) {
+            self::$contacts = $this->toolBox()->cache()->get('CONTACT_TRAIT_CONTACTS');
+        }
+
+        $contact = new Contacto();
+        if ($contact->loadFromCode($idcontacto)) {
+            self::$contacts[$idcontacto] = $contact;
+            $this->toolBox()->cache()->set('CONTACT_TRAIT_CONTACTS', self::$contacts);
+        }
+
+        return $contact;
     }
 }
