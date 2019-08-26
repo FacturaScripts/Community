@@ -145,7 +145,7 @@ class EditIssue extends EditSectionController
         }
 
         $this->toolBox()->i18nLog()->notice('record-updated-correctly');
-        $this->redirect($issue->url('public') . '#comm' . $issue->getLastComment()->primaryColumnValue());
+        $this->redirect($issue->url('public') . '?rand=' . mt_rand(0, 999) . '#comm' . $issue->getLastComment()->primaryColumnValue());
         return true;
     }
 
