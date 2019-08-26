@@ -22,6 +22,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\Community\Lib\WebTeamMethodsTrait;
 use FacturaScripts\Plugins\Community\Model\WebDocPage;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\EditSectionController;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Description of EditWebDocPage controller.
@@ -92,6 +93,12 @@ class EditWebDocPage extends EditSectionController
 
     protected function createSections()
     {
+        if (empty($this->contact)) {
+            $this->setTemplate('Master/AccessDenied');
+            $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+            return false;
+        }
+
         if (!$this->contactCanEdit()) {
             $idteam = $this->toolBox()->appSettings()->get('community', 'idteamdoc', '');
             $this->contactNotInTeamError($idteam);

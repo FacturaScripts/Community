@@ -156,6 +156,10 @@ class EditTranslation extends EditSectionController
      */
     protected function deleteAction()
     {
+        if (empty($this->contact)) {
+            return false;
+        }
+
         if (!$this->contactCanEdit()) {
             $this->toolBox()->i18nLog()->warning('not-allowed-delete');
             $this->response->setStatusCode(Response::HTTP_UNAUTHORIZED);
@@ -181,6 +185,10 @@ class EditTranslation extends EditSectionController
      */
     protected function editAction()
     {
+        if (empty($this->contact)) {
+            return false;
+        }
+
         if (!$this->contactCanEdit()) {
             $idteam = $this->toolBox()->appSettings()->get('community', 'idteamtra');
             $this->contactNotInTeamError($idteam);
