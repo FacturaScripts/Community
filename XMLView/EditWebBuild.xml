@@ -30,7 +30,7 @@
                 </widget>
             </column>
             <column name="version" numcolumns="3" order="120">
-                <widget type="number" fieldname="version" readonly="dinamic" />
+                <widget type="number" fieldname="version" />
             </column>
             <column name="date" numcolumns="3" order="130">
                 <widget type="date" fieldname="date" readonly="true" />
