@@ -95,11 +95,19 @@ class PluginBuildValidator
      */
     protected function validateComposer(&$zipFile)
     {
+        /// Is there a composer.json file?
         $zipIndex = $zipFile->locateName('composer.json', ZipArchive::FL_NODIR);
         if (false === $zipIndex) {
             return true;
         }
 
+        /// Is the file at the root of the plugin?
+        $pathComposer = $zipFile->getNameIndex($zipIndex);
+        if (count(explode('/', $pathComposer)) !== 2) {
+            return true;
+        }
+
+        /// Is there a vendor folder?
         foreach ($this->getZipFolders($zipFile, 1) as $folder) {
             if ($folder === 'vendor') {
                 return true;
@@ -128,7 +136,8 @@ class PluginBuildValidator
 
             switch ($key) {
                 case 'max_version':
-                    if ((float) $ini['min_version'] > (float) $value) {
+                    $minVersion = isset($ini['min_version']) ? (float) $ini['min_version'] : 0.0;
+                    if ($minVersion > (float) $value) {
                         $this->toolBox()->i18nLog()->error(
                             'facturascripts-ini-wrong-value', [
                             '%key%' => 'min_version',
@@ -172,11 +181,19 @@ class PluginBuildValidator
      */
     protected function validateNPM(&$zipFile)
     {
+        /// Is there a package.json file?
         $zipIndex = $zipFile->locateName('package.json', ZipArchive::FL_NODIR);
         if (false === $zipIndex) {
             return true;
         }
 
+        /// Is the file at the root of the plugin?
+        $pathPackage = $zipFile->getNameIndex($zipIndex);
+        if (count(explode('/', $pathPackage)) !== 2) {
+            return true;
+        }
+
+        /// Is there a node_modules folder?
         foreach ($this->getZipFolders($zipFile, 1) as $folder) {
             if ($folder === 'node_modules') {
                 return true;
