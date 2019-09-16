@@ -5,16 +5,18 @@
 {% block sectionBody %}
     <div class="custom-scroll">
         {% for comment in section.cursor %}
-            <div class="divider text-center" data-content="{{ comment.getContactAlias() }} - {{ comment.creationdate }}"></div>
-            <div class="tile ml-2">
-                <div class="tile-icon">
-                    <a href="{{ asset(comment.getContactProfile()) }}" class="avatar avatar-xl">
-                        {% set contact = comment.getContact() %}
-                        <img src="{{ contact.gravatar() }}" alt="{{ comment.getContactAlias() }}"/>
-                    </a>
-                </div>
-                <div id="comm{{ comment.primaryColumnValue() }}" class="tile-content">
-                    {{ comment.html() | raw }}
+            <div class="ml-2 mr-2 mb-2 mt-2">
+                <div class="divider text-center" data-content="{{ comment.getContactAlias() }} - {{ comment.creationdate }}"></div>
+                <div class="tile">
+                    <div class="tile-icon">
+                        <a href="{{ asset(comment.getContactProfile()) }}" class="avatar avatar-xl">
+                            {% set contact = comment.getContact() %}
+                            <img src="{{ contact.gravatar() }}" alt="{{ comment.getContactAlias() }}"/>
+                        </a>
+                    </div>
+                    <div id="comm{{ comment.primaryColumnValue() }}" class="tile-content">
+                        {{ comment.html() | raw }}
+                    </div>
                 </div>
             </div>
         {% endfor %}

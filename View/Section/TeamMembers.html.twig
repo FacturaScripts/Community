@@ -6,6 +6,7 @@
             <tr>
                 <th>{{ i18n.trans('name') }}</th>
                 <th></th>
+                <th></th>
                 <th class="text-right">{{ i18n.trans('date') }}</th>
             </tr>
         </thead>
@@ -20,7 +21,11 @@
                     </td>
                     <td class="text-right">
                         {% if fsc.contactCanEdit() %}
-                            {{ member.observations }}
+                            {{ member.observations | raw }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if fsc.contactCanEdit() %}
                             {% if member.accepted == false %}
                                 <a href="{{ member.url('accept') }}" class="btn btn-sm btn-success">{{ i18n.trans('accept') }}</a>
                                 <a href="{{ member.url('expel') }}" class="btn btn-sm btn-error">{{ i18n.trans('cancel') }}</a>
@@ -33,7 +38,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3" class="bg-warning">
+                    <td colspan="4" class="bg-warning">
                         {{ i18n.trans('no-data') }}
                     </td>
                 </tr>
