@@ -66,6 +66,12 @@ class WebProject extends WebPageClass
      *
      * @var string
      */
+    public $imageurl;
+
+    /**
+     *
+     * @var string
+     */
     public $license;
 
     /**
@@ -196,8 +202,12 @@ class WebProject extends WebPageClass
      */
     public function test()
     {
-        $this->description = $this->toolBox()->utils()->noHtml($this->description);
-        $this->name = $this->toolBox()->utils()->noHtml($this->name);
+        $utils = $this->toolBox()->utils();
+        $this->description = $utils->noHtml($this->description);
+        $this->imageurl = $utils->noHtml($this->imageurl);
+        $this->name = $utils->noHtml($this->name);
+        $this->publicrepo = $utils->noHtml($this->publicrepo);
+
         if (strlen($this->name) < 1 || strlen($this->name) > 50) {
             $this->toolBox()->i18nLog()->error('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']);
             return false;

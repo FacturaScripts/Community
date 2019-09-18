@@ -1,10 +1,15 @@
-{% import _self as macros %}
 {% set plugin = fsc.getMainModel() %}
 
 <div class="container">
     <div class="columns">
         <div class="column col-2 col-xs-12 text-right">
-            <i class="fas fa-plug fa-5x fa-fw" aria-hidden="true"></i>
+            {% if plugin.imageurl %}
+                <a href="{{ plugin.imageurl }}" target="_blank">
+                    <img src="{{ plugin.imageurl }}" alt="{{ plugin.name }}" class="custom-img-responsive"/>
+                </a>
+            {% else %}
+                <i class="fas fa-plug fa-5x fa-fw" aria-hidden="true"></i>
+            {% endif %}
         </div>
         <div class="column col-10 col-xs-12">
             <h1 class="h3">
@@ -13,8 +18,12 @@
             <p>
                 {{ plugin.description | raw | nl2br }}
             </p>
-            {{ macros.downloadButton(plugin, i18n, fsc) }}
-            <br/><br/>
+            {{ _self.downloadButton(plugin, i18n, fsc) }}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column">
+            <br/>
             {% if plugin.private %}
                 <span class="label label-error">{{ i18n.trans('private') }}</span>
                 &nbsp;
@@ -23,10 +32,10 @@
                 <b>{{ i18n.trans('mantainer') }}</b>:
                 <a href="{{ asset(plugin.getContactProfile()) }}">{{ plugin.getContactAlias() }}</a>
             {% endif %}
-            {{ macros.healthTable(plugin, i18n, fsc) }}
         </div>
     </div>
 </div>
+{{ _self.healthTable(plugin, i18n, fsc) }}
 <br/>
 
 {% macro downloadButton(plugin, i18n, fsc) %}
@@ -68,13 +77,13 @@
             </thead>
             <tbody>
                 <tr>
-                    {% set tdClass = (plugin.version > 1) ? 'bg-success' : 'bg-error' %}
+                    {% set tdClass = (plugin.version > 1) ? 'table-success' : 'table-error' %}
                     <td class="{{ tdClass }}">{{ plugin.version }}</td>
-                    {% set tdClass = fsc.isDateOld(plugin.lastmod, '-6 months') ? 'bg-error' : 'bg-success' %}
+                    {% set tdClass = fsc.isDateOld(plugin.lastmod, '-6 months') ? 'table-error' : 'table-success' %}
                     <td class="{{ tdClass }}">{{ plugin.lastmod }}</td>
-                    {% set tdClass = (plugin.downloads < 1000) ? 'bg-error' : 'bg-success' %}
+                    {% set tdClass = (plugin.downloads < 1000) ? 'table-error' : 'table-success' %}
                     <td class="{{ tdClass }}">{{ plugin.downloads }}</td>
-                    {% set tdClass = (license.name == 'EULA') ? 'bg-warning' : 'bg-success' %}
+                    {% set tdClass = (license.name == 'EULA') ? 'table-warning' : 'table-success' %}
                     <td class="{{ tdClass }} c-hand" onclick="showModal('modalLicense');">
                         {{ license.title }}
                     </td>

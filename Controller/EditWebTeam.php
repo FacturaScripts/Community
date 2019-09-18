@@ -458,7 +458,7 @@ class EditWebTeam extends EditSectionController
             return;
         }
 
-        $this->title = $this->getMainModel()->name;
+        $this->title = $this->toolBox()->i18n()->trans('team-title', ['%teamName%' => $this->getMainModel()->name]);
         $this->description = $this->getMainModel()->description();
         $this->canonicalUrl = $this->getMainModel()->url('public');
 

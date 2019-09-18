@@ -17,11 +17,11 @@
                             </div>
                             <div class="panel-body">
                                 <div class="columns">
-                                    <div class="column col mb-2">
+                                    <div class="column col-4 col-sm-12 mb-2">
                                         {{ i18n.trans('name') }}:
                                         <input type="text" name="name" class="form-input" maxlength="50" autocomplete="off" autofocus="" required="true"/>
                                     </div>
-                                    <div class="column col mb-2">
+                                    <div class="column col-4 col-sm-12 mb-2">
                                         {{ i18n.trans('type') }}:
                                         <select name="type" class="form-select">
                                             {% for type in fsc.types() %}
@@ -30,7 +30,7 @@
                                         </select>
                                     </div>
                                     {% if fsc.coreVersions() | length > 1 %}
-                                        <div class="column col mb-2">
+                                        <div class="column col-4 col-sm-12 mb-2">
                                             FacturaScripts:
                                             <select name="version" class="form-select">
                                                 {% for version in fsc.coreVersions() %}
@@ -45,7 +45,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="columns">
-                                    <div class="column col mb-2">
+                                    <div class="column col-8 col-sm-12 mb-2">
                                         {{ i18n.trans('public-repository') }}:
                                         <div class="input-group">
                                             <span class="input-group-addon">
@@ -54,7 +54,7 @@
                                             <input type="text" name="git" class="form-input" placeholder="{{ i18n.trans('optional') }}"/>
                                         </div>
                                     </div>
-                                    <div class="column col mb-2">
+                                    <div class="column col-4 col-sm-12 mb-2">
                                         {{ i18n.trans('license') }}:
                                         <select name="license" class="form-select">
                                             {% for license in fsc.licenses() %}

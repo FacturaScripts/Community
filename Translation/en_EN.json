@@ -65,6 +65,7 @@
     "support-team": "Support team",
     "team": "Team",
     "teams": "Teams",
+    "team-title": "Equipo %teamName% in FacturaScripts",
     "translation": "Translation",
     "translation-team": "Translation team",
     "updated-doc-page": "Updated doc page: %title%",
@@ -74,6 +75,7 @@
     "you-need-more-points-page": "You need more points page",
     "your-points": "Your points",
     "wants-to-join-team": "Wants to join this team.",
+    "weekly-report": "Weekly report of team %teamName%",
     "why-join-team": "Why do you want to join this team?",
     "why-join-team-paragraph": "Your answer will help us understand if you have really read the description of the team."
 }
