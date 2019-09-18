@@ -165,7 +165,6 @@ class CommunityHome extends SectionController
             return;
         }
 
-        $this->addHtmlSection('home', 'home');
         $this->createMyIssuesSection();
 
         if (count($this->getTeamsMemberData()) > 0) {

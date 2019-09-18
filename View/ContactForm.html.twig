@@ -1,14 +1,12 @@
 {% extends "Master/PortalTemplate.html.twig" %}
 
 {% block body %}
-    {% import _self as macros %}
-
     <div class="body-section">
         <br/>
         <div class="container grid-lg">
             <div class="columns">
-                <div class="column col-12">
-                    {{ macros.showFormTrees(fsc, i18n) }}
+                <div class="column">
+                    {{ _self.showFormTrees(fsc, i18n) }}
                 </div>
             </div>
         </div>
@@ -16,29 +14,35 @@
 {% endblock %}
 
 {% macro showFormTrees(fsc, i18n) %}
-    {% if fsc.currentTree %}
-        <h1 class="h2">
-            <i class="{{ fsc.currentTree.icon }}" aria-hidden="true"></i> {{ fsc.currentTree.title }}
-        </h1>
-        {{ fsc.currentTree.body() | raw }}
-    {% else %}
-        <h1>Contacto</h1>
-        <p>Seleccione la opción que más se ajuste a su caso:</p>
-    {% endif %}
-    <dl>
-        {% for action in fsc.endActions %}
-            <dd>
-                <i class="{{ action.icon }} fa-fw" aria-hidden="true"></i> <a href="{{ action.link }}">{{ action.title }}</a>
-                <small>{{ action.observations }}</small>
-            </dd>
-        {% endfor %}
-        {% for tree in fsc.formTrees %}
-            <dd>
-                <i class="{{ tree.icon }} fa-fw" aria-hidden="true"></i>&nbsp; <a href="{{ tree.url('public') }}">{{ tree.title }}</a>
-                {% if fsc.user %}
-                    <span class="label">{{ tree.visitcount }}</span>
-                {% endif %}
-            </dd>
-        {% endfor %}
-    </dl>
+    <div class="card">
+        <div class="card-body">
+            {% if fsc.currentTree %}
+                <h1 class="h4">
+                    <i class="{{ fsc.currentTree.icon }}" aria-hidden="true"></i> {{ fsc.currentTree.title }}
+                </h1>
+                {{ fsc.currentTree.body() | raw }}
+            {% else %}
+                <h1 class="h3">
+                    <i class="{{ fsc.webPage.icon }}" aria-hidden="true"></i> {{ fsc.title }}
+                </h1>
+                <p>{{ fsc.description }}</p>
+            {% endif %}
+            <dl>
+                {% for action in fsc.endActions %}
+                    <dd>
+                        <i class="{{ action.icon }} fa-fw" aria-hidden="true"></i> <a href="{{ action.link }}">{{ action.title }}</a>
+                        <small>{{ action.observations }}</small>
+                    </dd>
+                {% endfor %}
+                {% for tree in fsc.formTrees %}
+                    <dd>
+                        <i class="{{ tree.icon }} fa-fw" aria-hidden="true"></i>&nbsp; <a href="{{ tree.url('public') }}">{{ tree.title }}</a>
+                        {% if fsc.user %}
+                            <span class="label">{{ tree.visitcount }}</span>
+                        {% endif %}
+                    </dd>
+                {% endfor %}
+            </dl>
+        </div>
+    </div>
 {% endmacro %}

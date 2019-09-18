@@ -2,45 +2,52 @@
 
 {% block body %}
     <div class="body-section body-padding">
+        <br/>
         <div class="container grid-lg">
             <div class="columns">
                 <div class="column">
-                    <h1 class="h3 text-capitalize">{{ fsc.webPage.title }}</h1>
+                    <h1 class="h3 text-capitalize">
+                        <i class="fas fa-book" aria-hidden="true"></i> {{ fsc.webPage.title }}
+                    </h1>
                 </div>
-            </div>
-            <div class="columns">
-                <div class="column col-9 col-md-12">
+                <div class="column text-right">
                     <div class="dropdown">
-                        <a class="btn dropdown-toggle" tabindex="0">
-                            <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+                        <a class="btn btn-link dropdown-toggle" tabindex="0">
                             {{ fsc.currentProject.name }}
                             <i class="fas fa-caret-down fa-fw" aria-hidden="true"></i>
                         </a>
-                        <ul class="menu menu-big">
+                        <ul class="menu text-left">
                             {% for project in fsc.projects %}
                                 <li class="menu-item">
                                     {% if project.idproject == fsc.currentProject.idproject %}
-                                        <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i> <b>{{ project.name }}</b>
+                                        <b>{{ project.name }}</b>
                                     {% else %}
                                         <a href="{{ asset(fsc.getProjectUrl(project)) }}">
-                                            <i class="fas fa-folder fa-fw" aria-hidden="true"></i> {{ project.name }}
+                                            {{ project.name }}
                                         </a>
                                     {% endif %}
                                 </li>
                             {% endfor %}
                         </ul>
                     </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <div class="divider"></div>
                     <ul>
                         {% for docPage in fsc.docPages %}
                             <li>
-                                <a href="{{ docPage.url('public') }}">{{ docPage.title }}</a>
+                                <a class="h5" href="{{ docPage.url('public') }}">{{ docPage.title }}</a>
+                                <br/>
+                                <cite>{{ docPage.description(140) }}</cite>
                                 <ul>
                                     {% for childrenPage in docPage.getChildrenPages() %}
-                                        {% if loop.index < 3 %}
+                                        {% if loop.index < 4 %}
                                             <li>
                                                 <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title }}</a>
                                             </li>
-                                        {% elseif loop.index == 3 %}
+                                        {% elseif loop.index == 4 %}
                                             <li>
                                                 <a href="{{ docPage.url('public') }}">{{ i18n.trans('more') }}</a>
                                             </li>
