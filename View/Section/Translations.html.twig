@@ -23,7 +23,7 @@
             </thead>
             <tbody>
                 {% for translation in section.cursor %}
-                    {% set tdClass = translation.needsrevision ? 'bg-warning' : 'bg-success' %}
+                    {% set tdClass = translation.needsrevision ? 'table-warning' : 'table-success' %}
                     <tr class="clickableRow c-hand" data-href="{{ asset(translation.url()) }}">
                         {% if fsc.url() != 'EditLanguage' %}
                             <td>{{ translation.langcode }}</td>
@@ -43,7 +43,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="5" class="bg-warning">
+                        <td colspan="5" class="table-warning">
                             {{ i18n.trans('no-data') }}
                         </td>
                     </tr>

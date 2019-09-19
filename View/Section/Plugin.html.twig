@@ -77,11 +77,11 @@
             </thead>
             <tbody>
                 <tr>
-                    {% set tdClass = (plugin.version > 1) ? 'table-success' : 'table-error' %}
+                    {% set tdClass = (plugin.version > 1) ? 'table-success' : 'table-danger' %}
                     <td class="{{ tdClass }}">{{ plugin.version }}</td>
-                    {% set tdClass = fsc.isDateOld(plugin.lastmod, '-6 months') ? 'table-error' : 'table-success' %}
+                    {% set tdClass = fsc.isDateOld(plugin.lastmod, '-6 months') ? 'table-danger' : 'table-success' %}
                     <td class="{{ tdClass }}">{{ plugin.lastmod }}</td>
-                    {% set tdClass = (plugin.downloads < 1000) ? 'table-error' : 'table-success' %}
+                    {% set tdClass = (plugin.downloads < 1000) ? 'table-danger' : 'table-success' %}
                     <td class="{{ tdClass }}">{{ plugin.downloads }}</td>
                     {% set tdClass = (license.name == 'EULA') ? 'table-warning' : 'table-success' %}
                     <td class="{{ tdClass }} c-hand" onclick="showModal('modalLicense');">

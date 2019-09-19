@@ -24,18 +24,18 @@
             <column name="code" display="none" order="100">
                 <widget type="text" fieldname="idbuild" required="true" />
             </column>
-            <column name="project" numcolumns="4" order="110">
+            <column name="project" display="none" order="110">
                 <widget type="select" fieldname="idproject" required="true" readonly="dinamic">
                     <values source="webprojects" fieldcode="idproject" fieldtitle="name"></values>
                 </widget>
             </column>
-            <column name="version" numcolumns="3" order="120">
+            <column name="version" order="120">
                 <widget type="number" fieldname="version" />
             </column>
-            <column name="date" numcolumns="3" order="130">
+            <column name="date" order="130">
                 <widget type="date" fieldname="date" readonly="true" />
             </column>
-            <column name="hour" numcolumns="2" order="140">
+            <column name="hour" order="140">
                 <widget type="text" fieldname="hour" readonly="true" />
             </column>
             <column name="full-path" numcolumns="12" order="150">

@@ -21,14 +21,14 @@
                         <td>{{ language.parentcode }}</td>
                         <td class="text-right">{{ language.numtranslations }}</td>
                         {% if language.needsrevision == 0 %}
-                            <td class="text-right bg-success">{{ language.needsrevision }}</td>
+                            <td class="text-right table-success">{{ language.needsrevision }}</td>
                         {% else %}
-                            <td class="text-right bg-warning">{{ language.needsrevision }}</td>
+                            <td class="text-right table-warning">{{ language.needsrevision }}</td>
                         {% endif %}
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="6" class="bg-warning">
+                        <td colspan="6" class="table-warning">
                             {{ i18n.trans('no-data') }}
                         </td>
                     </tr>

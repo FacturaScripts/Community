@@ -234,18 +234,20 @@ class WebProject extends WebPageClass
 
     public function updateStats()
     {
-        $this->downloads = 0;
+        $downloads = 0;
         $this->lastmod = $this->creationdate;
         $this->version = 0.0;
 
         foreach ($this->getBuilds() as $build) {
-            $this->downloads += $build->downloads;
+            $downloads += $build->downloads;
 
             if ($build->version > $this->version) {
                 $this->version = $build->version;
                 $this->lastmod = $build->date;
             }
         }
+
+        $this->downloads = max([$downloads, $this->downloads]);
     }
 
     /**

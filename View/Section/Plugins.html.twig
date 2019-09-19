@@ -24,14 +24,14 @@
                             {{ plugin.description | slice(0, 200) | raw }}
                         </td>
                         {% if plugin.private %}
-                            <td class="bg-error text-right">{{ i18n.trans('private') }}</td>
+                            <td class="table-danger text-right">{{ i18n.trans('private') }}</td>
                         {% else %}
-                            <td class="bg-success text-right">{{ i18n.trans('public') }}</td>
+                            <td class="table-success text-right">{{ i18n.trans('public') }}</td>
                         {% endif %}
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="2" class="bg-warning">
+                        <td colspan="2" class="table-warning">
                             {{ i18n.trans('no-data') }}
                         </td>
                     </tr>
