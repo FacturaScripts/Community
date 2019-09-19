@@ -1,53 +1,54 @@
 {% set profile = fsc.getMainModel() %}
 
+<br/>
 <div class="container">
     <div class="columns">
-        <div class="column col-2 col-xs-12 text-right">
+        <div class="column col-1 col-md-2 col-sm-12 text-center">
             <img src="{{ profile.gravatar() }}" alt="{{ profile.alias() }}" class="custom-img-responsive"/>
         </div>
-        <div class="column col-10 col-xs-12">
+        <div class="column col-11 col-md-10 col-sm-12">
             <h1 class="h3">
                 {{ profile.alias() }}
                 <br/>
                 {{ profile.fullName() }}
             </h1>
-            <div class="custom-scroll">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                {{ i18n.trans('points') }}
-                            </th>
-                            <th>
-                                {{ i18n.trans('country') }}
-                            </th>
-                            <th>
-                                {{ i18n.trans('create-date') }}
-                            </th>
-                            <th>
-                                {{ i18n.trans('last-activity') }}
-                            </th>
-                            <th>
-                                {{ i18n.trans('verified') }}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            {% set tdClass = (profile.puntos > 0) ? 'table-success' : 'table-warning' %}
-                            <td class="{{ tdClass }}">{{ profile.puntos }}</td>
-                            <td class="table-success">{{ profile.country() }}</td>
-                            {% set tdClass = fsc.isDateOld(profile.fechaalta, '-3 months') ? 'table-success' : 'table-danger' %}
-                            <td class="{{ tdClass }}">{{ profile.fechaalta }}</td>
-                            {% set tdClass = fsc.isDateOld(profile.lastactivity, '-2 months') ? 'table-danger' : 'table-success' %}
-                            <td class="{{ tdClass }}">{{ profile.lastactivity | date('d-m-Y') }}</td>
-                            {% set tdClass = profile.verificado ? 'table-success' : 'table-danger' %}
-                            <td class="{{ tdClass }}">{{ profile.verificado ? i18n.trans('yes') : i18n.trans('no') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
+</div>
+<div class="custom-scroll">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    {{ i18n.trans('points') }}
+                </th>
+                <th>
+                    {{ i18n.trans('country') }}
+                </th>
+                <th>
+                    {{ i18n.trans('create-date') }}
+                </th>
+                <th>
+                    {{ i18n.trans('last-activity') }}
+                </th>
+                <th>
+                    {{ i18n.trans('verified') }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% set tdClass = (profile.puntos > 0) ? 'table-success' : 'table-warning' %}
+                <td class="{{ tdClass }}">{{ profile.puntos }}</td>
+                <td class="table-success">{{ profile.country() }}</td>
+                {% set tdClass = fsc.isDateOld(profile.fechaalta, '-3 months') ? 'table-success' : 'table-danger' %}
+                <td class="{{ tdClass }}">{{ profile.fechaalta }}</td>
+                {% set tdClass = fsc.isDateOld(profile.lastactivity, '-2 months') ? 'table-danger' : 'table-success' %}
+                <td class="{{ tdClass }}">{{ profile.lastactivity | date('d-m-Y') }}</td>
+                {% set tdClass = profile.verificado ? 'table-success' : 'table-danger' %}
+                <td class="{{ tdClass }}">{{ profile.verificado ? i18n.trans('yes') : i18n.trans('no') }}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 <br/>

@@ -2,17 +2,13 @@
 
 <div class="container">
     <div class="columns">
-        <div class="column col-2 col-xs-12 text-right">
-            <i class="fas fa-language fa-3x fa-fw" aria-hidden="true"></i>
+        <div class="column col-2 col-sm-12 text-center">
+            <i class="fas fa-language fa-4x fa-fw" aria-hidden="true"></i>
         </div>
         <div class="column">
-            <h1 class="h3">{{ translation.langcode }} / {{ translation.name }}</h1>
-        </div>
-    </div>
-    <div class="columns">
-        <div class="column col-2 col-xs-12">
-        </div>
-        <div class="column">
+            <h1 class="h4">
+                {{ translation.langcode }} / {{ translation.name }}
+            </h1>
             <form method="post">
                 <input type="hidden" name="action" value="edit"/>
                 <div class="columns">
@@ -49,7 +45,6 @@
         </div>
     </div>
 </div>
-<br/>
 <br/>
 
 {% if fsc.contactCanEdit() %}

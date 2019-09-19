@@ -2,7 +2,7 @@
 
 <div class="container">
     <div class="columns">
-        <div class="column col-2 col-xs-12 text-right">
+        <div class="column col-2 col-sm-12 text-center">
             {% if plugin.imageurl %}
                 <a href="{{ plugin.imageurl }}" target="_blank">
                     <img src="{{ plugin.imageurl }}" alt="{{ plugin.name }}" class="custom-img-responsive"/>
@@ -11,8 +11,8 @@
                 <i class="fas fa-plug fa-5x fa-fw" aria-hidden="true"></i>
             {% endif %}
         </div>
-        <div class="column col-10 col-xs-12">
-            <h1 class="h3">
+        <div class="column col-10 col-sm-12">
+            <h1 class="h4">
                 Plugin {{ plugin.name }}
             </h1>
             <p>

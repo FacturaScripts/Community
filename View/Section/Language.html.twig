@@ -2,11 +2,13 @@
 
 <div class="container">
     <div class="columns">
-        <div class="column col-2 col-xs-12 text-right">
-            <i class="fas fa-language fa-3x fa-fw" aria-hidden="true"></i>
+        <div class="column col-2 col-sm-12 text-center">
+            <i class="fas fa-language fa-4x fa-fw" aria-hidden="true"></i>
         </div>
         <div class="column">
-            <h1 class="h3">{{ language.langcode }}</h1>
+            <h1 class="h4">
+                {{ language.langcode }}
+            </h1>
             <p>
                 {{ language.description }}
                 {% if language.idcontacto %}
