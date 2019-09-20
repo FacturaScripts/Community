@@ -43,15 +43,9 @@
                                 <cite>{{ docPage.description(140) }}</cite>
                                 <ul>
                                     {% for childrenPage in docPage.getChildrenPages() %}
-                                        {% if loop.index < 4 %}
-                                            <li>
-                                                <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title }}</a>
-                                            </li>
-                                        {% elseif loop.index == 4 %}
-                                            <li>
-                                                <a href="{{ docPage.url('public') }}">{{ i18n.trans('more') }}</a>
-                                            </li>
-                                        {% endif %}
+                                        <li>
+                                            <a href="{{ childrenPage.url('public') }}">{{ childrenPage.title }}</a>
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             </li>
