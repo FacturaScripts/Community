@@ -261,11 +261,14 @@ class WebProject extends WebPageClass
     public function url(string $type = 'auto', string $list = 'List')
     {
         switch ($type) {
-            case 'public-list':
-                return $this->getCustomUrl($type);
+            case 'download':
+                return 'DownloadBuild/' . $this->primaryColumnValue() . '/stable';
 
             case 'public':
                 return $this->getCustomUrl($type) . $this->name;
+
+            case 'public-list':
+                return $this->getCustomUrl($type);
         }
 
         return parent::url($type, $list);

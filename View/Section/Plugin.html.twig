@@ -41,7 +41,7 @@
 {% macro downloadButton(plugin, i18n, fsc) %}
     <div class="btn-group">
         {% if plugin.version > 0 %}
-            <a href="{{ asset('DownloadBuild/' ~ plugin.idproject ~ '/stable') }}" class="btn btn-success">
+            <a href="{{ asset(plugin.url('download')) }}" class="btn btn-success">
                 <i class="fas fa-download fa-fw" aria-hidden="true"></i>
                 <span class="hide-xs">{{ i18n.trans('download') }}</span>
             </a>
