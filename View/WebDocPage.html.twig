@@ -1,8 +1,6 @@
 {% extends "Master/PortalTemplate.html.twig" %}
 
 {% block body %}
-    {% import _self as macros %}
-
     <div class="body-section body-padding">
         <div class="container">
             <div class="columns">
@@ -17,13 +15,13 @@
                                 {{ fsc.currentProject.name }}
                                 <i class="fas fa-caret-down fa-fw" aria-hidden="true"></i>
                             </a>
-                            {{ macros.showIndexUlMenu(fsc.docIndex) }}
+                            {{ _self.showIndexUlMenu(fsc.docIndex) }}
                         </span>
                     </div>
                 </div>
                 {% if fsc.contact or fsc.user %}
                     <div class="column text-right">
-                        <a href="{{ asset(fsc.docPage.url()) }}" class="btn btn-success">
+                        <a href="{{ asset(fsc.docPage.url()) }}" class="btn">
                             <i class="fas fa-edit fa-fw" aria-hidden="true"></i> {{ i18n.trans('edit') }}
                         </a>
                     </div>
@@ -32,7 +30,7 @@
             <div class="columns">
                 <div class="column">
                     <div class="hide-md">
-                        {{ macros.showIndexUl(fsc.docIndex) }}
+                        {{ _self.showIndexUl(fsc.docIndex) }}
                     </div>
                 </div>
                 <div class="divider-vert hide-md"></div>
@@ -73,7 +71,7 @@
                                 {{ fsc.currentProject.name }}
                                 <i class="fas fa-caret-down fa-fw" aria-hidden="true"></i>
                             </a>
-                            {{ macros.showIndexUlMenu(fsc.docIndex) }}
+                            {{ _self.showIndexUlMenu(fsc.docIndex) }}
                         </div>
                     </div>
                 </div>
