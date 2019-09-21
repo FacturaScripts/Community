@@ -88,7 +88,7 @@ class SearchEngine extends ParentEngine
         foreach ($pluginProject->all($where) as $plugin) {
             $this->addSearchResults($results, [
                 'icon' => 'fas fa-plug',
-                'title' => $plugin->name,
+                'title' => 'Plugin ' . $plugin->name,
                 'description' => $plugin->description,
                 'link' => $plugin->url('public'),
                 'priority' => $priority,
