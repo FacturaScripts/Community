@@ -51,6 +51,7 @@
     "new-translation-paragraph": "Para crear una nueva traducción debe darle un código identificador válido. Un código en minúsculas, en inglés y separado por guiones. Si quiere traducir 'pagar factura' use por ejemplo el código 'pay-invoice'.",
     "node-modules-not-found": "Encontrado el archivo package.json pero no la carpeta node_modules. El plugin debe contener todos los archivos necesarios para su funcionamiento.",
     "only-zip-files": "El archivo debe ser un zip",
+    "open-source": "Código abierto",
     "point-cost": "Coste en puntos",
     "private": "Privado",
     "project": "Proyecto",

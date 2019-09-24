@@ -17,6 +17,11 @@
         <null>NO</null>
     </column>
     <column>
+        <name>opensource</name>
+        <type>boolean</type>
+        <default>true</default>
+    </column>
+    <column>
         <name>title</name>
         <type>character varying(50)</type>
     </column>

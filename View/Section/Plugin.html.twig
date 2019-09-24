@@ -62,13 +62,13 @@
             <thead>
                 <tr>
                     <th>
+                        {{ i18n.trans('downloads') }}
+                    </th>
+                    <th>
                         {{ i18n.trans('version') }}
                     </th>
                     <th>
                         {{ i18n.trans('last-update') }}
-                    </th>
-                    <th>
-                        {{ i18n.trans('downloads') }}
                     </th>
                     <th>
                         {{ i18n.trans('license') }}
@@ -77,14 +77,16 @@
             </thead>
             <tbody>
                 <tr>
-                    {% set tdClass = (plugin.version > 1) ? 'table-success' : 'table-danger' %}
-                    <td class="{{ tdClass }}">{{ plugin.version }}</td>
-                    {% set tdClass = fsc.isDateOld(plugin.lastmod, '-6 months') ? 'table-danger' : 'table-success' %}
-                    <td class="{{ tdClass }}">{{ plugin.lastmod }}</td>
-                    {% set tdClass = (plugin.downloads < 1000) ? 'table-danger' : 'table-success' %}
-                    <td class="{{ tdClass }}">{{ plugin.downloads }}</td>
-                    {% set tdClass = (license.name == 'EULA') ? 'table-warning' : 'table-success' %}
-                    <td class="{{ tdClass }} c-hand" onclick="showModal('modalLicense');">
+                    <td class="{{ plugin.downloads < 1000 ? 'table-danger' : 'table-success' }}">
+                        {{ plugin.downloads }}
+                    </td>
+                    <td class="{{ plugin.version > 1 ? 'table-success' : 'table-danger' }}">
+                        {{ plugin.version }}
+                    </td>
+                    <td class="{{ fsc.isDateOld(plugin.lastmod, '-6 months') ? 'table-danger' : 'table-success' }}">
+                        {{ plugin.lastmod }}
+                    </td>
+                    <td class="{{ license.opensource ? 'table-success' : 'table-warning' }} c-hand" onclick="showModal('modalLicense');">
                         {{ license.title }}
                     </td>
                 </tr>

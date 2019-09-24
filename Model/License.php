@@ -44,9 +44,21 @@ class License extends Base\ModelClass
 
     /**
      *
+     * @var bool
+     */
+    public $opensource;
+
+    /**
+     *
      * @var string
      */
     public $title;
+
+    public function clear()
+    {
+        parent::clear();
+        $this->opensource = true;
+    }
 
     /**
      * 

@@ -51,6 +51,7 @@
     "new-translation-paragraph": "To create a new translation you need a valid code.",
     "node-modules-not-found": "Found the package.json file but not the node_modules folder. The plugin file must include all the files necessary for its operation.",
     "only-zip-files": "The file must be a zip file",
+    "open-source": "Open source",
     "point-cost": "Point cost",
     "private": "Private",
     "project": "Project",
