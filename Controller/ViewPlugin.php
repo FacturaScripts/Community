@@ -85,6 +85,10 @@ class ViewPlugin extends EditSectionController
 
         $this->project = new WebProject();
         $uri = explode('/', $this->uri);
+        if ($this->project->loadFromCode('', [new DataBaseWhere('permalink', end($uri))])) {
+            return $this->project;
+        }
+
         $this->project->loadFromCode('', [new DataBaseWhere('name', end($uri))]);
         return $this->project;
     }

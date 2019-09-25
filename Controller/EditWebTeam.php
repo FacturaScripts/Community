@@ -246,10 +246,9 @@ class EditWebTeam extends EditSectionController
         if ($this->getMemberStatus() === 'in' || $this->user) {
             $this->createTeamIssuesSection();
             $this->createPluginSection();
+            $this->createSectionLogs();
+            $this->createSectionMembers('ListWebTeamMember', 'members', 'fas fa-users');
         }
-
-        $this->createSectionLogs();
-        $this->createSectionMembers('ListWebTeamMember', 'members', 'fas fa-users');
 
         /// admin
         if ($this->contactCanEdit()) {

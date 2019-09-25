@@ -52,6 +52,10 @@
         <type>character varying(50)</type>
     </column>
     <column>
+        <name>permalink</name>
+        <type>character varying(50)</type>
+    </column>
+    <column>
         <name>plugin</name>
         <type>boolean</type>
         <default>false</default>
@@ -91,7 +95,11 @@
         <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
-        <name>uniq_webprojects</name>
+        <name>uniq_webprojects_name</name>
         <type>UNIQUE (name)</type>
+    </constraint>
+    <constraint>
+        <name>uniq_webprojects_permalink</name>
+        <type>UNIQUE (permalink)</type>
     </constraint>
 </table>

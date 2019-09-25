@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 
@@ -80,6 +81,12 @@ class WebProject extends WebPageClass
      * @var string
      */
     public $name;
+
+    /**
+     *
+     * @var string
+     */
+    public $permalink;
 
     /**
      *
@@ -213,9 +220,14 @@ class WebProject extends WebPageClass
             return false;
         }
 
+        /// first character must be a letter. Only letters, numbers and some characters allowed.
         if (!preg_match("/^[A-Za-z]/", $this->name) || !preg_match("/^[a-z0-9_\-]+$/i", $this->name)) {
             $this->toolBox()->i18nLog()->error('invalid-name');
             return false;
+        }
+
+        if (empty($this->permalink)) {
+            $this->permalink = Permalink::get($this->name, 50);
         }
 
         $this->private = false;
@@ -265,7 +277,8 @@ class WebProject extends WebPageClass
                 return 'DownloadBuild/' . $this->primaryColumnValue() . '/stable';
 
             case 'public':
-                return $this->getCustomUrl($type) . $this->name;
+                $permalink = empty($this->permalink) ? $this->name : $this->permalink;
+                return $this->getCustomUrl($type) . $permalink;
 
             case 'public-list':
                 return $this->getCustomUrl($type);

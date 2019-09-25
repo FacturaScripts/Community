@@ -73,9 +73,9 @@ class TeamList extends SectionController
     {
         $this->createTeamSection();
         $this->createPublicationSection();
-        $this->createLogSection();
 
         if ($this->contact) {
+            $this->createLogSection();
             $this->createTeamSection('ListWebTeam-you', 'your');
         }
     }
