@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Dinamic\Lib\IssueNotification;
 
 /**
  * Description of Issue model.
@@ -129,5 +130,21 @@ class IssueComment extends Base\ModelClass
     {
         $this->body = $this->toolBox()->utils()->noHtml($this->body);
         return parent::test();
+    }
+    
+    /**
+     * 
+     * @param array $values
+     *
+     * @return bool
+     */
+    protected function saveInsert(array $values = [])
+    {
+        if(parent::saveInsert($values)) {
+            IssueNotification::notifyComment($this);
+            return true;
+        }
+        
+        return false;
     }
 }

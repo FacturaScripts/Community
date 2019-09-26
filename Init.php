@@ -20,8 +20,6 @@ namespace FacturaScripts\Plugins\Community;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\InitClass;
-use FacturaScripts\Dinamic\Lib\IssueNotification;
-use FacturaScripts\Dinamic\Lib\WebTeamNotifications;
 use FacturaScripts\Dinamic\Model\Language;
 use FacturaScripts\Dinamic\Model\WebProject;
 use FacturaScripts\Dinamic\Model\WebTeam;
@@ -37,21 +35,7 @@ class Init extends InitClass
 
     public function init()
     {
-        $this->toolBox()->events()->attach('Model:Issue:saveInsert', function($model) {
-            IssueNotification::notify($model);
-        });
-
-        $this->toolBox()->events()->attach('Model:IssueComment:saveInsert', function($model) {
-            IssueNotification::notifyComment($model);
-        });
-
-        $this->toolBox()->events()->attach('Model:WebTeamMember:acceptedBy', function($model) {
-            WebTeamNotifications::notifyAccept($model);
-        });
-
-        $this->toolBox()->events()->attach('Model:WebTeamMember:expel', function($model) {
-            WebTeamNotifications::notifyExpel($model);
-        });
+        ;
     }
 
     public function update()

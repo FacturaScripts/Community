@@ -64,7 +64,7 @@ class AddPlugin extends PortalControllerWizard
      */
     public function types()
     {
-        return ['public', 'private'];
+        return WebProject::avaliableTypes();
     }
 
     /**
@@ -75,24 +75,12 @@ class AddPlugin extends PortalControllerWizard
         $this->setTemplate('AddPlugin');
         $this->title = $this->description = $this->toolBox()->i18n()->trans('new-plugin', ['%pluginName%' => '']);
 
+        $getVersion = $this->request->query->get('version', $this->version);
+        $this->version = $this->request->request->get('version', $getVersion);
+
         $name = $this->request->get('name', '');
         if (!empty($name)) {
             $this->newPlugin($name);
-        }
-    }
-
-    /**
-     * 
-     * @return string
-     */
-    protected function getPluginType()
-    {
-        switch ($this->request->request->get('type')) {
-            case 'private':
-                return 'private';
-
-            default:
-                return 'public';
         }
     }
 
@@ -165,7 +153,7 @@ class AddPlugin extends PortalControllerWizard
         $project->idteam = $this->getPrivateTeam()->idteam;
         $project->license = $this->request->request->get('license');
         $project->publicrepo = $this->request->request->get('git');
-        $project->type = $this->getPluginType();
+        $project->type = $this->request->request->get('type');
         if ($project->save()) {
             /// redir to new plugin
             $this->redirect($project->url('public'));

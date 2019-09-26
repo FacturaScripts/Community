@@ -39,20 +39,70 @@
 <br/>
 
 {% macro downloadButton(plugin, i18n, fsc) %}
-    <div class="btn-group">
-        {% if plugin.version > 0 %}
-            <a href="{{ asset(plugin.url('download')) }}" class="btn btn-success">
-                <i class="fas fa-download fa-fw" aria-hidden="true"></i>
-                <span class="hide-xs">{{ i18n.trans('download') }}</span>
+    {% if plugin.version <= 0 %}
+        <a href="#" class="btn btn-warning" onclick="return showModal('modalDraft');">
+            <i class="fas fa-drafting-compass fa-fw" aria-hidden="true"></i> {{ i18n.trans('draft') }}
+        </a>
+        <div class="modal" id="modalDraft">
+            <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('modalDraft');"></a>
+            <div class="modal-container">
+                <div class="modal-header">
+                    <a href="#close" onclick="return hideModal('modalDraft');" class="btn btn-clear float-right" aria-label="Close"></a>
+                    <div class="modal-title h5">{{ i18n.trans('draft') }}</div>
+                </div>
+                <div class="modal-body">
+                    <div class="content">
+                        {{ i18n.trans('plugin-draft-p') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elseif plugin.type == 'for-sale' %}
+        {% if plugin.allowsale == false %}
+            <a href="#" class="btn btn-warning" onclick="return showModal('modalReview');">
+                <i class="fas fa-coffee fa-fw" aria-hidden="true"></i> {{ i18n.trans('request-review') }}
+            </a>
+            <div class="modal" id="modalReview">
+                <a href="#close" class="modal-overlay" aria-label="Close" onclick="return hideModal('modalReview');"></a>
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <a href="#close" onclick="return hideModal('modalReview');" class="btn btn-clear float-right" aria-label="Close"></a>
+                        <div class="modal-title h5">{{ i18n.trans('request-review') }}</div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="content">
+                            {{ i18n.trans('request-review-p') }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{{ asset('AddContract') }}" class="btn btn-primary">
+                            {{ i18n.trans('contact') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% elseif plugin.private %}
+            <a href="#" class="btn btn-error">
+                <i class="fas fa-eye-slash fa-fw" aria-hidden="true"></i> {{ i18n.trans('private') }}
+            </a>
+        {% else %}
+            <a href="{{ asset(plugin.url('buy')) }}" class="btn btn-success">
+                <i class="fas fa-shopping-cart fa-fw" aria-hidden="true"></i>
+                <span class="hide-xs">{{ i18n.trans('buy') }}</span>
+                {{ fsc.toolBox().coins().format(plugin.price) }}
             </a>
         {% endif %}
-        {% if plugin.publicrepo %}
-            <a href="{{ plugin.publicrepo }}" target="_blank" rel="nofollow" class="btn">
-                <i class="fab fa-git fa-fw" aria-hidden="true"></i>
-                <span class="hide-xs">{{ i18n.trans('source-code') }}</span>
-            </a>
-        {% endif %}
-    </div>
+    {% else %}
+        <a href="{{ asset(plugin.url('download')) }}" class="btn btn-success">
+            <i class="fas fa-download fa-fw" aria-hidden="true"></i> {{ i18n.trans('download') }}
+        </a>
+    {% endif %}
+    {% if plugin.publicrepo %}
+        <a href="{{ plugin.publicrepo }}" target="_blank" rel="nofollow" class="btn">
+            <i class="fab fa-git fa-fw" aria-hidden="true"></i>
+            <span class="hide-xs">{{ i18n.trans('source-code') }}</span>
+        </a>
+    {% endif %}
 {% endmacro %}
 
 {% macro healthTable(plugin, i18n, fsc) %}
@@ -70,6 +120,11 @@
                     <th>
                         {{ i18n.trans('last-update') }}
                     </th>
+                    {% if plugin.type == 'for-sale' %}
+                        <th>
+                            {{ i18n.trans('subscription-months') }}
+                        </th>
+                    {% endif %}
                     <th>
                         {{ i18n.trans('license') }}
                     </th>
@@ -86,6 +141,11 @@
                     <td class="{{ fsc.isDateOld(plugin.lastmod, '-6 months') ? 'table-danger' : 'table-success' }}">
                         {{ plugin.lastmod }}
                     </td>
+                    {% if plugin.type == 'for-sale' %}
+                        <td class="{{ plugin.subscriptionmonths >= 12 ? 'table-success' : 'table-danger' }}">
+                            {{ plugin.subscriptionmonths }}
+                        </td>
+                    {% endif %}
                     <td class="{{ license.opensource ? 'table-success' : 'table-warning' }} c-hand" onclick="showModal('modalLicense');">
                         {{ license.title }}
                     </td>

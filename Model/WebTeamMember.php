@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Dinamic\Lib\WebTeamNotifications;
 use FacturaScripts\Dinamic\Model\Contacto;
 
 /**
@@ -78,7 +79,7 @@ class WebTeamMember extends Base\ModelClass
             $byContact = new Contacto();
             $byContact->loadFromCode($idcontacto);
             $this->newTeamLog('accepted-on-team-by', ['%by%' => $byContact->alias()]);
-            $this->toolBox()->events()->trigger('Model:' . $this->modelClassName() . ':acceptedBy', $this);
+            WebTeamNotifications::notifyAccept($this);
             return true;
         }
 
@@ -121,7 +122,7 @@ class WebTeamMember extends Base\ModelClass
         if ($this->delete()) {
             $translation = $inactivity ? 'expelled-from-team-inactivity' : 'expelled-from-team';
             $this->newTeamLog($translation);
-            $this->toolBox()->events()->trigger('Model:' . $this->modelClassName() . ':expel', $this);
+            WebTeamNotifications::notifyExpel($this);
             return true;
         }
 

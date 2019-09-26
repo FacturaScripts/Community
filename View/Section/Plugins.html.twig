@@ -7,7 +7,7 @@
             <thead>
                 <tr>
                     <th>{{ i18n.trans('description') }}</th>
-                    <th class="text-right">{{ i18n.trans('type') }}</th>
+                    <th class="text-center" width="80">{{ i18n.trans('type') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,9 +24,11 @@
                             {{ plugin.description | slice(0, 200) | raw }}
                         </td>
                         {% if plugin.private %}
-                            <td class="table-danger text-right">{{ i18n.trans('private') }}</td>
+                            <td class="table-danger text-center">{{ i18n.trans('private') }}</td>
+                        {% elseif plugin.price > 0 %}
+                            <td class="table-warning text-center">{{ fsc.toolBox().coins().format(plugin.price) }}</td>
                         {% else %}
-                            <td class="table-success text-right">{{ i18n.trans('public') }}</td>
+                            <td class="table-success text-center">{{ i18n.trans('free') }}</td>
                         {% endif %}
                     </tr>
                 {% else %}

@@ -20,7 +20,8 @@ namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Model\Base;
-use FacturaScripts\Core\Model\Contacto;
+use FacturaScripts\Dinamic\Lib\IssueNotification;
+use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 
@@ -349,5 +350,21 @@ class Issue extends WebPageClass
         }
 
         return $controller . '?code=';
+    }
+
+    /**
+     * 
+     * @param array $values
+     *
+     * @return bool
+     */
+    protected function saveInsert(array $values = [])
+    {
+        if (parent::saveInsert($values)) {
+            IssueNotification::notify($this);
+            return true;
+        }
+
+        return false;
     }
 }

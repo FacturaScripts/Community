@@ -194,6 +194,22 @@ class ViewPlugin extends EditSectionController
     }
 
     /**
+     * 
+     * @param string $sectionName
+     */
+    protected function loadAvaliablePluginTypes(string $sectionName)
+    {
+        $types = [];
+        foreach (WebProject::avaliableTypes() as $type) {
+            $types[] = ['value' => $type, 'title' => $type];
+        }
+        $columnType = $this->sections[$sectionName]->columnForName('type');
+        if ($columnType) {
+            $columnType->widget->setValuesFromArray($types, true);
+        }
+    }
+
+    /**
      * Load section data procedure
      *
      * @param string $sectionName
@@ -213,6 +229,7 @@ class ViewPlugin extends EditSectionController
 
             case 'EditWebProject':
                 $this->sections[$sectionName]->loadData($project->primaryColumnValue());
+                $this->loadAvaliablePluginTypes($sectionName);
                 break;
 
             case 'ListIssue':

@@ -21,35 +21,28 @@
 <view>
     <columns>
         <group name="data" numcolumns="12">
-            <column name="name" numcolumns="3" order="100">
-                <widget type="text" fieldname="name" required="true" readonly="dinamic" />
-            </column>
-            <column name="type" numcolumns="3" order="110">
-                <widget type="select" fieldname="type" required="true" translate="true">
-                    <values title="public">public</values>
-                    <values title="private">private</values>
+            <column name="type" order="100">
+                <widget type="select" fieldname="type" translate="true" required="true">
                 </widget>
             </column>
-            <column name="admin" numcolumns="3" order="120">
+            <column name="admin" order="110">
                 <widget type="autocomplete" fieldname="idcontacto" onclick="EditContacto" required="true">
                     <values source="contactos" fieldcode="idcontacto" fieldtitle="email"></values>
                 </widget>
             </column>
-            <column name="license" numcolumns="3" order="130">
+            <column name="license" order="120">
                 <widget type="select" fieldname="license" onclick="EditLicense" required="true">
                     <values source="licenses" fieldcode="name" fieldtitle="title"></values>
                 </widget>
             </column>
-        </group>
-        <group name="github" numcolumns="12">
-            <column name="public-repository" order="100">
-                <widget type="text" fieldname="publicrepo" icon="fab fa-git" />
-            </column>
-            <column name="version" numcolumns="2" order="110">
+            <column name="version" order="130">
                 <widget type="number" fieldname="version" readonly="true" />
             </column>
-            <column name="last-update" numcolumns="3" order="120">
+            <column name="last-update" order="140">
                 <widget type="date" fieldname="lastmod" readonly="true" />
+            </column>
+            <column name="public-repository" numcolumns="12" order="150">
+                <widget type="text" fieldname="publicrepo" icon="fab fa-git" />
             </column>
         </group>
         <group name="description" numcolumns="12">
@@ -61,12 +54,30 @@
             </column>
         </group>
         <group name="advanced" title="advanced" numcolumns="12">
-            <column name="team" order="100">
+            <column name="code" numcolumns="2" order="90">
+                <widget type="text" fieldname="idproject" icon="fas fa-hashtag" readonly="true"/>
+            </column>
+            <column name="team" numcolumns="3" order="100">
                 <widget type="select" fieldname="idteam" icon="fas fa-users" onclick="EditWebTeam">
                     <values source="webteams" fieldcode="idteam" fieldtitle="name"></values>
                 </widget>
             </column>
-            <column name="plugin" order="110" level="10">
+            <column name="price" numcolumns="2" order="110">
+                <widget type="money" fieldname="price" min="0" />
+            </column>
+            <column name="subscription-months" numcolumns="3" order="120">
+                <widget type="number" fieldname="subscriptionmonths" icon="far fa-calendar-plus" decimal="0" min="0" />
+            </column>
+            <column name="reference" level="2" numcolumns="2" order="130">
+                <widget type="text" fieldname="reference" readonly="true" />
+            </column>
+            <column name="private" order="140">
+                <widget type="checkbox" fieldname="private" />
+            </column>
+            <column name="allow-sale" level="2" order="150">
+                <widget type="checkbox" fieldname="allowsale" />
+            </column>
+            <column name="plugin" level="2" order="160">
                 <widget type="checkbox" fieldname="plugin" />
             </column>
         </group>

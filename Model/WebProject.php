@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\Community\Model;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Dinamic\Model\Producto;
 use FacturaScripts\Plugins\webportal\Lib\WebPortal\Permalink;
 use FacturaScripts\Plugins\webportal\Model\WebPage;
 use FacturaScripts\Plugins\webportal\Model\Base\WebPageClass;
@@ -36,7 +37,14 @@ class WebProject extends WebPageClass
     use Common\ContactTrait;
 
     const DEFAULT_LICENSE = 'LGPL';
-    const DEFAULT_TYPE = 'public';
+    const DEFAULT_SUBSCRIPTION = 12;
+    const DEFAULT_TYPE = 'free';
+
+    /**
+     *
+     * @var bool
+     */
+    public $allowsale;
 
     /**
      *
@@ -96,6 +104,12 @@ class WebProject extends WebPageClass
 
     /**
      *
+     * @var float
+     */
+    public $price;
+
+    /**
+     *
      * @var bool
      */
     public $private;
@@ -105,6 +119,18 @@ class WebProject extends WebPageClass
      * @var string
      */
     public $publicrepo;
+
+    /**
+     *
+     * @var string
+     */
+    public $reference;
+
+    /**
+     *
+     * @var int
+     */
+    public $subscriptionmonths;
 
     /**
      *
@@ -125,15 +151,27 @@ class WebProject extends WebPageClass
     private static $urls = [];
 
     /**
+     * 
+     * @return array
+     */
+    public static function avaliableTypes()
+    {
+        return ['free', 'for-sale', 'private'];
+    }
+
+    /**
      * Reset the values of all model properties.
      */
     public function clear()
     {
         parent::clear();
+        $this->allowsale = false;
         $this->downloads = 0;
         $this->license = self::DEFAULT_LICENSE;
         $this->plugin = true;
+        $this->price = 0.0;
         $this->private = false;
+        $this->subscriptionmonths = self::DEFAULT_SUBSCRIPTION;
         $this->type = self::DEFAULT_TYPE;
         $this->version = 0.0;
     }
@@ -230,18 +268,12 @@ class WebProject extends WebPageClass
             $this->permalink = Permalink::get($this->name, 50);
         }
 
-        $this->private = false;
-        switch ($this->type) {
-            case 'private':
-                $this->private = true;
-                break;
-
-            default:
-                $this->type = self::DEFAULT_TYPE;
+        if ($this->subscriptionmonths < 0) {
+            $this->subscriptionmonths = 0;
         }
 
         $this->lastmoddisable = true;
-        return parent::test();
+        return $this->testPrice() && $this->testType() && parent::test();
     }
 
     public function updateStats()
@@ -273,6 +305,9 @@ class WebProject extends WebPageClass
     public function url(string $type = 'auto', string $list = 'List')
     {
         switch ($type) {
+            case 'buy':
+                return 'ShoppingCart?action=add&ref=' . $this->getReference();
+
             case 'download':
                 return 'DownloadBuild/' . $this->primaryColumnValue() . '/stable';
 
@@ -308,6 +343,41 @@ class WebProject extends WebPageClass
         }
 
         return '#';
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    protected function getReference()
+    {
+        $product = new Producto();
+        $ref = empty($this->reference) ? $this->name : $this->reference;
+        $where = [new DataBaseWhere('referencia', $ref)];
+        if (!$product->loadFromCode('', $where)) {
+            /// create product
+            $product->referencia = $ref;
+            $product->descripcion = $this->description;
+            $product->nostock = true;
+            $product->setPriceWithTax($this->price);
+            $product->save();
+        } elseif (!$this->toolBox()->utils()->floatcmp($product->priceWithTax(), $this->price, FS_NF0, true)) {
+            /// update price
+            $product->setPriceWithTax($this->price);
+            /// no need to save
+        }
+
+        if ($product->descripcion != $this->description) {
+            $product->descripcion = $this->description;
+            $product->save();
+        }
+
+        if (empty($this->reference)) {
+            $this->reference = $product->referencia;
+            $this->save();
+        }
+
+        return $product->referencia;
     }
 
     /**
@@ -368,5 +438,43 @@ class WebProject extends WebPageClass
     {
         $more = ['version'];
         parent::setPreviousData(array_merge($more, $fields));
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    protected function testPrice(): bool
+    {
+        return $this->price >= 0.0;
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    protected function testType(): bool
+    {
+        switch ($this->type) {
+            case 'for-sale':
+                if ($this->price <= 0.0 || !$this->allowsale) {
+                    $this->private = true;
+                }
+                break;
+
+            case 'private':
+                $this->price = 0.0;
+                $this->private = true;
+                break;
+
+            /// free
+            default:
+                $this->price = 0.0;
+                $this->private = false;
+                $this->type = self::DEFAULT_TYPE;
+                break;
+        }
+
+        return true;
     }
 }

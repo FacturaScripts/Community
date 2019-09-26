@@ -75,11 +75,15 @@
         <type>PRIMARY KEY (idissue)</type>
     </constraint>
     <constraint>
-        <name>ca_issues_webteams</name>
-        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE SET NULL ON UPDATE CASCADE</type>
-    </constraint>
-    <constraint>
         <name>ca_issues_contactos</name>
         <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE CASCADE ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_issues_webprojects</name>
+        <type>FOREIGN KEY (idproject) REFERENCES webprojects (idproject) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_issues_webteams</name>
+        <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
 </table>
