@@ -63,9 +63,12 @@ class EditContacto extends ParentController
         $this->addListView($viewName, 'WebTeamLog', 'logs', 'fas fa-file-medical-alt');
         $this->views[$viewName]->searchFields = ['description'];
         $this->views[$viewName]->addOrderBy(['time'], 'time', 2);
-        
+
         /// disable column
         $this->views[$viewName]->disableColumn('contact');
+
+        /// disable button
+        $this->setSettings($viewName, 'btnNew', false);
     }
 
     /**
