@@ -101,6 +101,10 @@
         <name>visitcount</name>
         <type>integer</type>
     </column>
+    <column>
+        <name>youtubeid</name>
+        <type>character varying(30)</type>
+    </column>
     <constraint>
         <name>webprojects_pkey</name>
         <type>PRIMARY KEY (idproject)</type>

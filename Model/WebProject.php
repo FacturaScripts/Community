@@ -146,6 +146,12 @@ class WebProject extends WebPageClass
 
     /**
      *
+     * @var string
+     */
+    public $youtubeid;
+
+    /**
+     *
      * @var array
      */
     private static $urls = [];
@@ -252,6 +258,7 @@ class WebProject extends WebPageClass
         $this->imageurl = $utils->noHtml($this->imageurl);
         $this->name = $utils->noHtml($this->name);
         $this->publicrepo = $utils->noHtml($this->publicrepo);
+        $this->youtubeid = $utils->noHtml($this->youtubeid);
 
         if (strlen($this->name) < 1 || strlen($this->name) > 50) {
             $this->toolBox()->i18nLog()->error('invalid-column-lenght', ['%column%' => 'name', '%min%' => '1', '%max%' => '50']);
