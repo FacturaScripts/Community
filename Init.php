@@ -35,7 +35,7 @@ class Init extends InitClass
 
     public function init()
     {
-        ;
+        $this->loadExtension(new Extension\Controller\EditContacto());
     }
 
     public function update()
