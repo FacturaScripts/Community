@@ -72,7 +72,7 @@
                 <widget type="number" fieldname="subscriptionmonths" icon="far fa-calendar-plus" decimal="0" min="0" />
             </column>
             <column name="reference" level="2" numcolumns="2" order="130">
-                <widget type="text" fieldname="reference" readonly="true" />
+                <widget type="text" fieldname="reference" />
             </column>
             <column name="private" order="140">
                 <widget type="checkbox" fieldname="private" />

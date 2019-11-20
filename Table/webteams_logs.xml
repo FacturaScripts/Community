@@ -21,7 +21,7 @@
     </column>
     <column>
         <name>idteam</name>
-        <type>serial</type>
+        <type>integer</type>
         <null>NO</null>
     </column>
     <column>
