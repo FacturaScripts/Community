@@ -73,7 +73,7 @@ class DownloadBuild extends PortalController
      */
     protected function contactCanDownload()
     {
-        if (!$this->currentProject->private) {
+        if ($this->currentProject->type === WebProject::DEFAULT_TYPE) {
             return true;
         }
 
