@@ -58,10 +58,10 @@ class Cron extends CronClass
             $this->jobDone('team-points');
         }
 
-        if ($this->isTimeForJob('send-mail-to-team-members', '1 week')) {
+        if ($this->isTimeForJob('send-mail-to-team-members', '1 month')) {
             $teamReport = new WebTeamReport();
             $teamReport->expelInactiveMembers();
-            $teamReport->sendMail('1 week');
+            $teamReport->sendMail('1 month');
             $this->jobDone('send-mail-to-team-members');
         }
     }

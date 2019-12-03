@@ -73,7 +73,7 @@ class IssueNotification
             . $comment->resume(60);
         $mail->addMainBlock(new ButtonBlock($i18n->trans('read-more'), $link));
 
-        if ($issue->lastcommidcontacto === $comment->idcontacto) {
+        if ($issue->lastcommidcontacto === $comment->idcontacto || $comment->body == $i18n->trans('close')) {
             /// don't notify
             return;
         } elseif ($issue->idcontacto !== $comment->idcontacto) {
