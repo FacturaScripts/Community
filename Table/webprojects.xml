@@ -110,11 +110,11 @@
         <type>PRIMARY KEY (idproject)</type>
     </constraint>
     <constraint>
-        <name>ca_webprojects_contactos</name>
+        <name>ca_webprojects_contactos2</name>
         <type>FOREIGN KEY (idcontacto) REFERENCES contactos (idcontacto) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
-        <name>ca_webprojects_webteams</name>
+        <name>ca_webprojects_webteams2</name>
         <type>FOREIGN KEY (idteam) REFERENCES webteams (idteam) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
